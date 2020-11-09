@@ -92,13 +92,13 @@ public interface IApiClient {
 
     @GET(BuildConfig.APPOINTMENT_URL + "users/appointments")
     Call<CommonDataResponse<List<AppointmentResponse>>> getAppointmentList(@Header("Authorization") String token,
-                                                                           @Query("page") int page);
+                                                                           @Query("offset") int page);
 
     @POST(BuildConfig.APPOINTMENT_URL + "users/appointments")
     Call<CommonDataResponse<AppointmentResponse>> createAppointment(@Header("Authorization") String token,
                                                                         @Body AppointmentRequest body);
 
-    @POST(BuildConfig.APPOINTMENT_URL + "users/appointments/{id}/cancel")
+    @PUT(BuildConfig.APPOINTMENT_URL + "users/appointments/{id}/cancel")
     Call<CommonDataResponse<AppointmentResponse>> cancelAppointment(@Header("Authorization") String token,
                                                                         @Path("id") String id);
 

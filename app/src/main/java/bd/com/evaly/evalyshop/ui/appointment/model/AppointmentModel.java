@@ -30,6 +30,10 @@ public abstract class AppointmentModel extends DataBindingEpoxyModel {
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
 
+
+    @EpoxyAttribute(DoNotHash)
+    View.OnClickListener clickListenerCancel;
+
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
@@ -57,7 +61,6 @@ public abstract class AppointmentModel extends DataBindingEpoxyModel {
         }
         binding.category.setText(Utils.capitalize(model.getCategory().getName()));
 
-
         String status = model.getStatus();
         binding.status.setText(Utils.capitalize(status));
         if (status.equals("booked"))
@@ -69,7 +72,13 @@ public abstract class AppointmentModel extends DataBindingEpoxyModel {
         else if (status.equals("completed"))
             binding.bgCard.setCardBackgroundColor(Color.parseColor("#2ECD64"));
 
+        if (!status.equals("booked"))
+            binding.cancel.setVisibility(View.GONE);
+        else
+            binding.cancel.setVisibility(View.VISIBLE);
+
         binding.getRoot().setOnClickListener(clickListener);
+        binding.cancel.setOnClickListener(clickListenerCancel);
     }
 
     @Override

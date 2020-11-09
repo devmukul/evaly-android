@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -26,6 +27,7 @@ import bd.com.evaly.evalyshop.databinding.BottomSheetCreateAppointmentBinding;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentCategoryResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentRequest;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentTimeSlotResponse;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -36,6 +38,7 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
 
     @Inject
     CreateAppointmentViewModel viewModel;
+    private MainViewModel mainViewModel;
     private AppointmentRequest createBody;
     private BottomSheetCreateAppointmentBinding binding;
     private ViewDialog dialog;
@@ -81,6 +84,7 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
             dialog.hideDialog();
             if (response.getSuccess())
                 dismissAllowingStateLoss();
+            mainViewModel.setRefreshCurrentFragment();
         });
     }
 
@@ -163,6 +167,7 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog);
+        mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
     }
 
 }

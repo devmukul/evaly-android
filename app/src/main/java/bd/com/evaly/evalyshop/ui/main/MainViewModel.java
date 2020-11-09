@@ -22,6 +22,15 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<Boolean> updateNewsfeed = new MutableLiveData<>();
     public MutableLiveData<Boolean> registered = new MutableLiveData<>();
     private SingleLiveEvent<SubCampaignResponse> campaignOnClick = new SingleLiveEvent<>();
+    private SingleLiveEvent<Void> refreshCurrentFragment = new SingleLiveEvent<>();
+
+    public SingleLiveEvent<Void> getRefreshCurrentFragment() {
+        return refreshCurrentFragment;
+    }
+
+    public void setRefreshCurrentFragment() {
+        this.refreshCurrentFragment.call();
+    }
 
     public void setCampaignOnClick(SubCampaignResponse model) {
         this.campaignOnClick.setValue(model);
