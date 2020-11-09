@@ -31,6 +31,7 @@ public class AppointmentViewModel extends ViewModel {
             public void onDataFetched(CommonDataResponse<List<AppointmentResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
                 liveList.setValue(arrayList);
+                page++;
             }
 
             @Override

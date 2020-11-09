@@ -4,20 +4,14 @@
     <color name="colorPrimaryDark">#fff</color>
     <color name="colorAccent">#000000</color>
     <color name="colorAccentBlue">#6c81f7</color>
-
     <color name="fff">#fff</color>
     <color name="fffh">#fff</color>
     <color name="bottom_nav">#fff</color>
-
     <color name="transparent">@android:color/transparent</color>
-
     <color name="white">#FFFFFF</color>
     <color name="whiteBut">#FFFFFF</color>
     <color name="black">#000000</color>
-
-
     <color name="productDetailsBtn">#D7FFFFFF</color>
-
 
     <color name="aaa">#aaa</color>
     <color name="eee">#eee</color>
@@ -34,21 +28,14 @@
     <color name="c666">#666</color>
     <color name="c777">#777</color>
 
-
     <color name="separator">#F1F3F4</color>
-
-
     <color name="app_bg">#fafafa</color>
     <color name="fafafa">#fafafa</color>
-
     <color name="f1f3f4">#F1F3F4</color>
-
-    <color name="separator_light">#FAFAFA</color>
-
+    <color name="separator_light">#f9f9f9</color>
 
     <color name="evaly_color">#000000</color>
     <color name="transaction_color">#000000</color>
-
     <color name="green">#38A169</color>
     <color name="red_app">#d21034</color>
 
@@ -63,15 +50,12 @@
     <color name="color9">#C4CBEA</color>
     <color name="color10">#EAC4C4</color>
 
-
     <color name="barColor5">#db9803</color>
-
     <color name="bgCartBtn">#fff2f2</color>
     <color name="bgCartCount">#08430505</color>
     <color name="rootCategoryBg">#FBFCFF</color>
     <color name="campaignBlur">#4BBABEBF</color>
     <color name="inputBgDark">#5E000000</color>
     <color name="bgOrderTimeLine">#eee</color>
-
-
+    
 </resources>
