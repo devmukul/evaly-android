@@ -12,6 +12,7 @@ import com.airbnb.epoxy.EpoxyModelClass;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemAppointmentBinding;
@@ -38,15 +39,17 @@ public abstract class AppointmentModel extends DataBindingEpoxyModel {
 
         SimpleDateFormat df_input = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat df_output = new SimpleDateFormat("dd\nMMM");
-        Date parsed;
-        String outputDate;
+        df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
+        df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
+
         try {
-            parsed = df_input.parse(model.getDate());
-            outputDate = df_output.format(parsed);
+            Date parsed = df_input.parse(model.getDate());
+            String outputDate = df_output.format(parsed);
             binding.date.setText(outputDate);
         } catch (Exception e) {
             binding.date.setText("");
         }
+
         if (model.getTimeSlot().contains("-")) {
             String[] str = model.getTimeSlot().split("-");
             binding.startTime.setText(str[0]);

@@ -250,6 +250,11 @@ It is a platform where people can purchase all kinds of goods from a single webs
         <item>DAILY NEWS</item>
         <item>PUBLIC</item>
     </string-array>
+
+    <string-array name="select_timeslot">
+        <item>Choose time slot</item>
+
+    </string-array>
     <string-array name="brands">
         <item>All Brands</item>
         <item>Samsung</item>

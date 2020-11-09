@@ -12,9 +12,12 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -23,6 +26,8 @@ import bd.com.evaly.evalyshop.databinding.BottomSheetCreateAppointmentBinding;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentCategoryResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentRequest;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentTimeSlotResponse;
+import bd.com.evaly.evalyshop.util.ToastUtils;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
 
@@ -32,16 +37,20 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
     @Inject
     CreateAppointmentViewModel viewModel;
     private AppointmentRequest createBody;
+    private BottomSheetCreateAppointmentBinding binding;
+    private ViewDialog dialog;
+
     DatePickerDialog.OnDateSetListener datePickerListener = (datePicker, year, month, day) -> {
-        String date = year + "-" + month + "-" + day;
+        String date = String.format("%d-%01d-%01d", year, ++month, day);
         createBody.setDate(date);
         viewModel.getTimeSlot(date);
+        binding.date.setText(date);
     };
-    private BottomSheetCreateAppointmentBinding binding;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        dialog = new ViewDialog(getActivity());
         createBody = new AppointmentRequest();
         clickListeners();
         liveEventObservers();
@@ -63,6 +72,15 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
                 strList.add(item.getName());
             }
             updateCategorySpinner(strList);
+        });
+
+        viewModel.timeErrorMessage.observe(getViewLifecycleOwner(), s -> ToastUtils.show(s));
+
+        viewModel.createdLiveList.observe(getViewLifecycleOwner(), response -> {
+            ToastUtils.show(response.getMessage());
+            dialog.hideDialog();
+            if (response.getSuccess())
+                dismissAllowingStateLoss();
         });
     }
 
@@ -94,6 +112,43 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
                     year, month, day
             );
             dialog.show();
+        });
+
+        binding.submitBtn.setOnClickListener(view -> {
+
+            String timeSlot = binding.spTimeSlot.getSelectedItem().toString();
+            String categoryName = binding.spCategory.getSelectedItem().toString();
+
+            String error = null;
+            if (!binding.date.getText().toString().contains("-") || createBody.getDate() == null)
+                error = "Please select appointment date";
+            else if (viewModel.timeSlotLiveList.getValue() == null || viewModel.timeSlotLiveList.getValue().size() == 0)
+                error = "Appointment time slot is unavailable";
+            else if (viewModel.getCategorySlug(categoryName) == null)
+                error = "Appointment category unavailable";
+
+            if (error != null) {
+                ToastUtils.show(error);
+                return;
+            }
+
+            createBody.setCategory(viewModel.getCategorySlug(categoryName));
+
+            SimpleDateFormat df_input = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat df_output = new SimpleDateFormat("E");
+            df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
+            df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
+
+            try {
+                Date parsed = df_input.parse(createBody.getDate());
+                String outputDate = df_output.format(parsed);
+                createBody.setDay(outputDate.toLowerCase());
+            } catch (Exception ignored) {
+            }
+
+            createBody.setTimeSlot(timeSlot);
+            viewModel.createAppointment(createBody);
+            dialog.showDialog();
         });
     }
 

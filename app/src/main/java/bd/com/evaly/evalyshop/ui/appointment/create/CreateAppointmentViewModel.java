@@ -3,6 +3,8 @@ package bd.com.evaly.evalyshop.ui.appointment.create;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -19,7 +21,8 @@ public class CreateAppointmentViewModel extends ViewModel {
 
     MutableLiveData<List<AppointmentCategoryResponse>> categoryLiveList = new MutableLiveData<>();
     MutableLiveData<List<AppointmentTimeSlotResponse>> timeSlotLiveList = new MutableLiveData<>();
-    MutableLiveData<AppointmentResponse> createdLiveList = new MutableLiveData<>();
+    MutableLiveData<CommonDataResponse<AppointmentResponse>> createdLiveList = new MutableLiveData<>();
+    MutableLiveData<String> timeErrorMessage = new MutableLiveData<>();
 
 
     @Inject
@@ -46,6 +49,16 @@ public class CreateAppointmentViewModel extends ViewModel {
         });
     }
 
+    public String getCategorySlug(String name) {
+        if (categoryLiveList.getValue() == null || categoryLiveList.getValue().size() == 0)
+            return null;
+        for (AppointmentCategoryResponse item : categoryLiveList.getValue()) {
+            if (item.getName().equals(name))
+                return item.getSlug();
+        }
+        return null;
+    }
+
     public void getTimeSlot(String date) {
         AppointmentApiHelper.getAppointmentTimeSlotList(date, new ResponseListenerAuth<CommonDataResponse<List<AppointmentTimeSlotResponse>>, String>() {
             @Override
@@ -55,7 +68,11 @@ public class CreateAppointmentViewModel extends ViewModel {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
+                if (errorBody.contains("message")) {
+                    CommonDataResponse commonDataResponse = new Gson().fromJson(errorBody, CommonDataResponse.class);
+                    timeErrorMessage.setValue(commonDataResponse.getMessage());
+                } else
+                    timeErrorMessage.setValue("Error occurred");
             }
 
             @Override
@@ -69,12 +86,16 @@ public class CreateAppointmentViewModel extends ViewModel {
         AppointmentApiHelper.createAppointment(body, new ResponseListenerAuth<CommonDataResponse<AppointmentResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AppointmentResponse> response, int statusCode) {
-                createdLiveList.setValue(response.getData());
+                createdLiveList.setValue(response);
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
+                try {
+                    createdLiveList.setValue(new Gson().fromJson(errorBody, CommonDataResponse.class));
+                } catch (Exception e) {
 
+                }
             }
 
             @Override
