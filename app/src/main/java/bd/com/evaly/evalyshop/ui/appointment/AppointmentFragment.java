@@ -104,6 +104,7 @@ public class AppointmentFragment extends Fragment implements AppointmentControll
             NavHostFragment.findNavController(this).navigate(R.id.createAppointmentBottomSheet);
             return false;
         });
+        binding.toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
     }
 
     @Override

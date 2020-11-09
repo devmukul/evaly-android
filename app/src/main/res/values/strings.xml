@@ -175,7 +175,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="applicable_date">Applicable Date</string>
     <string name="amount_bdt">Amount (BDT)</string>
     <string name="choose_payment_method">Choose Payment Method:</string>
-    <string name="issue_type">ISSUE TYPE</string>
+    <string name="issue_type">Issue Type</string>
     <string name="description_cap">DESCRIPTION</string>
     <string name="write_your_issue_here">Write your issue here...</string>
     <string name="share_to_newsfeed">Share to Newsfeed</string>

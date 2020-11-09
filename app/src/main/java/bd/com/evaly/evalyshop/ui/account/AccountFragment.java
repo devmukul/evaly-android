@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentAccountBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -166,6 +167,12 @@ public class AccountFragment extends Fragment {
         binding.btn4Title.setOnClickListener(v -> {
             openEconnect();
         });
+
+        binding.toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
+            AppController.logout(getActivity());
+            return false;
+        });
+        binding.toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
     }
 
     private void openEconnect() {

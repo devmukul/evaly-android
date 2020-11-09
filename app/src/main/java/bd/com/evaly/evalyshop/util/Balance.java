@@ -18,8 +18,8 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
-import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
 
 
 public class Balance {
@@ -35,7 +35,7 @@ public class Balance {
                 CredentialManager.setBalance(data.get("balance").getAsDouble());
 
                 if (openDashboard) {
-                    Intent intent = new Intent(context, UserDashboardActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    Intent intent = new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("from", "signin");
                     context.startActivity(intent);
                     try {
@@ -110,7 +110,7 @@ public class Balance {
                 });
 
                 if (openDashboard) {
-                    Intent intent = new Intent(context, UserDashboardActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    Intent intent = new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("from", "signin");
                     context.startActivity(intent);
                     try {

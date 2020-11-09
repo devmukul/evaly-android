@@ -278,9 +278,8 @@ public class MainActivity extends BaseActivity {
         }
 
         if (data.hasExtra("fromBalance")) {
-            Intent ip = new Intent(this, UserDashboardActivity.class);
             Toast.makeText(this, "Payment Successful!", Toast.LENGTH_SHORT).show();
-            startActivity(ip);
+            navController.navigate(R.id.accountFragment);
         }
 
         exitDialogBuilder = new AlertDialog.Builder(MainActivity.this)
@@ -473,7 +472,7 @@ public class MainActivity extends BaseActivity {
                         startActivity(getIntent());
                         break;
                     case R.id.nav_account:
-                        startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
+                        navController.navigate(R.id.accountFragment);
                         break;
                     case R.id.nav_orders:
                         startActivity(new Intent(MainActivity.this, OrderListActivity.class));

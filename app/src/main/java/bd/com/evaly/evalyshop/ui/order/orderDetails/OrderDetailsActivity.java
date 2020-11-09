@@ -33,9 +33,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -73,6 +71,7 @@ import java.util.Random;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.databinding.BottomSheetCreateIssueBinding;
 import bd.com.evaly.evalyshop.databinding.BottomSheetUpdateOrderAddressBinding;
 import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
@@ -222,7 +221,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     private void requestRefund() {
         if (invoice_no.equals("") || orderStatus.equals("") || paymentMethod.equals("") || paymentStatus.equals("")) {
-            Toast.makeText(getApplicationContext(), "Can't request refund, reload the page", Toast.LENGTH_SHORT).show();
+            ToastUtils.show("Can't request refund, reload the page");
         } else {
             RefundBottomSheet refundBottomSheet = RefundBottomSheet.newInstance(invoice_no, orderStatus, paymentMethod, paymentStatus, isRefundEligible);
             refundBottomSheet.show(getSupportFragmentManager(), "Refund");
@@ -413,15 +412,15 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 getOrderHistory();
 
                 if (response != null) {
-                    Toast.makeText(getApplicationContext(), response.get("message").toString(), Toast.LENGTH_LONG).show();
+                    ToastUtils.show(response.get("message").toString());
                 } else {
-                    Toast.makeText(getApplicationContext(), "Payment failed, try again later", Toast.LENGTH_LONG).show();
+                    ToastUtils.show("Payment failed, try again later");
                 }
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-                Toast.makeText(getApplicationContext(), "Payment failed, try again later", Toast.LENGTH_LONG).show();
+                ToastUtils.show("Payment failed, try again later");
             }
 
             @Override
@@ -450,16 +449,16 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                         getOrderDetails();
                         getOrderHistory();
                     }
-                    Toast.makeText(getApplicationContext(), response.get("message").toString(), Toast.LENGTH_LONG).show();
+                    ToastUtils.show(response.get("message").toString());
                 } else {
-                    Toast.makeText(getApplicationContext(), "Order confirmation failed, try again later", Toast.LENGTH_LONG).show();
+                    ToastUtils.show("Order confirmation failed, try again later");
                 }
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 dialog.dismiss();
-                Toast.makeText(getApplicationContext(), "Order confirmation failed, try again later", Toast.LENGTH_LONG).show();
+                ToastUtils.show("Order confirmation failed, try again later");
             }
 
             @Override
@@ -601,15 +600,13 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     void report() {
         IssueCreateBody model = new IssueCreateBody();
         bottomSheetDialog = new BottomSheetDialog(OrderDetailsActivity.this, R.style.BottomSheetDialogTheme);
-        bottomSheetDialog.setContentView(R.layout.report_view);
-        Spinner spinner = bottomSheetDialog.findViewById(R.id.spnDelivery);
-        EditText etDescription = bottomSheetDialog.findViewById(R.id.etDescription);
-        Button btnSubmit = bottomSheetDialog.findViewById(R.id.btnSubmit);
-        ImageView ivClose = bottomSheetDialog.findViewById(R.id.ivClose);
-        LinearLayout addPhoto = bottomSheetDialog.findViewById(R.id.addPhoto);
+
+        BottomSheetCreateIssueBinding dialogBinding = BottomSheetCreateIssueBinding.inflate(getLayoutInflater());
+        bottomSheetDialog.setContentView(dialogBinding.getRoot());
+
         List<String> options = new ArrayList<>();
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, options);
-        spinner.setAdapter(adapter);
+        dialogBinding.spnDelivery.setAdapter(adapter);
         dialog.showDialog();
 
         IssueApiHelper.getCategories(new ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String>() {
@@ -619,7 +616,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 dialog.hideDialog();
 
                 bottomSheetDialog.show();
-
                 categoryList = response.getData();
                 for (IssueCategoryModel item : categoryList) {
                     options.add(item.getName());
@@ -631,7 +627,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 dialog.hideDialog();
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                ToastUtils.show(getResources().getString(R.string.something_wrong));
             }
 
             @Override
@@ -640,7 +636,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             }
         });
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        dialogBinding.spnDelivery.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 model.setCategory(categoryList.get(i).getId());
@@ -650,6 +646,26 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     model.setPriority("urgent");
                 else
                     model.setPriority("medium");
+
+                String paymentType = categoryList.get(i).getName();
+                if (paymentType == null)
+                    return;
+
+                if (paymentType.equals("Balance Refund") || paymentType.equals("Card Refund")) {
+                    dialogBinding.llBkashHolder.setVisibility(View.GONE);
+                    dialogBinding.llBankInfoHolder.setVisibility(View.GONE);
+                } else if (paymentType.equals("bKash Refund") || paymentType.equals("Nagad Refund")) {
+                    dialogBinding.llBkashHolder.setVisibility(View.VISIBLE);
+                    dialogBinding.llBankInfoHolder.setVisibility(View.GONE);
+                    dialogBinding.etDescription.setVisibility(View.GONE);
+                } else if (paymentType.equals("Bank Refund")) {
+                    dialogBinding.llBkashHolder.setVisibility(View.GONE);
+                    dialogBinding.llBankInfoHolder.setVisibility(View.VISIBLE);
+                    dialogBinding.etDescription.setVisibility(View.GONE);
+                } else {
+                    dialogBinding.llBkashHolder.setVisibility(View.GONE);
+                    dialogBinding.llBankInfoHolder.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -658,19 +674,14 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             }
         });
 
-        addPhoto.setOnClickListener(view -> openImageSelector());
+        dialogBinding.addPhoto.setOnClickListener(view -> openImageSelector());
 
-        btnSubmit.setOnClickListener(view -> {
+        dialogBinding.btnSubmit.setOnClickListener(view -> {
             if (orderDetailsModel == null || orderDetailsModel.getShop() == null) {
                 ToastUtils.show("Please reload the page");
                 return;
             }
 
-            if (etDescription.getText().toString().trim().isEmpty()) {
-                etDescription.setError("Required");
-                return;
-            }
-            model.setAdditionalInfo(etDescription.getText().toString());
             model.setChannel("customer_app");
             model.setContext("order");
             model.setCustomer(CredentialManager.getUserName());
@@ -684,6 +695,68 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 imageUrls.add(imageUrl);
                 model.setAttachments(imageUrls);
             }
+
+            int selectedPosition = dialogBinding.spnDelivery.getSelectedItemPosition();
+            String paymentType = categoryList.get(selectedPosition).getName();
+
+            String description = "";
+
+            if (paymentType.equals("bKash")) {
+                String bkashNumber = dialogBinding.etNumber.getText().toString().trim();
+                if (bkashNumber.equals("")) {
+                    ToastUtils.show("Please enter your bKash account number.");
+                    return;
+                } else if (!Utils.isValidNumber(bkashNumber)) {
+                    ToastUtils.show("Please enter valid bKash account number.");
+                    return;
+                }
+                description = "bKash Account: " + bkashNumber;
+            } else if (paymentType.equals("Nagad")) {
+                String number = dialogBinding.etNumber.getText().toString().trim();
+                if (number.equals("")) {
+                    ToastUtils.show("Please enter your Nagad account number.");
+                    return;
+                } else if (!Utils.isValidNumber(number)) {
+                    ToastUtils.show("Please enter valid Nagad account number.");
+                    return;
+                }
+                description = "Nagad Account: " + number;
+            } else if (paymentType.equals("Bank")) {
+                String bankName = dialogBinding.etBankName.getText().toString().trim();
+                String branchName = dialogBinding.etBranch.getText().toString().trim();
+                String routingNumber = dialogBinding.etBranchRouting.getText().toString();
+                String accountName = dialogBinding.etAccountName.getText().toString().trim();
+                String accountNumber = dialogBinding.etAccountNumber.getText().toString().trim();
+
+                String errorMessage = "";
+                if (bankName.equals(""))
+                    errorMessage = "Please enter bank name.";
+                else if (branchName.equals(""))
+                    errorMessage = "Please enter branch name";
+                else if (routingNumber.equals(""))
+                    errorMessage = "Please enter routing number.";
+                else if (accountName.equals(""))
+                    errorMessage = "Please enter account name.";
+                else if (accountNumber.equals(""))
+                    errorMessage = "Please enter account number.";
+
+                if (!errorMessage.equals("")) {
+                    ToastUtils.show(errorMessage);
+                    return;
+                }
+                description = "Account Name: " + accountName + " \n" +
+                        "Account Number: " + accountNumber + " \n" +
+                        "Bank Name: " + bankName + "\n" +
+                        "Branch Name: " + branchName + "\n" +
+                        "Routing Number: " + routingNumber;
+            } else
+                description = dialogBinding.etDescription.getText().toString();
+
+            if (description.length() == 0) {
+                ToastUtils.show("Please enter description");
+            }
+
+            model.setAdditionalInfo(description);
             dialog.showDialog();
             submitIssue(model, bottomSheetDialog);
             imageUrl = "";
@@ -711,7 +784,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             }
         });
         bottomSheetDialog.setCancelable(false);
-        ivClose.setOnClickListener(view -> bottomSheetDialog.dismiss());
+        dialogBinding.ivClose.setOnClickListener(view -> bottomSheetDialog.dismiss());
 
     }
 
@@ -721,7 +794,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             @Override
             public void onDataFetched(CommonDataResponse<IssueListModel> response, int statusCode) {
                 dialog.hideDialog();
-                Toast.makeText(getApplicationContext(), "Your issue has been submitted, you will be notified shortly", Toast.LENGTH_LONG).show();
+                ToastUtils.show("Your issue has been submitted, you will be notified shortly");
                 bottomSheetDialog.dismiss();
             }
 
@@ -734,7 +807,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     ToastUtils.show(jsonObject.get("message").getAsString());
                 } catch (Exception e) {
                     Log.e("json parse error", e.toString());
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                    ToastUtils.show(getResources().getString(R.string.something_wrong));
                 }
             }
 
@@ -786,7 +859,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 openSelector();
             else {
-                Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                ToastUtils.show("Permission denied");
             }
         }
     }
@@ -850,16 +923,16 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         alertDialog.show();
         d_submit.setOnClickListener(v -> {
             if (amount.getText().toString().equals("")) {
-                Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
+                ToastUtils.show("Please enter an amount.");
                 return;
             } else if (code.getText().toString().equals("")) {
-                Toast.makeText(context, "Please enter gift card coupon code.", Toast.LENGTH_SHORT).show();
+                ToastUtils.show("Please enter gift card coupon code.");
                 return;
             }
             double partial_amount = Double.parseDouble(amount.getText().toString());
 
             if (partial_amount > total_amount) {
-                Toast.makeText(context, "You have entered an amount that is larger than your due amount.", Toast.LENGTH_LONG).show();
+                ToastUtils.show("You have entered an amount that is larger than your due amount.");
                 return;
             }
             makePaymentViaGiftCard(code.getText().toString(), invoice_no, String.valueOf((int) partial_amount));
@@ -883,7 +956,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             public void onDataFetched(JsonObject response, int statusCode) {
 
                 dialog2.hideDialog();
-                Toast.makeText(OrderDetailsActivity.this, response.get("message").getAsString(), Toast.LENGTH_LONG).show();
+                ToastUtils.show(response.get("message").getAsString());
                 if (response.has("success")) {
                     if (response.get("success").getAsBoolean())
                         giftCardSuccessDialog();
@@ -892,7 +965,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-                Toast.makeText(OrderDetailsActivity.this, "Payment unsuccessful!", Toast.LENGTH_LONG).show();
+                ToastUtils.show("Payment unsuccessful!");
                 dialog2.hideDialog();
             }
 
@@ -967,7 +1040,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                         e.printStackTrace();
                     }
                     if (bitmap == null) {
-                        Toast.makeText(getApplicationContext(), R.string.something_wrong, Toast.LENGTH_LONG).show();
+                        ToastUtils.show(R.string.something_wrong);
                         return;
                     }
 
@@ -1000,7 +1073,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             } catch (Exception e) {
 
                 Log.d("json image error", e.toString());
-                Toast.makeText(context, "Error occurred while uploading image", Toast.LENGTH_SHORT).show();
+                ToastUtils.show("Error occurred while uploading image");
             }
         }
     }
@@ -1263,7 +1336,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 dialog.hideDialog();
-                Toast.makeText(OrderDetailsActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+                ToastUtils.show("Error occurred!");
             }
 
             @Override
@@ -1289,7 +1362,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         button.setOnClickListener(view -> {
 
             if ((radioGroup != null ? radioGroup.getCheckedRadioButtonId() : 0) == -1) {
-                Toast.makeText(this, "Select a cancellation reason", Toast.LENGTH_SHORT).show();
+                ToastUtils.show("Select a cancellation reason");
                 return;
             }
 
@@ -1309,7 +1382,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
                 @Override
                 public void onFailed(String errorBody, int errorCode) {
-                    Toast.makeText(context, "Can't cancel this order!", Toast.LENGTH_SHORT).show();
+                    ToastUtils.show("Can't cancel this order!");
                 }
 
                 @Override
@@ -1379,22 +1452,22 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 @Override
                 public void onDataFetched(retrofit2.Response<JsonObject> response1) {
                     if (response1 == null) {
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                        ToastUtils.show(getResources().getString(R.string.something_wrong));
                         return;
                     }
                     if (response1.code() == 200 || response1.code() == 201) {
                         dialog.hideDialog();
-                        Toast.makeText(getApplicationContext(), "Order Updated", Toast.LENGTH_LONG).show();
+                        ToastUtils.show("Order Updated");
                     } else {
                         dialog.hideDialog();
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                        ToastUtils.show(getResources().getString(R.string.something_wrong));
                     }
                 }
 
                 @Override
                 public void onFailed(int status) {
                     dialog.hideDialog();
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                    ToastUtils.show(getResources().getString(R.string.something_wrong));
                 }
             });
         }).setNegativeButton("No", null);
@@ -1430,13 +1503,13 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     @Override
     public void onPaymentFailure(HashMap<String, String> values) {
-        Toast.makeText(this, R.string.payment_error_message, Toast.LENGTH_LONG).show();
+        ToastUtils.show(R.string.payment_error_message);
     }
 
     @Override
     public void onPaymentSuccess(String message) {
         updatePage();
-        Toast.makeText(this, R.string.payment_success_message, Toast.LENGTH_LONG).show();
+        ToastUtils.show(R.string.payment_success_message);
     }
 
 }

@@ -13,17 +13,15 @@
         android:layout_height="56dp"
         android:background="@color/fff"
         app:navigationIcon="@drawable/ic_arrow_back"
+        app:menu="@menu/dashboard_menu"
         app:title="Account" />
-
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="56dp"
         android:background="@color/white"
-        android:focusableInTouchMode="true"
-        tools:context=".ui.user.UserDashboardActivity">
-
+        android:focusableInTouchMode="true">
 
         <LinearLayout
             android:layout_width="match_parent"
