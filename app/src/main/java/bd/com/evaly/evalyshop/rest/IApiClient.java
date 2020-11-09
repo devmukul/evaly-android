@@ -96,11 +96,11 @@ public interface IApiClient {
 
     @POST(BuildConfig.APPOINTMENT_URL + "users/appointments")
     Call<CommonDataResponse<AppointmentResponse>> createAppointment(@Header("Authorization") String token,
-                                                                        @Body AppointmentRequest body);
+                                                                    @Body AppointmentRequest body);
 
     @PUT(BuildConfig.APPOINTMENT_URL + "users/appointments/{id}/cancel")
     Call<CommonDataResponse<AppointmentResponse>> cancelAppointment(@Header("Authorization") String token,
-                                                                        @Path("id") String id);
+                                                                    @Path("id") String id);
 
     //TabsItem
 
@@ -182,6 +182,11 @@ public interface IApiClient {
     Call<CommonDataResponse<List<IssueListModel>>> getIssueTicketList(@Header("Authorization") String token,
                                                                       @Query("invoice_number") String invoice);
 
+
+    @PUT(UrlUtils.DOMAIN + "issue/api/v1/users/tickets/{id}/change-status")
+    Call<CommonDataResponse<IssueListModel>> resolveIssueTicketStatus(@Header("Authorization") String token,
+                                                                      @Path("id") int id);
+
     @POST(UrlUtils.DOMAIN + "issue/api/v1/common/tickets")
     Call<CommonDataResponse<IssueListModel>> createIssueTicket(@Header("Authorization") String token,
                                                                @Body IssueCreateBody body);
@@ -194,7 +199,6 @@ public interface IApiClient {
     Call<CommonDataResponse<IssueTicketCommentModel>> createIssueTicketComment(@Header("Authorization") String token,
                                                                                @Body IssueCommentBody body,
                                                                                @Query("ticket_id") String tickerId);
-
 
     @POST(UrlUtils.SET_PASSWORD)
     Call<JsonObject> setPassword(@Body HashMap<String, String> setPasswordModel);

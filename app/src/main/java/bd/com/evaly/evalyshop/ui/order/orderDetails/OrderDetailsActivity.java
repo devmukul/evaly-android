@@ -701,7 +701,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
             String description = "";
 
-            if (paymentType.equals("bKash")) {
+            if (paymentType.equals("bKash Refund")) {
                 String bkashNumber = dialogBinding.etNumber.getText().toString().trim();
                 if (bkashNumber.equals("")) {
                     ToastUtils.show("Please enter your bKash account number.");
@@ -711,7 +711,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     return;
                 }
                 description = "bKash Account: " + bkashNumber;
-            } else if (paymentType.equals("Nagad")) {
+            } else if (paymentType.equals("Nagad Refund")) {
                 String number = dialogBinding.etNumber.getText().toString().trim();
                 if (number.equals("")) {
                     ToastUtils.show("Please enter your Nagad account number.");
@@ -721,7 +721,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     return;
                 }
                 description = "Nagad Account: " + number;
-            } else if (paymentType.equals("Bank")) {
+            } else if (paymentType.equals("Bank Refund")) {
                 String bankName = dialogBinding.etBankName.getText().toString().trim();
                 String branchName = dialogBinding.etBranch.getText().toString().trim();
                 String routingNumber = dialogBinding.etBranchRouting.getText().toString();

@@ -140,7 +140,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
 
-
         // GridLayoutManager
 
         homeController.requestModelBuild();

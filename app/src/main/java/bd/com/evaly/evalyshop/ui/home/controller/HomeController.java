@@ -211,8 +211,6 @@ public class HomeController extends EpoxyController {
 
         categoryCarousel
                 .models(models)
-                .initialPrefetchItemCount(5)
-                .spanSizeOverride((totalSpanCount, position, itemCount) -> 2)
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(15, activity),
                         (int) Utils.convertDpToPixel(12, activity),
@@ -258,7 +256,6 @@ public class HomeController extends EpoxyController {
 
         brandCarousel
                 .models(models)
-                .initialPrefetchItemCount(5)
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(15, activity),
                         (int) Utils.convertDpToPixel(12, activity),
@@ -303,7 +300,6 @@ public class HomeController extends EpoxyController {
 
         shopCarousel
                 .models(models)
-                .initialPrefetchItemCount(5)
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(15, activity),
                         (int) Utils.convertDpToPixel(12, activity),

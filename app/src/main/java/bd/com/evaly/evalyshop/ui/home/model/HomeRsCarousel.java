@@ -17,24 +17,6 @@ public class HomeRsCarousel extends Carousel {
         super(context);
         setNestedScrollingEnabled(false);
         setMinimumHeight((int) Utils.convertDpToPixel(175, getContext()));
-
-//        setPadding(new Carousel.Padding(
-//                (int) Utils.convertDpToPixel(15, getContext()),
-//                (int) Utils.convertDpToPixel(12, getContext()),
-//                (int) Utils.convertDpToPixel(10, getContext()),
-//                (int) Utils.convertDpToPixel(10, getContext()),
-//                (int) Utils.convertDpToPixel(10, getContext())));
-//
-//        if (getRootView().getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-//            ((StaggeredGridLayoutManager.LayoutParams) getRootView().getLayoutParams()).setFullSpan(true);
-//        } else {
-//            StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-//                    ViewGroup.LayoutParams.MATCH_PARENT,
-//                    ViewGroup.LayoutParams.WRAP_CONTENT
-//            );
-//            params.setFullSpan(true);
-//            getRootView().setLayoutParams(params);
-//        }
     }
 
     @Nullable

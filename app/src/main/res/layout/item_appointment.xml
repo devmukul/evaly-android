@@ -65,6 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:background="@drawable/input_bg"
+            android:backgroundTint="@color/separator_light"
             android:orientation="vertical">
 
             <TextView

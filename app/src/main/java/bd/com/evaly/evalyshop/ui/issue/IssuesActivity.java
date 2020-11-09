@@ -64,6 +64,11 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
 
     }
 
+    public void refreshPage(){
+        list.clear();
+        getIssuesList();
+    }
+
     private void getIssuesList() {
         IssueApiHelper.getIssueList(invoice, new ResponseListenerAuth<CommonDataResponse<List<IssueListModel>>, String>() {
             @Override

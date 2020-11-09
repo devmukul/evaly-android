@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.issue;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -170,6 +171,41 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
 
     }
 
+
+    private void resolveIssue() {
+
+        ProgressDialog dialog = new ProgressDialog(getContext());
+        dialog.show();
+
+        IssueApiHelper.resolveIssue(issueModel.getId(), new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<IssueListModel> response, int statusCode) {
+                dialog.dismiss();
+                if (response.getSuccess()) {
+                    dismissAllowingStateLoss();
+                    ToastUtils.show("Successfully marked the ticket as resolved");
+                    if (getActivity() != null && !getActivity().isDestroyed() && !getActivity().isFinishing()) {
+                        if (getActivity() instanceof IssuesActivity)
+                            ((IssuesActivity) getActivity()).refreshPage();
+                    }
+                } else
+                    ToastUtils.show(response.getMessage());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                dialog.dismiss();
+                ToastUtils.show(R.string.something_wrong);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
+
     private void initCommentHeader(IssueListModel postModel) {
 
         binding.orderId.setText(issueModel.getInvoiceNumber());
@@ -223,12 +259,27 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
             binding.tvIssueStatus.setBackgroundColor(Color.parseColor("#33d274"));
         }
 
+        if (postModel.getStatus().equals("resolved"))
+            binding.tvResolveIssueHolder.setVisibility(View.GONE);
+        else
+            binding.tvResolveIssueHolder.setVisibility(View.VISIBLE);
+
         binding.issueType.setText(Utils.toFirstCharUpperAll(postModel.getCategory().getName()));
 
         binding.postImage.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ImagePreview.class);
             intent.putExtra("image", postModel.getAttachments().get(0));
             startActivity(intent);
+        });
+
+        binding.tvResolveIssue.setOnClickListener(view -> {
+
+            new AlertDialog.Builder(getContext())
+                    .setMessage("Are you sure you want to mark this ticket as solved?")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton("YES", (dialog, whichButton) -> resolveIssue())
+                    .setNegativeButton("NO", null).show();
+
         });
     }
 
