@@ -376,5 +376,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="appointments">Appointments</string>
     <string name="create_appointment">Create Appointment</string>
     <string name="time_slot">Time slots</string>
+    <string name="order_requests">Order Requests</string>
 
 </resources>

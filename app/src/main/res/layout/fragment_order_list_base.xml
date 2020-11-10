@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -10,8 +11,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/fff"
-            app:elevation="0dp"
-            android:translationZ="1dp">
+            android:translationZ="1dp"
+            app:elevation="0dp">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
@@ -37,7 +38,7 @@
                 android:background="@color/fff"
                 app:tabGravity="fill"
                 app:tabMaxWidth="0dp"
-                app:tabMode="scrollable"/>
+                app:tabMode="scrollable" />
         </com.google.android.material.appbar.AppBarLayout>
 
 
@@ -46,5 +47,45 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+        <LinearLayout
+            android:id="@+id/orderRequestBottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bottom_sheet_round_create_post"
+            android:elevation="10dp"
+            android:orientation="vertical"
+            android:paddingTop="5dp"
+            android:translationZ="6dp"
+            android:visibility="gone"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <View
+                android:layout_width="70dp"
+                android:layout_height="4dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bottomsheet_top_brd" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="5dp"
+                android:text="@string/order_requests"
+                android:textColor="@color/c333"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_order_request" />
+
+        </LinearLayout>
+
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

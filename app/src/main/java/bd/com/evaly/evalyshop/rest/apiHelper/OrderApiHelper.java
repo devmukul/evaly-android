@@ -14,11 +14,16 @@ import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
+import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 
 public class OrderApiHelper extends BaseApiHelper {
 
     public static void updateAddress(UpdateOrderAddressRequest body, ResponseListenerAuth<CommonDataResponse<OrderDetailsModel>, String> listener) {
         getiApiClient().updateOrderAddress(CredentialManager.getToken(), body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getOrderRequestList(int page, ResponseListenerAuth<CommonDataResponse<List<OrderRequestResponse>>, String> listener) {
+        getiApiClient().getOrderRequests(CredentialManager.getToken(), page).enqueue(getResponseCallBackDefault(listener));
     }
 
 

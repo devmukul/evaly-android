@@ -53,6 +53,7 @@ import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
+import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
@@ -80,6 +81,10 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface IApiClient {
+
+    @GET(UrlUtils.DOMAIN + "order-request/api/v1/order-requests/get-orders")
+    Call<CommonDataResponse<List<OrderRequestResponse>>> getOrderRequests(@Header("Authorization") String token,
+                                                                          @Query("page") int page);
 
     // appointment
 
