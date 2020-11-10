@@ -93,7 +93,8 @@ public interface IApiClient {
                                                                                            @Path("date") String date);
 
     @GET(BuildConfig.APPOINTMENT_URL + "users/categories")
-    Call<CommonDataResponse<List<AppointmentCategoryResponse>>> getAppointmentCategoryList(@Header("Authorization") String token);
+    Call<CommonDataResponse<List<AppointmentCategoryResponse>>> getAppointmentCategoryList(@Header("Authorization") String token,
+                                                                                           @Query("limit") int limit);
 
     @GET(BuildConfig.APPOINTMENT_URL + "users/appointments")
     Call<CommonDataResponse<List<AppointmentResponse>>> getAppointmentList(@Header("Authorization") String token,

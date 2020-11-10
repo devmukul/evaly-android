@@ -17,7 +17,7 @@ public class AppointmentApiHelper extends BaseApiHelper {
     }
 
     public static void getAppointmentCategoryList(ResponseListenerAuth<CommonDataResponse<List<AppointmentCategoryResponse>>, String> listener) {
-        getiApiClient().getAppointmentCategoryList(CredentialManager.getToken()).enqueue(getResponseCallBackDefault(listener));
+        getiApiClient().getAppointmentCategoryList(CredentialManager.getToken(), 200).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void getAppointmentTimeSlotList(String date, ResponseListenerAuth<CommonDataResponse<List<AppointmentTimeSlotResponse>>, String> listener) {

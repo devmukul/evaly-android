@@ -33,6 +33,7 @@ public class AppointmentFragment extends Fragment implements AppointmentControll
     private FragmentAppointmentBinding binding;
     private AppointmentController controller;
     private boolean isLoading = false;
+    private boolean shouldScrollToTop = false;
 
     @Nullable
     @Override
@@ -57,9 +58,14 @@ public class AppointmentFragment extends Fragment implements AppointmentControll
             controller.setLoading(false);
             controller.setList(appointmentResponses);
             controller.requestModelBuild();
+            if (shouldScrollToTop)
+                if (appointmentResponses.size() > 0)
+                    binding.recycler.postDelayed(() -> binding.recycler.smoothScrollToPosition(0), 100);
+            shouldScrollToTop = false;
         });
 
         mainViewModel.getRefreshCurrentFragment().observe(getViewLifecycleOwner(), aVoid -> {
+            shouldScrollToTop = true;
             viewModel.clear();
             viewModel.loadList();
             binding.recycler.setAdapter(null);

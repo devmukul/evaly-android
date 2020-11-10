@@ -41,14 +41,13 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
     private MainViewModel mainViewModel;
     private AppointmentRequest createBody;
     private BottomSheetCreateAppointmentBinding binding;
-    private ViewDialog dialog;
-
     DatePickerDialog.OnDateSetListener datePickerListener = (datePicker, year, month, day) -> {
         String date = String.format("%d-%01d-%01d", year, ++month, day);
         createBody.setDate(date);
         viewModel.getTimeSlot(date);
         binding.date.setText(date);
     };
+    private ViewDialog dialog;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -115,6 +114,7 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
                     datePickerListener,
                     year, month, day
             );
+
             dialog.show();
         });
 

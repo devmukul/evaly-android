@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ItemAppointmentBinding;
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
+import bd.com.evaly.evalyshop.ui.appointment.model.AppointmentModelBinder;
 import bd.com.evaly.evalyshop.ui.appointment.model.AppointmentModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
@@ -18,10 +20,6 @@ public class AppointmentController extends EpoxyController {
     private boolean isLoading = true;
     private ClickListener clickListener;
 
-    public interface ClickListener {
-        void onCancelClick(AppointmentResponse model);
-    }
-
     public void setClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
     }
@@ -32,6 +30,7 @@ public class AppointmentController extends EpoxyController {
             new AppointmentModel_()
                     .id(item.getAppointmentId())
                     .model(item)
+                    .onBind((model, view, position) -> AppointmentModelBinder.bind((ItemAppointmentBinding) view.getDataBinding(), model.model()))
                     .clickListenerCancel((model, parentView, clickedView, position) -> clickListener.onCancelClick(model.model()))
                     .addTo(this);
         }
@@ -60,5 +59,9 @@ public class AppointmentController extends EpoxyController {
 
     public void setList(List<AppointmentResponse> list) {
         this.list = list;
+    }
+
+    public interface ClickListener {
+        void onCancelClick(AppointmentResponse model);
     }
 }
