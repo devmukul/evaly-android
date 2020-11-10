@@ -98,10 +98,7 @@ public abstract class OrderListModel extends DataBindingEpoxyModel {
 
         binding.phone.setText("৳ " + Utils.formatPrice(model.getTotal()));
 
-//
-//        Intent intent = new Intent(context, OrderDetailsActivity.class);
-//        intent.putExtra("orderID", model.getInvoiceNo());
-//        context.startActivity(intent);
+
 
 
         binding.getRoot().setOnClickListener(clickListener);

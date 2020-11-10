@@ -23,7 +23,6 @@ import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
-import bd.com.evaly.evalyshop.ui.order.orderList.OrderListBaseFragment;
 
 @EpoxyModelClass(layout = R.layout.home_model_quick_access)
 public abstract class HomeWidgetModel extends DataBindingEpoxyModel {
@@ -58,7 +57,7 @@ public abstract class HomeWidgetModel extends DataBindingEpoxyModel {
             if (CredentialManager.getToken().equals(""))
                 activity.startActivity(new Intent(activity, SignInActivity.class));
             else
-                activity.startActivity(new Intent(activity, OrderListBaseFragment.class));
+                navController.navigate(R.id.orderListBaseFragment);
         });
 
         if (!CredentialManager.getToken().equals("")) {

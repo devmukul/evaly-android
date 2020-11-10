@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentOrderListBaseBinding;
@@ -30,8 +30,7 @@ public class OrderListBaseFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        OrderListTabAdapter pager = new OrderListTabAdapter(getParentFragmentManager());
+        OrderListTabAdapter pager = new OrderListTabAdapter(this);
 
         binding.pager.setAdapter(pager);
 
@@ -46,35 +45,12 @@ public class OrderListBaseFragment extends Fragment {
 
         pager.notifyDataSetChanged();
 
-        binding.pager.setOffscreenPageLimit(1);
-
-        binding.tabs.setupWithViewPager(binding.pager);
-
-        binding.tabs.setSmoothScrollingEnabled(true);
-
-        binding.pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tabs));
-
-        binding.tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                binding.pager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        new TabLayoutMediator(binding.tabs, binding.pager,
+                (tab, position) -> tab.setText(pager.getTitle(position))
+        ).attach();
 
         binding.toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
 
     }
-
-
 
 }

@@ -6,13 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
-import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.order.orderList.model.OrderListModel_;
+import bd.com.evaly.evalyshop.ui.order.orderList.model.OrderListSkeletonModel_;
 
 public class OrderListController extends EpoxyController {
 
     private List<OrderListItem> list = new ArrayList<>();
     private boolean isLoading = true;
+    private ClickListener clickListener;
+
+    public void setClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
 
     @Override
     protected void buildModels() {
@@ -20,12 +25,14 @@ public class OrderListController extends EpoxyController {
             new OrderListModel_()
                     .id(item.getInvoiceNo())
                     .model(item)
+                    .clickListener((model, parentView, clickedView, position) -> clickListener.onClick(model.model().getInvoiceNo()))
                     .addTo(this);
         }
 
-        new LoadingModel_()
-                .id("loadingbar")
+        new OrderListSkeletonModel_()
+                .id("skeletonss")
                 .addIf(isLoading, this);
+
     }
 
     public void setList(List<OrderListItem> list) {
@@ -34,5 +41,9 @@ public class OrderListController extends EpoxyController {
 
     public void setLoading(boolean loading) {
         isLoading = loading;
+    }
+
+    public interface ClickListener {
+        void onClick(String invoice);
     }
 }

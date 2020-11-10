@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.order.orderList;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import bd.com.evaly.evalyshop.databinding.FragmentOrderListBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.controller.OrderListController;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class OrderListFragment extends Fragment {
+public class OrderListFragment extends Fragment implements OrderListController.ClickListener {
 
     private OrderListViewModel viewModel;
     private FragmentOrderListBinding binding;
@@ -68,6 +70,8 @@ public class OrderListFragment extends Fragment {
     private void initRecycler() {
         if (controller == null)
             controller = new OrderListController();
+        controller.setFilterDuplicates(true);
+        controller.setClickListener(this);
         binding.recycle.setAdapter(controller.getAdapter());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         binding.recycle.setLayoutManager(layoutManager);
@@ -82,5 +86,13 @@ public class OrderListFragment extends Fragment {
                 }
             }
         });
+        controller.requestModelBuild();
+    }
+
+    @Override
+    public void onClick(String invoice) {
+        Intent intent = new Intent(getContext(), OrderDetailsActivity.class);
+        intent.putExtra("orderID", invoice);
+        getContext().startActivity(intent);
     }
 }

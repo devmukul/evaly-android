@@ -26,7 +26,11 @@ public class OrderListViewModel extends ViewModel {
     @ViewModelInject
     public OrderListViewModel(@Assisted SavedStateHandle savedStateHandle) {
         this.savedStateHandle = savedStateHandle;
-        statusType = savedStateHandle.get("type");
+        if (savedStateHandle.contains("type") && savedStateHandle.get("type") != null)
+            statusType = savedStateHandle.get("type");
+        else
+            statusType = "all";
+
         getOrderData();
     }
 
