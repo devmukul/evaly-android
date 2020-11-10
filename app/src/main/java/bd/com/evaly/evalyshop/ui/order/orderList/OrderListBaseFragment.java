@@ -87,6 +87,8 @@ public class OrderListBaseFragment extends Fragment {
             }
         });
 
+        binding.recyclerView.setAdapter(requestListController.getAdapter());
+
         viewModel.liveData.observe(getViewLifecycleOwner(), orderRequestResponses -> {
             if (orderRequestResponses.size() > 0)
                 binding.orderRequestBottomSheet.setVisibility(View.VISIBLE);

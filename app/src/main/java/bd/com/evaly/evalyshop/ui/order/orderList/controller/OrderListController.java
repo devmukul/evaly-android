@@ -21,6 +21,7 @@ public class OrderListController extends EpoxyController {
 
     @Override
     protected void buildModels() {
+
         for (OrderListItem item : list) {
             new OrderListModel_()
                     .id(item.getInvoiceNo())
@@ -32,7 +33,6 @@ public class OrderListController extends EpoxyController {
         new OrderListSkeletonModel_()
                 .id("skeletonss")
                 .addIf(isLoading, this);
-
     }
 
     public void setList(List<OrderListItem> list) {

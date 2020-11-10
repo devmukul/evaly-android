@@ -82,7 +82,7 @@ import retrofit2.http.Url;
 
 public interface IApiClient {
 
-    @GET(UrlUtils.DOMAIN + "order-request/api/v1/order-requests/get-orders")
+    @GET(UrlUtils.DOMAIN + "order-request-go/api/v1/order-requests/get-orders")
     Call<CommonDataResponse<List<OrderRequestResponse>>> getOrderRequests(@Header("Authorization") String token,
                                                                           @Query("page") int page);
 

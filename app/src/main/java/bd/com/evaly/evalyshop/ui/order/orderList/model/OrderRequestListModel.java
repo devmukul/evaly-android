@@ -32,7 +32,7 @@ public abstract class OrderRequestListModel extends DataBindingEpoxyModel {
         super.bind(holder);
 
         ItemOrderRequestBinding binding = (ItemOrderRequestBinding) holder.getDataBinding();
-        binding.orderID.setText(model.getInvoiceNo());
+        binding.orderID.setText(model.getShopName());
 
         try {
             binding.date.setText(Utils.formattedDateFromString("", "d MMM, hh:mm aa", model.getCreatedAt()));
