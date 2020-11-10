@@ -132,7 +132,7 @@
             android:name=".ui.user.editProfile.EditProfileActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ui.order.orderList.OrderListActivity"
+            android:name=".ui.order.orderList.OrderListBaseFragment"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity

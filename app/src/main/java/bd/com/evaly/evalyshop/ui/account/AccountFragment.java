@@ -31,7 +31,6 @@ import bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity;
 import bd.com.evaly.evalyshop.ui.balance.BalanceFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.notification.NotificationActivity;
-import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.transaction.TransactionHistory;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -72,13 +71,11 @@ public class AccountFragment extends Fragment {
         });
 
         binding.btn1Image.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), OrderListActivity.class);
-            startActivity(intent);
+            NavHostFragment.findNavController(this).navigate(R.id.orderListBaseFragment);
         });
 
         binding.btn1Title.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), OrderListActivity.class);
-            startActivity(intent);
+            NavHostFragment.findNavController(this).navigate(R.id.orderListBaseFragment);
         });
 
 

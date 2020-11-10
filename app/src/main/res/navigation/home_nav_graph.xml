@@ -283,6 +283,11 @@
         android:name="bd.com.evaly.evalyshop.ui.appointment.create.CreateAppointmentBottomSheet"
         android:label="CreateAppointmentBottomSheet" />
 
+    <fragment
+        android:id="@+id/orderListBaseFragment"
+        android:name="bd.com.evaly.evalyshop.ui.order.orderList.OrderListBaseFragment"
+        android:label="OrderListBaseFragment" />
+
 
     <!--    <activity-->
     <!--        android:id="@+id/orderDetailsActivity"-->
@@ -295,7 +300,7 @@
     <!--    </activity>-->
     <!--    <activity-->
     <!--        android:id="@+id/orderListActivity"-->
-    <!--        android:name="bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity"-->
+    <!--        android:name="bd.com.evaly.evalyshop.ui.order.orderList.OrderListBaseFragment"-->
     <!--        android:label="OrderListActivity" />-->
 
 

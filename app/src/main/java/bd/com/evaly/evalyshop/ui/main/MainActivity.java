@@ -59,8 +59,7 @@ import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
-import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
-import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
+import bd.com.evaly.evalyshop.ui.order.orderList.OrderListBaseFragment;
 import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -475,7 +474,7 @@ public class MainActivity extends BaseActivity {
                         navController.navigate(R.id.accountFragment);
                         break;
                     case R.id.nav_orders:
-                        startActivity(new Intent(MainActivity.this, OrderListActivity.class));
+                        startActivity(new Intent(MainActivity.this, OrderListBaseFragment.class));
                         break;
                     case R.id.nav_cart:
                         startActivity(new Intent(MainActivity.this, CartActivity.class));
