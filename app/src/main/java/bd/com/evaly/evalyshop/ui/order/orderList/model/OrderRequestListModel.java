@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.ui.order.orderList.model;
 
 
 import android.graphics.Color;
+import android.text.Html;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import com.airbnb.epoxy.EpoxyModelClass;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemOrderRequestBinding;
+import bd.com.evaly.evalyshop.models.orderRequest.ItemsItem;
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.util.Utils;
 
@@ -43,7 +45,9 @@ public abstract class OrderRequestListModel extends DataBindingEpoxyModel {
             binding.date.setText(s[0]);
         }
 
-        String orderStatus = model.getRequestStatus();
+        String orderStatus = model.getStatus();
+        if (orderStatus == null || orderStatus.equals(""))
+            orderStatus = "requested";
 
         try {
             if (orderStatus.toLowerCase().equals("cancel"))
@@ -60,7 +64,7 @@ public abstract class OrderRequestListModel extends DataBindingEpoxyModel {
             binding.status.setBackgroundColor(Color.parseColor("#4eb950"));
         else if (orderStatus.toLowerCase().equals("pending"))
             binding.status.setBackgroundColor(Color.parseColor("#e79e03"));
-        else if (orderStatus.toLowerCase().equals("confirmed"))
+        else if (orderStatus.toLowerCase().equals("requested"))
             binding.status.setBackgroundColor(Color.parseColor("#7abcf8"));
         else if (orderStatus.toLowerCase().equals("shipped"))
             binding.status.setBackgroundColor(Color.parseColor("#db9803"));
@@ -70,6 +74,14 @@ public abstract class OrderRequestListModel extends DataBindingEpoxyModel {
             binding.status.setBackgroundColor(Color.parseColor("#5ac1de"));
 
         binding.phone.setText("৳ " + Utils.formatPrice(model.getOrderTotal()));
+
+        String productListHtml = "";
+        for (ItemsItem item : model.getItems()) {
+            if (!productListHtml.equals(""))
+                productListHtml += "<\br>";
+            productListHtml += "•&nbsp;" + item.getName() + " - <b>" + Utils.formatPriceSymbol(item.getPrice()) + " x " + item.getQuantity() + "<\b>";
+        }
+        binding.productList.setText(Html.fromHtml(productListHtml));
 
         binding.getRoot().setOnClickListener(clickListener);
     }

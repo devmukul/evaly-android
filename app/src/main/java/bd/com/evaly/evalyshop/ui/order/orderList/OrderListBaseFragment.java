@@ -68,7 +68,7 @@ public class OrderListBaseFragment extends Fragment {
 
     private void setupBottomSheet() {
         BottomSheetBehavior behavior = BottomSheetBehavior.from(binding.orderRequestBottomSheet);
-        behavior.setPeekHeight(400);
+        behavior.setPeekHeight(280);
 
         if (requestListController == null)
             requestListController = new OrderRequestListController();
@@ -94,10 +94,10 @@ public class OrderListBaseFragment extends Fragment {
                 binding.orderRequestBottomSheet.setVisibility(View.VISIBLE);
             else
                 binding.orderRequestBottomSheet.setVisibility(View.GONE);
-
             requestListController.setLoading(false);
             requestListController.setList(orderRequestResponses);
             requestListController.requestModelBuild();
+            binding.orderRequestCount.setText(orderRequestResponses.size() + "");
         });
 
     }

@@ -520,7 +520,7 @@ public class CartFragment extends Fragment {
                     String message = response.get("message").getAsString();
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
-                    if (response.has("data")) {
+                    if (statusCode == 201 && response.has("data")) {
                         JsonArray data = response.getAsJsonArray("data");
 
                         if (data.size() > 0)
@@ -549,6 +549,9 @@ public class CartFragment extends Fragment {
                                 startActivity(intent);
                             }
                         }
+                    } else if (statusCode == 200 && getActivity() instanceof MainActivity && NavHostFragment.findNavController(CartFragment.this) != null) {
+                        orderPlaced();
+                        NavHostFragment.findNavController(CartFragment.this).navigate(R.id.orderListBaseFragment);
                     }
                 }
             }

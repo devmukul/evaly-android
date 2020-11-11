@@ -7,9 +7,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/input_brd"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/brd_order_request"
         android:paddingLeft="15dp"
         android:paddingTop="15dp"
         android:paddingRight="15dp"
@@ -62,11 +62,22 @@
         </androidx.cardview.widget.CardView>
 
         <TextView
+            android:id="@+id/productList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/phone"
+            android:layout_marginTop="10dp"
+            android:clickable="false"
+            android:textColor="@color/c666"
+            android:textSize="14sp"
+            tools:text="Medium Smart Backpack For Men\nSmart Android TV" />
+
+        <TextView
             android:id="@+id/phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/orderID"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:clickable="false"
             android:textColor="#f57224"
             android:textSize="16sp"
@@ -81,7 +92,7 @@
             android:layout_alignParentRight="true"
             android:clickable="false"
             android:textColor="@color/c777"
-            android:textSize="15sp"
+            android:textSize="13sp"
             tools:text="12/02/2020" />
     </RelativeLayout>
 </layout>

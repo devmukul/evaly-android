@@ -1,54 +1,54 @@
 package bd.com.evaly.evalyshop.models.orderRequest;
 
+import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class OrderRequestResponse{
-
-	@SerializedName("request_status")
-	private String requestStatus;
 
 	@SerializedName("customer_address")
 	private String customerAddress;
 
-	@SerializedName("createdAt")
-	private String createdAt;
+	@SerializedName("note")
+	private String note;
+
+	@SerializedName("origin")
+	private String origin;
 
 	@SerializedName("invoice_no")
 	private String invoiceNo;
 
-	@SerializedName("order_total")
-	private int orderTotal;
-
-	@SerializedName("_id")
-	private String id;
+	@SerializedName("created_at")
+	private String createdAt;
 
 	@SerializedName("shop_name")
 	private String shopName;
 
-	@SerializedName("request_id")
-	private String requestId;
-
 	@SerializedName("contact_number")
 	private String contactNumber;
 
-	@SerializedName("username")
-	private String username;
+	@SerializedName("shop_slug")
+	private String shopSlug;
 
-	@SerializedName("order_items")
-	private List<OrderItemsItem> orderItems;
-
-	@SerializedName("updatedAt")
+	@SerializedName("updated_at")
 	private String updatedAt;
 
-	public void setRequestStatus(String requestStatus){
-		this.requestStatus = requestStatus;
-	}
+	@SerializedName("order_total")
+	private int orderTotal;
 
-	public String getRequestStatus(){
-		return requestStatus;
-	}
+	@SerializedName("id")
+	private String id;
+
+	@SerializedName("items")
+	private List<ItemsItem> items;
+
+	@SerializedName("payment_method")
+	private String paymentMethod;
+
+	@SerializedName("status")
+	private String status;
+
+	@SerializedName("username")
+	private String username;
 
 	public void setCustomerAddress(String customerAddress){
 		this.customerAddress = customerAddress;
@@ -56,6 +56,30 @@ public class OrderRequestResponse{
 
 	public String getCustomerAddress(){
 		return customerAddress;
+	}
+
+	public void setNote(String note){
+		this.note = note;
+	}
+
+	public String getNote(){
+		return note;
+	}
+
+	public void setOrigin(String origin){
+		this.origin = origin;
+	}
+
+	public String getOrigin(){
+		return origin;
+	}
+
+	public void setInvoiceNo(String invoiceNo){
+		this.invoiceNo = invoiceNo;
+	}
+
+	public String getInvoiceNo(){
+		return invoiceNo;
 	}
 
 	public void setCreatedAt(String createdAt){
@@ -66,12 +90,36 @@ public class OrderRequestResponse{
 		return createdAt;
 	}
 
-	public void setInvoiceNo(String invoiceNo){
-		this.invoiceNo = invoiceNo;
+	public void setShopName(String shopName){
+		this.shopName = shopName;
 	}
 
-	public String getInvoiceNo(){
-		return invoiceNo;
+	public String getShopName(){
+		return shopName;
+	}
+
+	public void setContactNumber(String contactNumber){
+		this.contactNumber = contactNumber;
+	}
+
+	public String getContactNumber(){
+		return contactNumber;
+	}
+
+	public void setShopSlug(String shopSlug){
+		this.shopSlug = shopSlug;
+	}
+
+	public String getShopSlug(){
+		return shopSlug;
+	}
+
+	public void setUpdatedAt(String updatedAt){
+		this.updatedAt = updatedAt;
+	}
+
+	public String getUpdatedAt(){
+		return updatedAt;
 	}
 
 	public void setOrderTotal(int orderTotal){
@@ -90,28 +138,28 @@ public class OrderRequestResponse{
 		return id;
 	}
 
-	public void setShopName(String shopName){
-		this.shopName = shopName;
+	public void setItems(List<ItemsItem> items){
+		this.items = items;
 	}
 
-	public String getShopName(){
-		return shopName;
+	public List<ItemsItem> getItems(){
+		return items;
 	}
 
-	public void setRequestId(String requestId){
-		this.requestId = requestId;
+	public void setPaymentMethod(String paymentMethod){
+		this.paymentMethod = paymentMethod;
 	}
 
-	public String getRequestId(){
-		return requestId;
+	public String getPaymentMethod(){
+		return paymentMethod;
 	}
 
-	public void setContactNumber(String contactNumber){
-		this.contactNumber = contactNumber;
+	public void setStatus(String status){
+		this.status = status;
 	}
 
-	public String getContactNumber(){
-		return contactNumber;
+	public String getStatus(){
+		return status;
 	}
 
 	public void setUsername(String username){
@@ -122,38 +170,25 @@ public class OrderRequestResponse{
 		return username;
 	}
 
-	public void setOrderItems(List<OrderItemsItem> orderItems){
-		this.orderItems = orderItems;
-	}
-
-	public List<OrderItemsItem> getOrderItems(){
-		return orderItems;
-	}
-
-	public void setUpdatedAt(String updatedAt){
-		this.updatedAt = updatedAt;
-	}
-
-	public String getUpdatedAt(){
-		return updatedAt;
-	}
-
 	@Override
  	public String toString(){
 		return 
 			"OrderRequestResponse{" + 
-			"request_status = '" + requestStatus + '\'' + 
-			",customer_address = '" + customerAddress + '\'' + 
-			",createdAt = '" + createdAt + '\'' + 
+			"customer_address = '" + customerAddress + '\'' + 
+			",note = '" + note + '\'' + 
+			",origin = '" + origin + '\'' + 
 			",invoice_no = '" + invoiceNo + '\'' + 
-			",order_total = '" + orderTotal + '\'' + 
-			",_id = '" + id + '\'' + 
+			",created_at = '" + createdAt + '\'' + 
 			",shop_name = '" + shopName + '\'' + 
-			",request_id = '" + requestId + '\'' + 
 			",contact_number = '" + contactNumber + '\'' + 
+			",shop_slug = '" + shopSlug + '\'' + 
+			",updated_at = '" + updatedAt + '\'' + 
+			",order_total = '" + orderTotal + '\'' + 
+			",id = '" + id + '\'' + 
+			",items = '" + items + '\'' + 
+			",payment_method = '" + paymentMethod + '\'' + 
+			",status = '" + status + '\'' + 
 			",username = '" + username + '\'' + 
-			",order_items = '" + orderItems + '\'' + 
-			",updatedAt = '" + updatedAt + '\'' + 
 			"}";
 		}
 }

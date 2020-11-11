@@ -429,7 +429,7 @@ public interface IApiClient {
 
     // order apis
 
-    @POST(UrlUtils.BASE_URL + "custom/order/create/")
+    @POST(UrlUtils.DOMAIN + "order-request-go/api/v1/order-requests/place-order")
     Call<JsonObject> placeOrder(@Header("Authorization") String token, @Body JsonObject body);
 
     @GET(UrlUtils.BASE_URL + "custom/orders/{invoiceNo}/")
@@ -440,10 +440,8 @@ public interface IApiClient {
     Call<CommonDataResponse<OrderDetailsModel>> updateOrderAddress(@Header("Authorization") String token,
                                                                    @Body UpdateOrderAddressRequest body);
 
-
     @GET(UrlUtils.BASE_URL + "orders/histories/{invoiceNo}/")
     Call<JsonObject> getOrderHistories(@Header("Authorization") String token, @Path("invoiceNo") String invoiceNo);
-
 
     // gift card
 
