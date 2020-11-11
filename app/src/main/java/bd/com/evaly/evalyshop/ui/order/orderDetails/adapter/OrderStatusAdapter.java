@@ -40,7 +40,8 @@ public class OrderStatusAdapter extends RecyclerView.Adapter<OrderStatusAdapter.
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         String str = orderStatuses.get(i).getStatus();
 
-        String statusDate = orderStatuses.get(i).getTime().replaceAll("\\.\\d*Z", "Z");
+        orderStatuses.get(i).setTime(orderStatuses.get(i).getTime() + "Z");
+        String statusDate = orderStatuses.get(i).getTime().replaceAll("\\.\\d*Z", "Z").replace("ZZ", "Z");
         myViewHolder.time.setText(Utils.formattedDateFromString("yyyy-MM-dd'T'HH:mm:ss'Z'", "d MMM'\n'hh:mm a", statusDate));
         myViewHolder.status.setText(String.format("%s%s", str.substring(0, 1).toUpperCase(), str.substring(1)));
         myViewHolder.note.setText(Html.fromHtml(orderStatuses.get(i).getNote()));

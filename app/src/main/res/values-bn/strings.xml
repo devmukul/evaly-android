@@ -61,9 +61,11 @@
     <string name="i_agree_to_the_privacy_policy_and_terms_amp_conditions_of_evaly">আমি ইভ্যালি গোপনীয়তা নীতি এবং শর্তাবলীর সাথে সম্মত</string>
     <string name="already_have_an_account">ইতিমধ্যে আপনার একাউন্ট আছে?</string>
     <string name="recent_transactions">সাম্প্রতিক পেমেন্ট</string>
+    <string name="check_account">একাউন্ট দেখুন</string>
     <string name="orders">অর্ডার</string>
     <string name="notifications">নোটিফিকেশন</string>
     <string name="transaction_history">পেমেন্ট হিস্ট্রি</string>
+    <string name="edit_personal_info">ব্যক্তিগত তথ্য পরিবর্তন</string>
     <string name="sku">SKU</string>
     <string name="description">বিবরণ</string>
     <string name="specifications">সবিস্তার বিবরণী</string>
@@ -73,6 +75,7 @@
     <string name="comments">মন্তব্য</string>
     <string name="status_text">স্ট্যাটাস লিখুন...</string>
     <string name="write_your_comment">আপনার মন্তব্য লিখুন ...</string>
+    <string name="create_a_status">স্ট্যাটাস তৈরি করুন</string>
     <string name="write_your_thoughts_here">এখানে লিখুন...</string>
     <string name="add_photo">ছবি জগকরুন</string>
     <string name="share">শেয়ার করুন</string>
@@ -142,6 +145,7 @@
     <string name="search_categories">ক্যাটাগরি অনুসন্ধান করুন</string>
     <string name="show_more">আরো দেখুন</string>
     <string name="no_post_yet">কোন পোস্ট নেই</string>
+    <string name="no_orders_found">কোন অর্ডার নেই</string>
     <string name="location">অবস্থান</string>
     <string name="delivery">ডেলিভারি</string>
     <string name="categories">বিভাগ</string>
@@ -157,6 +161,7 @@
     <string name="order_date">অর্ডারের তারিখ</string>
     <string name="applicable_date">প্রযোজ্য তারিখ</string>
     <string name="issue_type">সমস্যার ধরণ</string>
+    <string name="description_cap">বিবরণ</string>
     <string name="write_your_issue_here">এখানে আপনার সমস্যা লিখুন</string>
     <string name="share_to_newsfeed">নিউজফীডে শেয়ার করুন</string>
     <string name="no_gift_cards_available_at_this_moment">এখন কোনো গিফট কার্ড নেই</string>
@@ -188,6 +193,9 @@
     <string name="favorite_shops">প্রিয় দোকান</string>
     <string name="vouchers">ভাউচার</string>
     <string name="contact_us_short">যোগাযোগ করুন</string>
+    <string name="announcement_cap">ঘোষণা</string>
+    <string name="ceo_cap">সিইও</string>
+    <string name="my_post">আমার পোষ্ট</string>
     <string name="login_to_comment">মন্তব্য করতে আপনাকে লগইন করতে হবে</string>
     <string name="photo_comment_disabled">ফটো কমেন্ট এখন বন্ধ আছে</string>
     <string name="comment_create_error_message">কমেন্ট করা সম্ভব হয়নি। পরে আবার চেষ্টা করুন।</string>
@@ -222,4 +230,12 @@
     <string name="stock_colon_available">স্টকে আছে</string>
     <string name="stock_color_contact_seller">বিক্রেতার সাথে যোগাযোগ করুন</string>
     <string name="networkError" translatable="false">কোন ইন্টারনেট সংযোগ পাওয়া যায়নি। দয়া করে আপনার নেটওয়ার্ক সেটিংস চেক করুন।</string>
+    <string name="profile">প্রোফাইল</string>
+    <string name="check_balance">ব্যালেন্স চেক করুন</string>
+    <string name="more">আরও</string>
+    <string name="account">একাউন্ট</string>
+    <string name="appointments">অপ্পইন্টমেন্টস</string>
+    <string name="create_appointment">অ্যাপয়েন্টমেন্ট তৈরি করুন</string>
+    <string name="time_slot">সময় স্লট</string>
+    <string name="order_requests">অর্ডার রিকোয়েস্ট</string>
 </resources>

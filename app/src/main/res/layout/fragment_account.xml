@@ -12,9 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/fff"
-        app:navigationIcon="@drawable/ic_arrow_back"
         app:menu="@menu/dashboard_menu"
-        app:title="Account" />
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="@string/account" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -27,7 +27,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusableInTouchMode="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="40dp">
 
             <LinearLayout
                 android:layout_width="match_parent"

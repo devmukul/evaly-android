@@ -229,8 +229,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         } else if (method.getName().equalsIgnoreCase(Constants.CARD)) {
             Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
             viewModel.payViaCard(invoice_no, enteredAmount);
-        }
-        if (method.getName().equalsIgnoreCase(Constants.NAGAD)) {
+        } else if (method.getName().equalsIgnoreCase(Constants.NAGAD)) {
             Toast.makeText(getContext(), "Opening to Nagad gateway!", Toast.LENGTH_SHORT).show();
             viewModel.payViaNagad(invoice_no, enteredAmount);
         } else {

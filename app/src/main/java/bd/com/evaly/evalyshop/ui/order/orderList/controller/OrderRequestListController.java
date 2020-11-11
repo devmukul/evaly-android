@@ -27,7 +27,7 @@ public class OrderRequestListController extends EpoxyController {
             new OrderRequestListModel_()
                     .id(item.toString())
                     .model(item)
-                    .clickListener((model, parentView, clickedView, position) -> clickListener.onClick(model.model().getInvoiceNo()))
+                    // .clickListener((model, parentView, clickedView, position) -> clickListener.onClick(model.model().getInvoiceNo()))
                     .addTo(this);
         }
 

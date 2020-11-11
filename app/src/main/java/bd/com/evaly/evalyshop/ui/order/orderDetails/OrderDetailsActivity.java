@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -30,22 +29,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.badoualy.stepperindicator.StepperIndicator;
 import com.bumptech.glide.Glide;
@@ -71,6 +66,7 @@ import java.util.Random;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.databinding.ActivityOrderDetailsBinding;
 import bd.com.evaly.evalyshop.databinding.BottomSheetCreateIssueBinding;
 import bd.com.evaly.evalyshop.databinding.BottomSheetUpdateOrderAddressBinding;
 import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
@@ -111,68 +107,21 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
 import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
 import bd.evaly.evalypaymentlibrary.model.PurchaseRequestInfo;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class OrderDetailsActivity extends BaseActivity implements PaymentBottomSheet.PaymentOptionListener, PaymentListener {
 
-    @BindView(R.id.hero)
-    ConstraintLayout heroHolder;
-    @BindView(R.id.heroName)
-    TextView heroName;
-    @BindView(R.id.heroPicture)
-    CircleImageView heroPicture;
-    @BindView(R.id.deliveryHeroStatus)
-    TextView heroStatus;
-    @BindView(R.id.confirmDelivery)
-    TextView confirmDelivery;
-    @BindView(R.id.confirmOrder)
-    TextView confirmOrder;
-    @BindView(R.id.btnToggleTimeline)
-    TextView btnToggleTimeline;
-    @BindView(R.id.btnToggleTimelineHolder)
-    LinearLayout btnToggleTimelineHolder;
-    @BindView(R.id.heroCall)
-    ImageView heroCall;
-    @BindView(R.id.updateDeliveryAddress)
-    TextView updateDeliveryAddress;
-
-    @BindView(R.id.vatMessage)
-    TextView tvVatMessage;
-    @BindView(R.id.deliveryChargeText)
-    TextView tvDeliveryChargeText;
-    @BindView(R.id.deliveryChargeHolder)
-    LinearLayout layoutDeliveryChargeHolder;
-    @BindView(R.id.vatHolder)
-    LinearLayout layoutVatHolder;
-    @BindView(R.id.llCashCollect)
-    LinearLayout llCashCollect;
-    @BindView(R.id.tvDeliveryFee)
-    TextView tvDeliveryFee;
-
+    private ActivityOrderDetailsBinding binding;
     private double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
     private String shopSlug = "";
     private String invoice_no = "";
     private String orderStatus = "pending", paymentStatus = "unpaid", paymentMethod = "";
     private StepperIndicator indicator;
-    private TextView tvPaymentStatus, shopName, shopAddress, shopnumber, username, userAddress, userNumber, totalPriceTextView, paidAmountTextView, duePriceTextView, tvCampaignRule;
-    private TextView orderNumber, orderDate, paymentMethods, balance;
-    private RecyclerView recyclerView, orderList;
     private ArrayList<OrderStatus> orderStatuses;
     private OrderStatusAdapter adapter;
     private ArrayList<OrderDetailsProducts> orderDetailsProducts;
     private OrderDetailsProductAdapter orderDetailsProductAdapter;
     private ViewDialog dialog;
-    private TextView makePayment, payParially, full_or_partial;
-    private RelativeLayout shopInfo;
-    private TextView payViaGiftCard;
-    private LinearLayout layoutBottomSheet, campaignRuleHolder;
     private BottomSheetDialog bottomSheetDialog;
-    private Context context;
-    private TextView cancelBtn;
-    private NestedScrollView scrollView;
     private String imageUrl;
     private MenuItem cancelMenuItem;
     private MenuItem refundMenuItem;
@@ -231,8 +180,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_details);
-        ButterKnife.bind(this);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_order_details);
         // For Payment Listener
 
         viewModel = new ViewModelProvider(this).get(OrderDetailsViewModel.class);
@@ -242,48 +190,28 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setTitle(R.string.order_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        context = this;
-        tvPaymentStatus = findViewById(R.id.paymentStatus);
-        cancelBtn = findViewById(R.id.cancelBtn);
-        campaignRuleHolder = findViewById(R.id.campaignRuleHolder);
-        tvCampaignRule = findViewById(R.id.tvCampaignRule);
-        full_or_partial = findViewById(R.id.full_or_partial);
-        scrollView = findViewById(R.id.scroll);
-        shopName = findViewById(R.id.billfromName);
-        shopAddress = findViewById(R.id.billfromAddress);
-        shopnumber = findViewById(R.id.billfromPhone);
-        username = findViewById(R.id.billtoName1);
-        userAddress = findViewById(R.id.billtoAddress1);
-        userNumber = findViewById(R.id.billtoPhone);
-        totalPriceTextView = findViewById(R.id.total_price);
-        paidAmountTextView = findViewById(R.id.paid_amount);
-        duePriceTextView = findViewById(R.id.due_price);
-        orderNumber = findViewById(R.id.order_id);
-        orderNumber.setText(invoice_no);
-        orderDate = findViewById(R.id.order_date);
-        paymentMethods = findViewById(R.id.payment_method);
-        recyclerView = findViewById(R.id.recycle);
-        balance = findViewById(R.id.balance);
-        orderList = findViewById(R.id.product_list);
-        shopInfo = findViewById(R.id.shop_info);
+
+        binding.orderId.setText(invoice_no);
+
+
         LinearLayoutManager manager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(manager);
-        orderList.setLayoutManager(new LinearLayoutManager(this));
+        binding.recycle.setLayoutManager(manager);
+        binding.productList.setLayoutManager(new LinearLayoutManager(this));
         orderStatuses = new ArrayList<>();
         adapter = new OrderStatusAdapter(orderStatuses, this);
-        recyclerView.setAdapter(adapter);
+        binding.recycle.setAdapter(adapter);
         orderDetailsProducts = new ArrayList<>();
         orderDetailsProductAdapter = new OrderDetailsProductAdapter(this, orderDetailsProducts);
-        orderList.setAdapter(orderDetailsProductAdapter);
+        binding.productList.setAdapter(orderDetailsProductAdapter);
 
-        scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+        binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (scrollY == 0)
                 getSupportActionBar().setElevation(0);
             else
                 getSupportActionBar().setElevation(4f);
         });
 
-        shopInfo.setOnClickListener(v -> {
+        binding.shopInfo.setOnClickListener(v -> {
             Intent intent = new Intent(OrderDetailsActivity.this, MainActivity.class);
             intent.putExtra("type", 3);
             intent.putExtra("shop_slug", shopSlug);
@@ -294,13 +222,13 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             invoice_no = extras.getString("orderID");
-            orderNumber.setText("#" + invoice_no);
+            binding.orderId.setText("#" + invoice_no);
             getOrderDetails();
 //
 //            if (extras.containsKey("show_cod_confirmation_dialog"))
 //                showCodConfirmationDialog();
         }
-        balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(CredentialManager.getBalance()) + "</b>"));
+        binding.balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(CredentialManager.getBalance()) + "</b>"));
 
         getOrderHistory();
 
@@ -310,10 +238,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         dialog = new ViewDialog(this);
         dialog.showDialog();
 
-        makePayment = findViewById(R.id.makePayment);
-        payParially = findViewById(R.id.payPartially);
-
-        makePayment.setOnClickListener(v -> {
+        binding.makePayment.setOnClickListener(v -> {
             if (orderDetailsModel == null || orderDetailsModel.getAllowed_payment_methods() == null) {
                 ToastUtils.show("Cash on delivery only");
                 return;
@@ -324,28 +249,34 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
 
-//        confirmOrder.setOnClickListener(view -> new AlertDialog.Builder(OrderDetailsActivity.this)
+//        binding.confirmOrder.setOnClickListener(view -> new AlertDialog.Builder(OrderDetailsActivity.this)
 //                .setTitle("Do you want to confirm this order for Cash On Delivery?")
 //                .setPositiveButton("Yes", (dialogInterface, i) -> makeCashOnDelivery(invoice_no)).setNegativeButton("NO", null)
 //                .show());
 
-        btnToggleTimeline.setOnClickListener(v -> {
+        binding.btnToggleTimeline.setOnClickListener(v -> {
             if (adapter.isShowAll()) {
                 adapter.setShowAll(false);
-                btnToggleTimeline.setText("Show All");
+                binding.btnToggleTimeline.setText("Show All");
             } else {
                 adapter.setShowAll(true);
-                btnToggleTimeline.setText("Show Less");
+                binding.btnToggleTimeline.setText("Show Less");
             }
             adapter.notifyDataSetChanged();
         });
 
-        payViaGiftCard = findViewById(R.id.payViaGiftCard);
-        payViaGiftCard.setOnClickListener(view -> dialogGiftCardPayment());
+        binding.payViaGiftCard.setOnClickListener(view -> dialogGiftCardPayment());
 
         getDeliveryHero();
-        confirmDelivery.setOnClickListener(v -> confirmDeliveryDialog());
+        binding.confirmDelivery.setOnClickListener(v -> confirmDeliveryDialog());
         liveEvents();
+        clickListeners();
+    }
+
+    private void clickListeners() {
+        binding.updateDeliveryAddress.setOnClickListener(view -> updateDeliveryAddressDialog());
+        binding.tvViewIssue.setOnClickListener(view -> viewIssues());
+        binding.tvReport.setOnClickListener(view -> report());
     }
 
     private void liveEvents() {
@@ -375,7 +306,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     private void showCodConfirmationDialog() {
 
-        BottomSheetDialog dialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
+        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.bottom_sheet_cod_confirmation);
 
@@ -520,7 +451,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
 
     @SuppressLint("DefaultLocale")
-    @OnClick(R.id.updateDeliveryAddress)
     void updateDeliveryAddressDialog() {
         BottomSheetDialog dialog = new BottomSheetDialog(OrderDetailsActivity.this, R.style.BottomSheetDialogTheme);
         final BottomSheetUpdateOrderAddressBinding dialogBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.bottom_sheet_update_order_address, null, false);
@@ -535,7 +465,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             body.setAddress(dialogBinding.address.getText().toString().trim());
             body.setInvoiceNo(invoice_no);
 
-            new AlertDialog.Builder(context)
+            new AlertDialog.Builder(this)
                     .setCancelable(false)
                     .setMessage("Are you sure you want to change delivery address?")
                     .setPositiveButton(android.R.string.yes, (dialog1, which) -> {
@@ -591,7 +521,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     }
 
-    @OnClick(R.id.tvViewIssue)
     void viewIssues() {
         startActivity(new Intent(OrderDetailsActivity.this, IssuesActivity.class).putExtra("invoice", invoice_no));
     }
@@ -604,7 +533,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         return null;
     }
 
-    @OnClick(R.id.tvReport)
     void report() {
         IssueCreateBody model = new IssueCreateBody();
         bottomSheetDialog = new BottomSheetDialog(OrderDetailsActivity.this, R.style.BottomSheetDialogTheme);
@@ -762,10 +690,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             } else
                 description = dialogBinding.etDescription.getText().toString();
 
-            if (description.length() == 0) {
-                ToastUtils.show("Please enter description");
-            }
-
             model.setAdditionalInfo(description);
             dialog.showDialog();
             submitIssue(model, bottomSheetDialog);
@@ -879,16 +803,16 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         OrderApiHelper.getDeliveryHero(invoice_no, new ResponseListenerAuth<DeliveryHeroResponse, String>() {
             @Override
             public void onDataFetched(DeliveryHeroResponse response, int statusCode) {
-                heroHolder.setVisibility(View.VISIBLE);
-                heroName.setText(String.format("%s %s", response.getData().getUser().getFirstName(), response.getData().getUser().getLastName()));
+                binding.hero.setVisibility(View.VISIBLE);
+                binding.heroName.setText(String.format("%s %s", response.getData().getUser().getFirstName(), response.getData().getUser().getLastName()));
 
                 if (!isFinishing() && !isDestroyed())
                     Glide.with(OrderDetailsActivity.this)
                             .load(response.getData().getUser().getProfilePicUrl())
                             .placeholder(R.drawable.user_image)
-                            .into(heroPicture);
+                            .into(binding.heroPicture);
 
-                heroCall.setOnClickListener(v -> {
+                binding.heroCall.setOnClickListener(v -> {
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(Uri.parse("tel:" + response.getData().getUser().getContact()));
                     startActivity(intent);
@@ -897,7 +821,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-                heroHolder.setVisibility(View.GONE);
+                binding.hero.setVisibility(View.GONE);
 
             }
 
@@ -991,7 +915,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     private void giftCardSuccessDialog() {
 
-        new AlertDialog.Builder(context)
+        new AlertDialog.Builder(this)
                 .setCancelable(false)
                 .setMessage("Thank you for your payment. We are updating your order and you will be notified soon. If your order is not updated, please contact us.")
 
@@ -1008,8 +932,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     public void updatePage() {
-        scrollView.postDelayed(() -> scrollView.fullScroll(View.FOCUS_UP), 50);
-        Balance.update(this, balance);
+        binding.scroll.postDelayed(() -> binding.scroll.fullScroll(View.FOCUS_UP), 50);
+        Balance.update(this, binding.balance);
         getOrderHistory();
         getOrderDetails();
     }
@@ -1029,7 +953,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
             Uri selectedImage = data.getData();
-            String imagePath = RealPathUtil.getRealPath(context, selectedImage);
+            String imagePath = RealPathUtil.getRealPath(this, selectedImage);
             Log.d("json image uri", imagePath);
 
             try {
@@ -1120,69 +1044,69 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 paymentStatus = response.getPaymentStatus();
 
                 if (paymentStatus.toLowerCase().equals("refund_requested"))
-                    tvPaymentStatus.setText("Refund Requested");
+                    binding.paymentStatus.setText("Refund Requested");
                 else
-                    tvPaymentStatus.setText(Utils.toFirstCharUpperAll(paymentStatus));
+                    binding.paymentStatus.setText(Utils.toFirstCharUpperAll(paymentStatus));
 
                 if (paymentStatus.toLowerCase().equals("paid")) {
-                    tvPaymentStatus.setBackgroundColor(Color.parseColor("#33d274"));
-                    tvPaymentStatus.setTextColor(Color.parseColor("#ffffff"));
+                    binding.paymentStatus.setBackgroundColor(Color.parseColor("#33d274"));
+                    binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
                 } else if (paymentStatus.toLowerCase().equals("unpaid")) {
-                    tvPaymentStatus.setBackgroundColor(Color.parseColor("#f0ac4e"));
-                    tvPaymentStatus.setTextColor(Color.parseColor("#ffffff"));
+                    binding.paymentStatus.setBackgroundColor(Color.parseColor("#f0ac4e"));
+                    binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
                 } else if (paymentStatus.toLowerCase().equals("partial")) {
-                    tvPaymentStatus.setBackgroundColor(Color.parseColor("#009688"));
-                    tvPaymentStatus.setTextColor(Color.parseColor("#ffffff"));
+                    binding.paymentStatus.setBackgroundColor(Color.parseColor("#009688"));
+                    binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
                 } else if (paymentStatus.toLowerCase().equals("refunded")) {
-                    tvPaymentStatus.setTextColor(Color.parseColor("#333333"));
-                    tvPaymentStatus.setBackgroundColor(Color.parseColor("#eeeeee"));
+                    binding.paymentStatus.setTextColor(Color.parseColor("#333333"));
+                    binding.paymentStatus.setBackgroundColor(Color.parseColor("#eeeeee"));
                     viewModel.checkRefundEligibility(invoice_no);
                 } else if (paymentStatus.toLowerCase().equals("refund_requested")) {
-                    tvPaymentStatus.setBackgroundColor(Color.parseColor("#c45da8"));
-                    tvPaymentStatus.setTextColor(Color.parseColor("#ffffff"));
+                    binding.paymentStatus.setBackgroundColor(Color.parseColor("#c45da8"));
+                    binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
                 }
 
-                heroStatus.setText("Assigned for delivery");
+                binding.deliveryHeroStatus.setText("Assigned for delivery");
 
                 if (orderStatus.equals("pending")) {
-                    updateDeliveryAddress.setVisibility(View.VISIBLE);
+                    binding.updateDeliveryAddress.setVisibility(View.VISIBLE);
                     indicator.setCurrentStep(1);
                 } else if (orderStatus.equals("confirmed")) {
-                    updateDeliveryAddress.setVisibility(View.VISIBLE);
+                    binding.updateDeliveryAddress.setVisibility(View.VISIBLE);
                     indicator.setCurrentStep(2);
                 } else if (orderStatus.equals("processing")) {
-                    updateDeliveryAddress.setVisibility(View.VISIBLE);
+                    binding.updateDeliveryAddress.setVisibility(View.VISIBLE);
                     indicator.setCurrentStep(3);
                 } else if (orderStatus.equals("picked")) {
-                    updateDeliveryAddress.setVisibility(View.GONE);
+                    binding.updateDeliveryAddress.setVisibility(View.GONE);
                     indicator.setCurrentStep(4);
-                    heroStatus.setText("Picked the order for delivery");
+                    binding.deliveryHeroStatus.setText("Picked the order for delivery");
                 } else if (orderStatus.equals("shipped")) {
-                    updateDeliveryAddress.setVisibility(View.GONE);
+                    binding.updateDeliveryAddress.setVisibility(View.GONE);
                     indicator.setCurrentStep(5);
-                    heroStatus.setText("Picked the order for delivery");
-                    updateDeliveryAddress.setVisibility(View.GONE);
+                    binding.deliveryHeroStatus.setText("Picked the order for delivery");
+                    binding.updateDeliveryAddress.setVisibility(View.GONE);
                 } else if (orderStatus.equals("delivered")) {
                     indicator.setCurrentStep(6);
-                    heroStatus.setText("Delivered the products");
+                    binding.deliveryHeroStatus.setText("Delivered the products");
                 }
 
                 if (orderDetailsModel.isApplyDeliveryCharge() && !orderDetailsModel.getOrderStatus().equalsIgnoreCase("delivered")) {
-                    llCashCollect.setVisibility(View.VISIBLE);
-                    tvDeliveryFee.setText(Html.fromHtml("Please Pay Delivery Fee <b>৳" + orderDetailsModel.getDeliveryCharge() + "</b> Cash to Delivery Hero."));
+                    binding.llCashCollect.setVisibility(View.VISIBLE);
+                    binding.tvDeliveryFee.setText(Html.fromHtml("Please Pay Delivery Fee <b>৳" + orderDetailsModel.getDeliveryCharge() + "</b> Cash to Delivery Hero."));
                 } else {
-                    llCashCollect.setVisibility(View.GONE);
+                    binding.llCashCollect.setVisibility(View.GONE);
                 }
 
                 if (orderStatus.equals("shipped") && paymentStatus.equals("paid"))
-                    confirmDelivery.setVisibility(View.VISIBLE);
+                    binding.confirmDelivery.setVisibility(View.VISIBLE);
                 else
-                    confirmDelivery.setVisibility(View.GONE);
+                    binding.confirmDelivery.setVisibility(View.GONE);
 
                 if (!response.isDeliveryConfirmed() && response.isDeliveryConfirmationRequired())
                     deliveryConfirmationDialog();
 
-                orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getDate()));
+                binding.orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getDate()));
 
 
                 try {
@@ -1203,18 +1127,18 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     }
 
                     if ((secondDate != null && secondDate.after(firstDate)) && check) {
-                        layoutVatHolder.setVisibility(View.VISIBLE);
-                        layoutDeliveryChargeHolder.setVisibility(View.VISIBLE);
+                        binding.vatHolder.setVisibility(View.VISIBLE);
+                        binding.deliveryChargeHolder.setVisibility(View.VISIBLE);
                         if (deliveryChargeText != null)
-                            tvDeliveryChargeText.setText(deliveryChargeText.replaceAll(" will be", ""));
+                            binding.deliveryChargeText.setText(deliveryChargeText.replaceAll(" will be", ""));
                     } else {
-                        layoutVatHolder.setVisibility(View.GONE);
-                        layoutDeliveryChargeHolder.setVisibility(View.GONE);
+                        binding.vatHolder.setVisibility(View.GONE);
+                        binding.deliveryChargeHolder.setVisibility(View.GONE);
                     }
 
                 } catch (Exception e) {
-                    layoutVatHolder.setVisibility(View.GONE);
-                    layoutDeliveryChargeHolder.setVisibility(View.GONE);
+                    binding.vatHolder.setVisibility(View.GONE);
+                    binding.deliveryChargeHolder.setVisibility(View.GONE);
                 }
 
                 if (response.getOrderStatus().toLowerCase().equals("cancel")) {
@@ -1223,84 +1147,84 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     indicatorCancelled.setCurrentStep(6);
                     indicator.setDoneIcon(getDrawable(R.drawable.ic_close_smallest));
                     indicator.setVisibility(View.GONE);
-                    makePayment.setVisibility(View.GONE);
-                    confirmOrder.setVisibility(View.GONE);
-                    payParially.setVisibility(View.GONE);
-                    payViaGiftCard.setVisibility(View.GONE);
+                    binding.makePayment.setVisibility(View.GONE);
+                    binding.confirmOrder.setVisibility(View.GONE);
+                    binding.payPartially.setVisibility(View.GONE);
+                    binding.payViaGiftCard.setVisibility(View.GONE);
                 } else if (response.getOrderStatus().toLowerCase().equals("delivered") || response.getPaymentStatus().toLowerCase().equals("refund_requested") || response.getOrderStatus().toLowerCase().equals("processing") || response.getOrderStatus().toLowerCase().equals("picked") || response.getOrderStatus().toLowerCase().equals("shipped")) {
-                    makePayment.setVisibility(View.GONE);
-                    payParially.setVisibility(View.GONE);
-                    confirmOrder.setVisibility(View.GONE);
-                    payViaGiftCard.setVisibility(View.GONE);
+                    binding.makePayment.setVisibility(View.GONE);
+                    binding.payPartially.setVisibility(View.GONE);
+                    binding.confirmOrder.setVisibility(View.GONE);
+                    binding.payViaGiftCard.setVisibility(View.GONE);
                 } else {
-                    confirmOrder.setVisibility(View.GONE);
+                    binding.confirmOrder.setVisibility(View.GONE);
                     if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().length > 0) {
-                        makePayment.setVisibility(View.VISIBLE);
-                        payParially.setVisibility(View.GONE);
-                        payViaGiftCard.setVisibility(View.GONE);
+                        binding.makePayment.setVisibility(View.VISIBLE);
+                        binding.payPartially.setVisibility(View.GONE);
+                        binding.payViaGiftCard.setVisibility(View.GONE);
                         for (int i = 0; i < response.getAllowed_payment_methods().length; i++) {
                             if (response.getAllowed_payment_methods()[i].equalsIgnoreCase("gift_code")) {
-                                payViaGiftCard.setVisibility(View.VISIBLE);
+                                binding.payViaGiftCard.setVisibility(View.VISIBLE);
                             }
                         }
                     } else {
-                        makePayment.setVisibility(View.GONE);
-                        payParially.setVisibility(View.GONE);
-                        payViaGiftCard.setVisibility(View.GONE);
+                        binding.makePayment.setVisibility(View.GONE);
+                        binding.payPartially.setVisibility(View.GONE);
+                        binding.payViaGiftCard.setVisibility(View.GONE);
                     }
 
                 }
 
-                username.setText(String.format("%s %s", response.getCustomer().getFirstName(), response.getCustomer().getLastName()));
-                userAddress.setText(response.getCustomerAddress());
-                userNumber.setText(response.getContactNumber());
-                totalPriceTextView.setText(String.format("৳ %s", Utils.formatPrice(response.getTotal())));
-                paidAmountTextView.setText(String.format("৳ %s", Utils.formatPrice(response.getPaidAmount())));
-                duePriceTextView.setText(String.format(Locale.ENGLISH, "৳ %s", Utils.formatPrice((Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount())))));
+                binding.billtoName1.setText(String.format("%s %s", response.getCustomer().getFirstName(), response.getCustomer().getLastName()));
+                binding.billtoAddress1.setText(response.getCustomerAddress());
+                binding.billtoPhone.setText(response.getContactNumber());
+                binding.totalPrice.setText(String.format("৳ %s", Utils.formatPrice(response.getTotal())));
+                binding.paidAmount.setText(String.format("৳ %s", Utils.formatPrice(response.getPaidAmount())));
+                binding.duePrice.setText(String.format(Locale.ENGLISH, "৳ %s", Utils.formatPrice((Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount())))));
 
                 if (response.getCustomerNote() != null && !response.getCustomerNote().equals("")) {
-                    tvCampaignRule.setText(response.getCustomerNote());
-                    campaignRuleHolder.setVisibility(View.VISIBLE);
+                    binding.tvCampaignRule.setText(response.getCustomerNote());
+                    binding.campaignRuleHolder.setVisibility(View.VISIBLE);
                 } else
-                    campaignRuleHolder.setVisibility(View.GONE);
+                    binding.campaignRuleHolder.setVisibility(View.GONE);
 
                 String payMethod = response.getPaymentMethod();
 
                 if (payMethod.equals("cod"))
-                    paymentMethods.setText("Cash on Delivery");
+                    binding.paymentMethod.setText("Cash on Delivery");
                 else if (payMethod.equals(""))
-                    paymentMethods.setVisibility(View.GONE);
+                    binding.paymentMethod.setVisibility(View.GONE);
                 else {
 
                     payMethod = payMethod.replaceAll("card", "Card");
-                    payMethod = payMethod.replaceAll("balance", "Evaly Account");
+                    payMethod = payMethod.replaceAll("binding.balance", "Evaly Account");
                     payMethod = payMethod.replaceAll("bank", "Bank Account");
                     payMethod = payMethod.replaceAll("gift_code", "Gift Code");
                     payMethod = payMethod.replaceAll(",", ", ");
                     payMethod = payMethod.replaceAll("  ", " ");
 
-                    paymentMethods.setText(Utils.capitalize(payMethod));
+                    binding.paymentMethod.setText(Utils.capitalize(payMethod));
                 }
 
-                shopName.setText(response.getShop().getName());
+                binding.billfromName.setText(response.getShop().getName());
                 shopSlug = response.getShop().getSlug();
-                shopAddress.setText(response.getShop().getAddress());
-                shopnumber.setText(response.getShop().getContactNumber());
+                binding.billfromAddress.setText(response.getShop().getAddress());
+                binding.billfromPhone.setText(response.getShop().getContactNumber());
 
                 total_amount = Math.round(Double.parseDouble(response.getTotal()));
                 paid_amount = Math.round(Double.parseDouble(response.getPaidAmount()));
                 due_amount = total_amount - paid_amount;
 
                 if (due_amount < 1) {
-                    makePayment.setVisibility(View.GONE);
-                    payParially.setVisibility(View.GONE);
-                    payViaGiftCard.setVisibility(View.GONE);
+                    binding.makePayment.setVisibility(View.GONE);
+                    binding.payPartially.setVisibility(View.GONE);
+                    binding.payViaGiftCard.setVisibility(View.GONE);
                 }
 
                 if (response.getCampaignRules().size() > 0) {
                     try {
                         if (response.getCampaignRules().get(0).getAsJsonObject().get("category").getAsJsonObject().get("slug").getAsString().equals("pod-1ce6180b") && orderStatus.equals("pending"))
-                            makePayment.setVisibility(View.GONE);
+                            binding.makePayment.setVisibility(View.GONE);
                     } catch (Exception ignore) {
 
                     }
@@ -1359,7 +1283,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     public void cancelOrder() {
 
-        BottomSheetDialog dialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
+        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.bottom_sheet_cancel_order);
@@ -1385,7 +1309,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 @Override
                 public void onDataFetched(JsonObject response, int statusCode) {
                     updatePage();
-                    cancelBtn.setVisibility(View.GONE);
+                    binding.cancelBtn.setVisibility(View.GONE);
                     if (dialog.isShowing())
                         dialog.dismiss();
                 }
@@ -1428,9 +1352,9 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 }
 
                 if (list.size() > 4)
-                    btnToggleTimelineHolder.setVisibility(View.VISIBLE);
+                    binding.btnToggleTimelineHolder.setVisibility(View.VISIBLE);
                 else
-                    btnToggleTimelineHolder.setVisibility(View.GONE);
+                    binding.btnToggleTimelineHolder.setVisibility(View.GONE);
             }
 
             @Override
