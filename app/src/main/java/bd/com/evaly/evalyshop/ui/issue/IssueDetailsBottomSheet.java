@@ -97,7 +97,9 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
 
         loadReplies();
 
-        if (issueModel.getStatus().equalsIgnoreCase("closed") || issueModel.getStatus().equalsIgnoreCase("resolved"))
+        if (issueModel.getStatus().equalsIgnoreCase("closed") ||
+                issueModel.getStatus().equalsIgnoreCase("resolved") ||
+                issueModel.getStatus().equalsIgnoreCase("rejected"))
             binding.commentHolder.setVisibility(View.GONE);
 
     }
@@ -259,7 +261,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
             binding.tvIssueStatus.setBackgroundColor(Color.parseColor("#33d274"));
         }
 
-        if (postModel.getStatus().equals("resolved"))
+        if (postModel.getStatus().equals("resolved") || postModel.getStatus().equals("rejected"))
             binding.tvResolveIssueHolder.setVisibility(View.GONE);
         else
             binding.tvResolveIssueHolder.setVisibility(View.VISIBLE);
@@ -273,13 +275,11 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         });
 
         binding.tvResolveIssue.setOnClickListener(view -> {
-
             new AlertDialog.Builder(getContext())
                     .setMessage("Are you sure you want to mark this ticket as solved?")
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setPositiveButton("YES", (dialog, whichButton) -> resolveIssue())
                     .setNegativeButton("NO", null).show();
-
         });
     }
 
@@ -307,6 +307,4 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         });
         return bottomSheetDialog;
     }
-
-
 }

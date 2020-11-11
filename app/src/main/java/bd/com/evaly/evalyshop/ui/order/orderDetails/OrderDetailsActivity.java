@@ -596,6 +596,14 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         startActivity(new Intent(OrderDetailsActivity.this, IssuesActivity.class).putExtra("invoice", invoice_no));
     }
 
+    private IssueCategoryModel getCategoryModelByName(String name) {
+        for (IssueCategoryModel item : categoryList) {
+            if (item.getName().equals(name))
+                return item;
+        }
+        return null;
+    }
+
     @OnClick(R.id.tvReport)
     void report() {
         IssueCreateBody model = new IssueCreateBody();
@@ -612,16 +620,17 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         IssueApiHelper.getCategories(new ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<IssueCategoryModel>> response, int statusCode) {
-
                 dialog.hideDialog();
-
                 bottomSheetDialog.show();
                 categoryList = response.getData();
                 for (IssueCategoryModel item : categoryList) {
-                    options.add(item.getName());
+                    if (orderDetailsModel.getOrderStatus().equals("pending")) {
+                        if (item.getName().equals("Bank Payment") || item.getName().equals("Payment"))
+                            options.add(item.getName());
+                    } else
+                        options.add(item.getName());
                 }
                 adapter.notifyDataSetChanged();
-
             }
 
             @Override
@@ -639,15 +648,14 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         dialogBinding.spnDelivery.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                model.setCategory(categoryList.get(i).getId());
-
-                String catName = categoryList.get(i).getName().toLowerCase();
+                model.setCategory(getCategoryModelByName(options.get(i)).getId());
+                String catName = options.get(i).toLowerCase();
                 if (catName.contains("payment") || catName.contains("bank") || catName.contains("cashback") || catName.contains("return"))
                     model.setPriority("urgent");
                 else
                     model.setPriority("medium");
 
-                String paymentType = categoryList.get(i).getName();
+                String paymentType = getCategoryModelByName(options.get(i)).getName();
                 if (paymentType == null)
                     return;
 
@@ -657,14 +665,15 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 } else if (paymentType.equals("bKash Refund") || paymentType.equals("Nagad Refund")) {
                     dialogBinding.llBkashHolder.setVisibility(View.VISIBLE);
                     dialogBinding.llBankInfoHolder.setVisibility(View.GONE);
-                    dialogBinding.etDescription.setVisibility(View.GONE);
+                    dialogBinding.descriptionHolder.setVisibility(View.GONE);
                 } else if (paymentType.equals("Bank Refund")) {
                     dialogBinding.llBkashHolder.setVisibility(View.GONE);
                     dialogBinding.llBankInfoHolder.setVisibility(View.VISIBLE);
-                    dialogBinding.etDescription.setVisibility(View.GONE);
+                    dialogBinding.descriptionHolder.setVisibility(View.GONE);
                 } else {
                     dialogBinding.llBkashHolder.setVisibility(View.GONE);
                     dialogBinding.llBankInfoHolder.setVisibility(View.GONE);
+                    dialogBinding.descriptionHolder.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -697,7 +706,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             }
 
             int selectedPosition = dialogBinding.spnDelivery.getSelectedItemPosition();
-            String paymentType = categoryList.get(selectedPosition).getName();
+
+            String paymentType = getCategoryModelByName(options.get(selectedPosition)).getName();
 
             String description = "";
 

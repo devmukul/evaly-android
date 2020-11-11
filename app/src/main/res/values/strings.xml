@@ -80,10 +80,8 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="already_have_an_account">Already have an account?</string>
     <string name="sign_in">Sign In</string>
     <string name="recent_transactions">Recent Payments</string>
-    <string name="check_account">Check Account</string>
     <string name="notifications">Notifications</string>
     <string name="transaction_history">Payment History</string>
-    <string name="edit_personal_info">Edit Personal Info</string>
     <string name="change_password">Change Password</string>
     <string name="messages">Messages</string>
     <string name="address">Address</string>
@@ -96,7 +94,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="comments">Comments</string>
     <string name="status_text">Status text...</string>
     <string name="write_your_comment">Write your comment...</string>
-    <string name="create_a_status">Create a status</string>
     <string name="add_photo">Add Photo</string>
     <string name="use_gift_card">Use Gift Card</string>
     <string name="gift_card_code">Gift card code</string>
@@ -156,7 +153,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="shopping_cart">Shopping Cart</string>
     <string name="show_more">SHOW MORE</string>
     <string name="no_post_yet">No post yet</string>
-    <string name="no_orders_found">No orders found</string>
     <string name="call">Call</string>
     <string name="location">Location</string>
     <string name="delivery">Delivery</string>
@@ -176,7 +172,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="amount_bdt">Amount (BDT)</string>
     <string name="choose_payment_method">Choose Payment Method:</string>
     <string name="issue_type">Issue Type</string>
-    <string name="description_cap">DESCRIPTION</string>
     <string name="write_your_issue_here">Write your issue here...</string>
     <string name="share_to_newsfeed">Share to Newsfeed</string>
     <string name="write_your_thoughts_here">Write your thoughts here...</string>
@@ -211,9 +206,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="favorite_shops">Favorite Shops</string>
     <string name="vouchers">Vouchers</string>
     <string name="contact_us_short">Contact Us</string>
-    <string name="announcement_cap">ANNOUNCEMENT</string>
-    <string name="ceo_cap">CEO</string>
-    <string name="my_post">MY POSTS</string>
     <string name="pending">Pending</string>
     <string name="you_need_to_login_to_create_reply">You need to login to reply.</string>
     <string name="photo_reply_is_disabled_now">Photo reply is disabled now.</string>
@@ -371,7 +363,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="dark_mode">Dark Mode</string>
     <string name="profile">Profile</string>
     <string name="check_balance">Check Balance</string>
-    <string name="more">More</string>
     <string name="account">Account</string>
     <string name="appointments">Appointments</string>
     <string name="create_appointment">Create Appointment</string>

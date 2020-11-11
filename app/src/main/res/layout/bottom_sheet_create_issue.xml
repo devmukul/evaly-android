@@ -237,27 +237,34 @@
 
                 </LinearLayout>
 
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:text="@string/description"
-                    android:textColor="@color/c333" />
-
-                <EditText
-                    android:id="@+id/etDescription"
+                <LinearLayout
+                    android:id="@+id/descriptionHolder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/input_bg"
-                    android:gravity="start"
-                    android:hint="@string/write_your_issue_here"
-                    android:minLines="5"
-                    android:padding="15dp"
-                    android:textColor="@color/c555"
-                    android:textColorHint="@color/c777"
-                    android:textSize="16sp" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/description"
+                        android:textColor="@color/c333" />
+
+                    <EditText
+                        android:id="@+id/etDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/input_bg"
+                        android:gravity="start"
+                        android:hint="@string/write_your_issue_here"
+                        android:minLines="5"
+                        android:padding="15dp"
+                        android:textColor="@color/c555"
+                        android:textColorHint="@color/c777"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
 
                 <ImageView
                     android:id="@+id/postImage"
