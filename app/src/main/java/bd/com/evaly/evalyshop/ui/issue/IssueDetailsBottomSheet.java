@@ -255,8 +255,10 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
 
         binding.tvIssueStatus.setText(Utils.toFirstCharUpperAll(postModel.getStatus()));
 
-        if (postModel.getStatus().toLowerCase().equalsIgnoreCase("active")) {
+        if (postModel.getStatus().toLowerCase().equalsIgnoreCase("active") || postModel.getStatus().toLowerCase().equalsIgnoreCase("submitted")) {
             binding.tvIssueStatus.setBackgroundColor(Color.parseColor("#f0ac4e"));
+        } else if (postModel.getStatus().toLowerCase().equalsIgnoreCase("rejected")) {
+            binding.tvIssueStatus.setBackgroundColor(Color.parseColor("#d9534f"));
         } else {
             binding.tvIssueStatus.setBackgroundColor(Color.parseColor("#33d274"));
         }

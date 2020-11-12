@@ -541,7 +541,6 @@ public class CartFragment extends Fragment {
                             } else {
                                 Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
                                 intent.putExtra("orderID", invoice);
-                                intent.putExtra("show_cod_confirmation_dialog", true);
                                 startActivity(intent);
                             }
                         }

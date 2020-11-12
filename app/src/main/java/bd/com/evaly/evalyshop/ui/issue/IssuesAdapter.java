@@ -46,13 +46,15 @@ public class IssuesAdapter extends RecyclerView.Adapter<IssuesAdapter.IssuesView
 
         holder.tvIssueStatus.setText(Utils.toFirstCharUpperAll(model.getStatus()));
 
-        if (model.getStatus().toLowerCase().equalsIgnoreCase("active")) {
+        if (model.getStatus().toLowerCase().equalsIgnoreCase("active") || model.getStatus().toLowerCase().equalsIgnoreCase("submitted")) {
             holder.tvIssueStatus.setBackgroundColor(Color.parseColor("#f0ac4e"));
+        } else if (model.getStatus().toLowerCase().equalsIgnoreCase("rejected")) {
+            holder.tvIssueStatus.setBackgroundColor(Color.parseColor("#d9534f"));
         } else {
             holder.tvIssueStatus.setBackgroundColor(Color.parseColor("#33d274"));
         }
 
-        holder.tvCommentCount.setText(Utils.truncateText(model.getAdditionalInfo(),100, "..."));
+        holder.tvCommentCount.setText(Utils.truncateText(model.getAdditionalInfo(), 100, "..."));
     }
 
     @Override
