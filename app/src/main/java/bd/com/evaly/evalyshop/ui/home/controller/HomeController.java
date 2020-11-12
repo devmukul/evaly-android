@@ -495,19 +495,16 @@ public class HomeController extends EpoxyController {
         this.campaignCategoryList = campaignCategoryList;
     }
 
-    public void addData(List<ProductItem> productItems) {
+    public void setProductData(List<ProductItem> productItems) {
         this.items = productItems;
     }
 
-    public void addExpressData(List<ExpressServiceModel> items) {
-        this.itemsExpress.clear();
-        this.itemsExpress.addAll(items);
-        requestModelBuild();
+    public void setExpressData(List<ExpressServiceModel> items) {
+        this.itemsExpress = items;
     }
 
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
-        requestModelBuild();
     }
 
     public void setExpressLoading(boolean expressLoading) {

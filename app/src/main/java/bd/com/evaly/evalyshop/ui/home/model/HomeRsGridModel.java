@@ -57,11 +57,8 @@ public abstract class HomeRsGridModel extends DataBindingEpoxyModel {
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
-
         HomeModelCarouselGridBinding binding = (HomeModelCarouselGridBinding) holder.getDataBinding();
-
         binding.title.setText(title);
-
         Glide.with(binding.getRoot())
                 .load(image)
                 .apply(new RequestOptions().override(260, 260))
@@ -86,12 +83,9 @@ public abstract class HomeRsGridModel extends DataBindingEpoxyModel {
                           }
                 )
                 .into(binding.image);
-
         if (color != null)
             binding.cardView.setCardBackgroundColor(Color.parseColor(color));
-
         binding.getRoot().setOnClickListener(clickListener);
-
     }
 
     @Override

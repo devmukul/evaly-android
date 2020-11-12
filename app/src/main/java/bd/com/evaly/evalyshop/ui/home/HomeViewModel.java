@@ -207,42 +207,6 @@ public class HomeViewModel extends ViewModel {
         });
     }
 
-//    public void loadShops(int counter) {
-//        ProductApiHelper.getShopsOfCategories("root", counter, 12, new ResponseListenerAuth<JsonObject, String>() {
-//            @Override
-//            public void onDataFetched(JsonObject res, int statusCode) {
-//
-//                JsonArray jsonArray = res.getAsJsonArray("results");
-//
-//                for (int i = 0; i < jsonArray.size(); i++) {
-//                    JsonObject ob = jsonArray.get(i).getAsJsonObject();
-//                    TabsItem tabsItem = new TabsItem();
-//                    tabsItem.setTitle(ob.get("shop_name").getAsString());
-//                    tabsItem.setImage(ob.get("shop_image").isJsonNull() ? null : ob.get("shop_image").getAsString());
-//
-//                    if (slug.equals("root"))
-//                        tabsItem.setSlug(ob.get("slug").getAsString());
-//                    else
-//                        tabsItem.setSlug(ob.get("shop_slug").getAsString());
-//                    tabsItem.setCategory("root");
-//                    shopArrayList.add(tabsItem);
-//                }
-//
-//                shopListLive.setValue(brandArrayList);
-//            }
-//
-//            @Override
-//            public void onFailed(String body, int errorCode) {
-//
-//            }
-//
-//            @Override
-//            public void onAuthError(boolean logout) {
-//
-//            }
-//        });
-//    }
-
 
     public void loadCategories() {
 

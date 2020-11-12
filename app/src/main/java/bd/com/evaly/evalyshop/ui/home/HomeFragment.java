@@ -147,8 +147,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public void loadMoreItem() {
                 if (!isLoading) {
                     viewModel.loadProducts();
-                    homeController.setLoadingMore(true);
                     isLoading = true;
+                    homeController.setLoadingMore(true);
+                    homeController.requestModelBuild();
                 }
             }
         });
@@ -175,14 +176,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         viewModel.getProductListLive().observe(getViewLifecycleOwner(), list -> {
             homeController.setLoadingMore(false);
-            homeController.addData(list);
+            homeController.setProductData(list);
             homeController.requestModelBuild();
             isLoading = false;
         });
 
         viewModel.getExpressListLive().observe(getViewLifecycleOwner(), expressServiceModels -> {
             homeController.setExpressLoading(false);
-            homeController.addExpressData(expressServiceModels);
+            homeController.setExpressData(expressServiceModels);
             homeController.requestModelBuild();
         });
 
