@@ -65,6 +65,7 @@ import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -639,32 +640,26 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 if (response != null && getContext() != null) {
                     String errorMsg = response.get("message").getAsString();
                     Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                    if (statusCode == 201 && response.has("data") && response.getAsJsonArray("data").size() > 0) {
+                    if (response.has("data") && response.getAsJsonArray("data").size() > 0) {
                         JsonArray data = response.getAsJsonArray("data");
                         JsonObject item = data.get(0).getAsJsonObject();
-                        String invoice = item.get("invoice_no").getAsString();
-                        if (getActivity() instanceof MainActivity) {
-                            Bundle bundle = new Bundle();
-                            bundle.putString("invoice_no", invoice);
-                            try {
-                                bundle.putString("shop_slug", item.get("shop").getAsJsonObject().get("slug").getAsString());
-                            } catch (Exception ignored) {
-
+                        String invoice = null;
+                        if (item.has("invoice_no"))
+                            invoice = item.get("invoice_no").getAsString();
+                        if (invoice == null || invoice.equals("")) {
+                            if (getActivity() != null && !getActivity().isFinishing()) {
+                                if (getActivity() instanceof MainActivity && NavHostFragment.findNavController(BuyNowFragment.this) != null)
+                                    NavHostFragment.findNavController(BuyNowFragment.this).navigate(R.id.orderListBaseFragment);
+                                else
+                                    getActivity().startActivity(new Intent(getContext(), OrderListActivity.class));
                             }
-                            Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
-                            intent.putExtra("orderID", invoice);
-                            intent.putExtra("show_cod_confirmation_dialog", true);
-                            startActivity(intent);
-//                            if (navController != null)
-//                                navController.navigate(R.id.paymentFragment, bundle);
                         } else {
                             Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
                             intent.putExtra("orderID", invoice);
                             intent.putExtra("show_cod_confirmation_dialog", true);
                             startActivity(intent);
                         }
-                    } else if (statusCode == 200 && getActivity() instanceof MainActivity && NavHostFragment.findNavController(BuyNowFragment.this) != null)
-                        NavHostFragment.findNavController(BuyNowFragment.this).navigate(R.id.orderListBaseFragment);
+                    }
                 }
             }
 

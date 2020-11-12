@@ -66,6 +66,7 @@ import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.cart.adapter.CartAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -512,7 +513,6 @@ public class CartFragment extends Fragment {
         OrderApiHelper.placeOrder(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-
                 bottomSheetDialog.hide();
                 dialog.hideDialog();
 
@@ -520,28 +520,24 @@ public class CartFragment extends Fragment {
                     String message = response.get("message").getAsString();
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
-                    if (statusCode == 201 && response.has("data")) {
+                    if (response.has("data")) {
                         JsonArray data = response.getAsJsonArray("data");
-
                         if (data.size() > 0)
                             orderPlaced();
 
                         for (int i = 0; i < data.size(); i++) {
                             JsonObject item = data.get(i).getAsJsonObject();
-                            String invoice = item.get("invoice_no").getAsString();
-                            if (getActivity() instanceof MainActivity) {
-                                Bundle bundle = new Bundle();
-                                bundle.putString("invoice_no", invoice);
-                                try {
-                                    bundle.putString("shop_slug", item.get("shop").getAsJsonObject().get("slug").getAsString());
-                                } catch (Exception ignored) {
-
+                            String invoice = null;
+                            if (item.has("invoice_no"))
+                                invoice = item.get("invoice_no").getAsString();
+                            if (invoice == null || invoice.equals("")) {
+                                if (getActivity() != null && !getActivity().isFinishing()) {
+                                    if (getActivity() instanceof MainActivity && NavHostFragment.findNavController(CartFragment.this) != null)
+                                        NavHostFragment.findNavController(CartFragment.this).navigate(R.id.orderListBaseFragment);
+                                    else
+                                        getActivity().startActivity(new Intent(getContext(), OrderListActivity.class));
                                 }
-                                Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
-                                intent.putExtra("orderID", invoice);
-                                intent.putExtra("show_cod_confirmation_dialog", true);
-                                startActivity(intent);
-//                                navController.navigate(R.id.paymentFragment, bundle);
+                                break;
                             } else {
                                 Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
                                 intent.putExtra("orderID", invoice);
@@ -549,9 +545,6 @@ public class CartFragment extends Fragment {
                                 startActivity(intent);
                             }
                         }
-                    } else if (statusCode == 200 && getActivity() instanceof MainActivity && NavHostFragment.findNavController(CartFragment.this) != null) {
-                        orderPlaced();
-                        NavHostFragment.findNavController(CartFragment.this).navigate(R.id.orderListBaseFragment);
                     }
                 }
             }
