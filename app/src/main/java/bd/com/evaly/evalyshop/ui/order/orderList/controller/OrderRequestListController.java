@@ -23,7 +23,6 @@ public class OrderRequestListController extends EpoxyController {
     @Override
     protected void buildModels() {
         for (OrderRequestResponse item : list) {
-            Logger.d(item);
             new OrderRequestListModel_()
                     .id(item.toString())
                     .model(item)

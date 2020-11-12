@@ -67,8 +67,13 @@ public class OrderListBaseFragment extends Fragment {
     }
 
     private void setupBottomSheet() {
+        binding.orderRequestBottomSheet.bringToFront();
         BottomSheetBehavior behavior = BottomSheetBehavior.from(binding.orderRequestBottomSheet);
         behavior.setPeekHeight(280);
+
+        binding.orderRequestBottomSheet.setOnClickListener(view -> {
+            behavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+        });
 
         if (requestListController == null)
             requestListController = new OrderRequestListController();
@@ -90,6 +95,7 @@ public class OrderListBaseFragment extends Fragment {
         binding.recyclerView.setAdapter(requestListController.getAdapter());
 
         viewModel.liveData.observe(getViewLifecycleOwner(), orderRequestResponses -> {
+            isLoading = false;
             if (orderRequestResponses.size() > 0)
                 binding.orderRequestBottomSheet.setVisibility(View.VISIBLE);
             else
@@ -97,8 +103,9 @@ public class OrderListBaseFragment extends Fragment {
             requestListController.setLoading(false);
             requestListController.setList(orderRequestResponses);
             requestListController.requestModelBuild();
-            binding.orderRequestCount.setText(orderRequestResponses.size() + "");
+            binding.orderRequestCount.setText(viewModel.getCount()+"");
         });
+
 
     }
 

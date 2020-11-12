@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -79,7 +80,7 @@ public abstract class HomeRsGridModel extends DataBindingEpoxyModel {
                                           Color.parseColor("#ecf3f9"), Color.WHITE))
                                           .subscribeOn(Schedulers.io())
                                           .observeOn(AndroidSchedulers.mainThread())
-                                          .subscribe(binding.image::setImageBitmap);
+                                          .subscribe(binding.image::setImageBitmap, throwable -> Log.e("error", "Throwable " + throwable.getMessage()));
                                   return true;
                               }
                           }

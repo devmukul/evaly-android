@@ -18,17 +18,24 @@ public class OrderListBaseViewModel extends ViewModel {
     private List<OrderRequestResponse> arrayList = new ArrayList<>();
     protected MutableLiveData<List<OrderRequestResponse>> liveData = new MutableLiveData<>();
     private int page;
+    private int count;
 
     @Inject
     public OrderListBaseViewModel() {
+        count = 0;
         page = 1;
         loadFromApi();
+    }
+
+    public int getCount() {
+        return count;
     }
 
     public void loadFromApi() {
         OrderApiHelper.getOrderRequestList(page, new ResponseListenerAuth<CommonDataResponse<List<OrderRequestResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<OrderRequestResponse>> response, int statusCode) {
+                count = response.getCount();
                 arrayList.addAll(response.getData());
                 liveData.setValue(arrayList);
                 page++;

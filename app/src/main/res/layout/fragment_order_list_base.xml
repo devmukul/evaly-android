@@ -56,9 +56,10 @@
             android:elevation="10dp"
             android:orientation="vertical"
             android:paddingTop="5dp"
-            android:translationZ="4dp"
+            android:translationZ="6dp"
+            android:clickable="false"
+            android:layout_marginTop="1dp"
             android:visibility="gone"
-            android:layout_marginTop="5dp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
             tools:visibility="visible">
 
@@ -110,6 +111,7 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/fff"
                 android:clipToPadding="false"
                 android:paddingHorizontal="10dp"
                 android:paddingBottom="30dp"

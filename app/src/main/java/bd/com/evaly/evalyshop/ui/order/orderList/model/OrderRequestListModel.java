@@ -78,8 +78,8 @@ public abstract class OrderRequestListModel extends DataBindingEpoxyModel {
         String productListHtml = "";
         for (ItemsItem item : model.getItems()) {
             if (!productListHtml.equals(""))
-                productListHtml += "<\br>";
-            productListHtml += "•&nbsp;" + item.getName() + " - <b>" + Utils.formatPriceSymbol(item.getPrice()) + " x " + item.getQuantity() + "<\b>";
+                productListHtml += "<br>";
+            productListHtml += "•&nbsp;" + item.getName() + " - <b>" + Utils.formatPriceSymbol(item.getPrice()) + " x " + item.getQuantity() + "</b>";
         }
         binding.productList.setText(Html.fromHtml(productListHtml));
 
