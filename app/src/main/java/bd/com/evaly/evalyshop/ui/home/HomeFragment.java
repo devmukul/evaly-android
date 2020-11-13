@@ -199,15 +199,4 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
     }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
 }

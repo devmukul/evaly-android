@@ -201,18 +201,18 @@ public class AccountFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (CredentialManager.getUserData().getImage_sm() != null) {
-            Glide.with(this)
-                    .asBitmap()
-                    .load(CredentialManager.getUserData().getImage_sm())
-                    .skipMemoryCache(true)
-                    .fitCenter()
-                    .placeholder(R.drawable.user_image)
-                    .centerCrop()
-                    .apply(new RequestOptions().override(200, 200))
-                    .into(binding.picture);
-        }
         if (CredentialManager.getUserData() != null) {
+            if (CredentialManager.getUserData().getImage_sm() != null) {
+                Glide.with(this)
+                        .asBitmap()
+                        .load(CredentialManager.getUserData().getImage_sm())
+                        .skipMemoryCache(true)
+                        .fitCenter()
+                        .placeholder(R.drawable.user_image)
+                        .centerCrop()
+                        .apply(new RequestOptions().override(200, 200))
+                        .into(binding.picture);
+            }
             binding.name.setText(CredentialManager.getUserData().getFullName());
             binding.phoneNumber.setText(CredentialManager.getUserName());
         }

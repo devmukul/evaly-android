@@ -120,6 +120,14 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
 
         binding.submitBtn.setOnClickListener(view -> {
 
+            if (binding.spCategory.getSelectedItem() == null) {
+                ToastUtils.show("Appointment category is unavailable");
+                return;
+            } else if (binding.spTimeSlot.getSelectedItem() == null) {
+                ToastUtils.show("Appointment time slot is unavailable");
+                return;
+            }
+
             String timeSlot = binding.spTimeSlot.getSelectedItem().toString();
             String categoryName = binding.spCategory.getSelectedItem().toString();
 
@@ -129,7 +137,7 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
             else if (viewModel.timeSlotLiveList.getValue() == null || viewModel.timeSlotLiveList.getValue().size() == 0)
                 error = "Appointment time slot is unavailable";
             else if (viewModel.getCategorySlug(categoryName) == null)
-                error = "Appointment category unavailable";
+                error = "Appointment category is unavailable";
 
             if (error != null) {
                 ToastUtils.show(error);

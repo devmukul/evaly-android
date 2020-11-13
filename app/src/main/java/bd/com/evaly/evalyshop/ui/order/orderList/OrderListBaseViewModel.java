@@ -12,11 +12,13 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
+import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class OrderListBaseViewModel extends ViewModel {
 
     private List<OrderRequestResponse> arrayList = new ArrayList<>();
     protected MutableLiveData<List<OrderRequestResponse>> liveData = new MutableLiveData<>();
+    protected SingleLiveEvent<Void> logoutLiveData = new SingleLiveEvent<>();
     private int page;
     private int count;
 
@@ -48,7 +50,10 @@ public class OrderListBaseViewModel extends ViewModel {
 
             @Override
             public void onAuthError(boolean logout) {
-
+                if (!logout)
+                    loadFromApi();
+                else
+                    logoutLiveData.call();
             }
         });
     }

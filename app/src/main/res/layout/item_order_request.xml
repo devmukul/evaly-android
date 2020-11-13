@@ -19,16 +19,20 @@
             android:id="@+id/orderID"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_marginTop="-1dp"
+            android:layout_toLeftOf="@id/statusHolder"
             android:clickable="false"
+            android:paddingRight="10dp"
             android:textColor="@color/c444"
             android:textIsSelectable="false"
             android:textSize="16sp"
             android:textStyle="bold"
-            tools:text="EVL28139213" />
+            tools:text="This is shop name" />
 
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/statusHolder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"

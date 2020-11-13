@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -16,6 +17,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentOrderListBaseBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.ui.order.orderList.adapter.OrderListTabAdapter;
@@ -106,6 +108,7 @@ public class OrderListBaseFragment extends Fragment {
             binding.orderRequestCount.setText(viewModel.getCount()+"");
         });
 
+        viewModel.logoutLiveData.observe(getViewLifecycleOwner(), aVoid -> AppController.logout(getActivity()));
 
     }
 
