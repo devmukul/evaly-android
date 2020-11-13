@@ -8,12 +8,200 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:391591112529:android:5a2efcaa6df55618a42d70",
+        "android_client_info": {
+          "package_name": "bd.com.evaly.ebazar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391591112529-3ngja0a0jb16691squd4dg8a93lqe3gc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bd.com.evaly.ebazar",
+            "certificate_hash": "8b14dd8f78fb899b24e81f515e1c9656eb582307"
+          }
+        },
+        {
+          "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh00aL2ocwUAMbJUjyLbyOlsO6nvrgynk"
+        },
+        {
+          "current_key": "AIzaSyBGxaFJJXIr1k3aLl2POkxzZKhULbScpvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "391591112529-ct4ekecfq1h6qlojdcrkgal8ppmmnltc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "bd.com.evaly.ebazar"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391591112529:android:79868e8f7575d724a42d70",
+        "android_client_info": {
+          "package_name": "bd.com.evaly.econnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391591112529-k5g4fi7stoq42acks7oq9ra9dfgjloip.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bd.com.evaly.econnect",
+            "certificate_hash": "5a4119b034da045a52dc5961b8eb3271d296a7d5"
+          }
+        },
+        {
+          "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh00aL2ocwUAMbJUjyLbyOlsO6nvrgynk"
+        },
+        {
+          "current_key": "AIzaSyBGxaFJJXIr1k3aLl2POkxzZKhULbScpvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "391591112529-ct4ekecfq1h6qlojdcrkgal8ppmmnltc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "bd.com.evaly.ebazar"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391591112529:android:e6f3bd035e923cdaa42d70",
+        "android_client_info": {
+          "package_name": "bd.com.evaly.efood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391591112529-h1sittdj084b03pqag5ncllq6cls9dp2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bd.com.evaly.efood",
+            "certificate_hash": "2eb927c32b4857b27d2499c2b9e1654a00d2b2d0"
+          }
+        },
+        {
+          "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh00aL2ocwUAMbJUjyLbyOlsO6nvrgynk"
+        },
+        {
+          "current_key": "AIzaSyBGxaFJJXIr1k3aLl2POkxzZKhULbScpvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "391591112529-ct4ekecfq1h6qlojdcrkgal8ppmmnltc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "bd.com.evaly.ebazar"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391591112529:android:bf22b0952a6eeb7fa42d70",
+        "android_client_info": {
+          "package_name": "bd.com.evaly.efoodmerchant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh00aL2ocwUAMbJUjyLbyOlsO6nvrgynk"
+        },
+        {
+          "current_key": "AIzaSyBGxaFJJXIr1k3aLl2POkxzZKhULbScpvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "391591112529-ct4ekecfq1h6qlojdcrkgal8ppmmnltc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "bd.com.evaly.ebazar"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:391591112529:android:934c27d15451eb6b",
         "android_client_info": {
           "package_name": "bd.com.evaly.evalyshop"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "391591112529-t99t387k6h738rqog4qmgji1m1vm80c1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bd.com.evaly.evalyshop",
+            "certificate_hash": "c68890cab7ff437f84118714cb8d247d21f85108"
+          }
+        },
         {
           "client_id": "391591112529-7nbqfsgbtpmqcboh0q7mp41vhi9k03fm.apps.googleusercontent.com",
           "client_type": 1,
@@ -29,6 +217,9 @@
       ],
       "api_key": [
         {
+          "current_key": "AIzaSyBh00aL2ocwUAMbJUjyLbyOlsO6nvrgynk"
+        },
+        {
           "current_key": "AIzaSyBGxaFJJXIr1k3aLl2POkxzZKhULbScpvQ"
         }
       ],
@@ -38,6 +229,170 @@
             {
               "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "391591112529-ct4ekecfq1h6qlojdcrkgal8ppmmnltc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "bd.com.evaly.ebazar"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391591112529:android:3c43bfceb3dd229ca42d70",
+        "android_client_info": {
+          "package_name": "bd.com.evaly.hero"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391591112529-ah32nscaq6p0eokrf7dtlcv1bh9sbchi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bd.com.evaly.hero",
+            "certificate_hash": "194cafd19e3d94a53fad7384f4c67f0a424b6777"
+          }
+        },
+        {
+          "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh00aL2ocwUAMbJUjyLbyOlsO6nvrgynk"
+        },
+        {
+          "current_key": "AIzaSyBGxaFJJXIr1k3aLl2POkxzZKhULbScpvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "391591112529-ct4ekecfq1h6qlojdcrkgal8ppmmnltc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "bd.com.evaly.ebazar"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391591112529:android:9f7f83e64e8be66e",
+        "android_client_info": {
+          "package_name": "bd.com.evaly.merchant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391591112529-djf4g7rdfj4svffcqs25qhi7tt9892as.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bd.com.evaly.merchant",
+            "certificate_hash": "caf4273cd808a5cf24d35ec6a7c2863b0e7c7739"
+          }
+        },
+        {
+          "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh00aL2ocwUAMbJUjyLbyOlsO6nvrgynk"
+        },
+        {
+          "current_key": "AIzaSyBGxaFJJXIr1k3aLl2POkxzZKhULbScpvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "391591112529-ct4ekecfq1h6qlojdcrkgal8ppmmnltc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "bd.com.evaly.ebazar"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391591112529:android:8947bf94202d8ec6a42d70",
+        "android_client_info": {
+          "package_name": "com.evaly.ekhata"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391591112529-ppu4hb2tf9o3nqeel5la4t21iiq63rfe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.evaly.ekhata",
+            "certificate_hash": "97d48e5f48cb18105faaaed83bd8d50e4bb01992"
+          }
+        },
+        {
+          "client_id": "391591112529-9mkbdta4eca0dqcako01069spb7tv05t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.evaly.ekhata",
+            "certificate_hash": "2eb927c32b4857b27d2499c2b9e1654a00d2b2d0"
+          }
+        },
+        {
+          "client_id": "391591112529-ptga8s3lbgcfu1omjh03b0kvso161joc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.evaly.ekhata",
+            "certificate_hash": "f7e4a99e59317a67c712716665848d0e95ed217b"
+          }
+        },
+        {
+          "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh00aL2ocwUAMbJUjyLbyOlsO6nvrgynk"
+        },
+        {
+          "current_key": "AIzaSyBGxaFJJXIr1k3aLl2POkxzZKhULbScpvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "391591112529-ct4ekecfq1h6qlojdcrkgal8ppmmnltc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "bd.com.evaly.ebazar"
+              }
             }
           ]
         }
