@@ -77,7 +77,6 @@
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
             android:background="@drawable/home_box_bg"
-            android:backgroundTint="@color/ddd"
             android:orientation="vertical"
             android:paddingLeft="5dp"
             android:paddingTop="20dp"

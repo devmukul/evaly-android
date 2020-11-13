@@ -853,6 +853,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/separator_light"
                     android:nestedScrollingEnabled="false"
+                    android:visibility="gone"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
                     android:paddingBottom="20dp" />

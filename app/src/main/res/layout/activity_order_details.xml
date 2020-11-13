@@ -74,7 +74,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
-                        app:stpi_circleColor="#ddd"
+                        app:stpi_circleColor="@color/ddd"
                         app:stpi_circleRadius="10dp"
                         app:stpi_circleStrokeWidth="2dp"
                         app:stpi_doneIconDrawable="@drawable/ic_tick"
@@ -82,7 +82,7 @@
                         app:stpi_labelMarginTop="7dp"
                         app:stpi_labelSize="11sp"
                         app:stpi_labels="@array/orderTrackingStepLabels"
-                        app:stpi_lineColor="#ddd"
+                        app:stpi_lineColor="@color/ddd"
                         app:stpi_lineDoneColor="#4cb81a"
                         app:stpi_stepCount="6" />
 

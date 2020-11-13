@@ -83,6 +83,7 @@ import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.LocationUtils;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
@@ -595,10 +596,11 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
     }
 
     private void getRelatedProducts(String categorySlug) {
-        ProductGrid productGrid = new ProductGrid(context, binding.products, categorySlug, binding.progressBar);
+        ProductGrid productGrid = new ProductGrid(this, binding.products, categorySlug, binding.progressBar);
         productGrid.setListener(new ProductListener() {
             @Override
             public void onSuccess(int count) {
+                binding.products.setVisibility(View.VISIBLE);
                 binding.progressBar.setVisibility(View.GONE);
             }
 
@@ -664,12 +666,12 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             binding.buyNowHolder.setVisibility(View.VISIBLE);
 
         binding.selectedShopClickHolder.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MainActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("type", 3);
             intent.putExtra("shop_slug", shop.getShopSlug());
             intent.putExtra("shop_name", shop.getShopName());
             intent.putExtra("category", shop.getShopSlug());
-            context.startActivity(intent);
+            startActivity(intent);
         });
 
         binding.addCart.setOnClickListener(v -> {
@@ -703,8 +705,8 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
             Snackbar snackBar = Snackbar.make(binding.rootView, "Added to cart", 1500);
             snackBar.setAction("Go to Cart", view -> {
-                Intent intent = new Intent(context, CartActivity.class);
-                context.startActivity(intent);
+                Intent intent = new Intent(this, CartActivity.class);
+                startActivity(intent);
                 snackBar.dismiss();
             });
             snackBar.show();
@@ -766,7 +768,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             }
         }
 
-        AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, list, cartDao, cartItem);
+        AvailableShopAdapter adapter = new AvailableShopAdapter(this, binding.rootView, list, cartDao, cartItem);
         binding.availableShops.setAdapter(adapter);
         binding.progressBarShop.setVisibility(View.GONE);
 
@@ -866,11 +868,11 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
                 if (jsonObject == null) {
                     dialog.hideDialog();
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                    ToastUtils.show(getResources().getString(R.string.something_wrong));
                 } else {
                     dialog.hideDialog();
                     newsfeedShareDialog.cancel();
-                    Toast.makeText(getApplicationContext(), "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
+                    ToastUtils.show("Your post has successfully posted. It may take few hours to get approved.");
                 }
             });
         viewModel.createPost(createPostModel);

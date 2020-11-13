@@ -70,12 +70,10 @@ public abstract class CampaignSmallProductModel extends DataBindingEpoxyModel {
         if (model.getCashbackText() == null || model.getCashbackText().length() == 0)
             binding.tvCashback.setVisibility(View.GONE);
         else {
-
-            if (model.getCashbackText().contains(" 0.00"))
+            if (model.getCashbackText().equals("0.00% cashback"))
                 binding.tvCashback.setVisibility(View.GONE);
             else
                 binding.tvCashback.setVisibility(View.VISIBLE);
-
             binding.tvCashback.setText(Utils.toFirstCharUpperAll(model.getCashbackText().replace(".00", "")));
         }
 

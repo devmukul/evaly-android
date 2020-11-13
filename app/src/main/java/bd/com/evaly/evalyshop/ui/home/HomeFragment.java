@@ -17,19 +17,14 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
-import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
 import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
-import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
@@ -49,13 +44,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private MainActivity activity;
     private Context context;
-    private List<ProductItem> productItemList;
     private boolean isLoading = true;
     private FragmentHomeBinding binding;
     private NavController navController;
     private HomeController homeController;
     private AppDatabase appDatabase;
-    private ExpressServiceDao expressServiceDao;
     private HomeViewModel viewModel;
 
     public HomeFragment() {
@@ -110,7 +103,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         navController = NavHostFragment.findNavController(this);
         networkCheck();
 
-        expressServiceDao = appDatabase.expressServiceDao();
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "home", mainViewModel);
         FragmentAppBarHeaderBinding headerBinding = binding.header;
@@ -121,27 +113,23 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 //            navController.navigate(R.id.globalSearchFragment);
 //        });
 
-        productItemList = new ArrayList<>();
-
-        if (homeController == null)
+        boolean homeControllerInitialized = false;
+        if (homeController == null) {
             homeController = new HomeController();
+            homeControllerInitialized = true;
+        }
+
         homeController.setFilterDuplicates(true);
         homeController.setActivity((AppCompatActivity) getActivity());
         homeController.setFragment(this);
         homeController.setHomeViewModel(viewModel);
         binding.recyclerView.setAdapter(homeController.getAdapter());
 
-        int spanCount = 2;
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        homeController.setSpanCount(spanCount);
-
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
+        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
 
-        // GridLayoutManager
-
-        homeController.requestModelBuild();
         binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
             public void loadMoreItem() {
@@ -153,6 +141,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 }
             }
         });
+
+        if (homeControllerInitialized)
+            homeController.requestModelBuild();
 
         liveEventObservers();
     }
@@ -175,10 +166,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
         viewModel.getProductListLive().observe(getViewLifecycleOwner(), list -> {
+            isLoading = false;
             homeController.setLoadingMore(false);
             homeController.setProductData(list);
             homeController.requestModelBuild();
-            isLoading = false;
         });
 
         viewModel.getExpressListLive().observe(getViewLifecycleOwner(), expressServiceModels -> {

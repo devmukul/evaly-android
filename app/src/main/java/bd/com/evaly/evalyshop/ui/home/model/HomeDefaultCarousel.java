@@ -3,15 +3,17 @@ package bd.com.evaly.evalyshop.ui.home.model;
 import android.content.Context;
 
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.ModelView;
 
-@ModelView(saveViewState = true, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT, baseModelClass = EpoxyModelStaggeredGrid.class)
-public class HomeExpressCarousel extends Carousel {
+import bd.com.evaly.evalyshop.util.Utils;
 
-    public HomeExpressCarousel(Context context) {
+@ModelView(saveViewState = true, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT, baseModelClass = EpoxyModelStaggeredGrid.class)
+public class HomeDefaultCarousel extends Carousel {
+
+    public HomeDefaultCarousel(Context context) {
         super(context);
         setNestedScrollingEnabled(false);
     }
@@ -25,7 +27,6 @@ public class HomeExpressCarousel extends Carousel {
     @Nullable
     @Override
     public LayoutManager createLayoutManager() {
-        return new GridLayoutManager(getContext(), 4,
-                GridLayoutManager.VERTICAL, false);
+        return new LinearLayoutManager(getContext(), HORIZONTAL, false);
     }
 }

@@ -3,17 +3,14 @@ package bd.com.evaly.evalyshop.ui.home.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
-import com.airbnb.epoxy.CarouselModel_;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
 
@@ -34,6 +31,7 @@ import bd.com.evaly.evalyshop.ui.epoxy.EpoxyDividerModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.home.HomeViewModel;
+import bd.com.evaly.evalyshop.ui.home.model.HomeDefaultCarouselModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressCarouselModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressHeaderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressModel_;
@@ -77,7 +75,7 @@ public class HomeController extends EpoxyController {
     @AutoModel
     HomeExpressSkeletonModel_ expressSkeletonBindingModel_;
     @AutoModel
-    CarouselModel_ campaignCategoryCarousel;
+    HomeDefaultCarouselModel_ campaignCategoryCarousel;
     @AutoModel
     HomeRsCarouselModel_ flashSaleCarousel;
     @AutoModel
@@ -340,12 +338,6 @@ public class HomeController extends EpoxyController {
         campaignCategoryCarousel
                 .models(isCampaignLoading ? campaignSkeletonItemModels : campaignModels)
                 .onBind((model, view, position) -> {
-                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
-                    params.setFullSpan(true);
-                    view.setLayoutParams(params);
                     view.setBackground(ContextCompat.getDrawable(activity, R.drawable.white_to_grey_gradient));
                 })
                 .padding(new Carousel.Padding(
@@ -392,16 +384,6 @@ public class HomeController extends EpoxyController {
 
         expressCarouselModel_
                 .models(isExpressLoading ? expressDummyItemModels : expressItemModels)
-                .onBind((model, view, position) -> {
-                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
-                    params.setFullSpan(true);
-                    view.setLayoutParams(params);
-                    // view.setBackgroundColor(Color.parseColor("#ffffff"));
-                    // view.setBackground(AppController.getmContext().getDrawable(R.drawable.white_to_grey_gradient));
-                })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(10, activity),
                         (int) Utils.convertDpToPixel(12, activity),
@@ -454,14 +436,6 @@ public class HomeController extends EpoxyController {
 
         flashSaleCarousel
                 .models(flashSaleModels)
-                .onBind((model, view, position) -> {
-                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
-                    params.setFullSpan(true);
-                    view.setLayoutParams(params);
-                })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(15, activity),
                         (int) Utils.convertDpToPixel(12, activity),
