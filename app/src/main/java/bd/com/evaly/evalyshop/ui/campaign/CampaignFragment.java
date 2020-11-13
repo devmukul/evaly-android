@@ -244,6 +244,8 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void updateToolbarOnExpand(boolean expanded) {
+        if (getContext() == null)
+            return;
         if (expanded) {
             if (isExpanded)
                 return;

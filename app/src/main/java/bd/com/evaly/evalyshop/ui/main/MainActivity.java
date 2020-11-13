@@ -33,6 +33,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -289,7 +290,6 @@ public class MainActivity extends BaseActivity {
                 })
                 .setNegativeButton("No", null);
         exitDialog = exitDialogBuilder.create();
-
     }
 
 
@@ -475,7 +475,6 @@ public class MainActivity extends BaseActivity {
                         break;
                     case R.id.nav_orders:
                         navController.navigate(R.id.orderListBaseFragment);
-//                        startActivity(new Intent(MainActivity.this, OrderListBaseFragment.class));
                         break;
                     case R.id.nav_cart:
                         startActivity(new Intent(MainActivity.this, CartActivity.class));

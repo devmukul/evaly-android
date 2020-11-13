@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: "androidx.navigation.safeargs"
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
@@ -13,8 +13,8 @@ android {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 256
-        versionName "2.5.6"
+        versionCode 257
+        versionName "2.5.7"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -41,15 +41,14 @@ android {
             buildConfigField "String", "APPOINTMENT_URL", "\"https://api.evaly.com.bd/eappointment/api/v1/\""
         }
         debug {
-            buildConfigField "String", 'BASE_URL', "\"https://api.evaly.com.bd/\""
+            buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
             buildConfigField "String", 'WEB_URL', "\"https://beta.evaly.com.bd/\""
-            buildConfigField "String", 'CHAT_BASE', "\"chat.evaly.com.bd\""
+            buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111667\""
             buildConfigField "String", 'BUILD', "\"dev\""
             buildConfigField "String", 'BKASH_URL', "\"https://beta.evaly.com.bd/bkash_payment\""
             buildConfigField "String", 'NAGAD_URL', "\"https://api-dev.evaly.com.bd/pay/nagad\""
-            //buildConfigField "String", "APPOINTMENT_URL", "\"https://eappointment.evaly.com.bd/api/v1/\""
-            buildConfigField "String", "APPOINTMENT_URL", "\"https://api.evaly.com.bd/eappointment/api/v1/\""
+            buildConfigField "String", "APPOINTMENT_URL", "\"https://eappointment.evaly.com.bd/api/v1/\""
         }
 
         lintOptions {
@@ -67,8 +66,8 @@ dependencies {
 
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
 
-    implementation "com.airbnb.android:epoxy:$rootProject.epoxyVersion"
-    implementation "com.airbnb.android:epoxy-databinding:$rootProject.epoxyVersion"
+    implementation "com.airbnb.android:epoxy:3.11.0"
+    implementation "com.airbnb.android:epoxy-databinding:3.11.0"
     annotationProcessor "com.airbnb.android:epoxy-processor:$rootProject.epoxyVersion"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -77,8 +76,8 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constrainlayout_version"
     implementation "com.google.firebase:firebase-analytics:$rootProject.firebase_core_version"
     implementation "com.google.firebase:firebase-messaging:$rootProject.firebase_messaging_version"
-    implementation "com.crashlytics.sdk.android:crashlytics:$rootProject.crashlytics_version"
-    implementation "com.google.firebase:firebase-analytics:$rootProject.firebase_core_version"
+    implementation 'com.google.firebase:firebase-crashlytics:17.3.0'
+    implementation 'com.google.firebase:firebase-analytics:18.0.0'
     implementation "com.google.firebase:firebase-config:$rootProject.firebase_config"
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofit_version"
     implementation "com.google.code.gson:gson:$rootProject.gson_version"

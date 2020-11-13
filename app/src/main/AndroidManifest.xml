@@ -131,18 +131,11 @@
         <activity
             android:name=".ui.user.editProfile.EditProfileActivity"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name=".ui.order.orderList.OrderListBaseFragment"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+
         <activity
             android:name=".ui.auth.password.PasswordActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.user.UserDashboardActivity"
-            android:label="@string/title_activity_user_profile"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+
         <activity
             android:name=".ui.search.GlobalSearchActivity"
             android:screenOrientation="portrait"
