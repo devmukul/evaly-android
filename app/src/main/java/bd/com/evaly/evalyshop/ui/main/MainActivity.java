@@ -474,7 +474,8 @@ public class MainActivity extends BaseActivity {
                         navController.navigate(R.id.accountFragment);
                         break;
                     case R.id.nav_orders:
-                        startActivity(new Intent(MainActivity.this, OrderListBaseFragment.class));
+                        navController.navigate(R.id.orderListBaseFragment);
+//                        startActivity(new Intent(MainActivity.this, OrderListBaseFragment.class));
                         break;
                     case R.id.nav_cart:
                         startActivity(new Intent(MainActivity.this, CartActivity.class));
