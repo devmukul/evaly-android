@@ -377,5 +377,22 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="create_appointment">Create Appointment</string>
     <string name="time_slot">Time slots</string>
     <string name="order_requests">Order Requests</string>
+    <string name="father_s_name">Father\'s Name</string>
+    <string name="enter_your_father_s_name">Enter your father\'s name</string>
+    <string name="enter_your_father_s_phone_number">Enter your father\'s phone number</string>
+    <string name="father_s_phone_number">Father\'s Phone Number</string>
+    <string name="save_parent_information">Save Parent Information</string>
+    <string name="enter_your_mother_s_name">Enter your mother\'s name</string>
+    <string name="mother_s_phone_number">Mother\'s Phone Number</string>
+    <string name="enter_your_mother_s_phone_number">Enter your mother\'s phone number</string>
+    <string name="occupation">Occupation</string>
+    <string name="enter_your_occupation">Enter your occupation</string>
+    <string name="organization">Organization</string>
+    <string name="enter_your_organization_name">Enter your organization name</string>
+    <string name="save_personal_information">Save Personal Information</string>
+    <string name="enter_your_primary_email">Enter your primary email</string>
+    <string name="other_email">Other Email</string>
+    <string name="enter_your_other_email">Enter your other email</string>
+    <string name="save_email_addresses">Save Email Addresses</string>
 
 </resources>
