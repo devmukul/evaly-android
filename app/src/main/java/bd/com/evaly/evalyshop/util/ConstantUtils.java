@@ -5,6 +5,7 @@ public class ConstantUtils {
     public static final String USERNAME = "userName";
     public static final String TOKEN = "token";
     public static final String USER_MODEL = "user_model";
+    public static final String USER_INFO_MODEL = "user_info_model";
     public static final String SHOP_MODEL = "shop_model";
     public static final String DATE = "date";
     public static final String CONNECTIVITY_ACTION = "";

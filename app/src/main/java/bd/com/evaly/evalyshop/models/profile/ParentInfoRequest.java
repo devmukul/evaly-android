@@ -4,34 +4,58 @@ import com.google.gson.annotations.SerializedName;
 
 public class ParentInfoRequest{
 
-	@SerializedName("other_email")
-	private String otherEmail;
+	@SerializedName("father_name")
+	private String fatherName;
 
-	@SerializedName("primary_email")
-	private String primaryEmail;
+	@SerializedName("father_phone_number")
+	private String fatherPhoneNumber;
 
-	public void setOtherEmail(String otherEmail){
-		this.otherEmail = otherEmail;
+	@SerializedName("mother_name")
+	private String motherName;
+
+	@SerializedName("mother_phone_number")
+	private String motherPhoneNumber;
+
+	public void setFatherName(String fatherName){
+		this.fatherName = fatherName;
 	}
 
-	public String getOtherEmail(){
-		return otherEmail;
+	public String getFatherName(){
+		return fatherName;
 	}
 
-	public void setPrimaryEmail(String primaryEmail){
-		this.primaryEmail = primaryEmail;
+	public void setFatherPhoneNumber(String fatherPhoneNumber){
+		this.fatherPhoneNumber = fatherPhoneNumber;
 	}
 
-	public String getPrimaryEmail(){
-		return primaryEmail;
+	public String getFatherPhoneNumber(){
+		return fatherPhoneNumber;
+	}
+
+	public void setMotherName(String motherName){
+		this.motherName = motherName;
+	}
+
+	public String getMotherName(){
+		return motherName;
+	}
+
+	public void setMotherPhoneNumber(String motherPhoneNumber){
+		this.motherPhoneNumber = motherPhoneNumber;
+	}
+
+	public String getMotherPhoneNumber(){
+		return motherPhoneNumber;
 	}
 
 	@Override
  	public String toString(){
 		return 
 			"ParentInfoRequest{" + 
-			"other_email = '" + otherEmail + '\'' + 
-			",primary_email = '" + primaryEmail + '\'' + 
+			"father_name = '" + fatherName + '\'' + 
+			",father_phone_number = '" + fatherPhoneNumber + '\'' + 
+			",mother_name = '" + motherName + '\'' + 
+			",mother_phone_number = '" + motherPhoneNumber + '\'' + 
 			"}";
 		}
 }

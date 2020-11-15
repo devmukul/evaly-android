@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.manager;
 import java.util.Calendar;
 
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.util.ConstantUtils;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -64,12 +65,20 @@ public class CredentialManager {
         MyPreference.with(AppController.mContext).addObject(ConstantUtils.USER_MODEL, userModel).save();
     }
 
-    public static void saveUserRegistered(boolean registered) {
-        MyPreference.with(AppController.mContext).addBoolean(ConstantUtils.REGISTERED, registered).save();
-    }
-
     public static UserModel getUserData() {
         return MyPreference.with(AppController.getmContext()).getObject(ConstantUtils.USER_MODEL, UserModel.class);
+    }
+
+    public static void saveUserInfo(UserInfoResponse userModel) {
+        MyPreference.with(AppController.mContext).addObject(ConstantUtils.USER_INFO_MODEL, userModel).save();
+    }
+
+    public static UserInfoResponse getUserInfo() {
+        return MyPreference.with(AppController.getmContext()).getObject(ConstantUtils.USER_INFO_MODEL, UserInfoResponse.class);
+    }
+
+    public static void saveUserRegistered(boolean registered) {
+        MyPreference.with(AppController.mContext).addBoolean(ConstantUtils.REGISTERED, registered).save();
     }
 
     public static boolean isUserRegistered() {

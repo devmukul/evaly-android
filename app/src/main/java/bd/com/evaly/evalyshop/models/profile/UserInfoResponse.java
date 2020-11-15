@@ -2,13 +2,15 @@ package bd.com.evaly.evalyshop.models.profile;
 
 import com.google.gson.annotations.SerializedName;
 
-public class UserInfoResponse{
+import java.io.Serializable;
+
+public class UserInfoResponse implements Serializable {
 
 	@SerializedName("full_name")
 	private String fullName;
 
 	@SerializedName("occupation")
-	private Object occupation;
+	private String occupation;
 
 	@SerializedName("other_email")
 	private String otherEmail;
@@ -20,7 +22,7 @@ public class UserInfoResponse{
 	private String fatherPhoneNumber;
 
 	@SerializedName("organization")
-	private Object organization;
+	private String organization;
 
 	@SerializedName("mother_name")
 	private String motherName;
@@ -42,11 +44,11 @@ public class UserInfoResponse{
 		return fullName;
 	}
 
-	public void setOccupation(Object occupation){
+	public void setOccupation(String occupation){
 		this.occupation = occupation;
 	}
 
-	public Object getOccupation(){
+	public String getOccupation(){
 		return occupation;
 	}
 
@@ -74,11 +76,11 @@ public class UserInfoResponse{
 		return fatherPhoneNumber;
 	}
 
-	public void setOrganization(Object organization){
+	public void setOrganization(String organization){
 		this.organization = organization;
 	}
 
-	public Object getOrganization(){
+	public String getOrganization(){
 		return organization;
 	}
 
