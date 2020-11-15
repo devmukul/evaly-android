@@ -16,6 +16,8 @@ import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoDao;
 import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
@@ -60,8 +62,6 @@ public class Balance {
 
 
     public static void updateUserInfo(Activity context, boolean openDashboard) {
-
-
         AuthApiHelper.getUserInfo(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
@@ -131,6 +131,25 @@ public class Balance {
 
             }
         });
+
+
+        AuthApiHelper.getUserInfo(new ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<UserInfoResponse> response, int statusCode) {
+                CredentialManager.saveUserInfo(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
     }
 
     public static void update(Activity context, TextView textView) {

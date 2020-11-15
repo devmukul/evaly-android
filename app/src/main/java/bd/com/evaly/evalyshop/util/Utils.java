@@ -58,7 +58,7 @@ public class Utils {
 
     public static HashMap<String, String> objectToHashMap(Object body) {
         Gson gson = new Gson();
-        Type stringStringMap = new TypeToken<Map<String, String>>() {
+        Type stringStringMap = new TypeToken<HashMap<String, String>>() {
         }.getType();
         return gson.fromJson(gson.toJson(body), stringStringMap);
     }

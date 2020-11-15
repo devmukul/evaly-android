@@ -89,17 +89,19 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
 
         UserInfoResponse userModel = CredentialManager.getUserInfo();
 
-        binding.firstName.setText(userModel.getFirstName());
-        binding.lastName.setText(userModel.getLastName());
-        binding.phone.setText(userModel.getPhoneNumber());
-        binding.dateOfBirth.setText(userModel.getBirthDate());
+        if (userModel != null) {
+            binding.firstName.setText(userModel.getFirstName());
+            binding.lastName.setText(userModel.getLastName());
+            binding.phone.setText(userModel.getPhoneNumber());
+            binding.dateOfBirth.setText(userModel.getBirthDate());
 
-        if (userModel.getGender().equals("male"))
-            binding.genderGroup.check(R.id.checkMale);
-        else if ((userModel.getGender().equals("female")))
-            binding.genderGroup.check(R.id.checkFemale);
-        else
-            binding.genderGroup.check(R.id.checkGenderOther);
+            if (userModel.getGender().equals("male"))
+                binding.genderGroup.check(R.id.checkMale);
+            else if ((userModel.getGender().equals("female")))
+                binding.genderGroup.check(R.id.checkFemale);
+            else
+                binding.genderGroup.check(R.id.checkGenderOther);
+        }
 
         binding.dateOfBirth.setOnClickListener(v -> {
             Calendar cal = Calendar.getInstance();
@@ -155,7 +157,6 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
 //            body.put("contact", contact);
 //            body.put("gender", gender);
 //            viewModel.setUserData(body);
-
 
 
             viewModel.setUserData(Utils.objectToHashMap(body));

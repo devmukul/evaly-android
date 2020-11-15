@@ -79,8 +79,10 @@ public class EmploymentInfoBottomSheet extends BottomSheetDialogFragment {
 
         UserInfoResponse userModel = CredentialManager.getUserInfo();
 
-        binding.occupation.setText(userModel.getOccupation());
-        binding.organization.setText(userModel.getOrganization());
+        if (userModel != null) {
+            binding.occupation.setText(userModel.getOccupation());
+            binding.organization.setText(userModel.getOrganization());
+        }
 
         binding.save.setOnClickListener(v -> {
             String occupation = binding.occupation.getText().toString().trim();

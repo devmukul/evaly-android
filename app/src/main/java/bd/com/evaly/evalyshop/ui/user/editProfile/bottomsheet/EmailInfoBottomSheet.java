@@ -44,14 +44,12 @@ public class EmailInfoBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
-
         if (getActivity() != null)
             viewModel = new ViewModelProvider(getActivity()).get(EditProfileViewModel.class);
     }
@@ -80,8 +78,10 @@ public class EmailInfoBottomSheet extends BottomSheetDialogFragment {
 
         UserInfoResponse userModel = CredentialManager.getUserInfo();
 
-        binding.primaryEmail.setText(userModel.getPrimaryEmail());
-        binding.otherEmail.setText(userModel.getOtherEmail());
+        if (userModel != null) {
+            binding.primaryEmail.setText(userModel.getPrimaryEmail());
+            binding.otherEmail.setText(userModel.getOtherEmail());
+        }
 
         binding.save.setOnClickListener(v -> {
             String primaryEmail = binding.primaryEmail.getText().toString().trim();

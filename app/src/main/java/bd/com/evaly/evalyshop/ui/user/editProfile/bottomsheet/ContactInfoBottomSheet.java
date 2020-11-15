@@ -77,8 +77,10 @@ public class ContactInfoBottomSheet extends BottomSheetDialogFragment {
 
         UserModel userModel = CredentialManager.getUserData();
 
-        binding.email.setText(userModel.getEmail());
-        binding.phone.setText(userModel.getContacts());
+        if (userModel != null) {
+            binding.email.setText(userModel.getEmail());
+            binding.phone.setText(userModel.getContacts());
+        }
 
         binding.save.setOnClickListener(v -> {
             String email = binding.email.getText().toString().trim();

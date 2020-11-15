@@ -26,6 +26,8 @@ import bd.com.evaly.evalyshop.databinding.FragmentAccountBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity;
 import bd.com.evaly.evalyshop.ui.balance.BalanceFragment;
@@ -55,6 +57,7 @@ public class AccountFragment extends Fragment {
         updateViews();
         clickListeners();
         getMessageCount();
+        updateUserDetails();
     }
 
     private void updateViews() {
@@ -232,6 +235,27 @@ public class AccountFragment extends Fragment {
                 updateHotCount(response.getCount());
                 CredentialManager.setMessageCounterLastUpdated();
                 CredentialManager.setMessageCount(response.getCount());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+    }
+
+    private void updateUserDetails(){
+
+        AuthApiHelper.getUserInfo(new ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<UserInfoResponse> response, int statusCode) {
+                CredentialManager.saveUserInfo(response.getData());
             }
 
             @Override

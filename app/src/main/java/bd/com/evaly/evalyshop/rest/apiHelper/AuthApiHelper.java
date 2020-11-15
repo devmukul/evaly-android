@@ -26,6 +26,7 @@ import bd.com.evaly.evalyshop.models.auth.SetPasswordBody;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
+import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
@@ -402,6 +403,10 @@ public class AuthApiHelper extends BaseApiHelper {
 
     public static void setUserData(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
         getiApiClient().setUserData(token, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getUserInfo(ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String> listener) {
+        getiApiClient().getUserInfo(CredentialManager.getToken()).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void setUserDataToXmpp(HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {

@@ -167,6 +167,57 @@
                     </LinearLayout>
                 </LinearLayout>
 
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="5dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="19dp"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginTop="15dp"
+                        app:srcCompat="@drawable/ic_input_phone"
+                        app:tint="@color/c444" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_weight="0"
+                        android:orientation="vertical"
+                        android:paddingLeft="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="13dp"
+                            android:layout_marginBottom="3dp"
+                            android:text="@string/contact_number"
+                            android:textColor="@color/c333"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/contactNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="13dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@color/transparent"
+                            android:ems="10"
+                            android:inputType="textPersonName"
+                            android:text="Not Provided"
+                            android:textColor="@color/c444"
+                            android:textSize="16sp" />
+
+
+                    </LinearLayout>
+                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -219,6 +270,57 @@
                 </LinearLayout>
 
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="5dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="19dp"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginTop="12dp"
+                        app:srcCompat="@drawable/ic_calendar"
+                        app:tint="@color/c444" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_weight="0"
+                        android:orientation="vertical"
+                        android:paddingLeft="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="13dp"
+                            android:layout_marginBottom="3dp"
+                            android:text="@string/date_of_birth"
+                            android:textColor="@color/c333"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/dateOfBirth"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="13dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@color/transparent"
+                            android:ems="10"
+                            android:inputType="textPersonName"
+                            android:text="Not Provided"
+                            android:textColor="@color/c444"
+                            android:textSize="16sp" />
+
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
             </LinearLayout>
 
 
@@ -239,12 +341,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Contact Information"
+                    android:text="@string/email_address"
                     android:textColor="@color/c555"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/editContactInfo"
+                    android:id="@+id/editEmailInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
@@ -268,11 +370,11 @@
 
                 <ImageView
                     android:layout_width="20dp"
-                    android:layout_height="19dp"
+                    android:layout_height="20dp"
                     android:layout_marginLeft="13dp"
                     android:layout_marginTop="2dp"
-                    android:tint="@color/c444"
-                    app:srcCompat="@drawable/ic_input_phone" />
+                    app:srcCompat="@drawable/ic_secured_letter"
+                    app:tint="@color/c444" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -288,13 +390,13 @@
                         android:layout_marginLeft="13dp"
                         android:layout_marginRight="20dp"
                         android:layout_marginBottom="3dp"
-                        android:text="Phone Number"
+                        android:text="@string/primary_email"
                         android:textColor="@color/c333"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/phone"
+                        android:id="@+id/primaryEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="13dp"
@@ -303,7 +405,7 @@
                         android:background="@color/transparent"
                         android:ems="10"
                         android:inputType="textPersonName"
-                        android:text="@string/contact_number"
+                        android:text="Not provided"
                         android:textColor="@color/c444"
                         android:textSize="16sp" />
                 </LinearLayout>
@@ -322,8 +424,8 @@
                     android:layout_marginLeft="13dp"
                     android:layout_marginTop="11dp"
                     android:adjustViewBounds="true"
-                    android:tint="@color/c444"
-                    app:srcCompat="@drawable/ic_secured_letter" />
+                    app:srcCompat="@drawable/ic_secured_letter"
+                    app:tint="@color/c444" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -340,13 +442,13 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="20dp"
                         android:layout_marginBottom="3dp"
-                        android:text="@string/email_address"
+                        android:text="@string/other_email"
                         android:textColor="@color/c333"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/email"
+                        android:id="@+id/otherEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="13dp"
@@ -355,7 +457,284 @@
                         android:background="@color/transparent"
                         android:ems="10"
                         android:inputType="textPersonName"
-                        android:text="@string/email"
+                        android:text="@string/not_provided"
+                        android:textColor="@color/c444"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="13dp"
+                android:background="@color/fafafa" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/parent_s_information"
+                    android:textColor="@color/c555"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/editParentsInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="15dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="15dp"
+                    android:text="Edit"
+                    android:textColor="@color/red_app"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginTop="2dp"
+                    app:srcCompat="@drawable/ic_person_male"
+                    app:tint="@color/c444" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:orientation="vertical"
+                    android:paddingLeft="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="3dp"
+                        android:text="@string/father_s_info"
+                        android:textColor="@color/c333"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/fatherInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/transparent"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:text="Not provided"
+                        android:textColor="@color/c444"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginTop="11dp"
+                    android:adjustViewBounds="true"
+                    app:srcCompat="@drawable/ic_person_female"
+                    app:tint="@color/c444" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:orientation="vertical"
+                    android:paddingLeft="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="3dp"
+                        android:text="@string/mother_s_info"
+                        android:textColor="@color/c333"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/motherInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/transparent"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:text="@string/not_provided"
+                        android:textColor="@color/c444"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="13dp"
+                android:background="@color/fafafa" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/employment_information"
+                    android:textColor="@color/c555"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/editEmploymentInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="15dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="15dp"
+                    android:text="Edit"
+                    android:textColor="@color/red_app"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginTop="2dp"
+                    app:srcCompat="@drawable/ic_permanent_job"
+                    app:tint="@color/c444" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:orientation="vertical"
+                    android:paddingLeft="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="3dp"
+                        android:text="@string/organization"
+                        android:textColor="@color/c333"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/organization"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/transparent"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:text="@string/not_provided"
+                        android:textColor="@color/c444"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginTop="11dp"
+                    android:adjustViewBounds="true"
+                    app:srcCompat="@drawable/ic_student_male"
+                    app:tint="@color/c444" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:orientation="vertical"
+                    android:paddingLeft="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="3dp"
+                        android:text="@string/occupation"
+                        android:textColor="@color/c333"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/occupation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/transparent"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:text="@string/not_provided"
                         android:textColor="@color/c444"
                         android:textSize="16sp" />
 
@@ -412,8 +791,8 @@
                     android:layout_height="20dp"
                     android:layout_marginLeft="13dp"
                     android:layout_marginTop="2dp"
-                    android:tint="@color/c444"
-                    app:srcCompat="@drawable/ic_marker" />
+                    app:srcCompat="@drawable/ic_marker"
+                    app:tint="@color/c444" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

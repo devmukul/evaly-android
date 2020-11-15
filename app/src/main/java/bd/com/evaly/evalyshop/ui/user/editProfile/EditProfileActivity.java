@@ -28,17 +28,19 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ActivityEditProfileBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
+import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.AddressBottomSheet;
-import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.ContactInfoBottomSheet;
+import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.EmailInfoBottomSheet;
+import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.EmploymentInfoBottomSheet;
+import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.ParentsInfoBottomSheet;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.PersonalInfoBottomSheet;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ImageUtils;
@@ -78,9 +80,19 @@ public class EditProfileActivity extends BaseActivity {
             bottomSheet.show(getSupportFragmentManager(), "Edit Personal Info");
         });
 
-        binding.editContactInfo.setOnClickListener(v -> {
-            ContactInfoBottomSheet bottomSheet = ContactInfoBottomSheet.newInstance();
-            bottomSheet.show(getSupportFragmentManager(), "Edit Contact Info");
+        binding.editEmailInfo.setOnClickListener(v -> {
+            EmailInfoBottomSheet bottomSheet = EmailInfoBottomSheet.newInstance();
+            bottomSheet.show(getSupportFragmentManager(), "Edit Email Info");
+        });
+
+        binding.editEmploymentInfo.setOnClickListener(v -> {
+            EmploymentInfoBottomSheet bottomSheet = EmploymentInfoBottomSheet.newInstance();
+            bottomSheet.show(getSupportFragmentManager(), "Edit Employment Info");
+        });
+
+        binding.editParentsInfo.setOnClickListener(v -> {
+            ParentsInfoBottomSheet bottomSheet = ParentsInfoBottomSheet.newInstance();
+            bottomSheet.show(getSupportFragmentManager(), "Edit Parent Info");
         });
 
         binding.editAddress.setOnClickListener(v -> {
@@ -102,8 +114,9 @@ public class EditProfileActivity extends BaseActivity {
     private void updateProfileData() {
 
         UserModel userModel = CredentialManager.getUserData();
+        UserInfoResponse userInfoModel = CredentialManager.getUserInfo();
 
-        if (CredentialManager.getUserData() == null) {
+        if (CredentialManager.getUserData() == null || CredentialManager.getUserInfo() == null) {
             Toast.makeText(this, "Profile information not found, please logout and login again.", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -118,10 +131,10 @@ public class EditProfileActivity extends BaseActivity {
         binding.firstName.setText(fullName);
         binding.userNameTop.setText(fullName);
 
-        binding.email.setText(((userModel.getEmail() == null) ||
+        binding.primaryEmail.setText(((userModel.getEmail() == null) ||
                 (userModel.getEmail() != null && userModel.getEmail().equals(""))) ? "No email address provided" : userModel.getEmail());
 
-        binding.phone.setText(((userModel.getContacts() == null) ||
+        binding.contactNumber.setText(((userModel.getContacts() == null) ||
                 (userModel.getContacts() != null && userModel.getContacts().equals(""))) ? "No phone number provided" : userModel.getContacts());
 
         if (userModel.getAddresses() == null || (userModel.getContacts() != null && userModel.getContacts().equals("")))
@@ -129,6 +142,22 @@ public class EditProfileActivity extends BaseActivity {
         else
             binding.address.setText(userModel.getAddresses());
 
+        if (userInfoModel.getPhoneNumber() != null)
+            binding.contactNumber.setText(userInfoModel.getPhoneNumber());
+        if (userInfoModel.getBirthDate() != null)
+            binding.dateOfBirth.setText(userInfoModel.getBirthDate());
+        if (userInfoModel.getFatherName() != null)
+            binding.fatherInfo.setText(userInfoModel.getFatherName());
+        if (userInfoModel.getMotherName() != null)
+            binding.motherInfo.setText(userInfoModel.getMotherName());
+        if (userInfoModel.getOccupation() != null)
+            binding.occupation.setText(userInfoModel.getOccupation());
+        if (userInfoModel.getOrganization() != null)
+            binding.organization.setText(userInfoModel.getOrganization());
+        if (userInfoModel.getPrimaryEmail() != null)
+            binding.primaryEmail.setText(userInfoModel.getPrimaryEmail());
+        if (userInfoModel.getOtherEmail() != null)
+            binding.otherEmail.setText(userInfoModel.getOtherEmail());
     }
 
     private void setProfilePic() {

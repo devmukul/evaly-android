@@ -57,6 +57,7 @@ import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
+import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
@@ -229,6 +230,9 @@ public interface IApiClient {
 
     @PUT(UrlUtils.BASE_URL_AUTH + "user-info-update/")
     Call<JsonObject> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
+
+    @GET(UrlUtils.BASE_URL_AUTH + "user-info-details/")
+    Call<CommonDataResponse<UserInfoResponse>> getUserInfo(@Header("Authorization") String token);
 
     @POST(UrlUtils.UPDATE_VCARD)
     Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);

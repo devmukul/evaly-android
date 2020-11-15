@@ -80,10 +80,12 @@ public class ParentsInfoBottomSheet extends BottomSheetDialogFragment {
 
         UserInfoResponse userModel = CredentialManager.getUserInfo();
 
-        binding.fatherName.setText(userModel.getFatherName());
-        binding.fatherPhoneNumber.setText(userModel.getFatherPhoneNumber());
-        binding.motherName.setText(userModel.getMotherName());
-        binding.motherPhoneNumber.setText(userModel.getMotherPhoneNumber());
+        if (userModel != null) {
+            binding.fatherName.setText(userModel.getFatherName());
+            binding.fatherPhoneNumber.setText(userModel.getFatherPhoneNumber());
+            binding.motherName.setText(userModel.getMotherName());
+            binding.motherPhoneNumber.setText(userModel.getMotherPhoneNumber());
+        }
 
         binding.save.setOnClickListener(v -> {
             String fatherName = binding.fatherName.getText().toString().trim();

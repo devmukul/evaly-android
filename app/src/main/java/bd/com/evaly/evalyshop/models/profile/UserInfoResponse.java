@@ -42,8 +42,23 @@ public class UserInfoResponse implements Serializable {
     @SerializedName("birth_date")
     private String birthDate;
 
+    @SerializedName("profile_pic_url")
+    private String profilePicUrl;
+
+    public String getProfilePicUrl() {
+        return profilePicUrl;
+    }
+
+    public void setProfilePicUrl(String profilePicUrl) {
+        this.profilePicUrl = profilePicUrl;
+    }
+
+
     public String getGender() {
-        return gender;
+        if (gender == null)
+            return "";
+        else
+            return gender;
     }
 
     public void setGender(String gender) {
