@@ -10,6 +10,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/brd_order_request"
+        android:backgroundTint="#232323"
         android:paddingLeft="15dp"
         android:paddingTop="15dp"
         android:paddingRight="15dp"
@@ -24,7 +25,7 @@
             android:layout_toLeftOf="@id/statusHolder"
             android:clickable="false"
             android:paddingRight="10dp"
-            android:textColor="@color/c444"
+            android:textColor="#eee"
             android:textIsSelectable="false"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -72,7 +73,7 @@
             android:layout_below="@+id/phone"
             android:layout_marginTop="10dp"
             android:clickable="false"
-            android:textColor="@color/c666"
+            android:textColor="#aaa"
             android:textSize="14sp"
             tools:text="Medium Smart Backpack For Men\nSmart Android TV" />
 
@@ -95,7 +96,7 @@
             android:layout_alignBaseline="@+id/phone"
             android:layout_alignParentRight="true"
             android:clickable="false"
-            android:textColor="@color/c777"
+            android:textColor="#999"
             android:textSize="13sp"
             tools:text="12/02/2020" />
     </RelativeLayout>

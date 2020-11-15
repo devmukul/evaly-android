@@ -20,6 +20,10 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    packagingOptions {
+        pickFirst 'lib/armeabi-v7a/libRSSupport.so'
+    }
+
     android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
     buildFeatures {
@@ -64,7 +68,6 @@ android {
 
 dependencies {
 
-    // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
 
     implementation "com.airbnb.android:epoxy:3.11.0"
     implementation "com.airbnb.android:epoxy-databinding:3.11.0"

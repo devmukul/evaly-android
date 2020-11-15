@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -71,7 +70,7 @@ public class OrderListBaseFragment extends Fragment {
     private void setupBottomSheet() {
         binding.orderRequestBottomSheet.bringToFront();
         BottomSheetBehavior behavior = BottomSheetBehavior.from(binding.orderRequestBottomSheet);
-        behavior.setPeekHeight(280);
+        behavior.setPeekHeight(370);
 
         binding.orderRequestBottomSheet.setOnClickListener(view -> {
             behavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
