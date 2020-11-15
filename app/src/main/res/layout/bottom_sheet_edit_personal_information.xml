@@ -95,16 +95,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
             android:layout_marginTop="15dp"
             android:text="@string/phone_number"
-            android:textColor="@color/c555"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textColor="@color/c555" />
 
         <EditText
             android:id="@+id/phone"
@@ -114,11 +111,39 @@
             android:layout_marginEnd="10dp"
             android:layout_weight="1"
             android:background="@drawable/input_brd_small"
-            android:hint="@string/contact_number"
+            android:hint="@string/enter_your_phone_number"
             android:imeOptions="actionGo"
             android:inputType="numberDecimal"
             android:maxLines="1"
             android:paddingLeft="15dp"
+            android:singleLine="true"
+            android:textColor="@color/c666"
+            android:textSize="16sp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/date_of_birth"
+            android:textColor="@color/c555" />
+
+        <TextView
+            android:id="@+id/dateOfBirth"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_brd_small"
+            android:drawableEnd="@drawable/ic_calendar"
+            android:gravity="center_vertical"
+            android:hint="@string/enter_your_date_of_birth"
+            android:imeOptions="actionGo"
+            android:maxLines="1"
+            android:paddingLeft="15dp"
+            android:paddingEnd="15dp"
             android:singleLine="true"
             android:textColor="@color/c666"
             android:textSize="16sp" />

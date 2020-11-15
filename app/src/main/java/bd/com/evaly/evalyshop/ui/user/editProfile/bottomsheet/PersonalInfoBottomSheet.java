@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,18 +17,25 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.BottomSheetEditPersonalInfoBinding;
+import bd.com.evaly.evalyshop.databinding.BottomSheetEditPersonalInformationBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.user.UserModel;
+import bd.com.evaly.evalyshop.models.profile.PersonalInfoRequest;
+import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
 
-    private BottomSheetEditPersonalInfoBinding binding;
+    private BottomSheetEditPersonalInformationBinding binding;
+    DatePickerDialog.OnDateSetListener datePickerListener = (datePicker, year, month, day) -> {
+        String date = String.format("%d-%01d-%01d", year, ++month, day);
+        binding.dateOfBirth.setText(date);
+    };
     private EditProfileViewModel viewModel;
 
     public static PersonalInfoBottomSheet newInstance() {
@@ -38,7 +46,7 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = BottomSheetEditPersonalInfoBinding.inflate(inflater, container, false);
+        binding = BottomSheetEditPersonalInformationBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -75,15 +83,16 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
         return bottomSheetDialog;
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        UserModel userModel = CredentialManager.getUserData();
+        UserInfoResponse userModel = CredentialManager.getUserInfo();
 
-        binding.firstName.setText(userModel.getFirst_name());
-        binding.lastName.setText(userModel.getLast_name());
+        binding.firstName.setText(userModel.getFirstName());
+        binding.lastName.setText(userModel.getLastName());
+        binding.phone.setText(userModel.getPhoneNumber());
+        binding.dateOfBirth.setText(userModel.getBirthDate());
 
         if (userModel.getGender().equals("male"))
             binding.genderGroup.check(R.id.checkMale);
@@ -92,9 +101,26 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
         else
             binding.genderGroup.check(R.id.checkGenderOther);
 
+        binding.dateOfBirth.setOnClickListener(v -> {
+            Calendar cal = Calendar.getInstance();
+            int year = 2000;
+            int month = cal.get(Calendar.MONTH);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog dialog = new DatePickerDialog(
+                    getContext(),
+                    datePickerListener,
+                    year, month, day
+            );
+
+            dialog.show();
+        });
+
         binding.save.setOnClickListener(v -> {
             String firstName = binding.firstName.getText().toString().trim();
             String lastName = binding.lastName.getText().toString().trim();
+            String dateOfBirth = binding.dateOfBirth.getText().toString().trim();
+            String contact = binding.phone.getText().toString().trim();
             String gender = "male";
 
             if (binding.genderGroup.getCheckedRadioButtonId() == R.id.checkMale)
@@ -110,20 +136,35 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
             } else if (lastName.equals("")) {
                 Toast.makeText(getContext(), "Please enter your last name", Toast.LENGTH_SHORT).show();
                 return;
+            } else if (dateOfBirth.equals("")) {
+                Toast.makeText(getContext(), "Please enter your date of birth", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            HashMap<String, String> body = new HashMap<>();
-            body.put("first_name", firstName);
-            body.put("last_name", lastName);
-            body.put("gender", gender);
+            PersonalInfoRequest body = new PersonalInfoRequest();
+            body.setFirstName(firstName);
+            body.setLastName(lastName);
+            body.setBirthDate(dateOfBirth);
+            body.setContact(contact);
+            body.setGender(gender);
 
-            viewModel.setUserData(body);
+//            HashMap<String, String> body = new HashMap<>();
+//            body.put("first_name", firstName);
+//            body.put("last_name", lastName);
+//            body.put("birth_date", dateOfBirth);
+//            body.put("contact", contact);
+//            body.put("gender", gender);
+//            viewModel.setUserData(body);
+
+
+
+            viewModel.setUserData(Utils.objectToHashMap(body));
 
             HashMap<String, String> data = new HashMap<>();
-            body.put("user", CredentialManager.getUserName());
-            body.put("host", Constants.XMPP_HOST);
-            body.put("name", "FN");
-            body.put("content", firstName+" "+lastName);
+            data.put("user", CredentialManager.getUserName());
+            data.put("host", Constants.XMPP_HOST);
+            data.put("name", "FN");
+            data.put("content", firstName + " " + lastName);
             viewModel.updateToXMPP(data);
             dismiss();
         });

@@ -22,6 +22,7 @@ import bd.com.evaly.evalyshop.models.profile.ParentInfoRequest;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class ParentsInfoBottomSheet extends BottomSheetDialogFragment {
 
@@ -109,6 +110,17 @@ public class ParentsInfoBottomSheet extends BottomSheetDialogFragment {
             body.setFatherPhoneNumber(fatherPhoneNumber);
             body.setMotherName(motherName);
             body.setMotherPhoneNumber(motherPhoneNumber);
+
+
+            viewModel.setUserData(Utils.objectToHashMap(body));
+
+//            HashMap<String, String> data = new HashMap<>();
+//            data.put("father_name", fatherName);
+//            data.put("father_phone_number", fatherPhoneNumber);
+//            data.put("mother_name", motherName);
+//            data.put("mother_phone_number", motherPhoneNumber);
+//
+//            viewModel.setUserData(data);
         });
 
     }

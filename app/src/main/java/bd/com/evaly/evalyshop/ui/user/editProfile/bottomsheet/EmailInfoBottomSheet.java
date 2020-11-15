@@ -22,6 +22,7 @@ import bd.com.evaly.evalyshop.models.profile.EmailInfoRequest;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class EmailInfoBottomSheet extends BottomSheetDialogFragment {
 
@@ -99,6 +100,8 @@ public class EmailInfoBottomSheet extends BottomSheetDialogFragment {
             body.setPrimaryEmail(primaryEmail);
             if (!otherEmail.equals(""))
                 body.setOtherEmail(otherEmail);
+
+            viewModel.setUserData(Utils.objectToHashMap(body));
         });
 
     }

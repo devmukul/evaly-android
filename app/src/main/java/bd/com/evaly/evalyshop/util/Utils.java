@@ -19,7 +19,7 @@ import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.text.BreakIterator;
 import java.text.ParseException;
@@ -55,7 +56,12 @@ public class Utils {
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
 
-
+    public static HashMap<String, String> objectToHashMap(Object body) {
+        Gson gson = new Gson();
+        Type stringStringMap = new TypeToken<Map<String, String>>() {
+        }.getType();
+        return gson.fromJson(gson.toJson(body), stringStringMap);
+    }
 
     public static boolean isValidURL(String urlStr) {
         return Patterns.WEB_URL.matcher(urlStr).matches();

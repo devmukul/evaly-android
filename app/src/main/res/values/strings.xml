@@ -394,5 +394,10 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="other_email">Other Email</string>
     <string name="enter_your_other_email">Enter your other email</string>
     <string name="save_email_addresses">Save Email Addresses</string>
+    <string name="full_name">Full Name</string>
+    <string name="enter_your_full_name">Enter your full name</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="enter_your_date_of_birth">Enter your date of birth</string>
+    <string name="enter_your_phone_number">Enter your phone number</string>
 
 </resources>

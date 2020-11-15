@@ -22,6 +22,7 @@ import bd.com.evaly.evalyshop.models.profile.EmploymentRequest;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class EmploymentInfoBottomSheet extends BottomSheetDialogFragment {
 
@@ -43,7 +44,6 @@ public class EmploymentInfoBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
 
     @Override
@@ -101,6 +101,8 @@ public class EmploymentInfoBottomSheet extends BottomSheetDialogFragment {
             body.setOccupation(occupation);
             body.setOrganization(organization);
 
+
+            viewModel.setUserData(Utils.objectToHashMap(body));
         });
 
     }
