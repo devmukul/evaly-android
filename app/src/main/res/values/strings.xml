@@ -87,6 +87,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="change_password">Change Password</string>
     <string name="messages">Messages</string>
     <string name="address">Address</string>
+    <string name="addresses">Addresses</string>
     <string name="sku">SKU</string>
     <string name="description">Description</string>
     <string name="specifications">Specifications</string>
@@ -405,5 +406,12 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="father_s_info">Father\'s Info</string>
     <string name="mother_s_info">Mother\'s Info</string>
     <string name="employment_information">Employment Information</string>
+    <string name="save_address">Save Address</string>
+    <string name="enter_road_no_block_sector">Enter road no, block/sector</string>
+    <string name="area">Area</string>
+    <string name="enter_area">Enter area</string>
+    <string name="enter_region">Enter region</string>
+    <string name="region">Region</string>
+    <string name="enter_city">Enter city</string>
 
 </resources>

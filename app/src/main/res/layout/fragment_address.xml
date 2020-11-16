@@ -11,14 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/fff"
-        app:menu="@menu/dashboard_menu"
+        app:menu="@menu/plus_btn"
         app:navigationIcon="@drawable/ic_arrow_back"
-        app:title="@string/account" />
+        app:title="@string/addresses" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_address"/>
+        tools:listitem="@layout/item_address" />
+
 </FrameLayout>

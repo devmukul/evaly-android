@@ -26,6 +26,7 @@ import bd.com.evaly.evalyshop.models.auth.SetPasswordBody;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
+import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
@@ -431,6 +432,10 @@ public class AuthApiHelper extends BaseApiHelper {
 
     public static void getUserAddress(ResponseListenerAuth<CommonDataResponse<List<AddressResponse>>, String> listener) {
         getiApiClient().getAddressList(CredentialManager.getToken()).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void addAddress(AddressRequest body, ResponseListenerAuth<CommonDataResponse<List<AddressResponse>>, String> listener) {
+        getiApiClient().addAddress(CredentialManager.getToken(), body).enqueue(getResponseCallBackDefault(listener));
     }
 
     // auth 2.0

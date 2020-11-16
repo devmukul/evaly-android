@@ -57,6 +57,7 @@ import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
+import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
@@ -234,6 +235,12 @@ public interface IApiClient {
 
     @GET(UrlUtils.BASE_URL_AUTH + "user-info-details/")
     Call<CommonDataResponse<UserInfoResponse>> getUserInfo(@Header("Authorization") String token);
+
+    @GET(UrlUtils.BASE_URL_AUTH + "user-address/list/")
+    Call<CommonDataResponse<List<AddressResponse>>> getAddressList(@Header("Authorization") String token);
+
+    @POST(UrlUtils.BASE_URL_AUTH + "add-user-address/")
+    Call<CommonDataResponse<List<AddressResponse>>> addAddress(@Header("Authorization") String token, @Body AddressRequest body);
 
     @POST(UrlUtils.UPDATE_VCARD)
     Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);
@@ -618,8 +625,6 @@ public interface IApiClient {
     @POST(UrlUtils.BASE_AUTH + "users/set-user-password")
     Call<SetPasswordResponse> authSetPassword(@Body SetPasswordBody body);
 
-    @GET(UrlUtils.BASE_AUTH + "user-address/list/")
-    Call<CommonDataResponse<List<AddressResponse>>> getAddressList(@Header("Authorization") String token);
 
     // evaly express services
 

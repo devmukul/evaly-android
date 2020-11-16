@@ -8,6 +8,8 @@ import java.util.List;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.ui.address.model.AddressListModel_;
+import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
+import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 
 public class AddressController extends EpoxyController {
@@ -24,6 +26,15 @@ public class AddressController extends EpoxyController {
                     .model(item)
                     .addTo(this);
         }
+
+        new EmptySpaceModel_()
+                .id("empty_space")
+                .height(100)
+                .addIf(isLoading, this);
+
+        new LoadingModel_()
+                .id("loadingbar")
+                .addIf(isLoading, this);
 
         new NoItemModel_()
                 .id("no_item")

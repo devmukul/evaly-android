@@ -9,18 +9,23 @@ import java.util.List;
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class AddressViewModel extends ViewModel {
 
     private AddressListDao addressListDao;
     private LiveData<List<AddressResponse>> addressLiveData;
+    private CompositeDisposable compositeDisposable;
 
     @ViewModelInject
     public AddressViewModel(AddressListDao addressListDao) {
         this.addressListDao = addressListDao;
         this.addressLiveData = addressListDao.getAllLive();
+        compositeDisposable = new CompositeDisposable();
         loadAddressListFromAPI();
     }
 
@@ -28,7 +33,34 @@ public class AddressViewModel extends ViewModel {
         AuthApiHelper.getUserAddress(new ResponseListenerAuth<CommonDataResponse<List<AddressResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AddressResponse>> response, int statusCode) {
-                addressListDao.insertAll(response.getData());
+                compositeDisposable.add(addressListDao
+                        .insertAll(response.getData())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe()
+                );
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
+    public void updateAddress(AddressRequest body) {
+        AuthApiHelper.addAddress(body, new ResponseListenerAuth<CommonDataResponse<List<AddressResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<AddressResponse>> response, int statusCode) {
+                compositeDisposable.add(addressListDao
+                        .insertAll(response.getData())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe()
+                );
             }
 
             @Override
@@ -45,5 +77,11 @@ public class AddressViewModel extends ViewModel {
 
     public LiveData<List<AddressResponse>> getAddressLiveData() {
         return addressLiveData;
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        compositeDisposable.clear();
     }
 }

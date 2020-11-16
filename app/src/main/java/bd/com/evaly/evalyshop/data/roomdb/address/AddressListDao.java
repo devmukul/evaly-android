@@ -10,6 +10,7 @@ import androidx.room.Query;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
+import io.reactivex.Completable;
 
 @Dao
 public interface AddressListDao {
@@ -18,7 +19,7 @@ public interface AddressListDao {
     void insert(AddressResponse entity);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(List<AddressResponse> list);
+    Completable insertAll(List<AddressResponse> list);
 
     @Delete
     void delete(AddressResponse entity);
