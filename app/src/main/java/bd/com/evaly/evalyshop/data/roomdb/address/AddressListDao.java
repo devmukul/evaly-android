@@ -28,7 +28,10 @@ public interface AddressListDao {
     Completable deleteAll();
 
     @Query("DELETE FROM address_list_table WHERE id = :id")
-    void deleteById(int id);
+    Completable deleteById(int id);
+
+    @Query("DELETE FROM address_list_table WHERE id NOT IN (:id)")
+    Completable deleteByIds(List<Integer> id);
 
     @Query("SELECT * FROM address_list_table")
     LiveData<List<AddressResponse>> getAllLive();

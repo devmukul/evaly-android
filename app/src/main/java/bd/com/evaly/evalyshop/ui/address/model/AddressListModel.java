@@ -10,6 +10,8 @@ import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
 
+import java.util.Objects;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemAddressBinding;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
@@ -44,5 +46,18 @@ public abstract class AddressListModel extends DataBindingEpoxyModel {
     protected void setDataBindingVariables(ViewDataBinding binding) {
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AddressListModel)) return false;
+        if (!super.equals(o)) return false;
+        AddressListModel that = (AddressListModel) o;
+        return Objects.equals(model, that.model);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), model);
+    }
 }
 

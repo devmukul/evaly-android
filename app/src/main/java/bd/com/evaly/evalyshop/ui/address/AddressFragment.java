@@ -67,6 +67,7 @@ public class AddressFragment extends Fragment implements AddressController.Click
         if (controller == null)
             controller = new AddressController();
         controller.setFilterDuplicates(true);
+        controller.setClickListener(this);
         binding.recyclerView.setAdapter(controller.getAdapter());
     }
 
@@ -134,6 +135,7 @@ public class AddressFragment extends Fragment implements AddressController.Click
             body.setCity(city);
             body.setRegion(region);
             viewModel.updateAddress(body);
+            dialog.cancel();
         });
 
         Objects.requireNonNull(dialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);

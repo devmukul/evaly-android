@@ -4,12 +4,14 @@ import android.view.View;
 
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.airbnb.epoxy.OnModelBoundListener;
 import com.airbnb.epoxy.OnModelClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ItemAddressBinding;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.ui.address.model.AddressListModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
@@ -35,6 +37,15 @@ public class AddressController extends EpoxyController {
             new AddressListModel_()
                     .id(item.getId())
                     .model(item)
+                    .onBind(new OnModelBoundListener<AddressListModel_, DataBindingEpoxyModel.DataBindingHolder>() {
+                        @Override
+                        public void onModelBound(AddressListModel_ model, DataBindingEpoxyModel.DataBindingHolder view, int position) {
+                            ItemAddressBinding binding = (ItemAddressBinding) view.getDataBinding();
+                            binding.fullName.setText(model.model().getFullName());
+                            binding.addressLine1.setText(model.model().getAddress());
+                            binding.addressLine2.setText(model.model().getArea() + ", " + model.model().getCity());
+                        }
+                    })
                     .onDeleteClick(new OnModelClickListener<AddressListModel_, DataBindingEpoxyModel.DataBindingHolder>() {
                         @Override
                         public void onClick(AddressListModel_ model, DataBindingEpoxyModel.DataBindingHolder parentView, View clickedView, int position) {

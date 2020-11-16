@@ -4,6 +4,9 @@ import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.orhanobut.logger.Logger;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
@@ -12,6 +15,8 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -33,11 +38,18 @@ public class AddressViewModel extends ViewModel {
         AuthApiHelper.getUserAddress(new ResponseListenerAuth<CommonDataResponse<List<AddressResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AddressResponse>> response, int statusCode) {
-                compositeDisposable.add(addressListDao
-                        .insertAll(response.getData())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe()
-                );
+                List<Integer> list = new ArrayList<>();
+                for (AddressResponse item : response.getData())
+                    list.add(item.getId());
+                Completable deleteAll = addressListDao.deleteByIds(list);
+                Completable insertAll = addressListDao.insertAll(response.getData());
+                compositeDisposable.add(deleteAll
+                        .andThen(Completable.fromAction(() -> Logger.d("Delete finished")))
+                        .andThen(insertAll)
+                        .andThen(Completable.fromAction(() -> Logger.d("Insert finished")))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.single())
+                        .subscribe());
             }
 
             @Override
@@ -49,16 +61,16 @@ public class AddressViewModel extends ViewModel {
             public void onAuthError(boolean logout) {
                 if (!logout)
                     loadAddressListFromAPI();
-
             }
         });
     }
 
-    public void deleteAddress(int id){
+    public void deleteAddress(int id) {
         AuthApiHelper.removeAddress(id, new ResponseListenerAuth<CommonDataResponse, String>() {
             @Override
             public void onDataFetched(CommonDataResponse response, int statusCode) {
-               // if (response.getSuccess())
+                if (response.getSuccess())
+                    compositeDisposable.add(addressListDao.deleteById(id).subscribeOn(Schedulers.io()).subscribe());
             }
 
             @Override
