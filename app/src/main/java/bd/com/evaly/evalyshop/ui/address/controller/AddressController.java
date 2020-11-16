@@ -1,11 +1,6 @@
 package bd.com.evaly.evalyshop.ui.address.controller;
 
-import android.view.View;
-
-import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
-import com.airbnb.epoxy.OnModelBoundListener;
-import com.airbnb.epoxy.OnModelClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +9,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemAddressBinding;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.ui.address.model.AddressListModel_;
+import bd.com.evaly.evalyshop.ui.address.model.BindAddressModel;
 import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
@@ -37,27 +33,12 @@ public class AddressController extends EpoxyController {
             new AddressListModel_()
                     .id(item.getId())
                     .model(item)
-                    .onBind(new OnModelBoundListener<AddressListModel_, DataBindingEpoxyModel.DataBindingHolder>() {
-                        @Override
-                        public void onModelBound(AddressListModel_ model, DataBindingEpoxyModel.DataBindingHolder view, int position) {
-                            ItemAddressBinding binding = (ItemAddressBinding) view.getDataBinding();
-                            binding.fullName.setText(model.model().getFullName());
-                            binding.addressLine1.setText(model.model().getAddress());
-                            binding.addressLine2.setText(model.model().getArea() + ", " + model.model().getCity());
-                        }
+                    .onBind((model, view, position) -> {
+                        ItemAddressBinding binding = (ItemAddressBinding) view.getDataBinding();
+                        BindAddressModel.bind(binding, model.model());
                     })
-                    .onDeleteClick(new OnModelClickListener<AddressListModel_, DataBindingEpoxyModel.DataBindingHolder>() {
-                        @Override
-                        public void onClick(AddressListModel_ model, DataBindingEpoxyModel.DataBindingHolder parentView, View clickedView, int position) {
-                            clickListener.onDelete(model.model());
-                        }
-                    })
-                    .onEditClick(new OnModelClickListener<AddressListModel_, DataBindingEpoxyModel.DataBindingHolder>() {
-                        @Override
-                        public void onClick(AddressListModel_ model, DataBindingEpoxyModel.DataBindingHolder parentView, View clickedView, int position) {
-                            clickListener.onEdit(model.model());
-                        }
-                    })
+                    .onDeleteClick((model, parentView, clickedView, position) -> clickListener.onDelete(model.model()))
+                    .onEditClick((model, parentView, clickedView, position) -> clickListener.onEdit(model.model()))
                     .addTo(this);
         }
 
@@ -73,6 +54,7 @@ public class AddressController extends EpoxyController {
         new NoItemModel_()
                 .id("no_item")
                 .text("No address added")
+                .width(70)
                 .image(R.drawable.ic_location_track)
                 .imageTint("#777777")
                 .addIf(!isLoading && list.size() == 0, this);

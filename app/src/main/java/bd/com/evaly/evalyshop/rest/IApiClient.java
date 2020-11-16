@@ -233,6 +233,9 @@ public interface IApiClient {
     @PUT(UrlUtils.BASE_URL_AUTH + "user-info-update/")
     Call<JsonObject> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
+    @POST(UrlUtils.BASE_URL_AUTH + "add-user-info/")
+    Call<CommonDataResponse<UserInfoResponse>> addUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
+
     @GET(UrlUtils.BASE_URL_AUTH + "user-info-details/")
     Call<CommonDataResponse<UserInfoResponse>> getUserInfo(@Header("Authorization") String token);
 

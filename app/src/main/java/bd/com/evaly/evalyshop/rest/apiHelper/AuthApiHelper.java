@@ -407,6 +407,10 @@ public class AuthApiHelper extends BaseApiHelper {
         getiApiClient().setUserData(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void addUserData(String token, HashMap<String, String> body, ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String> listener) {
+        getiApiClient().addUserData(token, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
     public static void getUserInfo(ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String> listener) {
         getiApiClient().getUserInfo(CredentialManager.getToken()).enqueue(getResponseCallBackDefault(listener));
     }

@@ -114,23 +114,4 @@ public class AddressResponse {
                         "}";
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AddressResponse)) return false;
-        AddressResponse that = (AddressResponse) o;
-        return getId() == that.getId() &&
-                Objects.equals(getArea(), that.getArea()) &&
-                Objects.equals(getAddress(), that.getAddress()) &&
-                Objects.equals(getFullName(), that.getFullName()) &&
-                Objects.equals(getCity(), that.getCity()) &&
-                Objects.equals(getPhoneNumber(), that.getPhoneNumber()) &&
-                Objects.equals(getRegion(), that.getRegion()) &&
-                Objects.equals(getStatus(), that.getStatus());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getArea(), getAddress(), getFullName(), getCity(), getPhoneNumber(), getRegion(), getStatus());
-    }
 }
