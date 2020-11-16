@@ -8,14 +8,22 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.databinding.FragmentAddressBinding;
+import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.ui.address.controller.AddressController;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class AddressFragment extends Fragment {
 
+    AddressViewModel viewModel;
     private FragmentAddressBinding binding;
     private AddressController controller;
 
@@ -27,12 +35,26 @@ public class AddressFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(AddressViewModel.class);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         updateViews();
         setupAdapter();
         clickListeners();
+        liveEvents();
+    }
+
+    private void liveEvents() {
+        viewModel.getAddressLiveData().observe(getViewLifecycleOwner(), addressResponses -> {
+            controller.setList(addressResponses);
+            controller.requestModelBuild();
+        });
     }
 
     private void setupAdapter() {
@@ -48,8 +70,6 @@ public class AddressFragment extends Fragment {
 
 
     private void clickListeners() {
-
-
         binding.toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
     }
 

@@ -287,9 +287,10 @@
         android:id="@+id/orderListBaseFragment"
         android:name="bd.com.evaly.evalyshop.ui.order.orderList.OrderListBaseFragment"
         android:label="OrderListBaseFragment" />
-
-
-
+    <fragment
+        android:id="@+id/addressFragment"
+        android:name="bd.com.evaly.evalyshop.ui.address.AddressFragment"
+        android:label="AddressFragment" />
 
 
     <!--    <activity-->

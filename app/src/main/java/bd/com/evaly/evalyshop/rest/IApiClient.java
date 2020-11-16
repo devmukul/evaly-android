@@ -57,6 +57,7 @@ import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
+import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
@@ -617,6 +618,8 @@ public interface IApiClient {
     @POST(UrlUtils.BASE_AUTH + "users/set-user-password")
     Call<SetPasswordResponse> authSetPassword(@Body SetPasswordBody body);
 
+    @GET(UrlUtils.BASE_AUTH + "user-address/list/")
+    Call<CommonDataResponse<List<AddressResponse>>> getAddressList(@Header("Authorization") String token);
 
     // evaly express services
 

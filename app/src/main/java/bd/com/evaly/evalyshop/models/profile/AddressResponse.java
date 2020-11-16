@@ -1,8 +1,16 @@
 package bd.com.evaly.evalyshop.models.profile;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "address_list_table")
 public class AddressResponse{
+
+	@PrimaryKey
+	@SerializedName("id")
+	private int id;
 
 	@SerializedName("area")
 	private String area;
@@ -18,9 +26,6 @@ public class AddressResponse{
 
 	@SerializedName("phone_number")
 	private String phoneNumber;
-
-	@SerializedName("id")
-	private int id;
 
 	@SerializedName("region")
 	private String region;
