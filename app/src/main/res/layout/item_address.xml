@@ -51,5 +51,29 @@
             app:layout_constraintStart_toStartOf="@id/fullName"
             app:layout_constraintTop_toBottomOf="@id/addressLine1" />
 
+        <ImageView
+            android:id="@+id/editBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/btn_edit_circle"
+            android:padding="8dp"
+            android:src="@drawable/ic_edit_pen"
+            app:layout_constraintEnd_toStartOf="@id/deleteBtn"
+            app:layout_constraintTop_toBottomOf="@id/addressLine2"
+            app:tint="#fff" />
+
+        <ImageView
+            android:id="@+id/deleteBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/btn_delete_circle"
+            android:padding="8dp"
+            android:src="@drawable/ic_delete_black_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addressLine2"
+            app:tint="#fff" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

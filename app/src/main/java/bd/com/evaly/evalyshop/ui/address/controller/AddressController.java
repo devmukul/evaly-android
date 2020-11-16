@@ -1,6 +1,10 @@
 package bd.com.evaly.evalyshop.ui.address.controller;
 
+import android.view.View;
+
+import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.airbnb.epoxy.OnModelClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +20,13 @@ public class AddressController extends EpoxyController {
 
     private List<AddressResponse> list = new ArrayList<>();
     private boolean isLoading = true;
+    private ClickListener clickListener;
+
+    public interface ClickListener {
+        void onDelete(AddressResponse model);
+
+        void onEdit(AddressResponse model);
+    }
 
     @Override
     protected void buildModels() {
@@ -24,6 +35,18 @@ public class AddressController extends EpoxyController {
             new AddressListModel_()
                     .id(item.getId())
                     .model(item)
+                    .onDeleteClick(new OnModelClickListener<AddressListModel_, DataBindingEpoxyModel.DataBindingHolder>() {
+                        @Override
+                        public void onClick(AddressListModel_ model, DataBindingEpoxyModel.DataBindingHolder parentView, View clickedView, int position) {
+                            clickListener.onDelete(model.model());
+                        }
+                    })
+                    .onEditClick(new OnModelClickListener<AddressListModel_, DataBindingEpoxyModel.DataBindingHolder>() {
+                        @Override
+                        public void onClick(AddressListModel_ model, DataBindingEpoxyModel.DataBindingHolder parentView, View clickedView, int position) {
+                            clickListener.onEdit(model.model());
+                        }
+                    })
                     .addTo(this);
         }
 
@@ -42,6 +65,10 @@ public class AddressController extends EpoxyController {
                 .image(R.drawable.ic_location_track)
                 .imageTint("#777777")
                 .addIf(!isLoading && list.size() == 0, this);
+    }
+
+    public void setClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
     public void setLoading(boolean loading) {

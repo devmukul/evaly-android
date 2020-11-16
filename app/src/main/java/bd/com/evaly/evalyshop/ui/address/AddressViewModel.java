@@ -47,17 +47,38 @@ public class AddressViewModel extends ViewModel {
 
             @Override
             public void onAuthError(boolean logout) {
+                if (!logout)
+                    loadAddressListFromAPI();
+
+            }
+        });
+    }
+
+    public void deleteAddress(int id){
+        AuthApiHelper.removeAddress(id, new ResponseListenerAuth<CommonDataResponse, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse response, int statusCode) {
+               // if (response.getSuccess())
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
 
             }
         });
     }
 
     public void updateAddress(AddressRequest body) {
-        AuthApiHelper.addAddress(body, new ResponseListenerAuth<CommonDataResponse<List<AddressResponse>>, String>() {
+        AuthApiHelper.addAddress(body, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<List<AddressResponse>> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<AddressResponse> response, int statusCode) {
                 compositeDisposable.add(addressListDao
-                        .insertAll(response.getData())
+                        .insert(response.getData())
                         .subscribeOn(Schedulers.io())
                         .subscribe()
                 );

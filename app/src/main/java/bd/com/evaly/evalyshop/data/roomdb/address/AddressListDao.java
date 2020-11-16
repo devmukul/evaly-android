@@ -15,8 +15,8 @@ import io.reactivex.Completable;
 @Dao
 public interface AddressListDao {
 
-    @Insert
-    void insert(AddressResponse entity);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    Completable insert(AddressResponse entity);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable insertAll(List<AddressResponse> list);
@@ -25,7 +25,7 @@ public interface AddressListDao {
     void delete(AddressResponse entity);
 
     @Query("DELETE FROM address_list_table")
-    void deleteAll();
+    Completable deleteAll();
 
     @Query("DELETE FROM address_list_table WHERE id = :id")
     void deleteById(int id);

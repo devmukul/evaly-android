@@ -240,7 +240,10 @@ public interface IApiClient {
     Call<CommonDataResponse<List<AddressResponse>>> getAddressList(@Header("Authorization") String token);
 
     @POST(UrlUtils.BASE_URL_AUTH + "add-user-address/")
-    Call<CommonDataResponse<List<AddressResponse>>> addAddress(@Header("Authorization") String token, @Body AddressRequest body);
+    Call<CommonDataResponse<AddressResponse>> addAddress(@Header("Authorization") String token, @Body AddressRequest body);
+
+    @DELETE(UrlUtils.BASE_URL_AUTH + "remove-user-address/{id}")
+    Call<CommonDataResponse> removeAddress(@Header("Authorization") String token, @Path("id") int id);
 
     @POST(UrlUtils.UPDATE_VCARD)
     Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);

@@ -24,7 +24,10 @@ public abstract class AddressListModel extends DataBindingEpoxyModel {
     AddressResponse model;
 
     @EpoxyAttribute(DoNotHash)
-    View.OnClickListener clickListener;
+    View.OnClickListener onEditClick;
+
+    @EpoxyAttribute(DoNotHash)
+    View.OnClickListener onDeleteClick;
 
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
@@ -33,7 +36,8 @@ public abstract class AddressListModel extends DataBindingEpoxyModel {
         binding.fullName.setText(model.getFullName());
         binding.addressLine1.setText(model.getAddress());
         binding.addressLine2.setText(model.getArea() + ", " + model.getCity());
-        binding.getRoot().setOnClickListener(clickListener);
+        binding.editBtn.setOnClickListener(onEditClick);
+        binding.deleteBtn.setOnClickListener(onDeleteClick);
     }
 
     @Override
