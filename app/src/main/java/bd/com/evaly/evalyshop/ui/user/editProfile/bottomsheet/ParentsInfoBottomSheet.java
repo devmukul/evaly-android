@@ -114,7 +114,8 @@ public class ParentsInfoBottomSheet extends BottomSheetDialogFragment {
             body.setMotherPhoneNumber(motherPhoneNumber);
 
 
-            viewModel.setUserData(Utils.objectToHashMap(body));
+            viewModel.addUserData(Utils.objectToHashMap(body));
+            dismissAllowingStateLoss();
 
 //            HashMap<String, String> data = new HashMap<>();
 //            data.put("father_name", fatherName);

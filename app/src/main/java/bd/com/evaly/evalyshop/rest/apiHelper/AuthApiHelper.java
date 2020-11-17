@@ -26,6 +26,8 @@ import bd.com.evaly.evalyshop.models.auth.SetPasswordBody;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
+import bd.com.evaly.evalyshop.models.profile.AddressRequest;
+import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.rest.ApiClient;
@@ -405,6 +407,10 @@ public class AuthApiHelper extends BaseApiHelper {
         getiApiClient().setUserData(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void addUserData(String token, HashMap<String, String> body, ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String> listener) {
+        getiApiClient().addUserData(token, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
     public static void getUserInfo(ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String> listener) {
         getiApiClient().getUserInfo(CredentialManager.getToken()).enqueue(getResponseCallBackDefault(listener));
     }
@@ -428,6 +434,17 @@ public class AuthApiHelper extends BaseApiHelper {
         getiApiClient().forgetPassword(body).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void getUserAddress(ResponseListenerAuth<CommonDataResponse<List<AddressResponse>>, String> listener) {
+        getiApiClient().getAddressList(CredentialManager.getToken()).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void addAddress(AddressRequest body, ResponseListenerAuth<CommonDataResponse<AddressResponse>, String> listener) {
+        getiApiClient().addAddress(CredentialManager.getToken(), body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void removeAddress(int id, ResponseListenerAuth<CommonDataResponse, String> listener) {
+        getiApiClient().removeAddress(CredentialManager.getToken(), id).enqueue(getResponseCallBackDefault(listener));
+    }
 
     // auth 2.0
 

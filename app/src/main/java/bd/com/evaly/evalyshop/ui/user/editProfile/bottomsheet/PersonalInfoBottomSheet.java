@@ -167,7 +167,7 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
             data.put("name", "FN");
             data.put("content", firstName + " " + lastName);
             viewModel.updateToXMPP(data);
-            dismiss();
+            dismissAllowingStateLoss();
         });
 
     }

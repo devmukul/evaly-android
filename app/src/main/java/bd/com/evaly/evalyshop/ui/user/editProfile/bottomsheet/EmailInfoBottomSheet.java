@@ -101,7 +101,8 @@ public class EmailInfoBottomSheet extends BottomSheetDialogFragment {
             if (!otherEmail.equals(""))
                 body.setOtherEmail(otherEmail);
 
-            viewModel.setUserData(Utils.objectToHashMap(body));
+            viewModel.addUserData(Utils.objectToHashMap(body));
+            dismissAllowingStateLoss();
         });
 
     }

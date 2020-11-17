@@ -38,6 +38,14 @@ public class EditProfileViewModel extends ViewModel {
                 if (ob.get("last_name").isJsonNull())
                     userModel.setLast_name("");
                 CredentialManager.saveUserData(userModel);
+                UserInfoResponse userInfo = CredentialManager.getUserInfo();
+
+                if (userInfo != null) {
+                    userInfo.setFullName(userModel.getFullName());
+                    userInfo.setPhoneNumber(userModel.getContacts());
+                    userInfo.setGender(userModel.getGender());
+                    CredentialManager.saveUserInfo(userInfo);
+                }
 
                 infoSavedStatus.setValue(true);
             }
@@ -56,6 +64,30 @@ public class EditProfileViewModel extends ViewModel {
             }
         });
 
+    }
+
+
+    public void addUserData(HashMap<String, String> userInfo) {
+
+        AuthApiHelper.addUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<UserInfoResponse> response, int statusCode) {
+                if (response.getData() != null)
+                    CredentialManager.saveUserInfo(response.getData());
+                infoSavedStatus.setValue(true);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    addUserData(userInfo);
+            }
+        });
     }
 
     public void updateUserDetails() {

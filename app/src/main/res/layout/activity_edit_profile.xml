@@ -12,6 +12,7 @@
             android:layout_height="wrap_content"
             android:background="@color/fff"
             android:orientation="vertical"
+            android:paddingBottom="20dp"
             tools:context=".ui.user.editProfile.EditProfileActivity">
 
             <RelativeLayout
@@ -24,7 +25,7 @@
                     android:id="@+id/pictureHolder"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
-                    app:cardCornerRadius="75dp"
+                    app:cardCornerRadius="60dp"
                     app:cardElevation="1dp"
                     app:cardPreventCornerOverlap="true">
 
@@ -280,7 +281,7 @@
                         android:layout_width="20dp"
                         android:layout_height="19dp"
                         android:layout_marginLeft="13dp"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="14dp"
                         app:srcCompat="@drawable/ic_calendar"
                         app:tint="@color/c444" />
 
@@ -739,86 +740,6 @@
                         android:textSize="16sp" />
 
                 </LinearLayout>
-            </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:layout_marginTop="13dp"
-                android:background="@color/fafafa" />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="20dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Address"
-                    android:textColor="@color/c555"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/editAddress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:paddingLeft="20dp"
-                    android:paddingTop="15dp"
-                    android:paddingRight="20dp"
-                    android:paddingBottom="15dp"
-                    android:text="Edit"
-                    android:textColor="@color/red_app"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="5dp">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginLeft="13dp"
-                    android:layout_marginTop="2dp"
-                    app:srcCompat="@drawable/ic_marker"
-                    app:tint="@color/c444" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:orientation="vertical"
-                    android:paddingLeft="5dp">
-
-
-                    <TextView
-                        android:id="@+id/address"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="13dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@color/transparent"
-                        android:ems="10"
-                        android:gravity="top"
-                        android:text="Your address here"
-                        android:textColor="@color/c444"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
-
-
             </LinearLayout>
 
 

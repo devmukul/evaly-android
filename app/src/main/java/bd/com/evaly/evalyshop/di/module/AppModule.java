@@ -3,8 +3,12 @@ package bd.com.evaly.evalyshop.di.module;
 import android.app.Application;
 import android.content.Context;
 
+import androidx.room.Room;
+
 import javax.inject.Singleton;
 
+import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
 import dagger.Module;
 import dagger.Provides;
@@ -21,14 +25,19 @@ public class AppModule {
         return application;
     }
 
-//    @Provides
-//    @Singleton
-//    AppDatabase provideAppDatabase(@DatabaseInfo String dbName, Context context) {
-//        return Room.databaseBuilder(context, AppDatabase.class, dbName)
-//                .fallbackToDestructiveMigration()
-//                .build();
-//    }
+    @Provides
+    @Singleton
+    AppDatabase provideAppDatabase(Context context) {
+        return Room.databaseBuilder(context, AppDatabase.class, "app_database")
+                .fallbackToDestructiveMigration()
+                .build();
+    }
 
+    @Provides
+    @Singleton
+    AddressListDao addressListDao(AppDatabase appDatabase) {
+        return appDatabase.addressListDao();
+    }
 
     @Provides
     @Singleton

@@ -1,109 +1,117 @@
 package bd.com.evaly.evalyshop.models.profile;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
-public class AddressResponse{
+import java.util.Objects;
 
-	@SerializedName("area")
-	private String area;
+@Entity(tableName = "address_list_table")
+public class AddressResponse {
 
-	@SerializedName("address")
-	private String address;
+    @PrimaryKey
+    @SerializedName("id")
+    private int id;
 
-	@SerializedName("full_name")
-	private String fullName;
+    @SerializedName("area")
+    private String area;
 
-	@SerializedName("city")
-	private String city;
+    @SerializedName("address")
+    private String address;
 
-	@SerializedName("phone_number")
-	private String phoneNumber;
+    @SerializedName("full_name")
+    private String fullName;
 
-	@SerializedName("id")
-	private int id;
+    @SerializedName("city")
+    private String city;
 
-	@SerializedName("region")
-	private String region;
+    @SerializedName("phone_number")
+    private String phoneNumber;
 
-	@SerializedName("status")
-	private String status;
+    @SerializedName("region")
+    private String region;
 
-	public void setArea(String area){
-		this.area = area;
-	}
+    @SerializedName("status")
+    private String status;
 
-	public String getArea(){
-		return area;
-	}
+    public void setArea(String area) {
+        this.area = area;
+    }
 
-	public void setAddress(String address){
-		this.address = address;
-	}
+    public String getArea() {
+        return area;
+    }
 
-	public String getAddress(){
-		return address;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setFullName(String fullName){
-		this.fullName = fullName;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public String getFullName(){
-		return fullName;
-	}
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
-	public void setCity(String city){
-		this.city = city;
-	}
+    public String getFullName() {
+        return fullName;
+    }
 
-	public String getCity(){
-		return city;
-	}
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-	public void setPhoneNumber(String phoneNumber){
-		this.phoneNumber = phoneNumber;
-	}
+    public String getCity() {
+        return city;
+    }
 
-	public String getPhoneNumber(){
-		return phoneNumber;
-	}
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
-	public void setId(int id){
-		this.id = id;
-	}
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-	public int getId(){
-		return id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setRegion(String region){
-		this.region = region;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getRegion(){
-		return region;
-	}
+    public void setRegion(String region) {
+        this.region = region;
+    }
 
-	public void setStatus(String status){
-		this.status = status;
-	}
+    public String getRegion() {
+        return region;
+    }
 
-	public String getStatus(){
-		return status;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"AddressResponse{" + 
-			"area = '" + area + '\'' + 
-			",address = '" + address + '\'' + 
-			",full_name = '" + fullName + '\'' + 
-			",city = '" + city + '\'' + 
-			",phone_number = '" + phoneNumber + '\'' + 
-			",id = '" + id + '\'' + 
-			",region = '" + region + '\'' + 
-			",status = '" + status + '\'' + 
-			"}";
-		}
+    public String getStatus() {
+        return status;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "AddressResponse{" +
+                        "area = '" + area + '\'' +
+                        ",address = '" + address + '\'' +
+                        ",full_name = '" + fullName + '\'' +
+                        ",city = '" + city + '\'' +
+                        ",phone_number = '" + phoneNumber + '\'' +
+                        ",id = '" + id + '\'' +
+                        ",region = '" + region + '\'' +
+                        ",status = '" + status + '\'' +
+                        "}";
+    }
+
 }

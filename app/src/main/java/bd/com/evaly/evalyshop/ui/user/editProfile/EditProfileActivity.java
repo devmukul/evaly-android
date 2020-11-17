@@ -37,7 +37,6 @@ import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
-import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.AddressBottomSheet;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.EmailInfoBottomSheet;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.EmploymentInfoBottomSheet;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.ParentsInfoBottomSheet;
@@ -95,11 +94,6 @@ public class EditProfileActivity extends BaseActivity {
             bottomSheet.show(getSupportFragmentManager(), "Edit Parent Info");
         });
 
-        binding.editAddress.setOnClickListener(v -> {
-            AddressBottomSheet bottomSheet = AddressBottomSheet.newInstance();
-            bottomSheet.show(getSupportFragmentManager(), "Edit Address");
-        });
-
         viewModel.getInfoSavedStatus().observe(this, aBoolean -> {
             if (aBoolean) {
                 viewModel.setInfoSavedStatus(false);
@@ -137,19 +131,16 @@ public class EditProfileActivity extends BaseActivity {
         binding.contactNumber.setText(((userModel.getContacts() == null) ||
                 (userModel.getContacts() != null && userModel.getContacts().equals(""))) ? "No phone number provided" : userModel.getContacts());
 
-        if (userModel.getAddresses() == null || (userModel.getContacts() != null && userModel.getContacts().equals("")))
-            binding.address.setText("No address provided");
-        else
-            binding.address.setText(userModel.getAddresses());
-
         if (userInfoModel.getPhoneNumber() != null)
             binding.contactNumber.setText(userInfoModel.getPhoneNumber());
         if (userInfoModel.getBirthDate() != null)
             binding.dateOfBirth.setText(userInfoModel.getBirthDate());
         if (userInfoModel.getFatherName() != null)
-            binding.fatherInfo.setText(userInfoModel.getFatherName());
+            binding.fatherInfo.setText(String.format("%s%s", userInfoModel.getFatherName(), userInfoModel.getFatherPhoneNumber() != null ?
+                    String.format(", %s", userInfoModel.getFatherPhoneNumber()) : ""));
         if (userInfoModel.getMotherName() != null)
-            binding.motherInfo.setText(userInfoModel.getMotherName());
+            binding.motherInfo.setText(String.format("%s%s", userInfoModel.getMotherName(), userInfoModel.getMotherPhoneNumber() != null ?
+                    String.format(", %s", userInfoModel.getMotherPhoneNumber()) : ""));
         if (userInfoModel.getOccupation() != null)
             binding.occupation.setText(userInfoModel.getOccupation());
         if (userInfoModel.getOrganization() != null)

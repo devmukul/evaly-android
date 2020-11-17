@@ -103,8 +103,8 @@ public class EmploymentInfoBottomSheet extends BottomSheetDialogFragment {
             body.setOccupation(occupation);
             body.setOrganization(organization);
 
-
-            viewModel.setUserData(Utils.objectToHashMap(body));
+            viewModel.addUserData(Utils.objectToHashMap(body));
+            dismissAllowingStateLoss();
         });
 
     }

@@ -57,6 +57,8 @@ import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
+import bd.com.evaly.evalyshop.models.profile.AddressRequest;
+import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
@@ -231,8 +233,20 @@ public interface IApiClient {
     @PUT(UrlUtils.BASE_URL_AUTH + "user-info-update/")
     Call<JsonObject> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
+    @POST(UrlUtils.BASE_URL_AUTH + "add-user-info/")
+    Call<CommonDataResponse<UserInfoResponse>> addUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
+
     @GET(UrlUtils.BASE_URL_AUTH + "user-info-details/")
     Call<CommonDataResponse<UserInfoResponse>> getUserInfo(@Header("Authorization") String token);
+
+    @GET(UrlUtils.BASE_URL_AUTH + "user-address/list/")
+    Call<CommonDataResponse<List<AddressResponse>>> getAddressList(@Header("Authorization") String token);
+
+    @POST(UrlUtils.BASE_URL_AUTH + "add-user-address/")
+    Call<CommonDataResponse<AddressResponse>> addAddress(@Header("Authorization") String token, @Body AddressRequest body);
+
+    @DELETE(UrlUtils.BASE_URL_AUTH + "remove-user-address/{id}")
+    Call<CommonDataResponse> removeAddress(@Header("Authorization") String token, @Path("id") int id);
 
     @POST(UrlUtils.UPDATE_VCARD)
     Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);

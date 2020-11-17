@@ -106,13 +106,11 @@ public class AccountFragment extends Fragment {
 
 
         binding.btn3Image.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), EditProfileActivity.class);
-            startActivity(intent);
+            NavHostFragment.findNavController(this).navigate(R.id.addressFragment);
         });
 
         binding.btn3Title.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), EditProfileActivity.class);
-            startActivity(intent);
+            NavHostFragment.findNavController(this).navigate(R.id.addressFragment);
         });
 
 
@@ -250,7 +248,7 @@ public class AccountFragment extends Fragment {
 
     }
 
-    private void updateUserDetails(){
+    private void updateUserDetails() {
 
         AuthApiHelper.getUserInfo(new ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String>() {
             @Override

@@ -2,60 +2,71 @@ package bd.com.evaly.evalyshop.models.profile;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AddressRequest{
+public class AddressRequest {
 
-	@SerializedName("area")
-	private String area;
+    @SerializedName("id")
+    private Integer id;
 
-	@SerializedName("address")
-	private String address;
+    @SerializedName("area")
+    private String area;
 
-	@SerializedName("city")
-	private String city;
+    @SerializedName("address")
+    private String address;
 
-	@SerializedName("region")
-	private String region;
+    @SerializedName("city")
+    private String city;
 
-	public void setArea(String area){
-		this.area = area;
-	}
+    @SerializedName("region")
+    private String region;
 
-	public String getArea(){
-		return area;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setAddress(String address){
-		this.address = address;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getAddress(){
-		return address;
-	}
+    public void setArea(String area) {
+        this.area = area;
+    }
 
-	public void setCity(String city){
-		this.city = city;
-	}
+    public String getArea() {
+        return area;
+    }
 
-	public String getCity(){
-		return city;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setRegion(String region){
-		this.region = region;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public String getRegion(){
-		return region;
-	}
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"AddressRequest{" + 
-			"area = '" + area + '\'' + 
-			",address = '" + address + '\'' + 
-			",city = '" + city + '\'' + 
-			",region = '" + region + '\'' + 
-			"}";
-		}
+    public String getCity() {
+        return city;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    @Override
+    public String toString() {
+        return "AddressRequest{" +
+                "id=" + id +
+                ", area='" + area + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", region='" + region + '\'' +
+                '}';
+    }
 }
