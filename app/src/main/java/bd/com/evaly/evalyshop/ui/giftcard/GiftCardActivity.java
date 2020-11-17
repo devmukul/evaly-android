@@ -18,16 +18,15 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseViewPagerAdapter;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class GiftCardActivity extends AppCompatActivity {
-
 
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private BaseViewPagerAdapter pager;
     private TextView balance;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -28,11 +28,14 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
@@ -54,13 +57,16 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
 import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
 import bd.evaly.evalypaymentlibrary.model.PurchaseRequestInfo;
+import dagger.hilt.android.AndroidEntryPoint;
 
 import static android.app.Activity.RESULT_OK;
 
-
+@AndroidEntryPoint
 public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, PaymentListener {
 
     public static GiftCardPurchasedFragment instance;
+    @Inject
+    FirebaseRemoteConfig remoteConfig;
     private View view;
     private RecyclerView recyclerView;
     private ArrayList<GiftCardListPurchasedItem> itemList;
@@ -313,6 +319,14 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         nagad = bottomSheetDialog.findViewById(R.id.nagad);
         cards = bottomSheetDialog.findViewById(R.id.card);
         bank = bottomSheetDialog.findViewById(R.id.bank);
+
+        TextView offerText = bottomSheetDialog.findViewById(R.id.offerText);
+        if (remoteConfig.getString("nagad_description").isEmpty())
+            offerText.setVisibility(View.GONE);
+        else {
+            offerText.setVisibility(View.VISIBLE);
+            offerText.setText("• " + remoteConfig.getString("nagad_description"));
+        }
 
         TextView full_or_partial = bottomSheetDialog.findViewById(R.id.full_or_partial);
         full_or_partial.setVisibility(View.GONE);
