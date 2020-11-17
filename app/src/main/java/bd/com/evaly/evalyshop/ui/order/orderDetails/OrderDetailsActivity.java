@@ -136,7 +136,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private String deliveryChargeApplicable = null;
     private OrderDetailsViewModel viewModel;
     private boolean isRefundEligible = false;
-    private String disabledPaymentMethods = "", disabledPaymentMethodText = "";
+    private String disabledPaymentMethods = "", disabledPaymentMethodText = "", nagadBadgeText = "", nagadDescription = "";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -243,9 +243,19 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 ToastUtils.show("Cash on delivery only");
                 return;
             }
-            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount,
-                    paid_amount, shopSlug.contains("food"), orderDetailsModel.getAllowed_payment_methods(),
-                    paymentMessage, disabledPaymentMethods, disabledPaymentMethodText, this, orderDetailsModel.isApplyDeliveryCharge(), orderDetailsModel.getDeliveryCharge());
+            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no,
+                    total_amount,
+                    paid_amount,
+                    shopSlug.contains("food"),
+                    orderDetailsModel.getAllowed_payment_methods(),
+                    paymentMessage,
+                    disabledPaymentMethods,
+                    disabledPaymentMethodText,
+                    nagadBadgeText,
+                    nagadDescription,
+                    this,
+                    orderDetailsModel.isApplyDeliveryCharge(),
+                    orderDetailsModel.getDeliveryCharge());
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
 
@@ -421,6 +431,15 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                         deliveryChargeText = mFirebaseRemoteConfig.getString("delivery_charge_text");
                         disabledPaymentMethods = mFirebaseRemoteConfig.getString("disabled_payment_methods");
                         disabledPaymentMethodText = mFirebaseRemoteConfig.getString("disabled_payment_text");
+                        nagadBadgeText = mFirebaseRemoteConfig.getString("nagad_badge_text");
+                        nagadDescription = mFirebaseRemoteConfig.getString("nagad_description");
+                        mFirebaseRemoteConfig.getString("order_details_banner_url");
+                        if (!mFirebaseRemoteConfig.getString("order_details_banner_url").equals("")) {
+                            binding.paymentBannerHolder.setVisibility(View.VISIBLE);
+                            Glide.with(this)
+                                    .load(mFirebaseRemoteConfig.getString("order_details_banner_url"))
+                                    .into(binding.paymentBanner);
+                        }
                     }
                 });
     }

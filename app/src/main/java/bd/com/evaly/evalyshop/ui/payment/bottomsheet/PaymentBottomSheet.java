@@ -53,7 +53,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     private String[] paymentMethods;
     private String balanceText, deliveryFee;
     private boolean applyDeliveryFee;
-    private String disabledPaymentMethods = "", disabledPaymentMethodText = "";
+    private String disabledPaymentMethods = "", disabledPaymentMethodText = "", nagadBadgeText = "", nagadDescription = "";
 
 
     public static PaymentBottomSheet newInstance(String invoiceNo,
@@ -64,6 +64,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                                                  String balanceText,
                                                  String disabledPaymentMethods,
                                                  String disabledPaymentMethodText,
+                                                 String nagadBadgeText,
+                                                 String nagadDescription,
                                                  PaymentOptionListener paymentOptionListener,
                                                  boolean applyDeliveryFee,
                                                  String deliveryFee) {
@@ -81,6 +83,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         bundle.putBoolean("apply_delivery_fee", applyDeliveryFee);
         bundle.putString("delivery_fee", deliveryFee);
         bundle.putString("disabled_payment_method_text", disabledPaymentMethodText);
+        bundle.putString("nagadDescription", nagadDescription);
+        bundle.putString("nagadBadgeText", nagadBadgeText);
         instance.setArguments(bundle);
         return instance;
     }
@@ -118,6 +122,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             }
             disabledPaymentMethods = getArguments().getString("disabled_payment_methods");
             disabledPaymentMethodText = getArguments().getString("disabled_payment_method_text");
+            nagadDescription = getArguments().getString("nagadDescription");
+            nagadBadgeText = getArguments().getString("nagadBadgeText");
             applyDeliveryFee = getArguments().getBoolean("apply_delivery_fee");
             deliveryFee = getArguments().getString("delivery_fee");
         }
@@ -298,7 +304,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             } else if (paymentMethods[i].equalsIgnoreCase("nagad")) {
                 methodList.add(new PaymentMethodModel(
                         Constants.NAGAD,
-                        "Pay from your Nagad account using \nNagad payment gateway.",
+                        nagadDescription.equals("") ? "Pay from your Nagad account using \nNagad payment gateway." : nagadDescription,
                         disabledPaymentMethodText,
                         R.drawable.ic_nagad2,
                         false,
