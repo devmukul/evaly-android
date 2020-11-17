@@ -306,6 +306,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                         Constants.NAGAD,
                         nagadDescription.equals("") ? "Pay from your Nagad account using \nNagad payment gateway." : nagadDescription,
                         disabledPaymentMethodText,
+                        nagadBadgeText,
                         R.drawable.ic_nagad2,
                         false,
                         isEnabled));

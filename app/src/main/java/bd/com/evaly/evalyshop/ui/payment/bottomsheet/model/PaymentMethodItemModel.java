@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.payment.bottomsheet.model;
 
-import android.graphics.Color;
 import android.text.Html;
 import android.view.View;
 
@@ -28,6 +27,9 @@ public abstract class PaymentMethodItemModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
     String badgeText;
+
+    @EpoxyAttribute
+    String redBadge;
 
     @EpoxyAttribute
     int image;
@@ -71,6 +73,13 @@ public abstract class PaymentMethodItemModel extends DataBindingEpoxyModel {
             binding.radioButton.setText(Html.fromHtml(title + " <small>(" + badgeText + ")</small>"));
         else
             binding.radioButton.setText(title);
+
+        if (redBadge == null || redBadge.equals(""))
+            binding.redBadge.setVisibility(View.GONE);
+        else {
+            binding.redBadge.setVisibility(View.VISIBLE);
+            binding.redBadge.setText(redBadge);
+        }
 
     }
 

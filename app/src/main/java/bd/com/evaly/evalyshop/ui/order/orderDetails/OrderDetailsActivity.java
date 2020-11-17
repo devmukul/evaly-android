@@ -136,7 +136,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private String deliveryChargeApplicable = null;
     private OrderDetailsViewModel viewModel;
     private boolean isRefundEligible = false;
-    private String disabledPaymentMethods = "", disabledPaymentMethodText = "", nagadBadgeText = "", nagadDescription = "";
+    private String disabledPaymentMethods = "", disabledPaymentMethodText = "", nagadBadgeText = "", nagadDescription = "", paymentBanner = "";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -433,13 +433,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                         disabledPaymentMethodText = mFirebaseRemoteConfig.getString("disabled_payment_text");
                         nagadBadgeText = mFirebaseRemoteConfig.getString("nagad_badge_text");
                         nagadDescription = mFirebaseRemoteConfig.getString("nagad_description");
-                        mFirebaseRemoteConfig.getString("order_details_banner_url");
-                        if (!mFirebaseRemoteConfig.getString("order_details_banner_url").equals("")) {
-                            binding.paymentBannerHolder.setVisibility(View.VISIBLE);
-                            Glide.with(this)
-                                    .load(mFirebaseRemoteConfig.getString("order_details_banner_url"))
-                                    .into(binding.paymentBanner);
-                        }
+
                     }
                 });
     }
@@ -1214,14 +1208,12 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 else if (payMethod.equals(""))
                     binding.paymentMethod.setVisibility(View.GONE);
                 else {
-
                     payMethod = payMethod.replaceAll("card", "Card");
                     payMethod = payMethod.replaceAll("binding.balance", "Evaly Account");
                     payMethod = payMethod.replaceAll("bank", "Bank Account");
                     payMethod = payMethod.replaceAll("gift_code", "Gift Code");
                     payMethod = payMethod.replaceAll(",", ", ");
                     payMethod = payMethod.replaceAll("  ", " ");
-
                     binding.paymentMethod.setText(Utils.capitalize(payMethod));
                 }
 
@@ -1242,8 +1234,12 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
                 if (response.getCampaignRules().size() > 0) {
                     try {
-                        if (response.getCampaignRules().get(0).getAsJsonObject().get("category").getAsJsonObject().get("slug").getAsString().equals("pod-1ce6180b") && orderStatus.equals("pending"))
+                        if (response.getCampaignRules().get(0)
+                                .getAsJsonObject().get("category")
+                                .getAsJsonObject().get("slug")
+                                .getAsString().equals("pod-1ce6180b") && orderStatus.equals("pending")) {
                             binding.makePayment.setVisibility(View.GONE);
+                        }
                     } catch (Exception ignore) {
 
                     }

@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.ui.payment.bottomsheet.controller;
 
-import android.graphics.Color;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.epoxy.EpoxyController;
@@ -42,6 +40,7 @@ public class PaymentMethodController extends EpoxyController {
                     .isSelected(model.isSelected())
                     .isEnabled(model.isEnabled())
                     .badgeText(model.getBadgeText())
+                    .redBadge(model.getRedText())
                     .onBind((model12, view, position) -> {
                         ItemPaymentMethodBinding binding = (ItemPaymentMethodBinding) view.getDataBinding();
                         binding.radioButton.setChecked(model12.isSelected());
