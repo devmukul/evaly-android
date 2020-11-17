@@ -250,16 +250,9 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no,
                     total_amount,
                     paid_amount,
-                    shopSlug.contains("food"),
                     orderDetailsModel.getAllowed_payment_methods(),
-                    paymentMessage,
-                    disabledPaymentMethods,
-                    disabledPaymentMethodText,
-                    nagadBadgeText,
-                    nagadDescription,
-                    this,
                     orderDetailsModel.isApplyDeliveryCharge(),
-                    orderDetailsModel.getDeliveryCharge());
+                    orderDetailsModel.getDeliveryCharge(), this);
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
 
@@ -415,20 +408,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     private void checkRemoteConfig() {
-        mFirebaseRemoteConfig
-                .fetchAndActivate()
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        paymentMessage = mFirebaseRemoteConfig.getString("evaly_pay_text");
-                        deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
-                        deliveryChargeText = mFirebaseRemoteConfig.getString("delivery_charge_text");
-                        disabledPaymentMethods = mFirebaseRemoteConfig.getString("disabled_payment_methods");
-                        disabledPaymentMethodText = mFirebaseRemoteConfig.getString("disabled_payment_text");
-                        nagadBadgeText = mFirebaseRemoteConfig.getString("nagad_badge_text");
-                        nagadDescription = mFirebaseRemoteConfig.getString("nagad_description");
-
-                    }
-                });
+        deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
+        deliveryChargeText = mFirebaseRemoteConfig.getString("delivery_charge_text");
     }
 
     @SuppressLint("DefaultLocale")

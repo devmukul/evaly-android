@@ -24,10 +24,12 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.orhanobut.logger.Logger;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
@@ -38,10 +40,14 @@ import bd.com.evaly.evalyshop.ui.payment.bottomsheet.controller.PaymentMethodCon
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class PaymentBottomSheet extends BottomSheetDialogFragment implements PaymentBottomSheetNavigator {
 
-    private static PaymentOptionListener paymentOptionRedirceListener;
+    private static PaymentOptionListener paymentOptionRedirectListener;
+    @Inject
+    FirebaseRemoteConfig remoteConfig;
     private PaymentBottomSheetViewModel viewModel;
     private BottomSheetPaymentBinding binding;
     private String invoice_no, enteredAmount;
@@ -49,42 +55,27 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     private AppCompatActivity activityInstance;
     private PaymentMethodController controller;
     private ViewDialog dialog;
-    private boolean isFood = false;
     private String[] paymentMethods;
     private String balanceText, deliveryFee;
     private boolean applyDeliveryFee;
     private String disabledPaymentMethods = "", disabledPaymentMethodText = "", nagadBadgeText = "", nagadDescription = "";
 
-
     public static PaymentBottomSheet newInstance(String invoiceNo,
                                                  double totalAmount,
                                                  double paidAmount,
-                                                 boolean isFood,
                                                  String[] paymentMethods,
-                                                 String balanceText,
-                                                 String disabledPaymentMethods,
-                                                 String disabledPaymentMethodText,
-                                                 String nagadBadgeText,
-                                                 String nagadDescription,
-                                                 PaymentOptionListener paymentOptionListener,
                                                  boolean applyDeliveryFee,
-                                                 String deliveryFee) {
+                                                 String deliveryFee,
+                                                 PaymentOptionListener paymentOptionListener) {
         PaymentBottomSheet instance = new PaymentBottomSheet();
-        paymentOptionRedirceListener = paymentOptionListener;
+        paymentOptionRedirectListener = paymentOptionListener;
         Bundle bundle = new Bundle();
         bundle.putString("invoice_no", invoiceNo);
         bundle.putDouble("total_amount", totalAmount);
         bundle.putDouble("paid_amount", paidAmount);
-        bundle.putBoolean("is_food", isFood);
-        Logger.d(paymentMethods);
         bundle.putStringArray("payment_methods", paymentMethods);
-        bundle.putString("balance_text", balanceText);
-        bundle.putString("disabled_payment_methods", disabledPaymentMethods);
         bundle.putBoolean("apply_delivery_fee", applyDeliveryFee);
         bundle.putString("delivery_fee", deliveryFee);
-        bundle.putString("disabled_payment_method_text", disabledPaymentMethodText);
-        bundle.putString("nagadDescription", nagadDescription);
-        bundle.putString("nagadBadgeText", nagadBadgeText);
         instance.setArguments(bundle);
         return instance;
     }
@@ -112,20 +103,15 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             invoice_no = getArguments().getString("invoice_no");
             total_amount = getArguments().getDouble("total_amount");
             paid_amount = getArguments().getDouble("paid_amount");
-            if (getArguments().containsKey("is_food"))
-                isFood = getArguments().getBoolean("is_food");
-            if (getArguments().getStringArray("payment_methods") != null) {
-                paymentMethods = getArguments().getStringArray("payment_methods");
-            }
-            if (getArguments().getString("balance_text") != null) {
-                balanceText = getArguments().getString("balance_text");
-            }
-            disabledPaymentMethods = getArguments().getString("disabled_payment_methods");
-            disabledPaymentMethodText = getArguments().getString("disabled_payment_method_text");
-            nagadDescription = getArguments().getString("nagadDescription");
-            nagadBadgeText = getArguments().getString("nagadBadgeText");
+            paymentMethods = getArguments().getStringArray("payment_methods");
             applyDeliveryFee = getArguments().getBoolean("apply_delivery_fee");
             deliveryFee = getArguments().getString("delivery_fee");
+
+            balanceText = remoteConfig.getString("evaly_pay_text");
+            disabledPaymentMethods = remoteConfig.getString("disabled_payment_methods");
+            disabledPaymentMethodText = remoteConfig.getString("disabled_payment_text");
+            nagadBadgeText = remoteConfig.getString("nagad_badge_text");
+            nagadDescription = remoteConfig.getString("nagad_description");
         }
     }
 
@@ -220,16 +206,16 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             dialog.showDialog();
             viewModel.makePartialPayment(invoice_no, binding.amountPay.getText().toString());
         } else if (method.getName().equalsIgnoreCase(Constants.CASH_ON_DELIVERY)) {
-            if (paymentOptionRedirceListener != null && invoice_no != null && !enteredAmount.equals(""))
+            if (paymentOptionRedirectListener != null && invoice_no != null && !enteredAmount.equals(""))
                 viewModel.makeCashOnDelivery(invoice_no);
             dismissAllowingStateLoss();
         } else if (method.getName().equalsIgnoreCase(Constants.BKASH)) {
             Toast.makeText(getContext(), "Opening bKash payment gateway!", Toast.LENGTH_SHORT).show();
-            if (paymentOptionRedirceListener != null && invoice_no != null && !enteredAmount.equals(""))
-                paymentOptionRedirceListener.onPaymentRedirect(BuildConfig.BKASH_URL, enteredAmount, invoice_no);
+            if (paymentOptionRedirectListener != null && invoice_no != null && !enteredAmount.equals(""))
+                paymentOptionRedirectListener.onPaymentRedirect(BuildConfig.BKASH_URL, enteredAmount, invoice_no);
             dismissAllowingStateLoss();
         } else if (method.getName().equalsIgnoreCase(Constants.BALANCE_WITH_CASH)) {
-            if (paymentOptionRedirceListener != null && invoice_no != null && !enteredAmount.equals(""))
+            if (paymentOptionRedirectListener != null && invoice_no != null && !enteredAmount.equals(""))
                 viewModel.makePartialPayment(invoice_no, binding.amountPay.getText().toString());
             dismissAllowingStateLoss();
         } else if (method.getName().equalsIgnoreCase(Constants.CARD)) {
@@ -250,9 +236,6 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
 
     private void setPaymentMethodViewData() {
         List<PaymentMethodModel> methodList = new ArrayList<>();
-
-        if (isFood)
-            balanceText = "For express food shops, you can pay up to 100% of the order amount from Evaly Account.";
 
         if (paymentMethods == null)
             return;
@@ -343,13 +326,12 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
 
     @Override
     public void payViaCard(String url) {
-
         if (getContext() != null) {
-            if (paymentOptionRedirceListener == null || url == null || invoice_no == null || invoice_no.equals("") || url.equals(""))
+            if (paymentOptionRedirectListener == null || url == null || invoice_no == null || invoice_no.equals("") || url.equals(""))
                 Toast.makeText(getContext(), "Unable to make payment, try again later!", Toast.LENGTH_SHORT).show();
             else {
                 if (getActivity() != null) {
-                    paymentOptionRedirceListener.onPaymentRedirect(url, enteredAmount, invoice_no);
+                    paymentOptionRedirectListener.onPaymentRedirect(url, enteredAmount, invoice_no);
                 }
                 if (isVisible() && !isRemoving() && !isDetached())
                     dismissAllowingStateLoss();

@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.di.module;
 import android.app.Application;
 import android.content.Context;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -12,6 +13,7 @@ import javax.inject.Singleton;
 
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
+import bd.com.evaly.evalyshop.di.qualifiers.FirebaseRemoteConfigLiveData;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
 import dagger.Module;
 import dagger.Provides;
@@ -38,10 +40,18 @@ public class AppModule {
 
     @Provides
     @Singleton
-    FirebaseRemoteConfig firebaseRemoteConfig(FirebaseRemoteConfigSettings configSettings) {
+    FirebaseRemoteConfig firebaseRemoteConfig(FirebaseRemoteConfigSettings configSettings, @FirebaseRemoteConfigLiveData MutableLiveData<Boolean> isCompleted) {
         FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+        mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(task -> isCompleted.setValue(task.getResult()));
         return mFirebaseRemoteConfig;
+    }
+
+    @Provides
+    @FirebaseRemoteConfigLiveData
+    @Singleton
+    MutableLiveData<Boolean> remoteConfigCompleteLiveData() {
+        return new MutableLiveData<>();
     }
 
     @Provides
