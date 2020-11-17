@@ -4,11 +4,12 @@
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/bottom_sheet_round_create_post"
     android:clickable="true"
     android:orientation="vertical"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
+    android:paddingLeft="8dp"
+    android:paddingTop="3dp"
+    android:paddingRight="8dp"
     app:behavior_hideable="true"
     app:behavior_peekHeight="56dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
@@ -100,6 +101,18 @@
             android:visibility="visible" />
 
         <ImageView
+            android:id="@+id/nagad"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="0"
+            android:background="@drawable/payment_select_bg"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:src="@drawable/ic_nagad2"
+            android:visibility="visible" />
+
+        <ImageView
             android:id="@+id/card"
             android:layout_width="80dp"
             android:layout_height="80dp"
@@ -140,6 +153,18 @@
             android:layout_marginRight="10dp"
             android:layout_weight="0"
             android:text="@string/bkash"
+            android:textAlignment="center"
+            android:textColor="@color/c666"
+            android:textStyle="bold"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/nagadText"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="0"
+            android:text="@string/nagad"
             android:textAlignment="center"
             android:textColor="@color/c666"
             android:textStyle="bold"

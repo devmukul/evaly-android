@@ -43,10 +43,12 @@ import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
@@ -79,7 +81,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     private int currentPage;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private TextView amountToPayView;
-    private ImageView bkash, cards, bank;
+    private ImageView bkash, cards, bank, nagad;
     private SwipeRefreshLayout swipeLayout;
     private boolean loading = true;
     private boolean isImageSelected = false;
@@ -308,6 +310,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         amountToPayView = bottomSheetDialog.findViewById(R.id.amountPay);
         bkash = bottomSheetDialog.findViewById(R.id.bkash);
+        nagad = bottomSheetDialog.findViewById(R.id.nagad);
         cards = bottomSheetDialog.findViewById(R.id.card);
         bank = bottomSheetDialog.findViewById(R.id.bank);
 
@@ -317,6 +320,12 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         bkash.setOnClickListener(v -> {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             onPaymentRedirect(BuildConfig.BKASH_URL, amount, giftCardInvoice);
+        });
+
+        nagad.setOnClickListener(v -> {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            double amToPay = Double.parseDouble(amountToPayView.getText().toString());
+            payViaNagad(giftCardInvoice, Utils.formatPrice(amToPay));
         });
 
         cards.setOnClickListener(v -> {
@@ -402,6 +411,39 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     }
 
+
+    public void payViaNagad(String invoice, String amount) {
+
+        HashMap<String, String> payload = new HashMap<>();
+        payload.put("amount", amount);
+        payload.put("context", "gift_card_order_payment");
+        payload.put("context_reference", invoice);
+        payload.put("source", "MOBILE_APP");
+
+        OrderApiHelper.payViaNagad(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                if ((response != null && response.has("callBackUrl")) && !response.get("callBackUrl").isJsonNull()) {
+                    String purl = response.get("callBackUrl").getAsString();
+                    onPaymentRedirect(purl, amount, giftCardInvoice);
+                }
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    payViaNagad(invoice, amount);
+
+            }
+        });
+
+    }
+
     public void addBalanceViaCard(String invoice, String amount) {
 
         if (amountToPayView.getText().toString().equals("")) {
@@ -447,9 +489,14 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             successURL = Constants.BKASH_SUCCESS_URL;
             paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.bkash_payment));
             purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no);
+        } else if (url.contains("nagad")) {
+            successURL = Constants.SSL_SUCCESS_URL;
+            paymentWebBuilder.setToolbarTitle("Pay via Nagad");
+            ToastUtils.show("Opening Nagad gateway");
         } else {
             successURL = Constants.SSL_SUCCESS_URL;
             paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.pay_via_card));
+            ToastUtils.show("Open payment gateway");
         }
         paymentWebBuilder.loadPaymentURL(url, successURL, purchaseRequestInfo);
     }
