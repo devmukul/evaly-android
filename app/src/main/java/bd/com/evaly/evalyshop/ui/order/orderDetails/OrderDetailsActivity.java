@@ -47,7 +47,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -62,6 +61,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
@@ -107,9 +108,13 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
 import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
 import bd.evaly.evalypaymentlibrary.model.PurchaseRequestInfo;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class OrderDetailsActivity extends BaseActivity implements PaymentBottomSheet.PaymentOptionListener, PaymentListener {
 
+    @Inject
+    FirebaseRemoteConfig mFirebaseRemoteConfig;
     private ActivityOrderDetailsBinding binding;
     private double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
     private String shopSlug = "";
@@ -128,7 +133,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private List<IssueCategoryModel> categoryList;
     private OrderDetailsModel orderDetailsModel;
     private PaymentWebBuilder paymentWebBuilder;
-    private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private String paymetMethods;
     private String paymentMessage;
     private boolean showCodConfirmDialog = false;
@@ -184,7 +188,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         // For Payment Listener
 
         viewModel = new ViewModelProvider(this).get(OrderDetailsViewModel.class);
-        setupRemoteConfig();
+        checkRemoteConfig();
         paymentWebBuilder = new PaymentWebBuilder(OrderDetailsActivity.this);
         paymentWebBuilder.setPaymentListener(this);
         getSupportActionBar().setElevation(0);
@@ -408,17 +412,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     makeCashOnDelivery(invoice);
             }
         });
-    }
-
-
-    private void setupRemoteConfig() {
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(800)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-
-        checkRemoteConfig();
     }
 
     private void checkRemoteConfig() {

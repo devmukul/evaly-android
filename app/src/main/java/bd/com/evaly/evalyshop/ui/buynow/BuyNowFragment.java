@@ -35,7 +35,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -44,6 +43,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
@@ -69,11 +70,15 @@ import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
+@AndroidEntryPoint
 public class BuyNowFragment extends BottomSheetDialogFragment implements VariationAdapter.ClickListenerVariation {
 
+    @Inject
+    FirebaseRemoteConfig mFirebaseRemoteConfig;
     private FragmentBuyNowBinding binding;
     private Button btnBottomSheet;
     private EditText customAddress, contact_number;
@@ -98,7 +103,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private CartEntity cartItem;
     private AvailableShopModel shopItem;
     private NavController navController;
-    private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private String deliveryChargeText = null;
     private String deliveryChargeApplicable = null;
 
@@ -307,7 +311,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setupRemoteConfig();
+        checkRemoteConfig();
         context = view.getContext();
 
         if (getActivity() instanceof MainActivity)
@@ -487,15 +491,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         return bottomSheetDialog;
     }
 
-    private void setupRemoteConfig() {
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(800)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-
-        checkRemoteConfig();
-    }
 
     private void checkRemoteConfig() {
         mFirebaseRemoteConfig

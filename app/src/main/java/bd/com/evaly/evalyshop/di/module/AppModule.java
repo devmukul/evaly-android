@@ -5,6 +5,9 @@ import android.content.Context;
 
 import androidx.room.Room;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+
 import javax.inject.Singleton;
 
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
@@ -30,6 +33,22 @@ public class AppModule {
     AppDatabase provideAppDatabase(Context context) {
         return Room.databaseBuilder(context, AppDatabase.class, "app_database")
                 .fallbackToDestructiveMigration()
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    FirebaseRemoteConfig firebaseRemoteConfig(FirebaseRemoteConfigSettings configSettings) {
+        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+        return mFirebaseRemoteConfig;
+    }
+
+    @Provides
+    @Singleton
+    FirebaseRemoteConfigSettings firebaseRemoteConfigSettings() {
+        return new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(800)
                 .build();
     }
 

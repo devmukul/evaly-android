@@ -38,7 +38,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -51,6 +50,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executors;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
@@ -76,6 +77,8 @@ import static androidx.core.content.ContextCompat.getColor;
 
 public class CartFragment extends Fragment {
 
+    @Inject
+    FirebaseRemoteConfig mFirebaseRemoteConfig;
     private RecyclerView recyclerView;
     private CartAdapter adapter;
     private LinearLayoutManager manager;
@@ -101,7 +104,6 @@ public class CartFragment extends Fragment {
     private double totalPriceDouble = 0;
     private TextView tvTotalPrice;
     private NavController navController;
-    private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private String deliveryChargeText = null;
     private String deliveryChargeApplicable = null;
 
@@ -133,7 +135,7 @@ public class CartFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         this.view = view;
-        setupRemoteConfig();
+        checkRemoteConfig();
         mToolbar = view.findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         mToolbar.setNavigationOnClickListener(view1 -> {
@@ -393,16 +395,6 @@ public class CartFragment extends Fragment {
                     1212);
     }
 
-
-    private void setupRemoteConfig() {
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(800)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-
-        checkRemoteConfig();
-    }
 
     private void checkRemoteConfig() {
         mFirebaseRemoteConfig

@@ -33,15 +33,15 @@ import androidx.navigation.ui.NavigationUI;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
 import java.util.Calendar;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
@@ -60,7 +60,6 @@ import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
-import bd.com.evaly.evalyshop.ui.order.orderList.OrderListBaseFragment;
 import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -73,13 +72,13 @@ import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
 public class MainActivity extends BaseActivity {
 
     public boolean isLaunchActivity = true;
+    @Inject
+    FirebaseRemoteConfig mFirebaseRemoteConfig;
     private AlertDialog exitDialog;
     private AlertDialog.Builder exitDialogBuilder;
     private NavController navController;
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
-    private FirebaseRemoteConfig mFirebaseRemoteConfig;
-
 
     public void changeLanguage(String lang) {
         Locale myLocale;
@@ -151,7 +150,7 @@ public class MainActivity extends BaseActivity {
             viewModel.registerXMPP();
         }
 
-        setupRemoteConfig();
+        checkRemoteConfig();
 
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -290,16 +289,6 @@ public class MainActivity extends BaseActivity {
                 })
                 .setNegativeButton("No", null);
         exitDialog = exitDialogBuilder.create();
-    }
-
-
-    private void setupRemoteConfig() {
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(800)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-        checkRemoteConfig();
     }
 
     private void checkRemoteConfig() {
