@@ -34,7 +34,7 @@ public abstract class AppointmentCommentModel extends DataBindingEpoxyModel {
         ItemCommentBinding binding = (ItemCommentBinding) holder.getDataBinding();
         binding.userName.setText(model.getCommentedBy().getFullName());
         binding.text.setText(model.getComment());
-        binding.date.setText(Utils.getTimeAgoSmall(Utils.formattedDateFromStringTimestamp("", "", model.getCreatedAt())));
+        binding.date.setText(Utils.getTimeAgoSmall(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd HH:mm:ss.SSS", "", model.getCreatedAt())));
         binding.getRoot().setOnClickListener(clickListener);
     }
 

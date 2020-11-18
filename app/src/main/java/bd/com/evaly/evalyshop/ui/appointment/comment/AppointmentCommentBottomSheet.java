@@ -15,11 +15,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetAppointmentCommentBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.models.appointment.comment.AppointmentCommentRequest;
 import bd.com.evaly.evalyshop.ui.appointment.comment.controller.AppointmentCommentController;
+import bd.com.evaly.evalyshop.ui.appointment.model.AppointmentModelBinder;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
-
 
 @AndroidEntryPoint
 public class AppointmentCommentBottomSheet extends BottomSheetDialogFragment {
@@ -49,6 +51,7 @@ public class AppointmentCommentBottomSheet extends BottomSheetDialogFragment {
         binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
             public void loadMoreItem() {
+
                 viewModel.loadFromApi();
             }
         });
@@ -56,11 +59,43 @@ public class AppointmentCommentBottomSheet extends BottomSheetDialogFragment {
 
     private void liveEventObservers() {
 
+        viewModel.isLoadingLiveData.observe(getViewLifecycleOwner(), aBoolean -> {
+            controller.setLoading(aBoolean);
+            controller.requestModelBuild();
+        });
+
+        viewModel.getListLiveData().observe(getViewLifecycleOwner(), appointmentCommentResponses -> {
+            controller.setLoading(false);
+            controller.setList(appointmentCommentResponses);
+            controller.requestModelBuild();
+            binding.commentInput.setText("");
+            binding.submitComment.setEnabled(true);
+        });
+
+        viewModel.getAppointmentLiveData().observe(getViewLifecycleOwner(), appointmentResponse -> {
+            AppointmentModelBinder.bind(binding.appointmentBinding, appointmentResponse);
+            binding.appointmentBinding.cancel.setVisibility(View.GONE);
+        });
     }
 
-
     private void clickListeners() {
+        binding.submitComment.setOnClickListener(view -> {
+            createComment();
+        });
+    }
 
+    private void createComment() {
+        String text = binding.commentInput.getText().toString().trim();
+        if (text.length() == 0) {
+            ToastUtils.show("Please write something!");
+            return;
+        }
+
+        AppointmentCommentRequest body = new AppointmentCommentRequest();
+        body.setAppointment(viewModel.getAppointmentLiveData().getValue().getAppointmentId());
+        body.setComment(text);
+        viewModel.createComment(body);
+        binding.submitComment.setEnabled(false);
     }
 
     @Nullable
@@ -77,5 +112,4 @@ public class AppointmentCommentBottomSheet extends BottomSheetDialogFragment {
         viewModel = new ViewModelProvider(this).get(AppointmentCommentViewModel.class);
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
     }
-
 }

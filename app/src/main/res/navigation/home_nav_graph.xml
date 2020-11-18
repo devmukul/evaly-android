@@ -291,6 +291,10 @@
         android:id="@+id/addressFragment"
         android:name="bd.com.evaly.evalyshop.ui.address.AddressFragment"
         android:label="AddressFragment" />
+    <dialog
+        android:id="@+id/appointmentCommentBottomSheet"
+        android:name="bd.com.evaly.evalyshop.ui.appointment.comment.AppointmentCommentBottomSheet"
+        android:label="AppointmentCommentBottomSheet" />
 
 
     <!--    <activity-->

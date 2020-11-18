@@ -149,16 +149,6 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
             body.setBirthDate(dateOfBirth);
             body.setContact(contact);
             body.setGender(gender);
-
-//            HashMap<String, String> body = new HashMap<>();
-//            body.put("first_name", firstName);
-//            body.put("last_name", lastName);
-//            body.put("birth_date", dateOfBirth);
-//            body.put("contact", contact);
-//            body.put("gender", gender);
-//            viewModel.setUserData(body);
-
-
             viewModel.setUserData(Utils.objectToHashMap(body));
 
             HashMap<String, String> data = new HashMap<>();

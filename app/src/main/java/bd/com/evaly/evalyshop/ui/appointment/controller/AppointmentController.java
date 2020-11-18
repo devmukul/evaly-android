@@ -1,6 +1,10 @@
 package bd.com.evaly.evalyshop.ui.appointment.controller;
 
+import android.view.View;
+
+import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.airbnb.epoxy.OnModelClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +36,7 @@ public class AppointmentController extends EpoxyController {
                     .model(item)
                     .onBind((model, view, position) -> AppointmentModelBinder.bind((ItemAppointmentBinding) view.getDataBinding(), model.model()))
                     .clickListenerCancel((model, parentView, clickedView, position) -> clickListener.onCancelClick(model.model()))
+                    .clickListener((model, parentView, clickedView, position) -> clickListener.onClick(model.model()))
                     .addTo(this);
         }
 
@@ -63,5 +68,6 @@ public class AppointmentController extends EpoxyController {
 
     public interface ClickListener {
         void onCancelClick(AppointmentResponse model);
+        void onClick(AppointmentResponse model);
     }
 }

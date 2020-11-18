@@ -14,6 +14,7 @@ import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentCategoryResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentRequest;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentTimeSlotResponse;
+import bd.com.evaly.evalyshop.models.appointment.comment.AppointmentCommentRequest;
 import bd.com.evaly.evalyshop.models.appointment.comment.AppointmentCommentResponse;
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
 import bd.com.evaly.evalyshop.models.auth.LoginBody;
@@ -95,7 +96,11 @@ public interface IApiClient {
     @GET(BuildConfig.APPOINTMENT_URL + "common/comments")
     Call<CommonDataResponse<List<AppointmentCommentResponse>>> getAppointmentCommentList(@Header("Authorization") String token,
                                                                                          @Query("appointment_id") String appointmentId,
-                                                                                         @Query("page") int page);
+                                                                                         @Query("offset") int page);
+
+    @POST(BuildConfig.APPOINTMENT_URL + "common/comments")
+    Call<CommonDataResponse<AppointmentCommentResponse>> createAppointmentComment(@Header("Authorization") String token,
+                                                                                            @Body AppointmentCommentRequest body);
 
 
     @GET(BuildConfig.APPOINTMENT_URL + "time-slots/{date}")

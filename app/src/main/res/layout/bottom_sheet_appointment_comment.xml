@@ -67,9 +67,10 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
                 android:layout_weight="1"
                 android:background="@color/f8f8f8"
+                android:clipToPadding="false"
+                android:paddingBottom="10dp"
                 tools:listitem="@layout/item_comment" />
 
 

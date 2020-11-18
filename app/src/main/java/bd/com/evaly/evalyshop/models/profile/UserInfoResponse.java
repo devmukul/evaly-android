@@ -53,7 +53,6 @@ public class UserInfoResponse implements Serializable {
         this.profilePicUrl = profilePicUrl;
     }
 
-
     public String getGender() {
         if (gender == null)
             return "";
@@ -94,6 +93,8 @@ public class UserInfoResponse implements Serializable {
     }
 
     public String getLastName() {
+        if (fullName == null || !fullName.contains(" "))
+            return "";
         String[] names = fullName.split(" ");
         if (names.length > 1)
             return names[1];

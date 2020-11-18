@@ -121,4 +121,11 @@ public class AppointmentFragment extends Fragment implements AppointmentControll
                 .setPositiveButton("YES", (dialog, whichButton) -> viewModel.cancelAppointment(model.getAppointmentId()))
                 .setNegativeButton("NO", null).show();
     }
+
+    @Override
+    public void onClick(AppointmentResponse model) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("model", model);
+        NavHostFragment.findNavController(this).navigate(R.id.appointmentCommentBottomSheet, bundle);
+    }
 }
