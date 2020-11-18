@@ -2,108 +2,110 @@ package bd.com.evaly.evalyshop.models.appointment.list;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AppointmentResponse{
+import java.io.Serializable;
 
-	@SerializedName("date")
-	private String date;
+public class AppointmentResponse implements Serializable {
 
-	@SerializedName("appointment_id")
-	private String appointmentId;
+    @SerializedName("date")
+    private String date;
 
-	@SerializedName("counter")
-	private String counter;
+    @SerializedName("appointment_id")
+    private String appointmentId;
 
-	@SerializedName("category")
-	private Category category;
+    @SerializedName("counter")
+    private String counter;
 
-	@SerializedName("day")
-	private String day;
+    @SerializedName("category")
+    private Category category;
 
-	@SerializedName("created_by")
-	private CreatedBy createdBy;
+    @SerializedName("day")
+    private String day;
 
-	@SerializedName("status")
-	private String status;
+    @SerializedName("created_by")
+    private CreatedBy createdBy;
 
-	@SerializedName("time_slot")
-	private String timeSlot;
+    @SerializedName("status")
+    private String status;
 
-	public void setDate(String date){
-		this.date = date;
-	}
+    @SerializedName("time_slot")
+    private String timeSlot;
 
-	public String getDate(){
-		return date;
-	}
+    public void setDate(String date) {
+        this.date = date;
+    }
 
-	public void setAppointmentId(String appointmentId){
-		this.appointmentId = appointmentId;
-	}
+    public String getDate() {
+        return date;
+    }
 
-	public String getAppointmentId(){
-		return appointmentId;
-	}
+    public void setAppointmentId(String appointmentId) {
+        this.appointmentId = appointmentId;
+    }
 
-	public void setCounter(String counter){
-		this.counter = counter;
-	}
+    public String getAppointmentId() {
+        return appointmentId;
+    }
 
-	public String getCounter(){
-		return counter;
-	}
+    public void setCounter(String counter) {
+        this.counter = counter;
+    }
 
-	public void setCategory(Category category){
-		this.category = category;
-	}
+    public String getCounter() {
+        return counter;
+    }
 
-	public Category getCategory(){
-		return category;
-	}
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
-	public void setDay(String day){
-		this.day = day;
-	}
+    public Category getCategory() {
+        return category;
+    }
 
-	public String getDay(){
-		return day;
-	}
+    public void setDay(String day) {
+        this.day = day;
+    }
 
-	public void setCreatedBy(CreatedBy createdBy){
-		this.createdBy = createdBy;
-	}
+    public String getDay() {
+        return day;
+    }
 
-	public CreatedBy getCreatedBy(){
-		return createdBy;
-	}
+    public void setCreatedBy(CreatedBy createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	public void setStatus(String status){
-		this.status = status;
-	}
+    public CreatedBy getCreatedBy() {
+        return createdBy;
+    }
 
-	public String getStatus(){
-		return status;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public void setTimeSlot(String timeSlot){
-		this.timeSlot = timeSlot;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public String getTimeSlot(){
-		return timeSlot;
-	}
+    public void setTimeSlot(String timeSlot) {
+        this.timeSlot = timeSlot;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"AppointmentResponse{" + 
-			"date = '" + date + '\'' + 
-			",appointment_id = '" + appointmentId + '\'' + 
-			",counter = '" + counter + '\'' + 
-			",category = '" + category + '\'' + 
-			",day = '" + day + '\'' + 
-			",created_by = '" + createdBy + '\'' + 
-			",status = '" + status + '\'' + 
-			",time_slot = '" + timeSlot + '\'' + 
-			"}";
-		}
+    public String getTimeSlot() {
+        return timeSlot;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "AppointmentResponse{" +
+                        "date = '" + date + '\'' +
+                        ",appointment_id = '" + appointmentId + '\'' +
+                        ",counter = '" + counter + '\'' +
+                        ",category = '" + category + '\'' +
+                        ",day = '" + day + '\'' +
+                        ",created_by = '" + createdBy + '\'' +
+                        ",status = '" + status + '\'' +
+                        ",time_slot = '" + timeSlot + '\'' +
+                        "}";
+    }
 }

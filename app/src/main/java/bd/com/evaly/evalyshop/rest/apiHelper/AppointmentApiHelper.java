@@ -8,6 +8,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentCategoryResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentRequest;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentTimeSlotResponse;
+import bd.com.evaly.evalyshop.models.appointment.comment.AppointmentCommentResponse;
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
 
 public class AppointmentApiHelper extends BaseApiHelper {
@@ -22,6 +23,10 @@ public class AppointmentApiHelper extends BaseApiHelper {
 
     public static void getAppointmentTimeSlotList(String date, ResponseListenerAuth<CommonDataResponse<List<AppointmentTimeSlotResponse>>, String> listener) {
         getiApiClient().getAppointmentTimeSlotList(CredentialManager.getToken(), date).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getAppointmentCommentList(String id, int page, ResponseListenerAuth<CommonDataResponse<List<AppointmentCommentResponse>>, String> listener) {
+        getiApiClient().getAppointmentCommentList(CredentialManager.getToken(), id, page).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void createAppointment(AppointmentRequest body, ResponseListenerAuth<CommonDataResponse<AppointmentResponse>, String> listener) {
