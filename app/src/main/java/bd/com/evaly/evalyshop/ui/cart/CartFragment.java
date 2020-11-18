@@ -71,10 +71,12 @@ import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static androidx.core.content.ContextCompat.getColor;
 
+@AndroidEntryPoint
 public class CartFragment extends Fragment {
 
     @Inject
@@ -397,14 +399,8 @@ public class CartFragment extends Fragment {
 
 
     private void checkRemoteConfig() {
-        mFirebaseRemoteConfig
-                .fetchAndActivate()
-                .addOnCompleteListener(getActivity(), task -> {
-                    if (task.isSuccessful()) {
-                        deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
-                        deliveryChargeText = mFirebaseRemoteConfig.getString("delivery_charge_text");
-                    }
-                });
+        deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
+        deliveryChargeText = mFirebaseRemoteConfig.getString("delivery_charge_text");
     }
 
     private void updateLocation() {

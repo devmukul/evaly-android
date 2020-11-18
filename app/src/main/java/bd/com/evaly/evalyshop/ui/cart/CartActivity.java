@@ -8,7 +8,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class CartActivity extends BaseActivity {
 
     /*

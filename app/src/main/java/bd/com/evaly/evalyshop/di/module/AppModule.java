@@ -43,7 +43,7 @@ public class AppModule {
     FirebaseRemoteConfig firebaseRemoteConfig(FirebaseRemoteConfigSettings configSettings, @FirebaseRemoteConfigLiveData MutableLiveData<Boolean> isCompleted) {
         FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-        mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(task -> isCompleted.setValue(task.getResult()));
+        mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(task -> isCompleted.setValue(task.isSuccessful()));
         return mFirebaseRemoteConfig;
     }
 

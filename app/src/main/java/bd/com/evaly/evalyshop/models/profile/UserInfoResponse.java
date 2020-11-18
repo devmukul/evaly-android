@@ -82,6 +82,10 @@ public class UserInfoResponse implements Serializable {
     }
 
     public String getFirstName() {
+        if (fullName == null)
+            return "";
+        if (!fullName.contains(" "))
+            return fullName;
         String[] names = fullName.split(" ");
         if (names.length > 0)
             return names[0];
