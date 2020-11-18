@@ -1,10 +1,11 @@
 package bd.com.evaly.evalyshop.ui.shop.quickView.models;
 
-import android.graphics.Bitmap;
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,9 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemShopCategorySmallBinding;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.util.Utils;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -67,10 +71,14 @@ public abstract class SmallCategoryModel extends DataBindingEpoxyModel {
                         return false;
                     }
 
+                    @SuppressLint("CheckResult")
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        Bitmap bitmap = Utils.changeColor(((BitmapDrawable) resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
-                        binding.image.setImageBitmap(bitmap);
+                        Observable.fromCallable(() -> Utils.changeColor(((BitmapDrawable) resource).getBitmap(),
+                                Color.parseColor("#ecf3f9"), Color.WHITE))
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(binding.image::setImageBitmap, throwable -> Log.e("error", "Throwable " + throwable.getMessage()));
                         return true;
                     }
                 })

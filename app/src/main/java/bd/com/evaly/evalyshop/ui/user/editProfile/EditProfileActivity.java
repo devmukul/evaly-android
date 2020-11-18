@@ -248,7 +248,7 @@ public class EditProfileActivity extends BaseActivity {
             @Override
             public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
 
-                if (dialog != null && dialog.isShowing())
+                if (dialog != null && dialog.isShowing() && !isFinishing() && !isDestroyed())
                     dialog.dismiss();
 
                 UserModel userModel = CredentialManager.getUserData();

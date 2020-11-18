@@ -15,6 +15,8 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.util.ToastUtils;
+import bd.com.evaly.evalyshop.util.Utils;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -69,6 +71,7 @@ public class AddressViewModel extends ViewModel {
         AuthApiHelper.removeAddress(id, new ResponseListenerAuth<CommonDataResponse, String>() {
             @Override
             public void onDataFetched(CommonDataResponse response, int statusCode) {
+                ToastUtils.show(Utils.capitalize(response.getMessage()));
                 if (response.getSuccess())
                     compositeDisposable.add(addressListDao.deleteById(id).subscribeOn(Schedulers.io()).subscribe());
             }
@@ -89,6 +92,7 @@ public class AddressViewModel extends ViewModel {
         AuthApiHelper.addAddress(body, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AddressResponse> response, int statusCode) {
+                ToastUtils.show(Utils.capitalize(response.getMessage()));
                 compositeDisposable.add(addressListDao
                         .insert(response.getData())
                         .subscribeOn(Schedulers.io())

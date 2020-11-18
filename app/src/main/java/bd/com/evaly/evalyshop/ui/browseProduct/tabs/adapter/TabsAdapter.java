@@ -1,12 +1,13 @@
 package bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,9 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.util.Utils;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder> {
 
@@ -166,10 +170,14 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder> 
                                   return false;
                               }
 
+                              @SuppressLint("CheckResult")
                               @Override
                               public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                  Bitmap bitmap = Utils.changeColor(((BitmapDrawable) resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
-                                  holder.iv.setImageBitmap(bitmap);
+                                  Observable.fromCallable(() -> Utils.changeColor(((BitmapDrawable) resource).getBitmap(),
+                                          Color.parseColor("#ecf3f9"), Color.WHITE))
+                                          .subscribeOn(Schedulers.io())
+                                          .observeOn(AndroidSchedulers.mainThread())
+                                          .subscribe(holder.iv::setImageBitmap, throwable -> Log.e("error", "Throwable " + throwable.getMessage()));
                                   return true;
                               }
                           }

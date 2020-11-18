@@ -84,7 +84,6 @@ import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
-import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
@@ -133,60 +132,16 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private List<IssueCategoryModel> categoryList;
     private OrderDetailsModel orderDetailsModel;
     private PaymentWebBuilder paymentWebBuilder;
-    private String paymetMethods;
-    private String paymentMessage;
-    private boolean showCodConfirmDialog = false;
     private String deliveryChargeText = null;
     private String deliveryChargeApplicable = null;
     private OrderDetailsViewModel viewModel;
     private boolean isRefundEligible = false;
-    private String disabledPaymentMethods = "", disabledPaymentMethodText = "", nagadBadgeText = "", nagadDescription = "", paymentBanner = "";
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.order_details_menu, menu);
-        cancelMenuItem = menu.findItem(R.id.action_cancel);
-        refundMenuItem = menu.findItem(R.id.action_refund);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_cancel:
-                cancelOrder();
-                break;
-            case R.id.action_refund:
-                requestRefund();
-                break;
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-        return true;
-    }
-
-    private void requestRefund() {
-        if (invoice_no.equals("") || orderStatus.equals("") || paymentMethod.equals("") || paymentStatus.equals("")) {
-            ToastUtils.show("Can't request refund, reload the page");
-        } else {
-            RefundBottomSheet refundBottomSheet = RefundBottomSheet.newInstance(invoice_no, orderStatus, paymentMethod, paymentStatus, isRefundEligible);
-            refundBottomSheet.show(getSupportFragmentManager(), "Refund");
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_order_details);
-        // For Payment Listener
-
         viewModel = new ViewModelProvider(this).get(OrderDetailsViewModel.class);
         checkRemoteConfig();
         paymentWebBuilder = new PaymentWebBuilder(OrderDetailsActivity.this);
@@ -228,10 +183,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             invoice_no = extras.getString("orderID");
             binding.orderId.setText("#" + invoice_no);
             getOrderDetails();
-//
-//            if (extras.containsKey("show_cod_confirmation_dialog"))
-//                showCodConfirmationDialog();
         }
+
         binding.balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(CredentialManager.getBalance()) + "</b>"));
 
         getOrderHistory();
@@ -256,11 +209,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
 
-//        binding.confirmOrder.setOnClickListener(view -> new AlertDialog.Builder(OrderDetailsActivity.this)
-//                .setTitle("Do you want to confirm this order for Cash On Delivery?")
-//                .setPositiveButton("Yes", (dialogInterface, i) -> makeCashOnDelivery(invoice_no)).setNegativeButton("NO", null)
-//                .show());
-
         binding.btnToggleTimeline.setOnClickListener(v -> {
             if (adapter.isShowAll()) {
                 adapter.setShowAll(false);
@@ -278,6 +226,42 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         binding.confirmDelivery.setOnClickListener(v -> confirmDeliveryDialog());
         liveEvents();
         clickListeners();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.order_details_menu, menu);
+        cancelMenuItem = menu.findItem(R.id.action_cancel);
+        refundMenuItem = menu.findItem(R.id.action_refund);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_cancel:
+                cancelOrder();
+                break;
+            case R.id.action_refund:
+                requestRefund();
+                break;
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
+
+    private void requestRefund() {
+        if (invoice_no.equals("") || orderStatus.equals("") || paymentMethod.equals("") || paymentStatus.equals("")) {
+            ToastUtils.show("Can't request refund, reload the page");
+        } else {
+            RefundBottomSheet refundBottomSheet = RefundBottomSheet.newInstance(invoice_no, orderStatus, paymentMethod, paymentStatus, isRefundEligible);
+            refundBottomSheet.show(getSupportFragmentManager(), "Refund");
+        }
     }
 
     private void clickListeners() {
@@ -308,102 +292,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             ToastUtils.show(response.getMessage());
             getOrderDetails();
             getOrderHistory();
-        });
-    }
-
-    private void showCodConfirmationDialog() {
-
-        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.bottom_sheet_cod_confirmation);
-
-        ImageView banner = dialog.findViewById(R.id.banner);
-        ImageView close = dialog.findViewById(R.id.close);
-        TextView confirm = dialog.findViewById(R.id.confirm);
-        Glide.with(this)
-                .load(R.drawable.ic_cod_banner)
-                .into(banner);
-
-        close.setOnClickListener(v -> {
-            dialog.dismiss();
-        });
-        confirm.setOnClickListener(v -> {
-            dialog.dismiss();
-            makeCashOnDelivery(invoice_no);
-        });
-
-        dialog.show();
-    }
-
-    public void makePartialPayment(String invoice, String amount) {
-
-        ParitalPaymentModel model = new ParitalPaymentModel();
-
-        model.setInvoice_no(invoice);
-        model.setAmount(Double.parseDouble(amount));
-
-        OrderApiHelper.makePartialPayment(CredentialManager.getToken(), model, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
-                getOrderDetails();
-                getOrderHistory();
-
-                if (response != null) {
-                    ToastUtils.show(response.get("message").toString());
-                } else {
-                    ToastUtils.show("Payment failed, try again later");
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                ToastUtils.show("Payment failed, try again later");
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    makePartialPayment(invoice, amount);
-            }
-        });
-
-    }
-
-
-    public void makeCashOnDelivery(String invoice) {
-        ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage("Confirming order...");
-        dialog.show();
-
-        HashMap<String, String> data = new HashMap<>();
-        data.put("invoice_no", invoice);
-        OrderApiHelper.makeCashOnDelivery(CredentialManager.getToken(), data, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-                dialog.dismiss();
-                if (response != null) {
-                    if (response.get("success").getAsBoolean()) {
-                        getOrderDetails();
-                        getOrderHistory();
-                    }
-                    ToastUtils.show(response.get("message").toString());
-                } else {
-                    ToastUtils.show("Order confirmation failed, try again later");
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                dialog.dismiss();
-                ToastUtils.show("Order confirmation failed, try again later");
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    makeCashOnDelivery(invoice);
-            }
         });
     }
 
@@ -521,6 +409,10 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     void report() {
+        if (orderDetailsModel == null || orderDetailsModel.getOrderStatus() == null) {
+            ToastUtils.show("Please reload the page");
+            return;
+        }
         IssueCreateBody model = new IssueCreateBody();
         bottomSheetDialog = new BottomSheetDialog(OrderDetailsActivity.this, R.style.BottomSheetDialogTheme);
 

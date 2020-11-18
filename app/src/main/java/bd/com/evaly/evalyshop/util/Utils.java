@@ -222,6 +222,8 @@ public class Utils {
     }
 
     public static String capitalize(String capString) {
+        if (capString == null)
+            return "";
         StringBuffer capBuffer = new StringBuffer();
         Matcher capMatcher = Pattern.compile("([a-z])([a-z]*)", Pattern.CASE_INSENSITIVE).matcher(capString);
         while (capMatcher.find()) {
