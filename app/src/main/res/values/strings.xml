@@ -414,5 +414,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="region">Region</string>
     <string name="enter_city">Enter city</string>
     <string name="nagad">Nagad</string>
+    <string name="mother_s_name">Mother\'s Name</string>
 
 </resources>

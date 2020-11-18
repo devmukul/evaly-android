@@ -1,15 +1,19 @@
 package bd.com.evaly.evalyshop.ui.appointment.comment;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import bd.com.evaly.evalyshop.R;
@@ -75,6 +79,9 @@ public class AppointmentCommentBottomSheet extends BottomSheetDialogFragment {
         viewModel.getAppointmentLiveData().observe(getViewLifecycleOwner(), appointmentResponse -> {
             AppointmentModelBinder.bind(binding.appointmentBinding, appointmentResponse);
             binding.appointmentBinding.cancel.setVisibility(View.GONE);
+            String status = appointmentResponse.getStatus();
+            if (status.equals("completed") || status.equals("rejected") || status.equals("absent") || status.equals("canceled"))
+                binding.commentHolder.setVisibility(View.GONE);
         });
     }
 
@@ -111,5 +118,20 @@ public class AppointmentCommentBottomSheet extends BottomSheetDialogFragment {
         setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog);
         viewModel = new ViewModelProvider(this).get(AppointmentCommentViewModel.class);
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+        bottomSheetDialog.setOnShowListener(dialog -> {
+            BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
+            FrameLayout bottomSheet = dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            assert bottomSheet != null;
+            BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+            BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
+            BottomSheetBehavior.from(bottomSheet).setHideable(true);
+        });
+        return bottomSheetDialog;
     }
 }

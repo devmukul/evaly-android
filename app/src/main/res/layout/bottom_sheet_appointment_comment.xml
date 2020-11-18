@@ -20,7 +20,6 @@
                 android:id="@+id/appointmentBinding"
                 layout="@layout/item_appointment" />
 
-
             <View
                 android:id="@+id/view11"
                 android:layout_width="match_parent"
@@ -32,6 +31,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:background="@color/f8f8f8"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -49,18 +49,6 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/refresh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_weight="0"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingRight="15dp"
-                    android:paddingBottom="10dp"
-                    app:srcCompat="@drawable/ic_refresh"
-                    app:tint="@color/black" />
-
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -70,11 +58,12 @@
                 android:layout_weight="1"
                 android:background="@color/f8f8f8"
                 android:clipToPadding="false"
-                android:paddingBottom="10dp"
+                android:paddingBottom="40dp"
                 tools:listitem="@layout/item_comment" />
 
 
             <LinearLayout
+                android:id="@id/commentHolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"

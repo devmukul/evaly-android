@@ -8,13 +8,10 @@ import androidx.databinding.ViewDataBinding;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
-import com.bumptech.glide.Glide;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.ItemAppointmentBinding;
 import bd.com.evaly.evalyshop.databinding.ItemCommentBinding;
 import bd.com.evaly.evalyshop.models.appointment.comment.AppointmentCommentResponse;
-import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
 import bd.com.evaly.evalyshop.util.Utils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
@@ -35,6 +32,7 @@ public abstract class AppointmentCommentModel extends DataBindingEpoxyModel {
         binding.userName.setText(model.getCommentedBy().getFullName());
         binding.text.setText(model.getComment());
         binding.date.setText(Utils.getTimeAgoSmall(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd HH:mm:ss.SSS", "", model.getCreatedAt())));
+        binding.replyHolder.setVisibility(View.GONE);
         binding.getRoot().setOnClickListener(clickListener);
     }
 
