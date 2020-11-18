@@ -30,6 +30,17 @@ public class AppointmentResponse implements Serializable {
     @SerializedName("time_slot")
     private String timeSlot;
 
+    @SerializedName("comments_count")
+    private int commentCount;
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
+
     public void setDate(String date) {
         this.date = date;
     }

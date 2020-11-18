@@ -82,6 +82,7 @@ public class AppointmentCommentBottomSheet extends BottomSheetDialogFragment {
             String status = appointmentResponse.getStatus();
             if (status.equals("completed") || status.equals("rejected") || status.equals("absent") || status.equals("canceled"))
                 binding.commentHolder.setVisibility(View.GONE);
+            binding.appointmentBinding.commentHolder.setVisibility(View.GONE);
         });
     }
 

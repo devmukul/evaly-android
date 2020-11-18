@@ -66,7 +66,8 @@
             android:layout_marginStart="15dp"
             android:background="@drawable/input_bg"
             android:backgroundTint="@color/separator_light"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="13dp">
 
             <TextView
                 android:id="@+id/appId"
@@ -159,9 +160,9 @@
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/circle_bg"
                 android:backgroundTint="@color/aaa"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/circle1"
-                app:layout_constraintStart_toStartOf="@+id/circle1" />
+                app:layout_constraintStart_toStartOf="@+id/circle1"
+                app:layout_constraintTop_toBottomOf="@id/line" />
 
 
             <TextView
@@ -205,6 +206,39 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="@color/fffh" />
+
+            <LinearLayout
+                android:id="@+id/commentHolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="@id/circle2"
+                app:layout_constraintTop_toBottomOf="@id/endTime">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/ic_comment_icon_new"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/c666" />
+
+                <TextView
+                    android:id="@+id/commentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:textColor="@color/c666"
+                    android:textIsSelectable="false"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@id/circle2"
+                    app:layout_constraintTop_toBottomOf="@id/endTime"
+                    tools:text="1 Comment" />
+            </LinearLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>

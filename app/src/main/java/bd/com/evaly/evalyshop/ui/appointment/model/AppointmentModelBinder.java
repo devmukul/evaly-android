@@ -13,9 +13,18 @@ import bd.com.evaly.evalyshop.util.Utils;
 
 public class AppointmentModelBinder {
 
-    public static void bind(ItemAppointmentBinding binding, AppointmentResponse model){
+    public static void bind(ItemAppointmentBinding binding, AppointmentResponse model) {
         binding.appId.setText(model.getAppointmentId());
         binding.counter.setText(model.getCounter());
+        if (model.getCommentCount() == 0)
+            binding.commentHolder.setVisibility(View.GONE);
+        else {
+            binding.commentHolder.setVisibility(View.VISIBLE);
+            if (model.getCommentCount() == 1)
+                binding.commentText.setText("1 Comment");
+            else
+                binding.commentText.setText(model.getCommentCount() + " Comments");
+        }
 
         SimpleDateFormat df_input = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat df_output = new SimpleDateFormat("dd\nMMM");
