@@ -101,6 +101,10 @@ public class ParentsInfoBottomSheet extends BottomSheetDialogFragment {
                 error = "Please enter your mother's name";
             else if (motherPhoneNumber.equals(""))
                 error = "Please enter your mother's phone number";
+            else if (!Utils.isValidNumber(fatherPhoneNumber))
+                error = "Please enter your father's valid phone number";
+            else if (!Utils.isValidNumber(motherPhoneNumber))
+                error = "Please enter your mother's valid phone number";
 
             if (error != null) {
                 ToastUtils.show(error);

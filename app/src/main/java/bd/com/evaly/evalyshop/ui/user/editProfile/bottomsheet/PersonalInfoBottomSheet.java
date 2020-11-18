@@ -141,6 +141,9 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
             } else if (dateOfBirth.equals("")) {
                 Toast.makeText(getContext(), "Please enter your date of birth", Toast.LENGTH_SHORT).show();
                 return;
+            } else if (!Utils.isValidNumber(contact)) {
+                Toast.makeText(getContext(), "Please enter your valid phone number", Toast.LENGTH_SHORT).show();
+                return;
             }
 
             PersonalInfoRequest body = new PersonalInfoRequest();

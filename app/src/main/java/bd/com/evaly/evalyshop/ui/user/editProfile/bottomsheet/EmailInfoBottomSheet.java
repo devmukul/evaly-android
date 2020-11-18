@@ -90,6 +90,10 @@ public class EmailInfoBottomSheet extends BottomSheetDialogFragment {
             String error = null;
             if (primaryEmail.equals(""))
                 error = "Please enter your primary email";
+            else if (!Utils.isEmailValid(primaryEmail))
+                error = "Please enter valid primary email";
+            else if (!otherEmail.isEmpty() && !Utils.isEmailValid(otherEmail))
+                error = "Please enter valid secondary email";
 
             if (error != null) {
                 ToastUtils.show(error);
