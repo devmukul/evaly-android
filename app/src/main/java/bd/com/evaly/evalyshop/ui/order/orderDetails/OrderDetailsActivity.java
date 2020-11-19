@@ -149,33 +149,15 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setTitle(R.string.order_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        dialog = new ViewDialog(this);
+        dialog.showDialog();
         binding.orderId.setText(invoice_no);
-
-
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        binding.recycle.setLayoutManager(manager);
-        binding.productList.setLayoutManager(new LinearLayoutManager(this));
-        orderStatuses = new ArrayList<>();
-        adapter = new OrderStatusAdapter(orderStatuses, this);
-        binding.recycle.setAdapter(adapter);
-        orderDetailsProducts = new ArrayList<>();
-        orderDetailsProductAdapter = new OrderDetailsProductAdapter(this, orderDetailsProducts);
-        binding.productList.setAdapter(orderDetailsProductAdapter);
 
         binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (scrollY == 0)
                 getSupportActionBar().setElevation(0);
             else
                 getSupportActionBar().setElevation(4f);
-        });
-
-        binding.shopInfo.setOnClickListener(v -> {
-            Intent intent = new Intent(OrderDetailsActivity.this, MainActivity.class);
-            intent.putExtra("type", 3);
-            intent.putExtra("shop_slug", shopSlug);
-            intent.putExtra("category", "root");
-            startActivity(intent);
         });
 
         Bundle extras = getIntent().getExtras();
@@ -186,58 +168,28 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         }
 
         binding.balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(CredentialManager.getBalance()) + "</b>"));
-
-        getOrderHistory();
-
         indicator = findViewById(R.id.indicator);
         indicator.setStepCount(6);
 
-        dialog = new ViewDialog(this);
-        dialog.showDialog();
-
-        binding.makePayment.setOnClickListener(v -> {
-            if (orderDetailsModel == null || orderDetailsModel.getAllowed_payment_methods() == null) {
-                ToastUtils.show("Cash on delivery only");
-                return;
-            }
-            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no,
-                    total_amount,
-                    paid_amount,
-                    orderDetailsModel.getAllowed_payment_methods(),
-                    orderDetailsModel.isApplyDeliveryCharge(),
-                    orderDetailsModel.getDeliveryCharge(), this);
-            paymentBottomSheet.show(getSupportFragmentManager(), "payment");
-        });
-
-        binding.btnToggleTimeline.setOnClickListener(v -> {
-            if (adapter.isShowAll()) {
-                adapter.setShowAll(false);
-                binding.btnToggleTimeline.setText("Show All");
-            } else {
-                adapter.setShowAll(true);
-                binding.btnToggleTimeline.setText("Show Less");
-            }
-            adapter.notifyDataSetChanged();
-        });
-
-        binding.payViaGiftCard.setOnClickListener(view -> dialogGiftCardPayment());
-        binding.withdrawRefund.setOnClickListener(view -> {
-            new AlertDialog.Builder(this)
-                    .setCancelable(false)
-                    .setMessage("Are you sure you want to withdraw refund request?")
-                    .setPositiveButton(android.R.string.yes, (dialog1, which) -> {
-                        viewModel.withdrawRefundRequest(invoice_no);
-                    })
-                    .setNegativeButton(android.R.string.no, (dialogInterface, i) -> {
-
-                    })
-                    .show();
-        });
-
-        getDeliveryHero();
-        binding.confirmDelivery.setOnClickListener(v -> confirmDeliveryDialog());
+        getOrderHistory();
+        setupOrderHistoryRecycler();
+        setupProductListRecycler();
         liveEvents();
         clickListeners();
+    }
+
+    private void setupProductListRecycler() {
+        binding.productList.setLayoutManager(new LinearLayoutManager(this));
+        orderDetailsProducts = new ArrayList<>();
+        orderDetailsProductAdapter = new OrderDetailsProductAdapter(this, orderDetailsProducts);
+        binding.productList.setAdapter(orderDetailsProductAdapter);
+    }
+
+    private void setupOrderHistoryRecycler() {
+        orderStatuses = new ArrayList<>();
+        binding.recycle.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new OrderStatusAdapter(orderStatuses, this);
+        binding.recycle.setAdapter(adapter);
     }
 
     @Override
@@ -277,6 +229,54 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     private void clickListeners() {
+        binding.shopInfo.setOnClickListener(v -> {
+            Intent intent = new Intent(OrderDetailsActivity.this, MainActivity.class);
+            intent.putExtra("type", 3);
+            intent.putExtra("shop_slug", shopSlug);
+            intent.putExtra("category", "root");
+            startActivity(intent);
+        });
+
+        binding.makePayment.setOnClickListener(v -> {
+            if (orderDetailsModel == null || orderDetailsModel.getAllowed_payment_methods() == null) {
+                ToastUtils.show("Cash on delivery only");
+                return;
+            }
+            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no,
+                    total_amount,
+                    paid_amount,
+                    orderDetailsModel.getAllowed_payment_methods(),
+                    orderDetailsModel.isApplyDeliveryCharge(),
+                    orderDetailsModel.getDeliveryCharge(), this);
+            paymentBottomSheet.show(getSupportFragmentManager(), "payment");
+        });
+
+        binding.btnToggleTimeline.setOnClickListener(v -> {
+            if (adapter.isShowAll()) {
+                adapter.setShowAll(false);
+                binding.btnToggleTimeline.setText("Show All");
+            } else {
+                adapter.setShowAll(true);
+                binding.btnToggleTimeline.setText("Show Less");
+            }
+            adapter.notifyDataSetChanged();
+        });
+
+        binding.payViaGiftCard.setOnClickListener(view -> dialogGiftCardPayment());
+        binding.withdrawRefund.setOnClickListener(view -> {
+            new AlertDialog.Builder(this)
+                    .setCancelable(false)
+                    .setMessage("Are you sure you want to withdraw refund request?")
+                    .setPositiveButton(android.R.string.yes, (dialog1, which) -> {
+                        viewModel.withdrawRefundRequest(invoice_no);
+                    })
+                    .setNegativeButton(android.R.string.no, (dialogInterface, i) -> {
+
+                    })
+                    .show();
+        });
+        binding.confirmDelivery.setOnClickListener(v -> confirmDeliveryDialog());
+
         binding.updateDeliveryAddress.setOnClickListener(view -> updateDeliveryAddressDialog());
         binding.tvViewIssue.setOnClickListener(view -> viewIssues());
         binding.tvReport.setOnClickListener(view -> report());
@@ -304,6 +304,32 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             ToastUtils.show(response.getMessage());
             getOrderDetails();
             getOrderHistory();
+        });
+
+        viewModel.deliveryHeroLiveData.observe(this, deliveryHeroResponse -> {
+            loadDeliveryHeroInfo(deliveryHeroResponse);
+        });
+    }
+
+    private void loadDeliveryHeroInfo(DeliveryHeroResponse response) {
+        if (response == null) {
+            binding.hero.setVisibility(View.GONE);
+            return;
+        } else
+            binding.hero.setVisibility(View.VISIBLE);
+
+        binding.heroName.setText(String.format("%s %s", response.getData().getUser().getFirstName(), response.getData().getUser().getLastName()));
+
+        if (!isFinishing() && !isDestroyed())
+            Glide.with(OrderDetailsActivity.this)
+                    .load(response.getData().getUser().getProfilePicUrl())
+                    .placeholder(R.drawable.user_image)
+                    .into(binding.heroPicture);
+
+        binding.heroCall.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + response.getData().getUser().getContact()));
+            startActivity(intent);
         });
     }
 
@@ -401,11 +427,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             public void onAuthError(boolean logout) {
                 if (!logout)
                     requestConfirmDelivery(alertDialog);
-
             }
         });
-
-
     }
 
     void viewIssues() {
@@ -689,41 +712,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         }
     }
 
-    private void getDeliveryHero() {
-
-        OrderApiHelper.getDeliveryHero(invoice_no, new ResponseListenerAuth<DeliveryHeroResponse, String>() {
-            @Override
-            public void onDataFetched(DeliveryHeroResponse response, int statusCode) {
-                binding.hero.setVisibility(View.VISIBLE);
-                binding.heroName.setText(String.format("%s %s", response.getData().getUser().getFirstName(), response.getData().getUser().getLastName()));
-
-                if (!isFinishing() && !isDestroyed())
-                    Glide.with(OrderDetailsActivity.this)
-                            .load(response.getData().getUser().getProfilePicUrl())
-                            .placeholder(R.drawable.user_image)
-                            .into(binding.heroPicture);
-
-                binding.heroCall.setOnClickListener(v -> {
-                    Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:" + response.getData().getUser().getContact()));
-                    startActivity(intent);
-                });
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                binding.hero.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    getDeliveryHero();
-            }
-        });
-
-    }
 
     public void dialogGiftCardPayment() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));

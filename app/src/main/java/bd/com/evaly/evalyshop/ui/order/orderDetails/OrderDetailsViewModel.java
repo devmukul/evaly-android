@@ -1,13 +1,15 @@
 package bd.com.evaly.evalyshop.ui.order.orderDetails;
 
+import androidx.hilt.Assisted;
+import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
-
-import com.google.gson.Gson;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
@@ -21,6 +23,36 @@ public class OrderDetailsViewModel extends ViewModel {
     private MutableLiveData<CommonDataResponse<String>> refundEligibilityLiveData = new MutableLiveData<>();
     private MutableLiveData<CommonDataResponse<String>> refundDeleteLiveData = new MutableLiveData<>();
     private MutableLiveData<CommonDataResponse<OrderDetailsModel>> updateAddress = new MutableLiveData<>();
+    protected MutableLiveData<DeliveryHeroResponse> deliveryHeroLiveData = new MutableLiveData<>();
+    private String invoiceNo;
+
+    @ViewModelInject
+    public OrderDetailsViewModel(@Assisted SavedStateHandle savedStateHandle) {
+        this.invoiceNo = savedStateHandle.get("invoice_no");
+        getDeliveryHero();
+    }
+
+    private void getDeliveryHero() {
+
+        OrderApiHelper.getDeliveryHero(invoiceNo, new ResponseListenerAuth<DeliveryHeroResponse, String>() {
+            @Override
+            public void onDataFetched(DeliveryHeroResponse response, int statusCode) {
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    getDeliveryHero();
+            }
+        });
+
+    }
 
     public LiveData<CommonDataResponse<OrderDetailsModel>> getUpdateAddress() {
         return updateAddress;
