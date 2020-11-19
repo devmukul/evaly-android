@@ -423,7 +423,7 @@ public interface IApiClient {
     Call<JsonObject> cancelOrder(@Header("Authorization") String token, @Path("invoice_no") String invoiceNo, @Body HashMap<String, String> body);
 
     @PUT(UrlUtils.BASE_URL + "orders/customer/deliver-order/{invoice_no}/")
-    Call<JsonObject> confirmDelivery(@Header("Authorization") String token, @Path("invoice_no") String invoiceNo);
+    Call<CommonDataResponse> confirmDelivery(@Header("Authorization") String token, @Path("invoice_no") String invoiceNo);
 
 
     // brand

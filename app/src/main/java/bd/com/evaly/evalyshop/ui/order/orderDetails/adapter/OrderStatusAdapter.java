@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
@@ -19,12 +20,12 @@ import bd.com.evaly.evalyshop.util.Utils;
 
 public class OrderStatusAdapter extends RecyclerView.Adapter<OrderStatusAdapter.MyViewHolder> {
 
-    private ArrayList<OrderStatus> orderStatuses;
+    private List<OrderStatus> orderStatuses;
     private Context context;
     private boolean showAll = false;
 
 
-    public OrderStatusAdapter(ArrayList<OrderStatus> orderStatuses, Context context) {
+    public OrderStatusAdapter(List<OrderStatus> orderStatuses, Context context) {
         this.orderStatuses = orderStatuses;
         this.context = context;
     }

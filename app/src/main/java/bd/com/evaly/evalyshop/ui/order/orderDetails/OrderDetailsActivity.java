@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -33,7 +32,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -47,7 +45,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -120,8 +117,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private String invoice_no = "";
     private String orderStatus = "pending", paymentStatus = "unpaid", paymentMethod = "";
     private StepperIndicator indicator;
-    private ArrayList<OrderStatus> orderStatuses;
-    private OrderStatusAdapter adapter;
+    private List<OrderStatus> orderStatuses;
+    private OrderStatusAdapter orderStatusAdapter;
     private ArrayList<OrderDetailsProducts> orderDetailsProducts;
     private OrderDetailsProductAdapter orderDetailsProductAdapter;
     private ViewDialog dialog;
@@ -136,6 +133,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private String deliveryChargeApplicable = null;
     private OrderDetailsViewModel viewModel;
     private boolean isRefundEligible = false;
+    private ProgressDialog progressDialog;
+    private Dialog confirmDeliveryDialog;
 
 
     @Override
@@ -164,14 +163,12 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         if (extras != null) {
             invoice_no = extras.getString("orderID");
             binding.orderId.setText("#" + invoice_no);
-            getOrderDetails();
         }
 
         binding.balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(CredentialManager.getBalance()) + "</b>"));
         indicator = findViewById(R.id.indicator);
         indicator.setStepCount(6);
 
-        getOrderHistory();
         setupOrderHistoryRecycler();
         setupProductListRecycler();
         liveEvents();
@@ -188,8 +185,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private void setupOrderHistoryRecycler() {
         orderStatuses = new ArrayList<>();
         binding.recycle.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new OrderStatusAdapter(orderStatuses, this);
-        binding.recycle.setAdapter(adapter);
+        orderStatusAdapter = new OrderStatusAdapter(orderStatuses, this);
+        binding.recycle.setAdapter(orderStatusAdapter);
     }
 
     @Override
@@ -252,14 +249,14 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         });
 
         binding.btnToggleTimeline.setOnClickListener(v -> {
-            if (adapter.isShowAll()) {
-                adapter.setShowAll(false);
+            if (orderStatusAdapter.isShowAll()) {
+                orderStatusAdapter.setShowAll(false);
                 binding.btnToggleTimeline.setText("Show All");
             } else {
-                adapter.setShowAll(true);
+                orderStatusAdapter.setShowAll(true);
                 binding.btnToggleTimeline.setText("Show Less");
             }
-            adapter.notifyDataSetChanged();
+            orderStatusAdapter.notifyDataSetChanged();
         });
 
         binding.payViaGiftCard.setOnClickListener(view -> dialogGiftCardPayment());
@@ -283,6 +280,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     private void liveEvents() {
+        viewModel.orderDetailsLiveData.observe(this, orderDetailsModel -> loadOrderDetails(orderDetailsModel));
+
         viewModel.getRefundEligibilityLiveData().observe(this, response -> {
             if (response.getSuccess())
                 isRefundEligible = true;
@@ -296,19 +295,292 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         });
 
         viewModel.getRefreshPage().observe(this, aBoolean -> {
-            getOrderHistory();
-            getOrderDetails();
+            //getOrderHistory();
         });
 
         viewModel.getUpdateAddress().observe(this, response -> {
             ToastUtils.show(response.getMessage());
-            getOrderDetails();
-            getOrderHistory();
+            //getOrderDetails();
+            //getOrderHistory();
         });
 
         viewModel.deliveryHeroLiveData.observe(this, deliveryHeroResponse -> {
             loadDeliveryHeroInfo(deliveryHeroResponse);
         });
+
+        viewModel.confirmDeliveryLiveData.observe(this, commonDataResponse -> {
+            progressDialog.dismiss();
+            if (commonDataResponse == null) {
+                ToastUtils.show("Couldn't confirm order delivery");
+                return;
+            }
+            ToastUtils.show(commonDataResponse.getMessage());
+            updatePage();
+        });
+
+        viewModel.confirmDeliveryLiveData.observe(this, response -> {
+            dismissProgressBar();
+            if (response != null) {
+                ToastUtils.show(response.getMessage());
+                if (response.getSuccess() && confirmDeliveryDialog.isShowing()) {
+                    confirmDeliveryDialog.dismiss();
+                }
+            }
+        });
+
+        viewModel.orderStatusListLiveData.observe(this, list -> {
+            orderStatuses.clear();
+            orderStatuses = list;
+            orderStatusAdapter.notifyDataSetChanged();
+            if (list.size() > 4)
+                binding.btnToggleTimelineHolder.setVisibility(View.VISIBLE);
+            else
+                binding.btnToggleTimelineHolder.setVisibility(View.GONE);
+        });
+    }
+
+    private void loadOrderDetails(OrderDetailsModel response) {
+
+        dialog.hideDialog();
+        orderDetailsModel = response;
+
+        orderStatus = response.getOrderStatus().toLowerCase();
+        paymentMethod = response.getPaymentMethod();
+        paymentStatus = response.getPaymentStatus();
+
+        if (paymentStatus.toLowerCase().equals("refund_requested")) {
+            binding.paymentStatus.setText("Refund Requested");
+            binding.withdrawRefund.setVisibility(View.VISIBLE);
+        } else {
+            binding.paymentStatus.setText(Utils.toFirstCharUpperAll(paymentStatus));
+            binding.withdrawRefund.setVisibility(View.GONE);
+        }
+
+        if (paymentStatus.toLowerCase().equals("paid")) {
+            binding.paymentStatus.setBackgroundColor(Color.parseColor("#33d274"));
+            binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
+        } else if (paymentStatus.toLowerCase().equals("unpaid")) {
+            binding.paymentStatus.setBackgroundColor(Color.parseColor("#f0ac4e"));
+            binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
+        } else if (paymentStatus.toLowerCase().equals("partial")) {
+            binding.paymentStatus.setBackgroundColor(Color.parseColor("#009688"));
+            binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
+        } else if (paymentStatus.toLowerCase().equals("refunded")) {
+            binding.paymentStatus.setTextColor(Color.parseColor("#333333"));
+            binding.paymentStatus.setBackgroundColor(Color.parseColor("#eeeeee"));
+            viewModel.checkRefundEligibility(invoice_no);
+        } else if (paymentStatus.toLowerCase().equals("refund_requested")) {
+            binding.paymentStatus.setBackgroundColor(Color.parseColor("#c45da8"));
+            binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
+        }
+
+        binding.deliveryHeroStatus.setText("Assigned for delivery");
+
+        if (orderStatus.equals("pending")) {
+            binding.updateDeliveryAddress.setVisibility(View.VISIBLE);
+            indicator.setCurrentStep(1);
+        } else if (orderStatus.equals("confirmed")) {
+            binding.updateDeliveryAddress.setVisibility(View.VISIBLE);
+            indicator.setCurrentStep(2);
+        } else if (orderStatus.equals("processing")) {
+            binding.updateDeliveryAddress.setVisibility(View.VISIBLE);
+            indicator.setCurrentStep(3);
+        } else if (orderStatus.equals("picked")) {
+            binding.updateDeliveryAddress.setVisibility(View.GONE);
+            indicator.setCurrentStep(4);
+            binding.deliveryHeroStatus.setText("Picked the order for delivery");
+        } else if (orderStatus.equals("shipped")) {
+            binding.updateDeliveryAddress.setVisibility(View.GONE);
+            indicator.setCurrentStep(5);
+            binding.deliveryHeroStatus.setText("Picked the order for delivery");
+            binding.updateDeliveryAddress.setVisibility(View.GONE);
+        } else if (orderStatus.equals("delivered")) {
+            indicator.setCurrentStep(6);
+            binding.deliveryHeroStatus.setText("Delivered the products");
+        }
+
+        if (orderDetailsModel.isApplyDeliveryCharge() && !orderDetailsModel.getOrderStatus().equalsIgnoreCase("delivered")) {
+            binding.llCashCollect.setVisibility(View.VISIBLE);
+            binding.tvDeliveryFee.setText(Html.fromHtml("Please Pay Delivery Fee <b>৳" + orderDetailsModel.getDeliveryCharge() + "</b> Cash to Delivery Hero."));
+        } else {
+            binding.llCashCollect.setVisibility(View.GONE);
+        }
+
+        if (orderStatus.equals("shipped") && paymentStatus.equals("paid"))
+            binding.confirmDelivery.setVisibility(View.VISIBLE);
+        else
+            binding.confirmDelivery.setVisibility(View.GONE);
+
+        if (!response.isDeliveryConfirmed() && response.isDeliveryConfirmationRequired())
+            deliveryConfirmationDialog();
+
+        binding.orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getDate()));
+
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy");
+            Date firstDate = sdf.parse("09/09/2020");
+            Date secondDate = sdf.parse(Utils.formattedDateFromString("", "dd/MM/yyy", response.getDate()));
+
+            boolean check = false;
+            String shopTitle = response.getShop().getName();
+            if (deliveryChargeApplicable != null) {
+                String[] array = deliveryChargeApplicable.split(",");
+                for (String s : array) {
+                    if (shopTitle.toLowerCase().contains(s.toLowerCase())) {
+                        check = true;
+                        break;
+                    }
+                }
+            }
+
+            if ((secondDate != null && secondDate.after(firstDate)) && check) {
+                binding.vatHolder.setVisibility(View.VISIBLE);
+                binding.deliveryChargeHolder.setVisibility(View.VISIBLE);
+                if (deliveryChargeText != null)
+                    binding.deliveryChargeText.setText(deliveryChargeText.replaceAll(" will be", ""));
+            } else {
+                binding.vatHolder.setVisibility(View.GONE);
+                binding.deliveryChargeHolder.setVisibility(View.GONE);
+            }
+
+        } catch (Exception e) {
+            binding.vatHolder.setVisibility(View.GONE);
+            binding.deliveryChargeHolder.setVisibility(View.GONE);
+        }
+
+        if (response.getOrderStatus().toLowerCase().equals("cancel")) {
+            StepperIndicator indicatorCancelled = findViewById(R.id.indicatorCancelled);
+            indicatorCancelled.setVisibility(View.VISIBLE);
+            indicatorCancelled.setCurrentStep(6);
+            indicator.setDoneIcon(getDrawable(R.drawable.ic_close_smallest));
+            indicator.setVisibility(View.GONE);
+            binding.makePayment.setVisibility(View.GONE);
+            binding.confirmOrder.setVisibility(View.GONE);
+            binding.payPartially.setVisibility(View.GONE);
+            binding.payViaGiftCard.setVisibility(View.GONE);
+        } else if (response.getOrderStatus().toLowerCase().equals("delivered") || response.getPaymentStatus().toLowerCase().equals("refund_requested") || response.getOrderStatus().toLowerCase().equals("processing") || response.getOrderStatus().toLowerCase().equals("picked") || response.getOrderStatus().toLowerCase().equals("shipped")) {
+            binding.makePayment.setVisibility(View.GONE);
+            binding.payPartially.setVisibility(View.GONE);
+            binding.confirmOrder.setVisibility(View.GONE);
+            binding.payViaGiftCard.setVisibility(View.GONE);
+        } else {
+            binding.confirmOrder.setVisibility(View.GONE);
+            if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().length > 0) {
+                binding.makePayment.setVisibility(View.VISIBLE);
+                binding.payPartially.setVisibility(View.GONE);
+                binding.payViaGiftCard.setVisibility(View.GONE);
+                for (int i = 0; i < response.getAllowed_payment_methods().length; i++) {
+                    if (response.getAllowed_payment_methods()[i].equalsIgnoreCase("gift_code")) {
+                        binding.payViaGiftCard.setVisibility(View.VISIBLE);
+                    }
+                }
+            } else {
+                binding.makePayment.setVisibility(View.GONE);
+                binding.payPartially.setVisibility(View.GONE);
+                binding.payViaGiftCard.setVisibility(View.GONE);
+            }
+
+        }
+
+        binding.billtoName1.setText(String.format("%s %s", response.getCustomer().getFirstName(), response.getCustomer().getLastName()));
+        binding.billtoAddress1.setText(response.getCustomerAddress());
+        binding.billtoPhone.setText(response.getContactNumber());
+        binding.totalPrice.setText(String.format("৳ %s", Utils.formatPrice(response.getTotal())));
+        binding.paidAmount.setText(String.format("৳ %s", Utils.formatPrice(response.getPaidAmount())));
+        binding.duePrice.setText(String.format(Locale.ENGLISH, "৳ %s", Utils.formatPrice((Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount())))));
+
+        if (response.getCustomerNote() != null && !response.getCustomerNote().equals("")) {
+            binding.tvCampaignRule.setText(response.getCustomerNote());
+            binding.campaignRuleHolder.setVisibility(View.VISIBLE);
+        } else
+            binding.campaignRuleHolder.setVisibility(View.GONE);
+
+        String payMethod = response.getPaymentMethod();
+
+        if (payMethod.equals("cod"))
+            binding.paymentMethod.setText("Cash on Delivery");
+        else if (payMethod.equals(""))
+            binding.paymentMethod.setVisibility(View.GONE);
+        else {
+            payMethod = payMethod.replaceAll("card", "Card");
+            payMethod = payMethod.replaceAll("binding.balance", "Evaly Account");
+            payMethod = payMethod.replaceAll("bank", "Bank Account");
+            payMethod = payMethod.replaceAll("gift_code", "Gift Code");
+            payMethod = payMethod.replaceAll(",", ", ");
+            payMethod = payMethod.replaceAll("  ", " ");
+            binding.paymentMethod.setText(Utils.capitalize(payMethod));
+        }
+
+        binding.billfromName.setText(response.getShop().getName());
+        shopSlug = response.getShop().getSlug();
+        binding.billfromAddress.setText(response.getShop().getAddress());
+        binding.billfromPhone.setText(response.getShop().getContactNumber());
+
+        total_amount = Math.round(Double.parseDouble(response.getTotal()));
+        paid_amount = Math.round(Double.parseDouble(response.getPaidAmount()));
+        due_amount = total_amount - paid_amount;
+
+        if (due_amount < 1) {
+            binding.makePayment.setVisibility(View.GONE);
+            binding.payPartially.setVisibility(View.GONE);
+            binding.payViaGiftCard.setVisibility(View.GONE);
+        }
+
+        if (response.getCampaignRules().size() > 0) {
+            try {
+                if (response.getCampaignRules().get(0)
+                        .getAsJsonObject().get("category")
+                        .getAsJsonObject().get("slug")
+                        .getAsString().equals("pod-1ce6180b") && orderStatus.equals("pending")) {
+                    binding.makePayment.setVisibility(View.GONE);
+                }
+            } catch (Exception ignore) {
+
+            }
+        }
+
+        inflateMenu();
+
+        orderDetailsProducts.clear();
+        orderDetailsProductAdapter.notifyDataSetChanged();
+
+        List<OrderItemsItem> orderItemList = response.getOrderItems();
+
+        for (int i = 0; i < orderItemList.size(); i++) {
+
+            OrderItemsItem orderItem = orderItemList.get(i);
+            String productVariation = "";
+
+            for (int j = 0; j < orderItem.getVariations().size(); j++) {
+                JsonObject varJ = orderItem.getVariations().get(j).getAsJsonObject();
+                String attr = varJ.get("attribute").getAsString();
+                String variation = varJ.get("attribute_value").getAsString();
+
+                if (j > 0)
+                    productVariation = productVariation + ", " + attr + ": " + variation;
+                else
+                    productVariation = attr + ": " + variation;
+            }
+
+            orderDetailsProducts.add(
+                    new OrderDetailsProducts(
+                            orderItem.getItemImages().get(0),
+                            orderItem.getItemName(),
+                            orderItem.getProductSlug(),
+                            orderItem.getOrderTimePrice(),
+                            String.valueOf(orderItem.getQuantity()),
+                            (Math.round(Double.parseDouble(orderItem.getOrderTimePrice())) * orderItem.getQuantity()) + "",
+                            productVariation));
+
+            orderDetailsProductAdapter.notifyItemInserted(orderDetailsProducts.size());
+        }
+
+    }
+
+    private void dismissProgressBar() {
+        if (progressDialog != null && progressDialog.isShowing())
+            progressDialog.dismiss();
     }
 
     private void loadDeliveryHeroInfo(DeliveryHeroResponse response) {
@@ -340,10 +612,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     @SuppressLint("DefaultLocale")
     private void confirmDeliveryDialog() {
-        final Dialog dialog = new Dialog(this, R.style.FullWidthTransparentDialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(true);
-        final DialogConfirmDeliveryBinding dialogConfirmDeliveryBinding = DataBindingUtil.inflate(LayoutInflater.from(OrderDetailsActivity.this), R.layout.dialog_confirm_delivery, null, false);
+        confirmDeliveryDialog = new Dialog(this, R.style.FullWidthTransparentDialog);
+        confirmDeliveryDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        confirmDeliveryDialog.setCancelable(true);
+        final DialogConfirmDeliveryBinding dialogConfirmDeliveryBinding = DataBindingUtil.inflate(
+                LayoutInflater.from(OrderDetailsActivity.this), R.layout.dialog_confirm_delivery, null, false);
 
         Random rand = new Random();
         String captchaCode = String.format(Locale.ENGLISH, "%04d", rand.nextInt(10000));
@@ -355,11 +628,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             else if (!dialogConfirmDeliveryBinding.code.getText().toString().trim().equals(captchaCode))
                 ToastUtils.show("You have entered wrong captcha code");
             else
-                requestConfirmDelivery(dialog);
+                requestConfirmDelivery();
         });
 
-        dialog.setContentView(dialogConfirmDeliveryBinding.getRoot());
-        dialog.show();
+        confirmDeliveryDialog.setContentView(dialogConfirmDeliveryBinding.getRoot());
+        confirmDeliveryDialog.show();
     }
 
 
@@ -396,39 +669,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         dialog.show();
     }
 
-    private void requestConfirmDelivery(Dialog alertDialog) {
-
-        ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage("Confirming delivery...");
-        dialog.show();
-
-        OrderApiHelper.confirmDelivery(CredentialManager.getToken(), invoice_no, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-                dialog.dismiss();
-
-                if (response.has("message"))
-                    ToastUtils.show(response.get("message").getAsString());
-
-                if (response.has("success") && response.get("success").getAsBoolean() && alertDialog != null && alertDialog.isShowing()) {
-                    updatePage();
-                    alertDialog.dismiss();
-                }
-
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                dialog.dismiss();
-                ToastUtils.show("Error occurred! Try again later");
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    requestConfirmDelivery(alertDialog);
-            }
-        });
+    private void requestConfirmDelivery() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Confirming delivery...");
+        progressDialog.show();
+        viewModel.confirmDelivery();
     }
 
     void viewIssues() {
@@ -814,7 +1059,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         binding.scroll.postDelayed(() -> binding.scroll.fullScroll(View.FOCUS_UP), 50);
         Balance.update(this, binding.balance);
         getOrderHistory();
-        getOrderDetails();
+        viewModel.getOrderDetails();
     }
 
     @Override
@@ -907,262 +1152,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             cancelMenuItem.setVisible(false);
     }
 
-    public void getOrderDetails() {
-
-        OrderApiHelper.getOrderDetails(CredentialManager.getToken(), invoice_no, new ResponseListenerAuth<OrderDetailsModel, String>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onDataFetched(OrderDetailsModel response, int statusCode) {
-
-                dialog.hideDialog();
-                orderDetailsModel = response;
-
-                orderStatus = response.getOrderStatus().toLowerCase();
-                paymentMethod = response.getPaymentMethod();
-                paymentStatus = response.getPaymentStatus();
-
-                if (paymentStatus.toLowerCase().equals("refund_requested")) {
-                    binding.paymentStatus.setText("Refund Requested");
-                    binding.withdrawRefund.setVisibility(View.VISIBLE);
-                } else {
-                    binding.paymentStatus.setText(Utils.toFirstCharUpperAll(paymentStatus));
-                    binding.withdrawRefund.setVisibility(View.GONE);
-                }
-
-                if (paymentStatus.toLowerCase().equals("paid")) {
-                    binding.paymentStatus.setBackgroundColor(Color.parseColor("#33d274"));
-                    binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
-                } else if (paymentStatus.toLowerCase().equals("unpaid")) {
-                    binding.paymentStatus.setBackgroundColor(Color.parseColor("#f0ac4e"));
-                    binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
-                } else if (paymentStatus.toLowerCase().equals("partial")) {
-                    binding.paymentStatus.setBackgroundColor(Color.parseColor("#009688"));
-                    binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
-                } else if (paymentStatus.toLowerCase().equals("refunded")) {
-                    binding.paymentStatus.setTextColor(Color.parseColor("#333333"));
-                    binding.paymentStatus.setBackgroundColor(Color.parseColor("#eeeeee"));
-                    viewModel.checkRefundEligibility(invoice_no);
-                } else if (paymentStatus.toLowerCase().equals("refund_requested")) {
-                    binding.paymentStatus.setBackgroundColor(Color.parseColor("#c45da8"));
-                    binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
-                }
-
-                binding.deliveryHeroStatus.setText("Assigned for delivery");
-
-                if (orderStatus.equals("pending")) {
-                    binding.updateDeliveryAddress.setVisibility(View.VISIBLE);
-                    indicator.setCurrentStep(1);
-                } else if (orderStatus.equals("confirmed")) {
-                    binding.updateDeliveryAddress.setVisibility(View.VISIBLE);
-                    indicator.setCurrentStep(2);
-                } else if (orderStatus.equals("processing")) {
-                    binding.updateDeliveryAddress.setVisibility(View.VISIBLE);
-                    indicator.setCurrentStep(3);
-                } else if (orderStatus.equals("picked")) {
-                    binding.updateDeliveryAddress.setVisibility(View.GONE);
-                    indicator.setCurrentStep(4);
-                    binding.deliveryHeroStatus.setText("Picked the order for delivery");
-                } else if (orderStatus.equals("shipped")) {
-                    binding.updateDeliveryAddress.setVisibility(View.GONE);
-                    indicator.setCurrentStep(5);
-                    binding.deliveryHeroStatus.setText("Picked the order for delivery");
-                    binding.updateDeliveryAddress.setVisibility(View.GONE);
-                } else if (orderStatus.equals("delivered")) {
-                    indicator.setCurrentStep(6);
-                    binding.deliveryHeroStatus.setText("Delivered the products");
-                }
-
-                if (orderDetailsModel.isApplyDeliveryCharge() && !orderDetailsModel.getOrderStatus().equalsIgnoreCase("delivered")) {
-                    binding.llCashCollect.setVisibility(View.VISIBLE);
-                    binding.tvDeliveryFee.setText(Html.fromHtml("Please Pay Delivery Fee <b>৳" + orderDetailsModel.getDeliveryCharge() + "</b> Cash to Delivery Hero."));
-                } else {
-                    binding.llCashCollect.setVisibility(View.GONE);
-                }
-
-                if (orderStatus.equals("shipped") && paymentStatus.equals("paid"))
-                    binding.confirmDelivery.setVisibility(View.VISIBLE);
-                else
-                    binding.confirmDelivery.setVisibility(View.GONE);
-
-                if (!response.isDeliveryConfirmed() && response.isDeliveryConfirmationRequired())
-                    deliveryConfirmationDialog();
-
-                binding.orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getDate()));
-
-
-                try {
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy");
-                    Date firstDate = sdf.parse("09/09/2020");
-                    Date secondDate = sdf.parse(Utils.formattedDateFromString("", "dd/MM/yyy", response.getDate()));
-
-                    boolean check = false;
-                    String shopTitle = response.getShop().getName();
-                    if (deliveryChargeApplicable != null) {
-                        String[] array = deliveryChargeApplicable.split(",");
-                        for (String s : array) {
-                            if (shopTitle.toLowerCase().contains(s.toLowerCase())) {
-                                check = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if ((secondDate != null && secondDate.after(firstDate)) && check) {
-                        binding.vatHolder.setVisibility(View.VISIBLE);
-                        binding.deliveryChargeHolder.setVisibility(View.VISIBLE);
-                        if (deliveryChargeText != null)
-                            binding.deliveryChargeText.setText(deliveryChargeText.replaceAll(" will be", ""));
-                    } else {
-                        binding.vatHolder.setVisibility(View.GONE);
-                        binding.deliveryChargeHolder.setVisibility(View.GONE);
-                    }
-
-                } catch (Exception e) {
-                    binding.vatHolder.setVisibility(View.GONE);
-                    binding.deliveryChargeHolder.setVisibility(View.GONE);
-                }
-
-                if (response.getOrderStatus().toLowerCase().equals("cancel")) {
-                    StepperIndicator indicatorCancelled = findViewById(R.id.indicatorCancelled);
-                    indicatorCancelled.setVisibility(View.VISIBLE);
-                    indicatorCancelled.setCurrentStep(6);
-                    indicator.setDoneIcon(getDrawable(R.drawable.ic_close_smallest));
-                    indicator.setVisibility(View.GONE);
-                    binding.makePayment.setVisibility(View.GONE);
-                    binding.confirmOrder.setVisibility(View.GONE);
-                    binding.payPartially.setVisibility(View.GONE);
-                    binding.payViaGiftCard.setVisibility(View.GONE);
-                } else if (response.getOrderStatus().toLowerCase().equals("delivered") || response.getPaymentStatus().toLowerCase().equals("refund_requested") || response.getOrderStatus().toLowerCase().equals("processing") || response.getOrderStatus().toLowerCase().equals("picked") || response.getOrderStatus().toLowerCase().equals("shipped")) {
-                    binding.makePayment.setVisibility(View.GONE);
-                    binding.payPartially.setVisibility(View.GONE);
-                    binding.confirmOrder.setVisibility(View.GONE);
-                    binding.payViaGiftCard.setVisibility(View.GONE);
-                } else {
-                    binding.confirmOrder.setVisibility(View.GONE);
-                    if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().length > 0) {
-                        binding.makePayment.setVisibility(View.VISIBLE);
-                        binding.payPartially.setVisibility(View.GONE);
-                        binding.payViaGiftCard.setVisibility(View.GONE);
-                        for (int i = 0; i < response.getAllowed_payment_methods().length; i++) {
-                            if (response.getAllowed_payment_methods()[i].equalsIgnoreCase("gift_code")) {
-                                binding.payViaGiftCard.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    } else {
-                        binding.makePayment.setVisibility(View.GONE);
-                        binding.payPartially.setVisibility(View.GONE);
-                        binding.payViaGiftCard.setVisibility(View.GONE);
-                    }
-
-                }
-
-                binding.billtoName1.setText(String.format("%s %s", response.getCustomer().getFirstName(), response.getCustomer().getLastName()));
-                binding.billtoAddress1.setText(response.getCustomerAddress());
-                binding.billtoPhone.setText(response.getContactNumber());
-                binding.totalPrice.setText(String.format("৳ %s", Utils.formatPrice(response.getTotal())));
-                binding.paidAmount.setText(String.format("৳ %s", Utils.formatPrice(response.getPaidAmount())));
-                binding.duePrice.setText(String.format(Locale.ENGLISH, "৳ %s", Utils.formatPrice((Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount())))));
-
-                if (response.getCustomerNote() != null && !response.getCustomerNote().equals("")) {
-                    binding.tvCampaignRule.setText(response.getCustomerNote());
-                    binding.campaignRuleHolder.setVisibility(View.VISIBLE);
-                } else
-                    binding.campaignRuleHolder.setVisibility(View.GONE);
-
-                String payMethod = response.getPaymentMethod();
-
-                if (payMethod.equals("cod"))
-                    binding.paymentMethod.setText("Cash on Delivery");
-                else if (payMethod.equals(""))
-                    binding.paymentMethod.setVisibility(View.GONE);
-                else {
-                    payMethod = payMethod.replaceAll("card", "Card");
-                    payMethod = payMethod.replaceAll("binding.balance", "Evaly Account");
-                    payMethod = payMethod.replaceAll("bank", "Bank Account");
-                    payMethod = payMethod.replaceAll("gift_code", "Gift Code");
-                    payMethod = payMethod.replaceAll(",", ", ");
-                    payMethod = payMethod.replaceAll("  ", " ");
-                    binding.paymentMethod.setText(Utils.capitalize(payMethod));
-                }
-
-                binding.billfromName.setText(response.getShop().getName());
-                shopSlug = response.getShop().getSlug();
-                binding.billfromAddress.setText(response.getShop().getAddress());
-                binding.billfromPhone.setText(response.getShop().getContactNumber());
-
-                total_amount = Math.round(Double.parseDouble(response.getTotal()));
-                paid_amount = Math.round(Double.parseDouble(response.getPaidAmount()));
-                due_amount = total_amount - paid_amount;
-
-                if (due_amount < 1) {
-                    binding.makePayment.setVisibility(View.GONE);
-                    binding.payPartially.setVisibility(View.GONE);
-                    binding.payViaGiftCard.setVisibility(View.GONE);
-                }
-
-                if (response.getCampaignRules().size() > 0) {
-                    try {
-                        if (response.getCampaignRules().get(0)
-                                .getAsJsonObject().get("category")
-                                .getAsJsonObject().get("slug")
-                                .getAsString().equals("pod-1ce6180b") && orderStatus.equals("pending")) {
-                            binding.makePayment.setVisibility(View.GONE);
-                        }
-                    } catch (Exception ignore) {
-
-                    }
-                }
-
-                inflateMenu();
-
-                orderDetailsProducts.clear();
-                orderDetailsProductAdapter.notifyDataSetChanged();
-
-                List<OrderItemsItem> orderItemList = response.getOrderItems();
-
-                for (int i = 0; i < orderItemList.size(); i++) {
-
-                    OrderItemsItem orderItem = orderItemList.get(i);
-                    String productVariation = "";
-
-                    for (int j = 0; j < orderItem.getVariations().size(); j++) {
-                        JsonObject varJ = orderItem.getVariations().get(j).getAsJsonObject();
-                        String attr = varJ.get("attribute").getAsString();
-                        String variation = varJ.get("attribute_value").getAsString();
-
-                        if (j > 0)
-                            productVariation = productVariation + ", " + attr + ": " + variation;
-                        else
-                            productVariation = attr + ": " + variation;
-                    }
-
-                    orderDetailsProducts.add(
-                            new OrderDetailsProducts(
-                                    orderItem.getItemImages().get(0),
-                                    orderItem.getItemName(),
-                                    orderItem.getProductSlug(),
-                                    orderItem.getOrderTimePrice(),
-                                    String.valueOf(orderItem.getQuantity()),
-                                    (Math.round(Double.parseDouble(orderItem.getOrderTimePrice())) * orderItem.getQuantity()) + "",
-                                    productVariation));
-
-                    orderDetailsProductAdapter.notifyItemInserted(orderDetailsProducts.size());
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                dialog.hideDialog();
-                ToastUtils.show("Error occurred!");
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-    }
-
 
     public void cancelOrder() {
 
@@ -1213,44 +1202,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     }
 
-    public void getOrderHistory() {
-
-        orderStatuses.clear();
-        OrderApiHelper.getOrderHistories(CredentialManager.getToken(), invoice_no, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
-                JsonArray list = response.getAsJsonObject("data").getAsJsonArray("histories");
-
-                for (int i = 0; i < list.size(); i++) {
-                    JsonObject jsonObject = list.get(i).getAsJsonObject();
-
-                    orderStatuses.add(new OrderStatus(
-                            jsonObject.get("date").getAsString(),
-                            jsonObject.get("order_status").getAsString(),
-                            jsonObject.get("note").getAsString())
-                    );
-
-                    adapter.notifyDataSetChanged();
-                }
-
-                if (list.size() > 4)
-                    binding.btnToggleTimelineHolder.setVisibility(View.VISIBLE);
-                else
-                    binding.btnToggleTimelineHolder.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-    }
 
     @Override
     public void onBackPressed() {

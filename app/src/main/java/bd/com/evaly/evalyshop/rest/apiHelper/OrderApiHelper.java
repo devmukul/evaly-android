@@ -84,7 +84,7 @@ public class OrderApiHelper extends BaseApiHelper {
         getiApiClient().cancelOrder(token, invoiceNo, hashMap).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void confirmDelivery(String token, String invoiceNo, ResponseListenerAuth<JsonObject, String> listener) {
+    public static void confirmDelivery(String token, String invoiceNo, ResponseListenerAuth<CommonDataResponse, String> listener) {
         getiApiClient().confirmDelivery(token, invoiceNo).enqueue(getResponseCallBackDefault(listener));
     }
 
