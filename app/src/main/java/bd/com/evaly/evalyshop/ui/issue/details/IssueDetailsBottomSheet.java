@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.issue;
+package bd.com.evaly.evalyshop.ui.issue.details;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -33,6 +33,8 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.issueNew.comment.IssueTicketCommentModel;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
+import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
+import bd.com.evaly.evalyshop.ui.issue.adapter.IssueReplyAdapter;
 import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -59,7 +61,6 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
-
         if (getArguments() == null)
             dismiss();
         else {

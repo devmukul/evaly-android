@@ -21,6 +21,8 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.issue.adapter.IssuesAdapter;
+import bd.com.evaly.evalyshop.ui.issue.details.IssueDetailsBottomSheet;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import butterknife.BindView;
