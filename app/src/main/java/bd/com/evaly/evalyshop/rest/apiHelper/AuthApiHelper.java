@@ -388,6 +388,10 @@ public class AuthApiHelper extends BaseApiHelper {
         getiApiClient().getUserInfo(token, username).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void withdrawRefundRequest(String invoice, ResponseListenerAuth<CommonDataResponse, String> listener) {
+        getiApiClient().withdrawRefundRequest(CredentialManager.getToken(), invoice).enqueue(getResponseCallBackDefault(listener));
+    }
+
     // cashback claim
 
     public static void claimCashback(String token, String username, ResponseListenerAuth<JsonObject, String> listener) {

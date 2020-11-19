@@ -758,6 +758,23 @@
                             android:textAlignment="center"
                             android:textColor="@color/fffh"
                             android:visibility="gone" />
+
+
+                        <TextView
+                            android:id="@+id/withdrawRefund"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/make_payment"
+                            android:clickable="true"
+                            android:paddingLeft="15dp"
+                            android:paddingTop="8dp"
+                            android:paddingRight="15dp"
+                            android:paddingBottom="8dp"
+                            android:text="Cancel Refund Request"
+                            android:textAlignment="center"
+                            android:textColor="@color/fffh"
+                            android:visibility="gone"/>
                     </LinearLayout>
 
                     <View

@@ -221,6 +221,18 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         });
 
         binding.payViaGiftCard.setOnClickListener(view -> dialogGiftCardPayment());
+        binding.withdrawRefund.setOnClickListener(view -> {
+            new AlertDialog.Builder(this)
+                    .setCancelable(false)
+                    .setMessage("Are you sure you want to withdraw refund request?")
+                    .setPositiveButton(android.R.string.yes, (dialog1, which) -> {
+                        viewModel.withdrawRefundRequest(invoice_no);
+                    })
+                    .setNegativeButton(android.R.string.no, (dialogInterface, i) -> {
+
+                    })
+                    .show();
+        });
 
         getDeliveryHero();
         binding.confirmDelivery.setOnClickListener(v -> confirmDeliveryDialog());
@@ -915,17 +927,19 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             public void onDataFetched(OrderDetailsModel response, int statusCode) {
 
                 dialog.hideDialog();
-
                 orderDetailsModel = response;
 
                 orderStatus = response.getOrderStatus().toLowerCase();
                 paymentMethod = response.getPaymentMethod();
                 paymentStatus = response.getPaymentStatus();
 
-                if (paymentStatus.toLowerCase().equals("refund_requested"))
+                if (paymentStatus.toLowerCase().equals("refund_requested")) {
                     binding.paymentStatus.setText("Refund Requested");
-                else
+                    binding.withdrawRefund.setVisibility(View.VISIBLE);
+                } else {
                     binding.paymentStatus.setText(Utils.toFirstCharUpperAll(paymentStatus));
+                    binding.withdrawRefund.setVisibility(View.GONE);
+                }
 
                 if (paymentStatus.toLowerCase().equals("paid")) {
                     binding.paymentStatus.setBackgroundColor(Color.parseColor("#33d274"));

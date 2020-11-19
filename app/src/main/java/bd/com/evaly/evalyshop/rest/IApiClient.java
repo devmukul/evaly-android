@@ -260,6 +260,7 @@ public interface IApiClient {
     @DELETE(UrlUtils.BASE_URL_AUTH + "remove-user-address/{id}")
     Call<CommonDataResponse> removeAddress(@Header("Authorization") String token, @Path("id") int id);
 
+
     @POST(UrlUtils.UPDATE_VCARD)
     Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);
 
@@ -318,6 +319,9 @@ public interface IApiClient {
 
     @GET(UrlUtils.DOMAIN + "pay/apply/cashback-balance/{username}/")
     Call<JsonObject> claimCashBack(@Header("Authorization") String header, @Path("username") String username);
+
+    @PUT(UrlUtils.DOMAIN + "pay/withdraw_refund_request/{invoice}")
+    Call<CommonDataResponse> withdrawRefundRequest(@Header("Authorization") String header, @Path("invoice") String invoice);
 
 
     // product APIs

@@ -1,8 +1,5 @@
 package bd.com.evaly.evalyshop.rest.apiHelper;
 
-import android.util.Log;
-import android.widget.Toast;
-
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -14,7 +11,6 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
-import bd.com.evaly.evalyshop.util.ToastUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -92,9 +88,9 @@ public class BaseApiHelper {
                         }
                     });
                 } else {
-                    if (response.body() != null)
+                    if (response.body() != null) {
                         dataFetchingListener.onFailed(response.toString(), response.code());
-                    else {
+                    } else {
                         try {
                             dataFetchingListener.onFailed(response.errorBody().string(), response.code());
                         } catch (IOException e) {

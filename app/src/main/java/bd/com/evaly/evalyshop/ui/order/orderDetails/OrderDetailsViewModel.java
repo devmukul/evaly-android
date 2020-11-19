@@ -4,12 +4,16 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.gson.Gson;
+
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class OrderDetailsViewModel extends ViewModel {
 
@@ -28,6 +32,27 @@ public class OrderDetailsViewModel extends ViewModel {
 
     public LiveData<CommonDataResponse<String>> getRefundDeleteLiveData() {
         return refundDeleteLiveData;
+    }
+
+    public void withdrawRefundRequest(String invoice) {
+        AuthApiHelper.withdrawRefundRequest(invoice, new ResponseListenerAuth<CommonDataResponse, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse response, int statusCode) {
+                ToastUtils.show(response.getMessage());
+                refreshPage.setValue(true);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                ToastUtils.show(errorBody);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    withdrawRefundRequest(invoice);
+            }
+        });
     }
 
     public void updateOrderAddress(UpdateOrderAddressRequest body) {
