@@ -75,7 +75,7 @@ public class OrderApiHelper extends BaseApiHelper {
         getiApiClient().getOrderHistories(token, invoiceNo).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void cancelOrder(String token, String invoiceNo, String userNote, ResponseListenerAuth<JsonObject, String> listener) {
+    public static void cancelOrder(String token, String invoiceNo, String userNote, ResponseListenerAuth<CommonDataResponse, String> listener) {
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("order_status", "cancel");

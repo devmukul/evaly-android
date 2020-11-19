@@ -420,7 +420,7 @@ public interface IApiClient {
     Call<CommonResultResponse<List<OrderListItem>>> getOrderList(@Header("Authorization") String token, @Query("page") int page, @Query("order_status") String orderStatus);
 
     @PUT(UrlUtils.BASE_URL + "orders/customer/cancel-order/{invoice_no}/")
-    Call<JsonObject> cancelOrder(@Header("Authorization") String token, @Path("invoice_no") String invoiceNo, @Body HashMap<String, String> body);
+    Call<CommonDataResponse> cancelOrder(@Header("Authorization") String token, @Path("invoice_no") String invoiceNo, @Body HashMap<String, String> body);
 
     @PUT(UrlUtils.BASE_URL + "orders/customer/deliver-order/{invoice_no}/")
     Call<CommonDataResponse> confirmDelivery(@Header("Authorization") String token, @Path("invoice_no") String invoiceNo);

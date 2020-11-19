@@ -36,6 +36,7 @@ public class OrderDetailsViewModel extends ViewModel {
     private MutableLiveData<CommonDataResponse<OrderDetailsModel>> updateAddress = new MutableLiveData<>();
     protected MutableLiveData<DeliveryHeroResponse> deliveryHeroLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse> confirmDeliveryLiveData = new MutableLiveData<>();
+    protected MutableLiveData<CommonDataResponse> cancelOrderLiveData = new MutableLiveData<>();
     protected MutableLiveData<OrderDetailsModel> orderDetailsLiveData = new MutableLiveData<>();
     protected MutableLiveData<List<OrderStatus>> orderStatusListLiveData = new MutableLiveData<>();
     private String invoiceNo;
@@ -46,6 +47,33 @@ public class OrderDetailsViewModel extends ViewModel {
         getOrderDetails();
         getDeliveryHero();
         getOrderHistory();
+    }
+
+    public void refresh() {
+        getOrderDetails();
+        getDeliveryHero();
+        getOrderHistory();
+    }
+
+
+    public void cancelOrder(String reason) {
+        OrderApiHelper.cancelOrder(CredentialManager.getToken(), invoiceNo, reason, new ResponseListenerAuth<CommonDataResponse, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse response, int statusCode) {
+                refresh();
+                cancelOrderLiveData.setValue(response);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                ToastUtils.show("Can't cancel this order!");
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void getOrderHistory() {
@@ -64,7 +92,6 @@ public class OrderDetailsViewModel extends ViewModel {
                             jsonObject.get("note").getAsString())
                     );
                 }
-
                 orderStatusListLiveData.setValue(orderStatuses);
             }
 

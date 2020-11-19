@@ -86,7 +86,6 @@ import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
@@ -135,6 +134,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private boolean isRefundEligible = false;
     private ProgressDialog progressDialog;
     private Dialog confirmDeliveryDialog;
+    private BottomSheetDialog cancelOrderDialog;
 
 
     @Override
@@ -330,12 +330,19 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
         viewModel.orderStatusListLiveData.observe(this, list -> {
             orderStatuses.clear();
-            orderStatuses = list;
+            orderStatuses.addAll(list);
             orderStatusAdapter.notifyDataSetChanged();
             if (list.size() > 4)
                 binding.btnToggleTimelineHolder.setVisibility(View.VISIBLE);
             else
                 binding.btnToggleTimelineHolder.setVisibility(View.GONE);
+        });
+
+        viewModel.cancelOrderLiveData.observe(this, response -> {
+            if (response.getSuccess()) {
+                if (cancelOrderDialog != null && cancelOrderDialog.isShowing())
+                    cancelOrderDialog.dismiss();
+            }
         });
     }
 
@@ -346,7 +353,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
         orderStatus = response.getOrderStatus().toLowerCase();
         paymentMethod = response.getPaymentMethod();
-        paymentStatus = response.getPaymentStatus();
+        paymentStatus = response.getPaymentStatus().toLowerCase();
 
         if (paymentStatus.toLowerCase().equals("refund_requested")) {
             binding.paymentStatus.setText("Refund Requested");
@@ -356,20 +363,20 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             binding.withdrawRefund.setVisibility(View.GONE);
         }
 
-        if (paymentStatus.toLowerCase().equals("paid")) {
+        if (paymentStatus.equals("paid")) {
             binding.paymentStatus.setBackgroundColor(Color.parseColor("#33d274"));
             binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
-        } else if (paymentStatus.toLowerCase().equals("unpaid")) {
+        } else if (paymentStatus.equals("unpaid")) {
             binding.paymentStatus.setBackgroundColor(Color.parseColor("#f0ac4e"));
             binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
-        } else if (paymentStatus.toLowerCase().equals("partial")) {
+        } else if (paymentStatus.equals("partial")) {
             binding.paymentStatus.setBackgroundColor(Color.parseColor("#009688"));
             binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
-        } else if (paymentStatus.toLowerCase().equals("refunded")) {
+        } else if (paymentStatus.equals("refunded")) {
             binding.paymentStatus.setTextColor(Color.parseColor("#333333"));
             binding.paymentStatus.setBackgroundColor(Color.parseColor("#eeeeee"));
             viewModel.checkRefundEligibility(invoice_no);
-        } else if (paymentStatus.toLowerCase().equals("refund_requested")) {
+        } else if (paymentStatus.equals("refund_requested")) {
             binding.paymentStatus.setBackgroundColor(Color.parseColor("#c45da8"));
             binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
         }
@@ -399,7 +406,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             binding.deliveryHeroStatus.setText("Delivered the products");
         }
 
-        if (orderDetailsModel.isApplyDeliveryCharge() && !orderDetailsModel.getOrderStatus().equalsIgnoreCase("delivered")) {
+        if (orderDetailsModel.isApplyDeliveryCharge() &&
+                !orderStatus.equalsIgnoreCase("delivered")) {
             binding.llCashCollect.setVisibility(View.VISIBLE);
             binding.tvDeliveryFee.setText(Html.fromHtml("Please Pay Delivery Fee <b>৳" + orderDetailsModel.getDeliveryCharge() + "</b> Cash to Delivery Hero."));
         } else {
@@ -443,43 +451,38 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 binding.vatHolder.setVisibility(View.GONE);
                 binding.deliveryChargeHolder.setVisibility(View.GONE);
             }
-
         } catch (Exception e) {
             binding.vatHolder.setVisibility(View.GONE);
             binding.deliveryChargeHolder.setVisibility(View.GONE);
         }
 
-        if (response.getOrderStatus().toLowerCase().equals("cancel")) {
+        if (orderStatus.equals("cancel")) {
             StepperIndicator indicatorCancelled = findViewById(R.id.indicatorCancelled);
             indicatorCancelled.setVisibility(View.VISIBLE);
             indicatorCancelled.setCurrentStep(6);
             indicator.setDoneIcon(getDrawable(R.drawable.ic_close_smallest));
             indicator.setVisibility(View.GONE);
-            binding.makePayment.setVisibility(View.GONE);
             binding.confirmOrder.setVisibility(View.GONE);
-            binding.payPartially.setVisibility(View.GONE);
-            binding.payViaGiftCard.setVisibility(View.GONE);
-        } else if (response.getOrderStatus().toLowerCase().equals("delivered") || response.getPaymentStatus().toLowerCase().equals("refund_requested") || response.getOrderStatus().toLowerCase().equals("processing") || response.getOrderStatus().toLowerCase().equals("picked") || response.getOrderStatus().toLowerCase().equals("shipped")) {
-            binding.makePayment.setVisibility(View.GONE);
-            binding.payPartially.setVisibility(View.GONE);
+            hidePaymentButtons();
+        } else if (orderStatus.equals("delivered") ||
+                response.getPaymentStatus().toLowerCase().equals("refund_requested") ||
+                orderStatus.equals("processing") ||
+                orderStatus.equals("picked") ||
+                orderStatus.equals("shipped")) {
             binding.confirmOrder.setVisibility(View.GONE);
-            binding.payViaGiftCard.setVisibility(View.GONE);
+            hidePaymentButtons();
         } else {
             binding.confirmOrder.setVisibility(View.GONE);
             if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().length > 0) {
+                hidePaymentButtons();
                 binding.makePayment.setVisibility(View.VISIBLE);
-                binding.payPartially.setVisibility(View.GONE);
-                binding.payViaGiftCard.setVisibility(View.GONE);
                 for (int i = 0; i < response.getAllowed_payment_methods().length; i++) {
                     if (response.getAllowed_payment_methods()[i].equalsIgnoreCase("gift_code")) {
                         binding.payViaGiftCard.setVisibility(View.VISIBLE);
                     }
                 }
-            } else {
-                binding.makePayment.setVisibility(View.GONE);
-                binding.payPartially.setVisibility(View.GONE);
-                binding.payViaGiftCard.setVisibility(View.GONE);
-            }
+            } else
+                hidePaymentButtons();
 
         }
 
@@ -521,11 +524,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         paid_amount = Math.round(Double.parseDouble(response.getPaidAmount()));
         due_amount = total_amount - paid_amount;
 
-        if (due_amount < 1) {
-            binding.makePayment.setVisibility(View.GONE);
-            binding.payPartially.setVisibility(View.GONE);
-            binding.payViaGiftCard.setVisibility(View.GONE);
-        }
+        if (due_amount < 1)
+            hidePaymentButtons();
 
         if (response.getCampaignRules().size() > 0) {
             try {
@@ -572,10 +572,14 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                             String.valueOf(orderItem.getQuantity()),
                             (Math.round(Double.parseDouble(orderItem.getOrderTimePrice())) * orderItem.getQuantity()) + "",
                             productVariation));
-
             orderDetailsProductAdapter.notifyItemInserted(orderDetailsProducts.size());
         }
+    }
 
+    private void hidePaymentButtons() {
+        binding.makePayment.setVisibility(View.GONE);
+        binding.payPartially.setVisibility(View.GONE);
+        binding.payViaGiftCard.setVisibility(View.GONE);
     }
 
     private void dismissProgressBar() {
@@ -662,7 +666,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
                     })
                     .show();
-
         });
         Objects.requireNonNull(dialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         dialog.setContentView(dialogBinding.getRoot());
@@ -1038,11 +1041,9 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     private void giftCardSuccessDialog() {
-
         new AlertDialog.Builder(this)
                 .setCancelable(false)
                 .setMessage("Thank you for your payment. We are updating your order and you will be notified soon. If your order is not updated, please contact us.")
-
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                     finish();
                     startActivity(getIntent());
@@ -1058,14 +1059,13 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     public void updatePage() {
         binding.scroll.postDelayed(() -> binding.scroll.fullScroll(View.FOCUS_UP), 50);
         Balance.update(this, binding.balance);
-        getOrderHistory();
+        viewModel.getOrderHistory();
         viewModel.getOrderDetails();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == 10002) {
             if (resultCode == Activity.RESULT_OK) {
                 updatePage();
@@ -1073,66 +1073,48 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 // some stuff that will happen if there's no result
             }
         }
-
         if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-
             Uri selectedImage = data.getData();
-            String imagePath = RealPathUtil.getRealPath(this, selectedImage);
-            Log.d("json image uri", imagePath);
-
             try {
+                Uri resultUri = data.getData();
+                InputStream imageStream = null;
                 try {
-
-                    Uri resultUri = data.getData();
-                    InputStream imageStream = null;
-                    try {
-                        imageStream = getContentResolver().openInputStream(resultUri);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-
-                    Bitmap bitmap = null;
-                    try {
-                        bitmap = BitmapFactory.decodeStream(imageStream);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    if (bitmap == null) {
-                        ToastUtils.show(R.string.something_wrong);
-                        return;
-                    }
-
-                    dialog.showDialog();
-
-                    ImageApiHelper.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
-                        @Override
-                        public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
-                            dialog.hideDialog();
-                            imageUrl = response.getData().getUrl();
-                            setPostPic();
-                        }
-
-                        @Override
-                        public void onFailed(String errorBody, int errorCode) {
-
-                        }
-
-                        @Override
-                        public void onAuthError(boolean logout) {
-
-                        }
-                    });
-
-
-                } catch (Exception e) {
-
+                    imageStream = getContentResolver().openInputStream(resultUri);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
+                Bitmap bitmap = null;
+                try {
+                    bitmap = BitmapFactory.decodeStream(imageStream);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (bitmap == null) {
+                    ToastUtils.show(R.string.something_wrong);
+                    return;
+                }
+                dialog.showDialog();
+                ImageApiHelper.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
+                    @Override
+                    public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
+                        dialog.hideDialog();
+                        imageUrl = response.getData().getUrl();
+                        setPostPic();
+                    }
 
+                    @Override
+                    public void onFailed(String errorBody, int errorCode) {
+                    }
+
+                    @Override
+                    public void onAuthError(boolean logout) {
+
+                    }
+                });
             } catch (Exception e) {
-
-                Log.d("json image error", e.toString());
                 ToastUtils.show("Error occurred while uploading image");
             }
+
         }
     }
 
@@ -1154,52 +1136,26 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
 
     public void cancelOrder() {
+        cancelOrderDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+        cancelOrderDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        cancelOrderDialog.setContentView(R.layout.bottom_sheet_cancel_order);
+        cancelOrderDialog.setTitle("Select Cancellation Reason");
 
-        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.bottom_sheet_cancel_order);
-        dialog.setTitle("Select Cancellation Reason");
-
-        TextView button = dialog.findViewById(R.id.btn);
-        RadioGroup radioGroup = dialog.findViewById(R.id.radioGroup);
+        TextView button = cancelOrderDialog.findViewById(R.id.btn);
+        RadioGroup radioGroup = cancelOrderDialog.findViewById(R.id.radioGroup);
 
         assert button != null;
         button.setOnClickListener(view -> {
-
             if ((radioGroup != null ? radioGroup.getCheckedRadioButtonId() : 0) == -1) {
                 ToastUtils.show("Select a cancellation reason");
                 return;
             }
-
             assert radioGroup != null;
-            int index = radioGroup.indexOfChild(dialog.findViewById(radioGroup.getCheckedRadioButtonId()));
-
+            int index = radioGroup.indexOfChild(cancelOrderDialog.findViewById(radioGroup.getCheckedRadioButtonId()));
             String reason = getResources().getStringArray(R.array.cancelReasons)[index];
-
-            OrderApiHelper.cancelOrder(CredentialManager.getToken(), invoice_no, reason, new ResponseListenerAuth<JsonObject, String>() {
-                @Override
-                public void onDataFetched(JsonObject response, int statusCode) {
-                    updatePage();
-                    binding.cancelBtn.setVisibility(View.GONE);
-                    if (dialog.isShowing())
-                        dialog.dismiss();
-                }
-
-                @Override
-                public void onFailed(String errorBody, int errorCode) {
-                    ToastUtils.show("Can't cancel this order!");
-                }
-
-                @Override
-                public void onAuthError(boolean logout) {
-
-                }
-            });
+            viewModel.cancelOrder(reason);
         });
-
-        dialog.show();
-
+        cancelOrderDialog.show();
     }
 
 
