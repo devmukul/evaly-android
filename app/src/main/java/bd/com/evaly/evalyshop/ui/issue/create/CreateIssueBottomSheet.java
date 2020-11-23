@@ -1,23 +1,28 @@
 package bd.com.evaly.evalyshop.ui.issue.create;
 
-import android.app.Dialog;
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +31,11 @@ import bd.com.evaly.evalyshop.databinding.BottomSheetCreateIssueBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
 import bd.com.evaly.evalyshop.models.issueNew.create.IssueCreateBody;
-import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.util.ViewDialog;
+
+import static android.app.Activity.RESULT_OK;
 
 public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
 
@@ -38,12 +45,13 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
     private String orderStatus, invoice, seller, shop, imageUrl;
     private IssueCreateBody model;
     private List<String> options;
+    private ViewDialog dialog;
 
     public static CreateIssueBottomSheet newInstance(String invoiceNo, String orderStatus, String sellerName, String shopSlug) {
         CreateIssueBottomSheet bottomSheet = new CreateIssueBottomSheet();
         Bundle bundle = new Bundle();
         bundle.putString("orderStatus", orderStatus);
-        bundle.putString("invoiceNo", invoiceNo);
+        bundle.putString("invoice", invoiceNo);
         bundle.putString("seller", sellerName);
         bundle.putString("shop", shopSlug);
         bottomSheet.setArguments(bundle);
@@ -71,12 +79,31 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        dialog = new ViewDialog(getActivity());
         model = new IssueCreateBody();
         options = new ArrayList<>();
         liveEvents();
     }
 
     private void liveEvents() {
+
+        viewModel.imageErrorLiveData.observe(getViewLifecycleOwner(), s -> {
+            ToastUtils.show(s);
+            dialog.hideDialog();
+        });
+
+        viewModel.issueCreatedLiveData.observe(getViewLifecycleOwner(), aBoolean -> {
+            binding.btnSubmit.setEnabled(true);
+            if (aBoolean)
+                dismissAllowingStateLoss();
+        });
+
+        viewModel.imageLiveData.observe(getViewLifecycleOwner(), imageDataModel -> {
+            dialog.hideDialog();
+            imageUrl = imageDataModel.getUrl();
+            setIssuePic();
+        });
+
         viewModel.categoryLiveList.observe(getViewLifecycleOwner(), issueCategoryModels -> {
             if (issueCategoryModels == null) {
                 ToastUtils.show(getResources().getString(R.string.something_wrong));
@@ -140,6 +167,7 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
         });
 
         binding.addPhoto.setOnClickListener(view -> openImageSelector());
+        binding.ivClose.setOnClickListener(v -> dismissAllowingStateLoss());
 
         binding.btnSubmit.setOnClickListener(view -> {
 
@@ -147,7 +175,6 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
             model.setContext("order");
             model.setCustomer(CredentialManager.getUserName());
             model.setInvoiceNumber(invoice);
-
             model.setSeller(seller);
             model.setShop(shop);
 
@@ -216,31 +243,82 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
 
             model.setAdditionalInfo(description);
             viewModel.submitIssue(model);
+            binding.btnSubmit.setEnabled(false);
         });
     }
 
-    @NonNull
+    private void openImageSelector() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    8000);
+        } else {
+            openSelector();
+        }
+    }
+
+    private void setIssuePic() {
+        Glide.with(this)
+                .asBitmap()
+                .load(imageUrl)
+                .skipMemoryCache(true)
+                .fitCenter()
+                .optionalCenterCrop()
+                .placeholder(R.drawable.half_dp_bg_light)
+                .into((binding.postImage));
+    }
+
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-        bottomSheetDialog.setOnShowListener(dialogz -> {
-            BottomSheetDialog dialog = (BottomSheetDialog) dialogz;
-            FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 8000) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                openSelector();
+            else {
+                ToastUtils.show("Permission denied");
+            }
+        }
+    }
 
-            if (getContext() != null && bottomSheet != null) {
-                ScreenUtils screenUtils = new ScreenUtils(getContext());
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-                LinearLayout dialogLayoutReply = dialog.findViewById(R.id.container2);
-                assert dialogLayoutReply != null;
-                dialogLayoutReply.setMinimumHeight(screenUtils.getHeight());
-
-                //BottomSheetBehavior.from(bottomSheet).setPeekHeight(screenUtils.getHeight());
-                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-                BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
-                BottomSheetBehavior.from(bottomSheet).setHideable(true);
+        if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            try {
+                Uri resultUri = data.getData();
+                InputStream imageStream = null;
+                try {
+                    imageStream = getActivity().getContentResolver().openInputStream(resultUri);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Bitmap bitmap = null;
+                try {
+                    bitmap = BitmapFactory.decodeStream(imageStream);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (bitmap == null) {
+                    ToastUtils.show(R.string.something_wrong);
+                    return;
+                }
+                dialog.showDialog();
+                viewModel.uploadImage(bitmap);
+            } catch (Exception e) {
+                ToastUtils.show("Error occurred while uploading image");
             }
 
-        });
-        return bottomSheetDialog;
+        }
     }
+
+    private void openSelector() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        String[] mimeTypes = {"image/jpeg", "image/png"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        startActivityForResult(intent, 1001);
+    }
+
 }

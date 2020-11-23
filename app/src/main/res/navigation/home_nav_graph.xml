@@ -295,6 +295,10 @@
         android:id="@+id/appointmentCommentBottomSheet"
         android:name="bd.com.evaly.evalyshop.ui.appointment.comment.AppointmentCommentBottomSheet"
         android:label="AppointmentCommentBottomSheet" />
+    <dialog
+        android:id="@+id/createIssueBottomSheet"
+        android:name="bd.com.evaly.evalyshop.ui.issue.create.CreateIssueBottomSheet"
+        android:label="CreateIssueBottomSheet" />
 
 
     <!--    <activity-->

@@ -1,19 +1,14 @@
 package bd.com.evaly.evalyshop.ui.order.orderDetails;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,18 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
@@ -42,14 +32,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.badoualy.stepperindicator.StepperIndicator;
 import com.bumptech.glide.Glide;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,18 +51,12 @@ import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ActivityOrderDetailsBinding;
-import bd.com.evaly.evalyshop.databinding.BottomSheetCreateIssueBinding;
 import bd.com.evaly.evalyshop.databinding.BottomSheetUpdateOrderAddressBinding;
 import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
-import bd.com.evaly.evalyshop.models.image.ImageDataModel;
-import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
-import bd.com.evaly.evalyshop.models.issueNew.create.IssueCreateBody;
-import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
@@ -84,10 +64,9 @@ import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
+import bd.com.evaly.evalyshop.ui.issue.create.CreateIssueBottomSheet;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
@@ -95,8 +74,6 @@ import bd.com.evaly.evalyshop.ui.order.orderDetails.refund.RefundBottomSheet;
 import bd.com.evaly.evalyshop.ui.payment.bottomsheet.PaymentBottomSheet;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.util.KeyboardUtil;
-import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -121,11 +98,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private ArrayList<OrderDetailsProducts> orderDetailsProducts;
     private OrderDetailsProductAdapter orderDetailsProductAdapter;
     private ViewDialog dialog;
-    private BottomSheetDialog bottomSheetDialog;
-    private String imageUrl;
     private MenuItem cancelMenuItem;
     private MenuItem refundMenuItem;
-    private List<IssueCategoryModel> categoryList;
     private OrderDetailsModel orderDetailsModel;
     private PaymentWebBuilder paymentWebBuilder;
     private String deliveryChargeText = null;
@@ -276,7 +250,14 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
         binding.updateDeliveryAddress.setOnClickListener(view -> updateDeliveryAddressDialog());
         binding.tvViewIssue.setOnClickListener(view -> viewIssues());
-        binding.tvReport.setOnClickListener(view -> report());
+        binding.tvReport.setOnClickListener(v -> {
+            CreateIssueBottomSheet bottomSheet = CreateIssueBottomSheet.newInstance(invoice_no,
+                    orderDetailsModel.getOrderStatus(),
+                    orderDetailsModel.getShop().getName(),
+                    orderDetailsModel.getShop().getSlug());
+
+            bottomSheet.show(getSupportFragmentManager(), "Create issue");
+        });
     }
 
     private void liveEvents() {
@@ -683,284 +664,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         startActivity(new Intent(OrderDetailsActivity.this, IssuesActivity.class).putExtra("invoice", invoice_no));
     }
 
-    private IssueCategoryModel getCategoryModelByName(String name) {
-        for (IssueCategoryModel item : categoryList) {
-            if (item.getName().equals(name))
-                return item;
-        }
-        return null;
-    }
-
-    void report() {
-        if (orderDetailsModel == null || orderDetailsModel.getOrderStatus() == null) {
-            ToastUtils.show("Please reload the page");
-            return;
-        }
-        IssueCreateBody model = new IssueCreateBody();
-        bottomSheetDialog = new BottomSheetDialog(OrderDetailsActivity.this, R.style.BottomSheetDialogTheme);
-
-        BottomSheetCreateIssueBinding dialogBinding = BottomSheetCreateIssueBinding.inflate(getLayoutInflater());
-        bottomSheetDialog.setContentView(dialogBinding.getRoot());
-
-        List<String> options = new ArrayList<>();
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, options);
-        dialogBinding.spnDelivery.setAdapter(adapter);
-        dialog.showDialog();
-
-        IssueApiHelper.getCategories(new ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<List<IssueCategoryModel>> response, int statusCode) {
-                dialog.hideDialog();
-                bottomSheetDialog.show();
-                categoryList = response.getData();
-                for (IssueCategoryModel item : categoryList) {
-                    if (orderDetailsModel.getOrderStatus().equals("pending")) {
-                        if (item.getName().equals("Bank Payment") || item.getName().equals("Payment"))
-                            options.add(item.getName());
-                    } else
-                        options.add(item.getName());
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                dialog.hideDialog();
-                ToastUtils.show(getResources().getString(R.string.something_wrong));
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
-        dialogBinding.spnDelivery.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                model.setCategory(getCategoryModelByName(options.get(i)).getId());
-                String catName = options.get(i).toLowerCase();
-                if (catName.contains("payment") || catName.contains("bank") || catName.contains("cashback") || catName.contains("return"))
-                    model.setPriority("urgent");
-                else
-                    model.setPriority("medium");
-
-                String paymentType = getCategoryModelByName(options.get(i)).getName();
-                if (paymentType == null)
-                    return;
-
-                if (paymentType.equals("Balance Refund") || paymentType.equals("Card Refund")) {
-                    dialogBinding.llBkashHolder.setVisibility(View.GONE);
-                    dialogBinding.llBankInfoHolder.setVisibility(View.GONE);
-                } else if (paymentType.equals("bKash Refund") || paymentType.equals("Nagad Refund")) {
-                    dialogBinding.llBkashHolder.setVisibility(View.VISIBLE);
-                    dialogBinding.llBankInfoHolder.setVisibility(View.GONE);
-                    dialogBinding.descriptionHolder.setVisibility(View.GONE);
-                } else if (paymentType.equals("Bank Refund")) {
-                    dialogBinding.llBkashHolder.setVisibility(View.GONE);
-                    dialogBinding.llBankInfoHolder.setVisibility(View.VISIBLE);
-                    dialogBinding.descriptionHolder.setVisibility(View.GONE);
-                } else {
-                    dialogBinding.llBkashHolder.setVisibility(View.GONE);
-                    dialogBinding.llBankInfoHolder.setVisibility(View.GONE);
-                    dialogBinding.descriptionHolder.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        dialogBinding.addPhoto.setOnClickListener(view -> openImageSelector());
-
-        dialogBinding.btnSubmit.setOnClickListener(view -> {
-            if (orderDetailsModel == null || orderDetailsModel.getShop() == null) {
-                ToastUtils.show("Please reload the page");
-                return;
-            }
-
-            model.setChannel("customer_app");
-            model.setContext("order");
-            model.setCustomer(CredentialManager.getUserName());
-            model.setInvoiceNumber(invoice_no);
-
-            model.setSeller(orderDetailsModel.getShop().getName());
-            model.setShop(orderDetailsModel.getShop().getSlug());
-
-            if (imageUrl != null && !imageUrl.equals("")) {
-                List<String> imageUrls = new ArrayList<>();
-                imageUrls.add(imageUrl);
-                model.setAttachments(imageUrls);
-            }
-
-            int selectedPosition = dialogBinding.spnDelivery.getSelectedItemPosition();
-
-            String paymentType = getCategoryModelByName(options.get(selectedPosition)).getName();
-
-            String description = "";
-
-            if (paymentType.equals("bKash Refund")) {
-                String bkashNumber = dialogBinding.etNumber.getText().toString().trim();
-                if (bkashNumber.equals("")) {
-                    ToastUtils.show("Please enter your bKash account number.");
-                    return;
-                } else if (!Utils.isValidNumber(bkashNumber)) {
-                    ToastUtils.show("Please enter valid bKash account number.");
-                    return;
-                }
-                description = "bKash Account: " + bkashNumber;
-            } else if (paymentType.equals("Nagad Refund")) {
-                String number = dialogBinding.etNumber.getText().toString().trim();
-                if (number.equals("")) {
-                    ToastUtils.show("Please enter your Nagad account number.");
-                    return;
-                } else if (!Utils.isValidNumber(number)) {
-                    ToastUtils.show("Please enter valid Nagad account number.");
-                    return;
-                }
-                description = "Nagad Account: " + number;
-            } else if (paymentType.equals("Bank Refund")) {
-                String bankName = dialogBinding.etBankName.getText().toString().trim();
-                String branchName = dialogBinding.etBranch.getText().toString().trim();
-                String routingNumber = dialogBinding.etBranchRouting.getText().toString();
-                String accountName = dialogBinding.etAccountName.getText().toString().trim();
-                String accountNumber = dialogBinding.etAccountNumber.getText().toString().trim();
-
-                String errorMessage = "";
-                if (bankName.equals(""))
-                    errorMessage = "Please enter bank name.";
-                else if (branchName.equals(""))
-                    errorMessage = "Please enter branch name";
-                else if (routingNumber.equals(""))
-                    errorMessage = "Please enter routing number.";
-                else if (accountName.equals(""))
-                    errorMessage = "Please enter account name.";
-                else if (accountNumber.equals(""))
-                    errorMessage = "Please enter account number.";
-
-                if (!errorMessage.equals("")) {
-                    ToastUtils.show(errorMessage);
-                    return;
-                }
-                description = "Account Name: " + accountName + " \n" +
-                        "Account Number: " + accountNumber + " \n" +
-                        "Bank Name: " + bankName + "\n" +
-                        "Branch Name: " + branchName + "\n" +
-                        "Routing Number: " + routingNumber;
-            } else
-                description = dialogBinding.etDescription.getText().toString();
-
-            model.setAdditionalInfo(description);
-            dialog.showDialog();
-            submitIssue(model, bottomSheetDialog);
-            imageUrl = "";
-        });
-
-        View bottomSheetInternal = bottomSheetDialog.findViewById(R.id.design_bottom_sheet);
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
-        new KeyboardUtil(OrderDetailsActivity.this, bottomSheetInternal);
-
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View view, int newState) {
-                if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED || newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    view.post(() -> bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED));
-                } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    bottomSheetDialog.dismiss();
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View view, float v) {
-
-            }
-        });
-        bottomSheetDialog.setCancelable(false);
-        dialogBinding.ivClose.setOnClickListener(view -> bottomSheetDialog.dismiss());
-
-    }
-
-    private void submitIssue(IssueCreateBody model, BottomSheetDialog bottomSheetDialog) {
-
-        IssueApiHelper.createIssue(model, new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<IssueListModel> response, int statusCode) {
-                dialog.hideDialog();
-                ToastUtils.show("Your issue has been submitted, you will be notified shortly");
-                bottomSheetDialog.dismiss();
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                dialog.hideDialog();
-                try {
-                    Log.e("json parse error", errorBody);
-                    JsonObject jsonObject = JsonParser.parseString(errorBody).getAsJsonObject();
-                    ToastUtils.show(jsonObject.get("message").getAsString());
-                } catch (Exception e) {
-                    Log.e("json parse error", e.toString());
-                    ToastUtils.show(getResources().getString(R.string.something_wrong));
-                }
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    submitIssue(model, bottomSheetDialog);
-            }
-        });
-    }
-
-    private void setPostPic() {
-        if (imageUrl != null && bottomSheetDialog != null && bottomSheetDialog.isShowing()) {
-            bottomSheetDialog.findViewById(R.id.postImage).setVisibility(View.VISIBLE);
-            Glide.with(this)
-                    .asBitmap()
-                    .load(imageUrl)
-                    .skipMemoryCache(true)
-                    .fitCenter()
-                    .optionalCenterCrop()
-                    .placeholder(R.drawable.half_dp_bg_light)
-                    .into((ImageView) bottomSheetDialog.findViewById(R.id.postImage));
-        }
-    }
-
-    private void openSelector() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        String[] mimeTypes = {"image/jpeg", "image/png"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-        startActivityForResult(intent, 1001);
-    }
-
-    private void openImageSelector() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    8000);
-        } else {
-            openSelector();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 8000) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                openSelector();
-            else {
-                ToastUtils.show("Permission denied");
-            }
-        }
-    }
-
-
     public void dialogGiftCardPayment() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
 
@@ -1072,49 +775,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // some stuff that will happen if there's no result
             }
-        }
-        if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri selectedImage = data.getData();
-            try {
-                Uri resultUri = data.getData();
-                InputStream imageStream = null;
-                try {
-                    imageStream = getContentResolver().openInputStream(resultUri);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                Bitmap bitmap = null;
-                try {
-                    bitmap = BitmapFactory.decodeStream(imageStream);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (bitmap == null) {
-                    ToastUtils.show(R.string.something_wrong);
-                    return;
-                }
-                dialog.showDialog();
-                ImageApiHelper.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
-                    @Override
-                    public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
-                        dialog.hideDialog();
-                        imageUrl = response.getData().getUrl();
-                        setPostPic();
-                    }
-
-                    @Override
-                    public void onFailed(String errorBody, int errorCode) {
-                    }
-
-                    @Override
-                    public void onAuthError(boolean logout) {
-
-                    }
-                });
-            } catch (Exception e) {
-                ToastUtils.show("Error occurred while uploading image");
-            }
-
         }
     }
 
