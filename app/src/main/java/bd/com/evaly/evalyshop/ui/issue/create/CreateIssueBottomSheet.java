@@ -263,8 +263,6 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                 .asBitmap()
                 .load(imageUrl)
                 .skipMemoryCache(true)
-                .fitCenter()
-                .optionalCenterCrop()
                 .placeholder(R.drawable.half_dp_bg_light)
                 .into((binding.postImage));
     }

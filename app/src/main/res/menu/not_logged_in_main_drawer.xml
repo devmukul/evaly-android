@@ -26,6 +26,8 @@
         android:icon="@drawable/ic_night"
         android:title="@string/dark_mode" />
 
+
+
     <!--<item-->
     <!--android:id="@+id/nav_about"-->
     <!--android:icon="@drawable/ic_info"-->

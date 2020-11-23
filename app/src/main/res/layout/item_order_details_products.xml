@@ -5,16 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="15dp"
+    android:layout_marginBottom="3dp"
     android:orientation="horizontal">
-
-    <TextView
-        android:id="@+id/number"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_weight="0.4"
-        android:text="1"
-        android:visibility="gone" />
 
     <FrameLayout
         android:layout_width="81dp"
@@ -46,7 +38,7 @@
     </FrameLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="clip_horizontal"
@@ -56,8 +48,9 @@
             android:id="@+id/productName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/c666"
             android:layout_marginTop="2dp"
+            android:layout_marginEnd="20dp"
+            android:textColor="@color/c555"
             tools:text="This is the product title, variation name is on bottom" />
 
         <TextView
@@ -65,32 +58,50 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="20dp"
             android:layout_weight="0"
             android:textColor="@color/c333"
             android:textSize="13sp"
-            tools:text="Size: 20"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="Size: 20" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:background="#f9f9f9" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/price_quan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1"
+                android:textColor="@color/c666"
+                tools:text="1 x 4,00000" />
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="20dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:textAlignment="textEnd"
+                android:textColor="@color/c666"
+                tools:text="4,00000" />
+
+        </LinearLayout>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/price_quan"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:textAlignment="textEnd"
-        android:textColor="@color/c666"
-        android:layout_marginTop="2dp"
-        tools:text="1 x 4,00000" />
-
-    <TextView
-        android:id="@+id/price"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:textAlignment="textEnd"
-        android:textColor="@color/c666"
-        android:layout_marginTop="2dp"
-        tools:text="4,00000" />
-
 </LinearLayout>

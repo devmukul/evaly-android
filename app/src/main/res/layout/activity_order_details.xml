@@ -301,44 +301,16 @@
                         android:layout_marginTop="0dp"
                         android:background="@color/fafafa" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginTop="15dp"
                         android:layout_marginBottom="10dp"
-                        android:orientation="horizontal">
+                        android:text="@string/products"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
 
-
-                        <TextView
-                            android:id="@+id/textView33"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_weight="1"
-                            android:text="@string/description"
-                            android:textColor="@color/black"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/textView34"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/rate_amp_qty"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/black"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/textView35"
-                            android:layout_width="70dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="19dp"
-                            android:text="@string/total"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/black"
-                            android:textSize="15sp" />
-                    </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/product_list"
@@ -774,7 +746,7 @@
                             android:text="Cancel Refund Request"
                             android:textAlignment="center"
                             android:textColor="@color/fffh"
-                            android:visibility="gone"/>
+                            android:visibility="gone" />
                     </LinearLayout>
 
                     <View

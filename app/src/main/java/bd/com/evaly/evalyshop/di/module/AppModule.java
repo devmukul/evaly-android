@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
+import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.di.qualifiers.FirebaseRemoteConfigLiveData;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
 import dagger.Module;
@@ -72,5 +73,11 @@ public class AppModule {
     @Singleton
     GlobalSearchViewModel provideGlobalSearchViewModel() {
         return new GlobalSearchViewModel();
+    }
+
+    @Provides
+    @Singleton
+    SharedObservers sharedObservers() {
+        return new SharedObservers();
     }
 }

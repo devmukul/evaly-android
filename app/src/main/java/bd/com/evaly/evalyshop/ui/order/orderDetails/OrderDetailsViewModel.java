@@ -10,10 +10,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -30,15 +32,16 @@ import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class OrderDetailsViewModel extends ViewModel {
 
-    private SingleLiveEvent<Boolean> refreshPage = new SingleLiveEvent<>();
-    private MutableLiveData<CommonDataResponse<String>> refundEligibilityLiveData = new MutableLiveData<>();
-    private MutableLiveData<CommonDataResponse<String>> refundDeleteLiveData = new MutableLiveData<>();
-    private MutableLiveData<CommonDataResponse<OrderDetailsModel>> updateAddress = new MutableLiveData<>();
     protected MutableLiveData<DeliveryHeroResponse> deliveryHeroLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse> confirmDeliveryLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse> cancelOrderLiveData = new MutableLiveData<>();
     protected MutableLiveData<OrderDetailsModel> orderDetailsLiveData = new MutableLiveData<>();
     protected MutableLiveData<List<OrderStatus>> orderStatusListLiveData = new MutableLiveData<>();
+    protected MutableLiveData<String> deliveryStatusUpdateLiveData = new MutableLiveData<>();
+    private SingleLiveEvent<Boolean> refreshPage = new SingleLiveEvent<>();
+    private MutableLiveData<CommonDataResponse<String>> refundEligibilityLiveData = new MutableLiveData<>();
+    private MutableLiveData<CommonDataResponse<String>> refundDeleteLiveData = new MutableLiveData<>();
+    private MutableLiveData<CommonDataResponse<OrderDetailsModel>> updateAddress = new MutableLiveData<>();
     private String invoiceNo;
 
     @ViewModelInject
@@ -55,6 +58,30 @@ public class OrderDetailsViewModel extends ViewModel {
         getOrderHistory();
     }
 
+    public void updateProductDeliveryStatus(HashMap<String, String> data) {
+        AuthApiHelper.updateProductStatus(data, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                deliveryStatusUpdateLiveData.setValue(response.get("message").getAsString());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                try {
+                    CommonDataResponse data = new Gson().fromJson(errorBody, CommonDataResponse.class);
+                    deliveryStatusUpdateLiveData.setValue(data.getMessage());
+                } catch (Exception e) {
+                    deliveryStatusUpdateLiveData.setValue("Couldn't update order status");
+                }
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+    }
 
     public void cancelOrder(String reason) {
         OrderApiHelper.cancelOrder(CredentialManager.getToken(), invoiceNo, reason, new ResponseListenerAuth<CommonDataResponse, String>() {

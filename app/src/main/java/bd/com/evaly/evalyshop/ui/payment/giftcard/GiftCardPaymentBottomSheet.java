@@ -12,8 +12,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetPayViaGiftcardBinding;
+import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -22,6 +25,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class GiftCardPaymentBottomSheet extends BottomSheetDialogFragment {
 
+    @Inject
+    SharedObservers sharedObservers;
     private BottomSheetPayViaGiftcardBinding binding;
     private GiftCardPaymentViewModel viewModel;
     private String invoice;
@@ -103,6 +108,7 @@ public class GiftCardPaymentBottomSheet extends BottomSheetDialogFragment {
                 ToastUtils.show("You have entered an amount that is larger than your due amount.");
                 return;
             }
+            dialog.showDialog();
             viewModel.makePaymentViaGiftCard(binding.code.getText().toString().trim(), invoice, String.valueOf((int) partial_amount));
         });
     }
@@ -112,7 +118,8 @@ public class GiftCardPaymentBottomSheet extends BottomSheetDialogFragment {
                 .setCancelable(false)
                 .setMessage("Thank you for your payment. We are updating your order and you will be notified soon. If your order is not updated, please contact us.")
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-
+                    sharedObservers.giftCardPaymentSuccess.call();
+                    dismissAllowingStateLoss();
                 })
                 .show();
     }

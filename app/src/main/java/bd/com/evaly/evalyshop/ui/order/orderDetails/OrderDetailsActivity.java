@@ -47,7 +47,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ActivityOrderDetailsBinding;
 import bd.com.evaly.evalyshop.databinding.BottomSheetUpdateOrderAddressBinding;
 import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
@@ -55,7 +55,6 @@ import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.issue.create.CreateIssueBottomSheet;
@@ -79,24 +78,22 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class OrderDetailsActivity extends BaseActivity implements PaymentBottomSheet.PaymentOptionListener, PaymentListener {
 
     @Inject
+    SharedObservers sharedObservers;
+    @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
     private ActivityOrderDetailsBinding binding;
-    private double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
-    private String shopSlug = "";
-    private String invoice_no = "";
-    private String orderStatus = "pending", paymentStatus = "unpaid", paymentMethod = "";
+    private double totalAmount = 0.0, paidAmount = 0.0, dueAmount = 0.0;
+    private String invoiceNo = "", shopSlug = "", orderStatus = "pending", paymentStatus = "unpaid", paymentMethod = "";
+    private String deliveryChargeText = null, deliveryChargeApplicable = null;
     private StepperIndicator indicator;
     private List<OrderStatus> orderStatuses;
     private OrderStatusAdapter orderStatusAdapter;
     private ArrayList<OrderDetailsProducts> orderDetailsProducts;
     private OrderDetailsProductAdapter orderDetailsProductAdapter;
     private ViewDialog dialog;
-    private MenuItem cancelMenuItem;
-    private MenuItem refundMenuItem;
+    private MenuItem cancelMenuItem, refundMenuItem;
     private OrderDetailsModel orderDetailsModel;
     private PaymentWebBuilder paymentWebBuilder;
-    private String deliveryChargeText = null;
-    private String deliveryChargeApplicable = null;
     private OrderDetailsViewModel viewModel;
     private boolean isRefundEligible = false;
     private ProgressDialog progressDialog;
@@ -117,7 +114,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         dialog = new ViewDialog(this);
         dialog.showDialog();
-        binding.orderId.setText(invoice_no);
+        binding.orderId.setText(invoiceNo);
 
         binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (scrollY == 0)
@@ -128,8 +125,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            invoice_no = extras.getString("orderID");
-            binding.orderId.setText("#" + invoice_no);
+            invoiceNo = extras.getString("orderID");
+            binding.orderId.setText("#" + invoiceNo);
         }
 
         binding.balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(CredentialManager.getBalance()) + "</b>"));
@@ -184,10 +181,10 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     private void requestRefund() {
-        if (invoice_no.equals("") || orderStatus.equals("") || paymentMethod.equals("") || paymentStatus.equals("")) {
+        if (invoiceNo.equals("") || orderStatus.equals("") || paymentMethod.equals("") || paymentStatus.equals("")) {
             ToastUtils.show("Can't request refund, reload the page");
         } else {
-            RefundBottomSheet refundBottomSheet = RefundBottomSheet.newInstance(invoice_no, orderStatus, paymentMethod, paymentStatus, isRefundEligible);
+            RefundBottomSheet refundBottomSheet = RefundBottomSheet.newInstance(invoiceNo, orderStatus, paymentMethod, paymentStatus, isRefundEligible);
             refundBottomSheet.show(getSupportFragmentManager(), "Refund");
         }
     }
@@ -206,9 +203,9 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 ToastUtils.show("Cash on delivery only");
                 return;
             }
-            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no,
-                    total_amount,
-                    paid_amount,
+            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoiceNo,
+                    totalAmount,
+                    paidAmount,
                     orderDetailsModel.getAllowed_payment_methods(),
                     orderDetailsModel.isApplyDeliveryCharge(),
                     orderDetailsModel.getDeliveryCharge(), this);
@@ -232,7 +229,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     .setCancelable(false)
                     .setMessage("Are you sure you want to withdraw refund request?")
                     .setPositiveButton(android.R.string.yes, (dialog1, which) -> {
-                        viewModel.withdrawRefundRequest(invoice_no);
+                        viewModel.withdrawRefundRequest(invoiceNo);
                     })
                     .setNegativeButton(android.R.string.no, (dialogInterface, i) -> {
 
@@ -244,7 +241,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         binding.updateDeliveryAddress.setOnClickListener(view -> updateDeliveryAddressDialog());
         binding.tvViewIssue.setOnClickListener(view -> viewIssues());
         binding.tvReport.setOnClickListener(v -> {
-            CreateIssueBottomSheet bottomSheet = CreateIssueBottomSheet.newInstance(invoice_no,
+            CreateIssueBottomSheet bottomSheet = CreateIssueBottomSheet.newInstance(invoiceNo,
                     orderDetailsModel.getOrderStatus(),
                     orderDetailsModel.getShop().getName(),
                     orderDetailsModel.getShop().getSlug());
@@ -254,6 +251,14 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     private void liveEvents() {
+
+        viewModel.deliveryStatusUpdateLiveData.observe(this, s -> {
+            ToastUtils.show(s);
+            dialog.hideDialog();
+        });
+
+        sharedObservers.giftCardPaymentSuccess.observe(this, aVoid -> updatePage());
+
         viewModel.orderDetailsLiveData.observe(this, orderDetailsModel -> loadOrderDetails(orderDetailsModel));
 
         viewModel.getRefundEligibilityLiveData().observe(this, response -> {
@@ -269,13 +274,13 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         });
 
         viewModel.getRefreshPage().observe(this, aBoolean -> {
-            //getOrderHistory();
+            viewModel.getOrderHistory();
         });
 
         viewModel.getUpdateAddress().observe(this, response -> {
             ToastUtils.show(response.getMessage());
-            //getOrderDetails();
-            //getOrderHistory();
+            viewModel.getOrderDetails();
+            viewModel.getOrderHistory();
         });
 
         viewModel.deliveryHeroLiveData.observe(this, deliveryHeroResponse -> {
@@ -349,7 +354,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         } else if (paymentStatus.equals("refunded")) {
             binding.paymentStatus.setTextColor(Color.parseColor("#333333"));
             binding.paymentStatus.setBackgroundColor(Color.parseColor("#eeeeee"));
-            viewModel.checkRefundEligibility(invoice_no);
+            viewModel.checkRefundEligibility(invoiceNo);
         } else if (paymentStatus.equals("refund_requested")) {
             binding.paymentStatus.setBackgroundColor(Color.parseColor("#c45da8"));
             binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
@@ -397,7 +402,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             deliveryConfirmationDialog();
 
         binding.orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getDate()));
-
 
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy");
@@ -494,11 +498,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         binding.billfromAddress.setText(response.getShop().getAddress());
         binding.billfromPhone.setText(response.getShop().getContactNumber());
 
-        total_amount = Math.round(Double.parseDouble(response.getTotal()));
-        paid_amount = Math.round(Double.parseDouble(response.getPaidAmount()));
-        due_amount = total_amount - paid_amount;
+        totalAmount = Math.round(Double.parseDouble(response.getTotal()));
+        paidAmount = Math.round(Double.parseDouble(response.getPaidAmount()));
+        dueAmount = totalAmount - paidAmount;
 
-        if (due_amount < 1)
+        if (dueAmount < 1)
             hidePaymentButtons();
 
         if (response.getCampaignRules().size() > 0) {
@@ -510,19 +514,20 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     binding.makePayment.setVisibility(View.GONE);
                 }
             } catch (Exception ignore) {
-
             }
         }
 
         inflateMenu();
+        updateProducts();
+    }
 
+    private void updateProducts() {
         orderDetailsProducts.clear();
         orderDetailsProductAdapter.notifyDataSetChanged();
 
-        List<OrderItemsItem> orderItemList = response.getOrderItems();
+        List<OrderItemsItem> orderItemList = orderDetailsModel.getOrderItems();
 
         for (int i = 0; i < orderItemList.size(); i++) {
-
             OrderItemsItem orderItem = orderItemList.get(i);
             String productVariation = "";
 
@@ -627,7 +632,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             }
             UpdateOrderAddressRequest body = new UpdateOrderAddressRequest();
             body.setAddress(dialogBinding.address.getText().toString().trim());
-            body.setInvoiceNo(invoice_no);
+            body.setInvoiceNo(invoiceNo);
 
             new AlertDialog.Builder(this)
                     .setCancelable(false)
@@ -654,11 +659,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     void viewIssues() {
-        startActivity(new Intent(OrderDetailsActivity.this, IssuesActivity.class).putExtra("invoice", invoice_no));
+        startActivity(new Intent(OrderDetailsActivity.this, IssuesActivity.class).putExtra("invoice", invoiceNo));
     }
 
     public void dialogGiftCardPayment() {
-        GiftCardPaymentBottomSheet giftCardPaymentBottomSheet = GiftCardPaymentBottomSheet.newInstance(invoice_no, due_amount);
+        GiftCardPaymentBottomSheet giftCardPaymentBottomSheet = GiftCardPaymentBottomSheet.newInstance(invoiceNo, dueAmount);
         giftCardPaymentBottomSheet.show(getSupportFragmentManager(), "Gift card payment");
     }
 
@@ -675,8 +680,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         if (requestCode == 10002) {
             if (resultCode == Activity.RESULT_OK) {
                 updatePage();
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                // some stuff that will happen if there's no result
             }
         }
     }
@@ -690,12 +693,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         else
             refundMenuItem.setVisible(false);
 
-        if (orderStatus.equals("pending") && paid_amount < 1)
+        if (orderStatus.equals("pending") && paidAmount < 1)
             cancelMenuItem.setVisible(true);
         else
             cancelMenuItem.setVisible(false);
     }
-
 
     public void cancelOrder() {
         cancelOrderDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
@@ -720,7 +722,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         cancelOrderDialog.show();
     }
 
-
     @Override
     public void onBackPressed() {
         finish();
@@ -733,29 +734,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         builder.setPositiveButton("Yes", (dialogInterface, i) -> {
             dialogInterface.dismiss();
             HashMap<String, String> data = new HashMap<>();
-            data.put("invoice_no", invoice_no);
-            AuthApiHelper.updateProductStatus(data, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                @Override
-                public void onDataFetched(retrofit2.Response<JsonObject> response1) {
-                    if (response1 == null) {
-                        ToastUtils.show(getResources().getString(R.string.something_wrong));
-                        return;
-                    }
-                    if (response1.code() == 200 || response1.code() == 201) {
-                        dialog.hideDialog();
-                        ToastUtils.show("Order Updated");
-                    } else {
-                        dialog.hideDialog();
-                        ToastUtils.show(getResources().getString(R.string.something_wrong));
-                    }
-                }
-
-                @Override
-                public void onFailed(int status) {
-                    dialog.hideDialog();
-                    ToastUtils.show(getResources().getString(R.string.something_wrong));
-                }
-            });
+            data.put("invoice_no", invoiceNo);
+            viewModel.updateProductDeliveryStatus(data);
         }).setNegativeButton("No", null);
 
         AlertDialog dialog = builder.create();
