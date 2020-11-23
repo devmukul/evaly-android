@@ -299,6 +299,10 @@
         android:id="@+id/createIssueBottomSheet"
         android:name="bd.com.evaly.evalyshop.ui.issue.create.CreateIssueBottomSheet"
         android:label="CreateIssueBottomSheet" />
+    <dialog
+        android:id="@+id/giftCardPaymentBottomSheet"
+        android:name="bd.com.evaly.evalyshop.ui.payment.giftcard.GiftCardPaymentBottomSheet"
+        android:label="GiftCardPaymentBottomSheet" />
 
 
     <!--    <activity-->

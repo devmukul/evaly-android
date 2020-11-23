@@ -9,18 +9,13 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -49,12 +44,10 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ActivityOrderDetailsBinding;
 import bd.com.evaly.evalyshop.databinding.BottomSheetUpdateOrderAddressBinding;
 import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
@@ -63,7 +56,6 @@ import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.issue.create.CreateIssueBottomSheet;
@@ -72,6 +64,7 @@ import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductA
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.refund.RefundBottomSheet;
 import bd.com.evaly.evalyshop.ui.payment.bottomsheet.PaymentBottomSheet;
+import bd.com.evaly.evalyshop.ui.payment.giftcard.GiftCardPaymentBottomSheet;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -665,98 +658,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     public void dialogGiftCardPayment() {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
-
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.alert_pay_with_gift_card, null);
-        if (dialogView == null)
-            return;
-        dialogBuilder.setView(dialogView);
-        AlertDialog alertDialog = dialogBuilder.create();
-        Button d_submit = dialogView.findViewById(R.id.submit);
-        final EditText amount = dialogView.findViewById(R.id.amount);
-        final EditText code = dialogView.findViewById(R.id.code);
-        ImageView closeBtn = dialogView.findViewById(R.id.closeBtn);
-        amount.setText((int) due_amount + "");
-        closeBtn.setOnClickListener(view -> alertDialog.dismiss());
-        alertDialog.getWindow()
-                .setLayout(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-        alertDialog.show();
-        d_submit.setOnClickListener(v -> {
-            if (amount.getText().toString().equals("")) {
-                ToastUtils.show("Please enter an amount.");
-                return;
-            } else if (code.getText().toString().equals("")) {
-                ToastUtils.show("Please enter gift card coupon code.");
-                return;
-            }
-            double partial_amount = Double.parseDouble(amount.getText().toString());
-
-            if (partial_amount > total_amount) {
-                ToastUtils.show("You have entered an amount that is larger than your due amount.");
-                return;
-            }
-            makePaymentViaGiftCard(code.getText().toString(), invoice_no, String.valueOf((int) partial_amount));
-            alertDialog.dismiss();
-
-        });
-    }
-
-    public void makePaymentViaGiftCard(String giftCode, String invoice, String amount) {
-
-        HashMap<String, String> payload = new HashMap<>();
-        payload.put("invoice_no", invoice);
-        payload.put("gift_code", giftCode);
-        payload.put("amount", amount);
-
-        ViewDialog dialog2 = new ViewDialog(this);
-        dialog2.showDialog();
-
-        GiftCardApiHelper.payWithGiftCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
-                dialog2.hideDialog();
-                ToastUtils.show(response.get("message").getAsString());
-                if (response.has("success")) {
-                    if (response.get("success").getAsBoolean())
-                        giftCardSuccessDialog();
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                ToastUtils.show("Payment unsuccessful!");
-                dialog2.hideDialog();
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-                if (logout)
-                    AppController.logout(OrderDetailsActivity.this);
-                else
-                    makePaymentViaGiftCard(giftCode, invoice, amount);
-            }
-        });
-    }
-
-    private void giftCardSuccessDialog() {
-        new AlertDialog.Builder(this)
-                .setCancelable(false)
-                .setMessage("Thank you for your payment. We are updating your order and you will be notified soon. If your order is not updated, please contact us.")
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                    finish();
-                    startActivity(getIntent());
-                })
-                .show();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
+        GiftCardPaymentBottomSheet giftCardPaymentBottomSheet = GiftCardPaymentBottomSheet.newInstance(invoice_no, due_amount);
+        giftCardPaymentBottomSheet.show(getSupportFragmentManager(), "Gift card payment");
     }
 
     public void updatePage() {
@@ -779,7 +682,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     private void inflateMenu() {
-
         if (refundMenuItem == null || cancelMenuItem == null)
             return;
 
@@ -864,7 +766,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     public void onPaymentRedirect(String url, String amount, String invoice_no) {
         String successURL;
         PurchaseRequestInfo purchaseRequestInfo = null;
-
         if (url.equals(BuildConfig.BKASH_URL)) {
             successURL = Constants.BKASH_SUCCESS_URL;
             paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.bkash_payment));
@@ -876,7 +777,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             else
                 paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.pay_via_card));
         }
-
         paymentWebBuilder.loadPaymentURL(url, successURL, purchaseRequestInfo);
     }
 
