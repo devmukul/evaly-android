@@ -39,6 +39,7 @@ import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -64,6 +65,8 @@ import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
+import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
+import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
 import dagger.hilt.android.AndroidEntryPoint;
 
 import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
@@ -415,6 +418,9 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_dark_mode:
                         showDarkModeDialog();
                         break;
+                    case R.id.nav_terms_conditions:
+                        openTermsConditions();
+                        break;
                 }
                 new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
                 return true;
@@ -484,11 +490,36 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_dark_mode:
                         showDarkModeDialog();
                         break;
+                    case R.id.nav_terms_conditions:
+                        openTermsConditions();
+                        break;
                 }
                 new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
                 return true;
             });
         }
+    }
+
+    private void openTermsConditions() {
+        PaymentWebBuilder paymentWebBuilder = new PaymentWebBuilder(this);
+        paymentWebBuilder.setToolbarTitle(getString(R.string.terms_amp_conditions));
+        paymentWebBuilder.setPaymentListener(new PaymentListener() {
+            @Override
+            public void onPaymentSuccess(HashMap<String, String> values) {
+
+            }
+
+            @Override
+            public void onPaymentFailure(HashMap<String, String> values) {
+
+            }
+
+            @Override
+            public void onPaymentSuccess(String message) {
+
+            }
+        });
+        paymentWebBuilder.loadPaymentURL(BuildConfig.WEB_URL + "about/terms-conditions?is_mobile=true", "adsaaswetrs", null);
     }
 
     private void openEconnect() {

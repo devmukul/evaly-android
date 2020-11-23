@@ -26,7 +26,10 @@
         android:icon="@drawable/ic_night"
         android:title="@string/dark_mode" />
 
-
+    <item
+        android:id="@+id/nav_terms_conditions"
+        android:icon="@drawable/ic_terms_and_conditions"
+        android:title="@string/terms_amp_conditions" />
 
     <!--<item-->
     <!--android:id="@+id/nav_about"-->

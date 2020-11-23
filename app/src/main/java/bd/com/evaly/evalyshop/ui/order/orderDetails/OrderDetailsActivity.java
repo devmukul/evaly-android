@@ -274,6 +274,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         });
 
         viewModel.getRefreshPage().observe(this, aBoolean -> {
+            viewModel.getOrderDetails();
             viewModel.getOrderHistory();
         });
 

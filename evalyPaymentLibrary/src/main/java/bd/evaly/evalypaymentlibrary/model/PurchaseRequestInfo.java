@@ -5,6 +5,10 @@ public final class PurchaseRequestInfo {
     private String amount;
     private String invoiceNo;
 
+    public PurchaseRequestInfo(){
+
+    }
+
     public PurchaseRequestInfo(String authToken, String amount, String invoiceNo) {
         this.authToken = authToken;
         this.amount = amount;
