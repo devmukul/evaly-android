@@ -52,14 +52,13 @@ public class ForgotPasswordActivity extends BaseActivity {
         AuthApiHelper.forgetPassword(number.getText().toString(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-
                 dialog.hideDialog();
-
                 Toast.makeText(ForgotPasswordActivity.this, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
 
                 if (statusCode == 201) {
                     Intent il = new Intent(ForgotPasswordActivity.this, PasswordActivity.class);
                     il.putExtra("phone", number.getText().toString());
+                    il.putExtra("request_id", response.get("data").getAsJsonObject().get("request_id").getAsString());
                     finish();
                     startActivity(il);
                 }

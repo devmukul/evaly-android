@@ -25,7 +25,6 @@ public abstract class CampaignSliderModel extends DataBindingEpoxyModel {
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
 
-
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
@@ -33,7 +32,6 @@ public abstract class CampaignSliderModel extends DataBindingEpoxyModel {
         BindingUtils.setImage(binding.sliderImage, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460, false);
         binding.sliderImage.setOnClickListener(clickListener);
     }
-
 
     @Override
     protected void setDataBindingVariables(ViewDataBinding binding) {

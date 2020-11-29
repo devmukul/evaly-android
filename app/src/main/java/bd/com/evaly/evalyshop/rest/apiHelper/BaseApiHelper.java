@@ -17,7 +17,6 @@ import retrofit2.Response;
 
 public class BaseApiHelper {
 
-
     protected static Call<JsonObject> call;
 
     protected static IApiClient getiApiClient() {
@@ -25,23 +24,20 @@ public class BaseApiHelper {
         return ApiClient.getClient().create(IApiClient.class);
     }
 
-
     protected static void tokenRefresh(ResponseListenerAuth<JsonObject, String> listener) {
         HashMap<String, String> data = new HashMap<>();
-        data.put("access", CredentialManager.getTokenNoBearer());
-        data.put("refresh", CredentialManager.getRefreshToken());
+       data.put("refresh_token", CredentialManager.getRefreshToken());
 
         getiApiClient().refreshToken(data).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.code() == 200 || response.code() == 201) {
-                    String token = response.body().get("access").getAsString();
-                    String refresh = response.body().get("refresh").getAsString();
+                    JsonObject data  = response.body().getAsJsonObject("data");
+                    String token = data.get("access_token").getAsString();
+                    String refresh = data.get("refresh_token").getAsString();
                     CredentialManager.saveToken(token);
                     CredentialManager.saveRefreshToken(refresh);
-
                     listener.onDataFetched(response.body(), response.code());
-
                 } else if (response.code() == 401) {
 
                     listener.onAuthError(true);

@@ -49,7 +49,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     ViewDialog dialog;
     private boolean isFromSignUp;
     private int size = 1;
-    private String phoneNumber, password;
+    private String phoneNumber, password, requestId;
     private String name;
     private SetPasswordPresenter presenter;
 
@@ -67,6 +67,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
         phoneNumber = getIntent().getStringExtra("phone");
         name = getIntent().getStringExtra("name");
+        requestId = getIntent().getStringExtra("request_id");
 //        firstName = getIntent().getStringExtra("firstName");
 //        lastName = getIntent().getStringExtra("lastName");
 
@@ -164,7 +165,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         tvPasswordWarning.setVisibility(View.GONE);
         String otp = pin1Et.getText().toString().trim() + pin2Et.getText().toString().trim() + pin3Et.getText().toString().trim()
                 + pin4Et.getText().toString().trim() + pin5Et.getText().toString().trim();
-        presenter.setPassword(otp, etPassword.getText().toString().trim(), etConfirmPassword.getText().toString().trim(), phoneNumber);
+        presenter.setPassword(otp, etPassword.getText().toString().trim(), etConfirmPassword.getText().toString().trim(), phoneNumber, requestId);
     }
 
     @Override

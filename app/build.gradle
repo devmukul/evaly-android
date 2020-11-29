@@ -45,7 +45,7 @@ android {
             buildConfigField "String", "APPOINTMENT_URL", "\"https://api.evaly.com.bd/eappointment/api/v1/\""
         }
         debug {
-            buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
+            buildConfigField "String", 'BASE_URL', "\"https://api.evaly.com.bd/\""
             buildConfigField "String", 'WEB_URL', "\"https://beta.evaly.com.bd/\""
             buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111667\""

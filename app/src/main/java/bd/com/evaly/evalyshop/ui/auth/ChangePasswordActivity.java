@@ -1,7 +1,7 @@
 package bd.com.evaly.evalyshop.ui.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
@@ -22,6 +22,7 @@ import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -143,7 +144,13 @@ public class ChangePasswordActivity extends BaseActivity {
                             dialog.hideDialog();
                             if (response.code() == 200 || response.code() == 201) {
                                 Snackbar.make(newPassword, "Password change successfully, Please Login!", Snackbar.LENGTH_LONG).show();
-                                new Handler().postDelayed(() -> AppController.logout(ChangePasswordActivity.this), 2000);
+                                Intent il = new Intent(ChangePasswordActivity.this, PasswordActivity.class);
+                                il.putExtra("phone", CredentialManager.getUserName());
+                                il.putExtra("request_id", response.body().getAsJsonObject().get("data").getAsJsonObject().get("request_id").getAsString());
+                                il.putExtra("type", "signup");
+                                finish();
+                                startActivity(il);
+                                //                              new Handler().postDelayed(() -> AppController.logout(ChangePasswordActivity.this), 2000);
                             } else {
                                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                             }

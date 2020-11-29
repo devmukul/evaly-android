@@ -129,7 +129,7 @@ public class SignInActivity extends BaseActivity {
 
         HashMap<String, String> payload = new HashMap<>();
 
-        payload.put("username", phoneNumber.getText().toString());
+        payload.put("phone_number", phoneNumber.getText().toString());
         payload.put("password", password.getText().toString());
 
         AuthApiHelper.login(payload, new ResponseListener<JsonObject, String>() {
@@ -142,7 +142,9 @@ public class SignInActivity extends BaseActivity {
                     case 200:
                     case 201:
                     case 202:
-                        token = response.get("access").getAsString();
+
+                        response = response.get("data").getAsJsonObject();
+                        token = response.get("accessToken").getAsString();
 
                         CredentialManager.saveToken(token);
                         CredentialManager.saveRefreshToken(response.get("refresh").getAsString());

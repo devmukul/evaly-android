@@ -30,23 +30,17 @@ public abstract class CampaignShopModel extends DataBindingEpoxyModel {
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
-
         ItemCampaignShopViewBinding binding = (ItemCampaignShopViewBinding) holder.getDataBinding();
         StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         params.setFullSpan(false);
-
         binding.title.setText(Html.fromHtml(model.getName()));
-
-
-        BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300, true);
-
-
-        binding.getRoot().setOnClickListener(clickListener);
-
+        BindingUtils.setImage(binding.image, model.getImage(),
+                R.drawable.ic_evaly_placeholder,
+                R.drawable.ic_evaly_placeholder, 300, 300, true);
         binding.campaignName.setText(model.getBadgeText());
         binding.campaignCashback.setText(model.getCashbackText().replace(".00", ""));
+        binding.getRoot().setOnClickListener(clickListener);
     }
-
 
     @Override
     protected void setDataBindingVariables(ViewDataBinding binding) {

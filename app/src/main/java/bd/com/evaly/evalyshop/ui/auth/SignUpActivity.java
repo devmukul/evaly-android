@@ -104,10 +104,11 @@ public class SignUpActivity extends BaseActivity {
                 if (statusCode == 200) {
                     Toast.makeText(getApplicationContext(), "This mobile number has already been used", Toast.LENGTH_LONG).show();
                 } else if (statusCode == 201) {
-
                     Intent il = new Intent(SignUpActivity.this, PasswordActivity.class);
                     il.putExtra("phone", phoneNumber.getText().toString());
                     il.putExtra("name", firstName.getText().toString() + " " + lastName.getText().toString());
+                    il.putExtra("request_id", response.get("data").getAsJsonObject().get("request_id").getAsString());
+                    il.putExtra("test_otp", response.get("data").getAsJsonObject().get("test_otp").getAsString());
                     il.putExtra("type", "signup");
                     finish();
                     startActivity(il);

@@ -25,7 +25,7 @@ public class SetPasswordPresenterImpl implements SetPasswordPresenter {
     }
 
     @Override
-    public void setPassword(String otp, String password, String confirmPassword, String phoneNumber) {
+    public void setPassword(String otp, String password, String confirmPassword, String phoneNumber, String requestId) {
         if (otp.trim().isEmpty() || otp.trim().length()<5){
             if (view != null){
                 view.onOTPEmpty();
@@ -56,9 +56,10 @@ public class SetPasswordPresenterImpl implements SetPasswordPresenter {
             SetPasswordModel model = new SetPasswordModel(otp, password, phoneNumber);
 
             HashMap<String, String> data = new HashMap<>();
-            data.put("otp_token", otp);
+            data.put("otp", otp);
             data.put("password", password);
             data.put("phone_number", phoneNumber);
+            data.put("request_id", requestId);
 
             AuthApiHelper.setPassword(data, new DataFetchingListener<Response<JsonObject>>() {
                 @Override

@@ -221,19 +221,19 @@ public interface IApiClient {
                                                                                @Body IssueCommentBody body,
                                                                                @Query("ticket_id") String tickerId);
 
-    @POST(UrlUtils.SET_PASSWORD)
+    @POST(UrlUtils.DOMAIN_EAUTH + "set-password")
     Call<JsonObject> setPassword(@Body HashMap<String, String> setPasswordModel);
 
-    @POST(UrlUtils.BASE_URL_AUTH + "forgot-password")
+    @POST(UrlUtils.DOMAIN_EAUTH + "forgot-password")
     Call<JsonObject> forgetPassword(@Body HashMap<String, String> body);
 
-    @POST(UrlUtils.REGISTER)
+    @POST(UrlUtils.DOMAIN_EAUTH + "customers")
     Call<JsonObject> register(@Body HashMap<String, String> data);
 
-    @POST(UrlUtils.LOGIN)
+    @POST(UrlUtils.DOMAIN_EAUTH + "login")
     Call<JsonObject> login(@Body HashMap<String, String> data);
 
-    @POST(UrlUtils.CHANGE_PASSWORD)
+    @POST(UrlUtils.DOMAIN_EAUTH + "change-password")
     Call<JsonObject> changePassword(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
     @GET(UrlUtils.BASE_URL_AUTH + "user-info-pay/{username}/")
@@ -264,7 +264,7 @@ public interface IApiClient {
     @POST(UrlUtils.UPDATE_VCARD)
     Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);
 
-    @POST(UrlUtils.REFRESH_TOKEN)
+    @POST(UrlUtils.DOMAIN_EAUTH+"token/refresh")
     Call<JsonObject> refreshToken(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.CHANGE_XMPP_PASSWORD)
