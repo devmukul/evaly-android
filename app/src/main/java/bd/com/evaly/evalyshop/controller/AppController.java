@@ -26,9 +26,6 @@ public class AppController extends Application implements Application.ActivityLi
 
     public static AppController mAppController;
     public static Context mContext;
-    public static boolean allDataLoaded;
-    private final String TAG = getClass().getSimpleName();
-    public Boolean mBounded = false;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -65,6 +62,27 @@ public class AppController extends Application implements Application.ActivityLi
         }, 300);
     }
 
+
+    public static void logout() {
+        try {
+            String email = CredentialManager.getUserName();
+            String strNew = email.replaceAll("[^A-Za-z0-9]", "");
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.BUILD + "_" + strNew);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        MyPreference.with(getmContext().getApplicationContext()).clearAll();
+        ProviderDatabase providerDatabase = ProviderDatabase.getInstance(getmContext());
+        providerDatabase.userInfoDao().deleteAll();
+
+        new Handler().postDelayed(() -> {
+            getInstance().getApplicationContext().startActivity(new Intent(getInstance().getApplicationContext(), SignInActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            System.exit(0);
+        }, 300);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -75,7 +93,6 @@ public class AppController extends Application implements Application.ActivityLi
         Logger.addLogAdapter(new AndroidLogAdapter());
 
     }
-
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
