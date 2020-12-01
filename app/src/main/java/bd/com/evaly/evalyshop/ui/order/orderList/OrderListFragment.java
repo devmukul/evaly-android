@@ -65,6 +65,12 @@ public class OrderListFragment extends Fragment implements OrderListController.C
             controller.setLoading(false);
             controller.requestModelBuild();
         });
+
+        viewModel.hideLoading.observe(getViewLifecycleOwner(), aBoolean -> {
+            isLoading = false;
+            controller.setLoading(false);
+            controller.requestModelBuild();
+        });
     }
 
     private void initRecycler() {

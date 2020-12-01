@@ -5,7 +5,9 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
+import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.order.orderList.model.OrderListModel_;
 import bd.com.evaly.evalyshop.ui.order.orderList.model.OrderListSkeletonModel_;
 
@@ -33,6 +35,15 @@ public class OrderListController extends EpoxyController {
         new OrderListSkeletonModel_()
                 .id("skeletonss")
                 .addIf(isLoading, this);
+
+        new NoItemModel_()
+                .id("noordersfound")
+                .image(R.drawable.ic_order_thin)
+                .width(80)
+                .imageTint("#888888")
+                .text("No orders found")
+                .addIf(!isLoading && list.size() == 0, this);
+
     }
 
     public void setList(List<OrderListItem> list) {

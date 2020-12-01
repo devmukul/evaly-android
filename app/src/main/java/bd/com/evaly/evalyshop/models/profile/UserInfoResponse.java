@@ -162,6 +162,14 @@ public class UserInfoResponse implements Serializable {
         return primaryEmail;
     }
 
+
+    public String getPrimaryEmailNonNull() {
+        if (primaryEmail == null)
+            return "";
+        else
+            return primaryEmail;
+    }
+
     public void setPrimaryEmail(String primaryEmail) {
         this.primaryEmail = primaryEmail;
     }
