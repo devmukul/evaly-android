@@ -14,11 +14,13 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
+import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class OrderListViewModel extends ViewModel {
 
     private final SavedStateHandle savedStateHandle;
     protected MutableLiveData<List<OrderListItem>> liveData = new MutableLiveData<>();
+    protected SingleLiveEvent<Boolean> hideLoading = new SingleLiveEvent<>();
     private List<OrderListItem> arrayList = new ArrayList<>();
     private int page = 1;
     private String statusType;
@@ -45,8 +47,7 @@ public class OrderListViewModel extends ViewModel {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
-
+                hideLoading.setValue(true);
             }
 
             @Override
