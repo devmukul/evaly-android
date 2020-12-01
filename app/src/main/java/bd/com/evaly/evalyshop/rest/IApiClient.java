@@ -56,6 +56,7 @@ import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
+import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
@@ -239,6 +240,9 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL_AUTH + "user-info-pay/{username}/")
     Call<JsonObject> getUserInfoPay(@Header("Authorization") String token, @Path("username") String username);
 
+    @GET(UrlUtils.BASE_URL_PAYMENT + "complete-balance//{username}/")
+    Call<CommonDataResponse<BalanceResponse>> getBalance(@Header("Authorization") String token, @Path("username") String username);
+
     @GET(UrlUtils.BASE_URL_AUTH + "user-info-ekhata/{username}/")
     Call<JsonObject> getUserInfo(@Header("Authorization") String token, @Path("username") String username);
 
@@ -322,7 +326,6 @@ public interface IApiClient {
 
     @PUT(UrlUtils.DOMAIN + "pay/withdraw_refund_request/{invoice}")
     Call<CommonDataResponse> withdrawRefundRequest(@Header("Authorization") String header, @Path("invoice") String invoice);
-
 
     // product APIs
 

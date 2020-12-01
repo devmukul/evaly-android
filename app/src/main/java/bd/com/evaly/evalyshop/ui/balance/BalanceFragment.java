@@ -51,30 +51,23 @@ public class BalanceFragment extends BottomSheetDialogFragment {
         binding.progressBar.setVisibility(View.VISIBLE);
 
         mViewModel.getData().observe(this, balanceModel -> {
-
             binding.balanceHolder.setVisibility(View.VISIBLE);
             binding.balanceHolder2.setVisibility(View.VISIBLE);
             binding.progressBar.setVisibility(View.GONE);
-
             binding.tvBalance.setText(String.format("৳ %s", balanceModel.getBalance()));
-            binding.tvHoldingBalance.setText(String.format("৳ %s", balanceModel.getHolding_balance()));
-            binding.tvGiftCardBalance.setText(String.format("৳ %s", balanceModel.getGift_card_balance()));
-            binding.tvCashbackBalance.setText(String.format("৳ %s", balanceModel.getCashback_balance()));
-
-            if (balanceModel.getCashback_balance() == 0)
+            binding.tvHoldingBalance.setText(String.format("৳ %s", balanceModel.getHoldingBalance()));
+            binding.tvGiftCardBalance.setText(String.format("৳ %s", balanceModel.getGiftCardBalance()));
+            binding.tvCashbackBalance.setText(String.format("৳ %s", balanceModel.getCashbackBalance()));
+            if (balanceModel.getCashbackBalance() == 0)
                 binding.claimCashback.setVisibility(View.GONE);
             else
                 binding.claimCashback.setVisibility(View.VISIBLE);
-
             CredentialManager.setBalance(balanceModel.getBalance());
         });
 
         mViewModel.updateBalance();
-
         binding.claimCashback.setOnClickListener(view -> mViewModel.claimCashback());
-
     }
-
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

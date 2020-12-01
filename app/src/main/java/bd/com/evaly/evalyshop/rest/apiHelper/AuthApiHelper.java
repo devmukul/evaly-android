@@ -372,11 +372,7 @@ public class AuthApiHelper extends BaseApiHelper {
         getiApiClient().withdrawRefundRequest(CredentialManager.getToken(), invoice).enqueue(getResponseCallBackDefault(listener));
     }
 
-    // cashback claim
 
-    public static void claimCashback(String token, String username, ResponseListenerAuth<JsonObject, String> listener) {
-        getiApiClient().claimCashBack(token, username).enqueue(getResponseCallBackDefault(listener));
-    }
 
     // change password
 

@@ -8,30 +8,26 @@ import com.google.gson.JsonObject;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
+import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
 
-public class BalanceViewModel extends ViewModel{
+public class BalanceViewModel extends ViewModel {
 
 
-    private MutableLiveData<BalanceModel> data = new MutableLiveData<>();
+    private MutableLiveData<BalanceResponse> data = new MutableLiveData<>();
 
-    public LiveData<BalanceModel> getData(){
+    public LiveData<BalanceResponse> getData() {
         return data;
     }
 
-    public void updateBalance(){
+    public void updateBalance() {
 
-        AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
+
+        PaymentApiHelper.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
             @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
-                JsonObject obj = response.getAsJsonObject("data");
-                BalanceModel model = new BalanceModel();
-                model.setBalance(obj.get("balance").getAsDouble());
-                model.setHolding_balance(obj.get("holding_balance").getAsDouble());
-                model.setGift_card_balance(obj.get("gift_card_balance").getAsDouble());
-                model.setCashback_balance(obj.get("cashback_balance").getAsDouble());
-                data.setValue(model);
+            public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
+                data.setValue(response.getData());
             }
 
             @Override
@@ -46,10 +42,9 @@ public class BalanceViewModel extends ViewModel{
         });
     }
 
-    public void claimCashback(){
+    public void claimCashback() {
 
-
-        AuthApiHelper.claimCashback(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
+        PaymentApiHelper.claimCashback(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 updateBalance();
@@ -65,9 +60,6 @@ public class BalanceViewModel extends ViewModel{
 
             }
         });
-
-
-
     }
 
 }
