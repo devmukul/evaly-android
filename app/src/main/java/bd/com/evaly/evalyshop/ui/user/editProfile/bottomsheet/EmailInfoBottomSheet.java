@@ -15,6 +15,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.HashMap;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditEmailAddressBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -106,9 +108,12 @@ public class EmailInfoBottomSheet extends BottomSheetDialogFragment {
                 body.setOtherEmail(otherEmail);
 
             viewModel.addUserData(Utils.objectToHashMap(body));
+
+            HashMap<String, String> map = new HashMap<>();
+            map.put("email", body.getPrimaryEmail());
+            viewModel.setUserData(map);
+
             dismissAllowingStateLoss();
         });
-
     }
-
 }

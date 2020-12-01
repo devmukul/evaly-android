@@ -39,7 +39,8 @@ public class OrderListController extends EpoxyController {
         new NoItemModel_()
                 .id("noordersfound")
                 .image(R.drawable.ic_order_thin)
-                .imageTint("#777777")
+                .width(80)
+                .imageTint("#888888")
                 .text("No orders found")
                 .addIf(!isLoading && list.size() == 0, this);
 
