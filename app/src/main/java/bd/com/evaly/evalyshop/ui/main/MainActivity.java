@@ -433,14 +433,14 @@ public class MainActivity extends BaseActivity {
 
             TextView userNameNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.userNameNavHeader);
             TextView phoneNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.phone);
-            userNameNavHeader.setText(String.format("%s %s", CredentialManager.getUserData().getFirst_name(), CredentialManager.getUserData().getLast_name()));
+            userNameNavHeader.setText(CredentialManager.getUserData().getFullName());
             phoneNavHeader.setText(CredentialManager.getUserName());
 
             ImageView profilePicNav = binding.navView.getHeaderView(0).findViewById(R.id.profilePicNav);
-            if (!CredentialManager.getUserData().getImage_sm().equals("null")) {
+            if (CredentialManager.getUserData().getImageSm() != null) {
                 Glide.with(this)
                         .asBitmap()
-                        .load(CredentialManager.getUserData().getImage_sm())
+                        .load(CredentialManager.getUserData().getImageSm())
                         .skipMemoryCache(true)
                         .placeholder(R.drawable.user_image)
                         .fitCenter()

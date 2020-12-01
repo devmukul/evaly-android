@@ -118,9 +118,7 @@ public class EditProfileActivity extends BaseActivity {
 
         setProfilePic();
 
-        String fullName = String.format("%s %s",
-                (userModel.getFirst_name() != null ? userModel.getFirst_name() : ""),
-                (userModel.getLast_name() != null ? userModel.getLast_name() : ""));
+        String fullName = CredentialManager.getUserData().getFullName();
 
         binding.firstName.setText(fullName);
         binding.userNameTop.setText(fullName);
@@ -152,10 +150,10 @@ public class EditProfileActivity extends BaseActivity {
     }
 
     private void setProfilePic() {
-        if (CredentialManager.getUserData().getProfile_pic_url() != null)
+        if (CredentialManager.getUserData().getProfilePicUrl() != null)
             Glide.with(this)
                     .asBitmap()
-                    .load(CredentialManager.getUserData().getProfile_pic_url())
+                    .load(CredentialManager.getUserData().getProfilePicUrl())
                     .skipMemoryCache(true)
                     .fitCenter()
                     .optionalCenterCrop()
@@ -252,8 +250,8 @@ public class EditProfileActivity extends BaseActivity {
                     dialog.dismiss();
 
                 UserModel userModel = CredentialManager.getUserData();
-                userModel.setProfile_pic_url(response.getData().getUrl());
-                userModel.setImage_sm(response.getData().getUrlSm());
+                userModel.setProfilePicUrl(response.getData().getUrl());
+                userModel.setImageSm(response.getData().getUrlSm());
 
                 HashMap<String, String> body = new HashMap<>();
                 body.put("profile_pic_url", response.getData().getUrl());

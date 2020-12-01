@@ -69,10 +69,10 @@ public class Balance {
                 UserModel userModel = new Gson().fromJson(ob, UserModel.class);
 
                 if (ob.get("first_name").isJsonNull())
-                    userModel.setFirst_name("");
+                    userModel.setFirstName("");
 
                 if (ob.get("last_name").isJsonNull())
-                    userModel.setLast_name("");
+                    userModel.setLastName("");
 
                 CredentialManager.saveUserData(userModel);
 

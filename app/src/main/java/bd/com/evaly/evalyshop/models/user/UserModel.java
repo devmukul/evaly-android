@@ -1,185 +1,419 @@
 package bd.com.evaly.evalyshop.models.user;
 
-import java.io.Serializable;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
-public class UserModel implements Serializable {
-    private int id;
-    private String last_login;
-    private String image_sm;
-    private String username;
-    private String first_name;
-    private String last_name;
-    private String created_at;
-    private String modified_at;
-    private String profile_pic_url;
-    private String address;
+public class UserModel {
+
+    @SerializedName("addresses")
+    private Addresses addresses;
+
+    @SerializedName("occupation")
+    private String occupation;
+
+    @SerializedName("gender")
     private String gender;
-    private String user_status;
+
+    @SerializedName("birth_date")
+    private String birthDate;
+
+    @SerializedName("created_at")
+    private String createdAt;
+
+    @SerializedName("password")
+    private String password;
+
+    @SerializedName("user_type")
+    private String userType;
+
+    @SerializedName("updated_at")
+    private String updatedAt;
+
+    @SerializedName("other_email")
+    private String otherEmail;
+
+    @SerializedName("contact")
     private String contact;
+
+    @SerializedName("date_joined")
+    private String dateJoined;
+
+    @SerializedName("first_name")
+    private String firstName;
+
+    @SerializedName("profile_pic_url")
+    private String profilePicUrl;
+
+    @SerializedName("email")
     private String email;
-    private List<String> groups;
-    private boolean is_staff;
-    private boolean is_active;
+
+    @SerializedName("user_status")
+    private String userStatus;
+
+    @SerializedName("is_active")
+    private boolean isActive;
+
+    @SerializedName("is_superuser")
+    private boolean isSuperuser;
+
+    @SerializedName("address")
+    private String address;
+
+    @SerializedName("is_staff")
+    private boolean isStaff;
+
+    @SerializedName("last_login")
+    private String lastLogin;
+
+    @SerializedName("facebook")
+    private String facebook;
+
+    @SerializedName("verified")
     private boolean verified;
 
-    public String getImage_sm() {
-        if (image_sm == null)
-            return "";
-        else
-            return image_sm;
-    }
+    @SerializedName("last_name")
+    private String lastName;
 
-    public void setImage_sm(String image_sm) {
-        this.image_sm = image_sm;
-    }
+    @SerializedName("groups")
+    private List<String> groups;
 
-    public List<String> getGroups() {
-        return groups;
-    }
+    @SerializedName("google")
+    private String google;
 
-    public void setGroups(List<String> groups) {
-        this.groups = groups;
-    }
+    @SerializedName("created_by")
+    private String createdBy;
 
-    public int getId() {
-        return id;
-    }
+    @SerializedName("parents_info")
+    private ParentsInfo parentsInfo;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    @SerializedName("block_history")
+    private List<BlockHistoryItem> blockHistory;
 
-    public String getLast_login() {
-        return last_login;
-    }
+    @SerializedName("organization")
+    private String organization;
 
-    public void setLast_login(String last_login) {
-        this.last_login = last_login;
-    }
+    @SerializedName("updated_by")
+    private String updatedBy;
 
-    public String getUsername() {
-        return username;
-    }
+    @SerializedName("primary_email")
+    private String primaryEmail;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    @SerializedName("image_sm")
+    private String imageSm;
 
-    public String getFirst_name() {
-        if (first_name == null)
-            return "";
-        return first_name;
-    }
+    @SerializedName("username")
+    private String username;
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public String getLast_name() {
-        if (last_name == null)
-            return "";
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setAddresses(Addresses addresses) {
+        this.addresses = addresses;
     }
 
     public String getFullName() {
-        return getFirst_name() + " " + getLast_name();
+        return firstName + " " + lastName;
     }
 
-    public String getCreated_at() {
-        return created_at;
+    public Addresses getAddresses() {
+        return addresses;
     }
 
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
+    public void setOccupation(String occupation) {
+        this.occupation = occupation;
     }
 
-    public String getModified_at() {
-        return modified_at;
-    }
-
-    public void setModified_at(String modified_at) {
-        this.modified_at = modified_at;
-    }
-
-    public String getProfile_pic_url() {
-        return profile_pic_url;
-    }
-
-    public void setProfile_pic_url(String profile_pic_url) {
-        this.profile_pic_url = profile_pic_url;
-    }
-
-    public String getAddresses() {
-        if (address == null)
-            return "";
-        else
-            return address;
-    }
-
-    public void setAddresses(String addresses) {
-        this.address = addresses;
-    }
-
-    public String getGender() {
-        return gender;
+    public String getOccupation() {
+        return occupation;
     }
 
     public void setGender(String gender) {
         this.gender = gender;
     }
 
-    public String getUser_status() {
-        return user_status;
+    public String getGender() {
+        return gender;
     }
 
-    public void setUser_status(String user_status) {
-        this.user_status = user_status;
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
     }
 
-    public String getContacts() {
-        if (contact == null)
-            return "";
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setOtherEmail(String otherEmail) {
+        this.otherEmail = otherEmail;
+    }
+
+    public String getOtherEmail() {
+        return otherEmail;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public String getContact() {
         return contact;
     }
 
-    public void setContacts(String contacts) {
-        this.contact = contacts;
+    public String getContacts() {
+        return contact;
     }
 
-    public String getEmail() {
-        return email;
+    public void setDateJoined(String dateJoined) {
+        this.dateJoined = dateJoined;
+    }
+
+    public String getDateJoined() {
+        return dateJoined;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setProfilePicUrl(String profilePicUrl) {
+        this.profilePicUrl = profilePicUrl;
+    }
+
+    public String getProfilePicUrl() {
+        return profilePicUrl;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public boolean isIs_staff() {
-        return is_staff;
+    public String getEmail() {
+        return email;
     }
 
-    public void setIs_staff(boolean is_staff) {
-        this.is_staff = is_staff;
+    public void setUserStatus(String userStatus) {
+        this.userStatus = userStatus;
     }
 
-    public boolean isIs_active() {
-        return is_active;
+    public String getUserStatus() {
+        return userStatus;
     }
 
-    public void setIs_active(boolean is_active) {
-        this.is_active = is_active;
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsSuperuser(boolean isSuperuser) {
+        this.isSuperuser = isSuperuser;
+    }
+
+    public boolean isIsSuperuser() {
+        return isSuperuser;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setIsStaff(boolean isStaff) {
+        this.isStaff = isStaff;
+    }
+
+    public boolean isIsStaff() {
+        return isStaff;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
+    }
+
+    public String getFacebook() {
+        return facebook;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 
     public boolean isVerified() {
         return verified;
     }
 
-    public void setVerified(boolean verified) {
-        this.verified = verified;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setGroups(List<String> groups) {
+        this.groups = groups;
+    }
+
+    public List<String> getGroups() {
+        return groups;
+    }
+
+    public void setGoogle(String google) {
+        this.google = google;
+    }
+
+    public String getGoogle() {
+        return google;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setParentsInfo(ParentsInfo parentsInfo) {
+        this.parentsInfo = parentsInfo;
+    }
+
+    public ParentsInfo getParentsInfo() {
+        return parentsInfo;
+    }
+
+    public void setBlockHistory(List<BlockHistoryItem> blockHistory) {
+        this.blockHistory = blockHistory;
+    }
+
+    public List<BlockHistoryItem> getBlockHistory() {
+        return blockHistory;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setPrimaryEmail(String primaryEmail) {
+        this.primaryEmail = primaryEmail;
+    }
+
+    public String getPrimaryEmail() {
+        return primaryEmail;
+    }
+
+    public void setImageSm(String imageSm) {
+        this.imageSm = imageSm;
+    }
+
+    public String getImageSm() {
+        return imageSm;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "UserModel{" +
+                        "addresses = '" + addresses + '\'' +
+                        ",occupation = '" + occupation + '\'' +
+                        ",gender = '" + gender + '\'' +
+                        ",birth_date = '" + birthDate + '\'' +
+                        ",created_at = '" + createdAt + '\'' +
+                        ",password = '" + password + '\'' +
+                        ",user_type = '" + userType + '\'' +
+                        ",updated_at = '" + updatedAt + '\'' +
+                        ",other_email = '" + otherEmail + '\'' +
+                        ",contact = '" + contact + '\'' +
+                        ",date_joined = '" + dateJoined + '\'' +
+                        ",first_name = '" + firstName + '\'' +
+                        ",profile_pic_url = '" + profilePicUrl + '\'' +
+                        ",email = '" + email + '\'' +
+                        ",user_status = '" + userStatus + '\'' +
+                        ",is_active = '" + isActive + '\'' +
+                        ",is_superuser = '" + isSuperuser + '\'' +
+                        ",address = '" + address + '\'' +
+                        ",is_staff = '" + isStaff + '\'' +
+                        ",last_login = '" + lastLogin + '\'' +
+                        ",facebook = '" + facebook + '\'' +
+                        ",verified = '" + verified + '\'' +
+                        ",last_name = '" + lastName + '\'' +
+                        ",groups = '" + groups + '\'' +
+                        ",google = '" + google + '\'' +
+                        ",created_by = '" + createdBy + '\'' +
+                        ",parents_info = '" + parentsInfo + '\'' +
+                        ",block_history = '" + blockHistory + '\'' +
+                        ",organization = '" + organization + '\'' +
+                        ",updated_by = '" + updatedBy + '\'' +
+                        ",primary_email = '" + primaryEmail + '\'' +
+                        ",image_sm = '" + imageSm + '\'' +
+                        ",username = '" + username + '\'' +
+                        "}";
     }
 }

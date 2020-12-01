@@ -204,7 +204,7 @@ public class ReviewsActivity extends AppCompatActivity {
             postReview(
                     alertDialog,
                     item_value,
-                    CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(),
+                    CredentialManager.getUserData().getFullName(),
                     (int) d_rating_bar.getRating(),
                     d_review_text.getText().toString());
         });

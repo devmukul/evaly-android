@@ -29,24 +29,20 @@ public class EditProfileViewModel extends ViewModel {
         AuthApiHelper.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-
                 JsonObject ob = response.getAsJsonObject("data");
                 UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
                 if (ob.get("first_name").isJsonNull())
-                    userModel.setFirst_name("");
-
+                    userModel.setFirstName("");
                 if (ob.get("last_name").isJsonNull())
-                    userModel.setLast_name("");
+                    userModel.setLastName("");
                 CredentialManager.saveUserData(userModel);
                 UserInfoResponse userInfo = CredentialManager.getUserInfo();
-
                 if (userInfo != null) {
                     userInfo.setFullName(userModel.getFullName());
                     userInfo.setPhoneNumber(userModel.getContacts());
                     userInfo.setGender(userModel.getGender());
                     CredentialManager.saveUserInfo(userInfo);
                 }
-
                 infoSavedStatus.setValue(true);
             }
 
@@ -57,18 +53,13 @@ public class EditProfileViewModel extends ViewModel {
 
             @Override
             public void onAuthError(boolean logout) {
-
                 if (!logout)
                     setUserData(userInfo);
-
             }
         });
-
     }
 
-
     public void addUserData(HashMap<String, String> userInfo) {
-
         AuthApiHelper.addUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserInfoResponse> response, int statusCode) {
@@ -118,10 +109,10 @@ public class EditProfileViewModel extends ViewModel {
                 JsonObject ob = response.getAsJsonObject("data");
                 UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
                 if (ob.get("first_name").isJsonNull())
-                    userModel.setFirst_name("");
+                    userModel.setFirstName("");
 
                 if (ob.get("last_name").isJsonNull())
-                    userModel.setLast_name("");
+                    userModel.setLastName("");
                 CredentialManager.saveUserData(userModel);
             }
 

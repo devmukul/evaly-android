@@ -351,8 +351,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         contact_number = bottomSheetView.findViewById(R.id.contact_number);
         customAddress = bottomSheetView.findViewById(R.id.customAddress);
         if (CredentialManager.getUserData() != null) {
-            contact_number.setText(CredentialManager.getUserData().getContacts());
-            customAddress.setText(CredentialManager.getUserData().getAddresses());
+            contact_number.setText(CredentialManager.getUserData().getContact());
+
+            //TODO
+           // customAddress.setText(CredentialManager.getUserData().getAddresses());
         }
         checkBox = bottomSheetView.findViewById(R.id.checkBox);
 

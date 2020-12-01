@@ -265,7 +265,7 @@ public class NewsfeedPostAdapter extends PagedListAdapter<NewsfeedPost, Recycler
 
                 PopupMenu popup = new PopupMenu(context, myViewHolder.binding.menu);
 
-                if (CredentialManager.getUserData() != null && (CredentialManager.getUserData().getGroups().contains("EvalyEmployee") || CredentialManager.getUserData().isIs_staff()))
+                if (CredentialManager.getUserData() != null && (CredentialManager.getUserData().getGroups().contains("EvalyEmployee")))
                     popup.getMenuInflater().inflate(R.menu.newsfeed_menu_super, popup.getMenu());
                 else
                     popup.getMenuInflater().inflate(R.menu.newsfeed_menu_user, popup.getMenu());

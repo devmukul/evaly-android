@@ -351,7 +351,9 @@ public class CartFragment extends Fragment {
 
         if (CredentialManager.getUserData() != null) {
             contact_number.setText(CredentialManager.getUserData().getContacts());
-            customAddress.setText(CredentialManager.getUserData().getAddresses());
+
+            // TODO
+            //customAddress.setText(CredentialManager.getUserData().getAddresses());
         }
 
         if (getActivity() instanceof MainActivity)

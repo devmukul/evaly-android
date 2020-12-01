@@ -203,10 +203,10 @@ public class AccountFragment extends Fragment {
         super.onResume();
 
         if (CredentialManager.getUserData() != null) {
-            if (CredentialManager.getUserData().getImage_sm() != null) {
+            if (CredentialManager.getUserData().getImageSm() != null) {
                 Glide.with(this)
                         .asBitmap()
-                        .load(CredentialManager.getUserData().getImage_sm())
+                        .load(CredentialManager.getUserData().getImageSm())
                         .skipMemoryCache(true)
                         .fitCenter()
                         .placeholder(R.drawable.user_image)

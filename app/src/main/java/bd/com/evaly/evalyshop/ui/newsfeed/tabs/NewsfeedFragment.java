@@ -123,9 +123,7 @@ public class NewsfeedFragment extends Fragment {
         }
 
         if (CredentialManager.getUserData() != null &&
-                (CredentialManager.getUserData().isIs_staff() ||
-                        CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))) {
-
+                (CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))) {
             NewsfeedPendingFragment pendingFragment = NewsfeedPendingFragment.newInstance("pending");
             pager.addFragment(pendingFragment, getString(R.string.pending));
         }
