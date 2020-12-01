@@ -243,8 +243,8 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL_PAYMENT + "complete-balance//{username}/")
     Call<CommonDataResponse<BalanceResponse>> getBalance(@Header("Authorization") String token, @Path("username") String username);
 
-    @GET(UrlUtils.BASE_URL_AUTH + "user-info-ekhata/{username}/")
-    Call<JsonObject> getUserInfo(@Header("Authorization") String token, @Path("username") String username);
+    @GET(UrlUtils.DOMAIN_EAUTH + "profile")
+    Call<JsonObject> getUserProfile(@Header("Authorization") String token);
 
     @PUT(UrlUtils.BASE_URL_AUTH + "user-info-update/")
     Call<JsonObject> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);

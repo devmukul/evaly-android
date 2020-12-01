@@ -365,14 +365,12 @@ public class AuthApiHelper extends BaseApiHelper {
     }
 
     public static void getUserInfo(String token, String username, ResponseListenerAuth<JsonObject, String> listener) {
-        getiApiClient().getUserInfo(token, username).enqueue(getResponseCallBackDefault(listener));
+        getiApiClient().getUserProfile(token).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void withdrawRefundRequest(String invoice, ResponseListenerAuth<CommonDataResponse, String> listener) {
         getiApiClient().withdrawRefundRequest(CredentialManager.getToken(), invoice).enqueue(getResponseCallBackDefault(listener));
     }
-
-
 
     // change password
 

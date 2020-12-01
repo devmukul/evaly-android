@@ -62,14 +62,11 @@ public class Balance {
 
 
     public static void updateUserInfo(Activity context, boolean openDashboard) {
-        AuthApiHelper.getUserInfo(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
+        AuthApiHelper.getUserInfo(CredentialManager.getTokenNoBearer(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-
-                JsonObject data = response.getAsJsonObject("data");
-
-                JsonObject ob = data.getAsJsonObject("user");
-                UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
+                JsonObject ob = response.getAsJsonObject("data");
+                UserModel userModel = new Gson().fromJson(ob, UserModel.class);
 
                 if (ob.get("first_name").isJsonNull())
                     userModel.setFirst_name("");
@@ -97,9 +94,9 @@ public class Balance {
 
                     entity.setName(fullName);
 
-                    if (!ob.get("image_sm").isJsonNull()) {
+                    if (ob.get("image_sm") != null) {
                         entity.setImage(ob.get("image_sm").getAsString());
-                    } else if (!ob.get("profile_pic_url").isJsonNull())
+                    } else if (ob.get("profile_pic_url") != null)
                         entity.setImage(ob.get("profile_pic_url").getAsString());
                     else
                         entity.setImage(null);

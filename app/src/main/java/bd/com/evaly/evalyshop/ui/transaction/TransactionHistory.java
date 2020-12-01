@@ -35,7 +35,7 @@ public class TransactionHistory extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_order_details);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_transaction_history);
         balanceViewModel = new ViewModelProvider(this).get(BalanceViewModel.class);
 
         getSupportActionBar().setElevation(0);

@@ -135,27 +135,19 @@ public class SignInActivity extends BaseActivity {
         AuthApiHelper.login(payload, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int code) {
-
                 alert.hideDialog();
-
                 switch (code) {
                     case 200:
                     case 201:
                     case 202:
-
                         response = response.get("data").getAsJsonObject();
-                        token = response.get("accessToken").getAsString();
-
+                        token = response.get("access_token").getAsString();
                         CredentialManager.saveToken(token);
-                        CredentialManager.saveRefreshToken(response.get("refresh").getAsString());
+                        CredentialManager.saveRefreshToken(response.get("refresh_token").getAsString());
                         CredentialManager.saveUserName(phoneNumber.getText().toString());
                         CredentialManager.savePassword(password.getText().toString());
-
                         Balance.updateUserInfo(SignInActivity.this, true);
-                        Balance.update(SignInActivity.this, false);
-
                         Toast.makeText(SignInActivity.this, "Successfully signed in.", Toast.LENGTH_SHORT).show();
-
                         break;
                     default:
                         Toast.makeText(SignInActivity.this, "Incorrect phone number or password. Please try again! ", Toast.LENGTH_SHORT).show();
