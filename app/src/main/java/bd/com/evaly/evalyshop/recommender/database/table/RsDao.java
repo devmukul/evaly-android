@@ -43,7 +43,7 @@ public interface RsDao {
     @Query("SELECT * FROM recommender_table")
     LiveData<List<RsEntity>> getAllLiveData();
 
-    @Query("SELECT * FROM recommender_table WHERE type = :type ORDER BY open_count DESC")
+    @Query("SELECT * FROM recommender_table WHERE type = :type ORDER BY open_count DESC LIMIT 20")
     LiveData<List<RsEntity>> getLiveDataByType(String type);
 
     // new events

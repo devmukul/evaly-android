@@ -18,10 +18,11 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.util.Utils;
 
-public class OrderDetailsProductAdapter extends RecyclerView.Adapter<OrderDetailsProductAdapter.MyViewHolder>{
+public class OrderDetailsProductAdapter extends RecyclerView.Adapter<OrderDetailsProductAdapter.MyViewHolder> {
 
     Context context;
     ArrayList<OrderDetailsProducts> orderDetailsProducts;
@@ -34,38 +35,35 @@ public class OrderDetailsProductAdapter extends RecyclerView.Adapter<OrderDetail
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_order_details_products,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_order_details_products, viewGroup, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
-        myViewHolder.number.setText(""+(i+1));
 
         myViewHolder.productName.setText(orderDetailsProducts.get(i).getProductName());
 
-        if(orderDetailsProducts.get(i).getVariation().equals("")){
+        if (orderDetailsProducts.get(i).getVariation().equals(""))
             myViewHolder.variation.setVisibility(View.GONE);
-        }else{
+        else
             myViewHolder.variation.setText(orderDetailsProducts.get(i).getVariation());
-        }
 
-        myViewHolder.amount.setText(String.format(Locale.ENGLISH, "%d", Math.round(Double.parseDouble(orderDetailsProducts.get(i).getAmount()))));
-        myViewHolder.productQuantity.setText(String.format(Locale.ENGLISH, "%d x %s", Math.round(Double.parseDouble(orderDetailsProducts.get(i).getProductRate())), orderDetailsProducts.get(i).getProductQuantity()));
+        myViewHolder.amount.setText(Utils.formatPriceSymbol(orderDetailsProducts.get(i).getAmount()));
+        myViewHolder.productQuantity.setText(String.format(Locale.ENGLISH, "%s x %s",
+                Utils.formatPriceSymbol(orderDetailsProducts.get(i).getProductRate()), orderDetailsProducts.get(i).getProductQuantity()));
+
         Glide.with(context).
                 load(orderDetailsProducts.get(i).getImageUrl())
                 .apply(new RequestOptions().override(300, 300))
                 .into(myViewHolder.productImage);
 
         myViewHolder.itemView.setOnClickListener(view -> {
-            Intent intent=new Intent(context, ViewProductActivity.class);
-
-            intent.putExtra("product_slug",orderDetailsProducts.get(i).getProductSlug());
-            intent.putExtra("product_name",orderDetailsProducts.get(i).getProductName());
+            Intent intent = new Intent(context, ViewProductActivity.class);
+            intent.putExtra("product_slug", orderDetailsProducts.get(i).getProductSlug());
+            intent.putExtra("product_name", orderDetailsProducts.get(i).getProductName());
             context.startActivity(intent);
-
         });
-
     }
 
     @Override
@@ -73,20 +71,20 @@ public class OrderDetailsProductAdapter extends RecyclerView.Adapter<OrderDetail
         return orderDetailsProducts.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView number,productName,productQuantity,amount;
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView number, productName, productQuantity, amount;
         ImageView productImage;
         View view;
 
         TextView variation;
+
         public MyViewHolder(final View itemView) {
             super(itemView);
-            number=itemView.findViewById(R.id.number);
-            productName=itemView.findViewById(R.id.productName);
-            productQuantity=itemView.findViewById(R.id.price_quan);
-            amount=itemView.findViewById(R.id.price);
-            productImage=itemView.findViewById(R.id.productImage);
-
+            number = itemView.findViewById(R.id.number);
+            productName = itemView.findViewById(R.id.productName);
+            productQuantity = itemView.findViewById(R.id.price_quan);
+            amount = itemView.findViewById(R.id.price);
+            productImage = itemView.findViewById(R.id.productImage);
             variation = itemView.findViewById(R.id.variation);
             view = itemView;
         }

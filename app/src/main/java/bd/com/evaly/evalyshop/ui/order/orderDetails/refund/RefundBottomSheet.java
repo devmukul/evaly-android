@@ -161,7 +161,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                     return;
                 }
                 body.put("refund_type", "Nagad");
-                body.put("nagad_account ", number);
+                body.put("nagad_account", number);
             } else if (paymentType.equals("Bank")) {
                 String bankName = binding.etBankName.getText().toString().trim();
                 String branchName = binding.etBranch.getText().toString().trim();
@@ -193,8 +193,6 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                 body.put("account_number", accountNumber);
             } else if (paymentType.equals("Debit/Credit Card"))
                 body.put("refund_type", "Card");
-
-
             requestRefund(body);
         });
     }
