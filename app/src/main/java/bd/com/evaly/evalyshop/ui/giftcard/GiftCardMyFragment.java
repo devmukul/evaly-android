@@ -148,15 +148,15 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
         EditText email = bottomSheetDialog.findViewById(R.id.email);
         TextView details = bottomSheetDialog.findViewById(R.id.details);
 
-        email.setText(CredentialManager.getUserData().getEmail());
+        email.setText(CredentialManager.getUserInfo().getPrimaryEmail());
 
-        if (CredentialManager.getUserData().getEmail().equals(""))
+        if (CredentialManager.getUserInfo().getPrimaryEmail().equals(""))
             button.setText("ADD EMAIL FIRST");
         else
             button.setText("REDEEM");
 
         button.setOnClickListener(view1 -> {
-            if (CredentialManager.getUserData().getEmail().equals("")) {
+            if (CredentialManager.getUserInfo().getPrimaryEmail().equals("")) {
                 context.startActivity(new Intent(context, EditProfileActivity.class));
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             } else
