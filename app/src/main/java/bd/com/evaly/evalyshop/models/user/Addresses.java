@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName;
 public class Addresses{
 
 	@SerializedName("data")
-	private List<DataItem> data;
+	private List<AddressItem> data;
 
-	public void setData(List<DataItem> data){
+	public void setData(List<AddressItem> data){
 		this.data = data;
 	}
 
-	public List<DataItem> getData(){
+	public List<AddressItem> getData(){
 		return data;
 	}
 

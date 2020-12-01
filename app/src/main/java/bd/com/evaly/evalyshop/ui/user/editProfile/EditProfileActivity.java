@@ -33,7 +33,6 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
-import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
@@ -58,11 +57,9 @@ public class EditProfileActivity extends BaseActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile);
 
         viewModel = new ViewModelProvider(this).get(EditProfileViewModel.class);
-
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setTitle("Edit Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         updateProfileData();
 
         context = this;
@@ -108,9 +105,8 @@ public class EditProfileActivity extends BaseActivity {
     private void updateProfileData() {
 
         UserModel userModel = CredentialManager.getUserData();
-        UserInfoResponse userInfoModel = CredentialManager.getUserInfo();
 
-        if (CredentialManager.getUserData() == null || CredentialManager.getUserInfo() == null) {
+        if (CredentialManager.getUserData() == null) {
             Toast.makeText(this, "Profile information not found, please logout and login again.", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -129,24 +125,24 @@ public class EditProfileActivity extends BaseActivity {
         binding.contactNumber.setText(((userModel.getContacts() == null) ||
                 (userModel.getContacts() != null && userModel.getContacts().equals(""))) ? "No phone number provided" : userModel.getContacts());
 
-        if (userInfoModel.getPhoneNumber() != null)
-            binding.contactNumber.setText(userInfoModel.getPhoneNumber());
-        if (userInfoModel.getBirthDate() != null)
-            binding.dateOfBirth.setText(userInfoModel.getBirthDate());
-        if (userInfoModel.getFatherName() != null)
-            binding.fatherInfo.setText(String.format("%s%s", userInfoModel.getFatherName(), userInfoModel.getFatherPhoneNumber() != null ?
-                    String.format(", %s", userInfoModel.getFatherPhoneNumber()) : ""));
-        if (userInfoModel.getMotherName() != null)
-            binding.motherInfo.setText(String.format("%s%s", userInfoModel.getMotherName(), userInfoModel.getMotherPhoneNumber() != null ?
-                    String.format(", %s", userInfoModel.getMotherPhoneNumber()) : ""));
-        if (userInfoModel.getOccupation() != null)
-            binding.occupation.setText(userInfoModel.getOccupation());
-        if (userInfoModel.getOrganization() != null)
-            binding.organization.setText(userInfoModel.getOrganization());
-        if (userInfoModel.getPrimaryEmail() != null)
-            binding.primaryEmail.setText(userInfoModel.getPrimaryEmail());
-        if (userInfoModel.getOtherEmail() != null)
-            binding.otherEmail.setText(userInfoModel.getOtherEmail());
+        if (userModel.getContact() != null)
+            binding.contactNumber.setText(userModel.getContact());
+        if (userModel.getBirthDate() != null)
+            binding.dateOfBirth.setText(userModel.getBirthDate());
+        if (userModel.getParentsInfo().getFatherName() != null)
+            binding.fatherInfo.setText(String.format("%s%s", userModel.getParentsInfo().getFatherName(), userModel.getParentsInfo().getFatherPhoneNumber() != null ?
+                    String.format(", %s", userModel.getParentsInfo().getFatherPhoneNumber()) : ""));
+        if (userModel.getParentsInfo().getMotherName() != null)
+            binding.motherInfo.setText(String.format("%s%s", userModel.getParentsInfo().getMotherName(), userModel.getParentsInfo().getMotherPhoneNumber() != null ?
+                    String.format(", %s", userModel.getParentsInfo().getMotherPhoneNumber()) : ""));
+        if (userModel.getOccupation() != null)
+            binding.occupation.setText(userModel.getOccupation());
+        if (userModel.getOrganization() != null)
+            binding.organization.setText(userModel.getOrganization());
+        if (userModel.getPrimaryEmail() != null)
+            binding.primaryEmail.setText(userModel.getPrimaryEmail());
+        if (userModel.getOtherEmail() != null)
+            binding.otherEmail.setText(userModel.getOtherEmail());
     }
 
     private void setProfilePic() {
@@ -220,14 +216,12 @@ public class EditProfileActivity extends BaseActivity {
                 Toast.makeText(context, "Error occurred while uploading image", Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 
 
     private File compressImage(Uri path, Bitmap.CompressFormat compressFormat, int quality, String destinationPath) throws IOException {
         File file = new File(destinationPath).getParentFile();
         if (!file.exists()) file.mkdirs();
-
         try (FileOutputStream fileOutputStream = new FileOutputStream(destinationPath)) {
             ImageUtils.getCorrectlyOrientedImage(EditProfileActivity.this, path).compress(compressFormat, quality, fileOutputStream);
         } catch (IOException e) {
@@ -241,7 +235,6 @@ public class EditProfileActivity extends BaseActivity {
 
         ProgressDialog dialog = ProgressDialog.show(EditProfileActivity.this, "",
                 "Uploading image...", true);
-
         ImageApiHelper.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
@@ -281,13 +274,6 @@ public class EditProfileActivity extends BaseActivity {
                     uploadPicture(bitmap);
             }
         });
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
     }
 
     @Override
@@ -297,7 +283,6 @@ public class EditProfileActivity extends BaseActivity {
                 onBackPressed();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

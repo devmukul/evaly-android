@@ -148,7 +148,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
         EditText email = bottomSheetDialog.findViewById(R.id.email);
         TextView details = bottomSheetDialog.findViewById(R.id.details);
 
-        String primaryEmail = CredentialManager.getUserInfo().getPrimaryEmailNonNull();
+        String primaryEmail = CredentialManager.getUserData().getPrimaryEmailNonNull();
         email.setText(primaryEmail);
 
         if (primaryEmail.equals(""))

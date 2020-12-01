@@ -12,7 +12,6 @@ import java.util.HashMap;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 
@@ -26,23 +25,10 @@ public class EditProfileViewModel extends ViewModel {
 
     public void setUserData(HashMap<String, String> userInfo) {
 
-        AuthApiHelper.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<JsonObject, String>() {
+        AuthApiHelper.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-                JsonObject ob = response.getAsJsonObject("data");
-                UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
-                if (ob.get("first_name").isJsonNull())
-                    userModel.setFirstName("");
-                if (ob.get("last_name").isJsonNull())
-                    userModel.setLastName("");
-                CredentialManager.saveUserData(userModel);
-                UserInfoResponse userInfo = CredentialManager.getUserInfo();
-                if (userInfo != null) {
-                    userInfo.setFullName(userModel.getFullName());
-                    userInfo.setPhoneNumber(userModel.getContacts());
-                    userInfo.setGender(userModel.getGender());
-                    CredentialManager.saveUserInfo(userInfo);
-                }
+            public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
+                CredentialManager.saveUserData(response.getData());
                 infoSavedStatus.setValue(true);
             }
 
@@ -59,12 +45,12 @@ public class EditProfileViewModel extends ViewModel {
         });
     }
 
-    public void addUserData(HashMap<String, String> userInfo) {
-        AuthApiHelper.addUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String>() {
+    public void setUserData(JsonObject userInfo) {
+
+        AuthApiHelper.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<UserInfoResponse> response, int statusCode) {
-                if (response.getData() != null)
-                    CredentialManager.saveUserInfo(response.getData());
+            public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
+                CredentialManager.saveUserData(response.getData());
                 infoSavedStatus.setValue(true);
             }
 
@@ -76,29 +62,11 @@ public class EditProfileViewModel extends ViewModel {
             @Override
             public void onAuthError(boolean logout) {
                 if (!logout)
-                    addUserData(userInfo);
+                    setUserData(userInfo);
             }
         });
     }
 
-    public void updateUserDetails() {
-        AuthApiHelper.getUserInfo(new ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<UserInfoResponse> response, int statusCode) {
-                CredentialManager.saveUserInfo(response.getData());
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-    }
 
     public void updateToXMPP(HashMap<String, String> userInfo) {
 

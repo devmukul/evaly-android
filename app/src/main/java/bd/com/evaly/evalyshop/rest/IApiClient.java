@@ -70,6 +70,7 @@ import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
+import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.MultipartBody;
@@ -246,8 +247,11 @@ public interface IApiClient {
     @GET(UrlUtils.DOMAIN_EAUTH + "profile")
     Call<JsonObject> getUserProfile(@Header("Authorization") String token);
 
-    @PUT(UrlUtils.BASE_URL_AUTH + "user-info-update/")
-    Call<JsonObject> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
+    @PUT(UrlUtils.DOMAIN_EAUTH + "profile")
+    Call<CommonDataResponse<UserModel>> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
+
+    @PUT(UrlUtils.DOMAIN_EAUTH + "profile")
+    Call<CommonDataResponse<UserModel>> setUserData(@Header("Authorization") String token, @Body JsonObject body);
 
     @POST(UrlUtils.BASE_URL_AUTH + "add-user-info/")
     Call<CommonDataResponse<UserInfoResponse>> addUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);

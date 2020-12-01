@@ -30,6 +30,7 @@ import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
+import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import retrofit2.Call;
@@ -381,7 +382,11 @@ public class AuthApiHelper extends BaseApiHelper {
 
     // update profile data
 
-    public static void setUserData(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
+    public static void setUserData(String token, HashMap<String, String> body, ResponseListenerAuth<CommonDataResponse<UserModel>, String> listener) {
+        getiApiClient().setUserData(token, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void setUserData(String token, JsonObject body, ResponseListenerAuth<CommonDataResponse<UserModel>, String> listener) {
         getiApiClient().setUserData(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 

@@ -326,7 +326,10 @@ public class UserModel {
     }
 
     public ParentsInfo getParentsInfo() {
-        return parentsInfo;
+        if (parentsInfo == null)
+            return new ParentsInfo();
+        else
+            return parentsInfo;
     }
 
     public void setBlockHistory(List<BlockHistoryItem> blockHistory) {
@@ -359,6 +362,14 @@ public class UserModel {
 
     public String getPrimaryEmail() {
         return primaryEmail;
+    }
+
+
+    public String getPrimaryEmailNonNull() {
+        if (primaryEmail == null)
+            return "";
+        else
+            return primaryEmail;
     }
 
     public void setImageSm(String imageSm) {

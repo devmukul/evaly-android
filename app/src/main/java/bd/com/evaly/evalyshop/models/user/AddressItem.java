@@ -2,7 +2,7 @@ package bd.com.evaly.evalyshop.models.user;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DataItem{
+public class AddressItem {
 
 	@SerializedName("area")
 	private String area;
@@ -95,7 +95,7 @@ public class DataItem{
 	@Override
  	public String toString(){
 		return 
-			"DataItem{" + 
+			"AddressItem{" +
 			"area = '" + area + '\'' + 
 			",address = '" + address + '\'' + 
 			",full_name = '" + fullName + '\'' + 

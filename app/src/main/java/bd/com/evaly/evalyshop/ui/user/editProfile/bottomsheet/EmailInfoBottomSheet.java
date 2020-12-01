@@ -15,13 +15,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.util.HashMap;
-
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditEmailAddressBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.profile.EmailInfoRequest;
-import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
+import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -78,7 +76,7 @@ public class EmailInfoBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        UserInfoResponse userModel = CredentialManager.getUserInfo();
+        UserModel userModel = CredentialManager.getUserData();
 
         if (userModel != null) {
             binding.primaryEmail.setText(userModel.getPrimaryEmail());
@@ -107,12 +105,7 @@ public class EmailInfoBottomSheet extends BottomSheetDialogFragment {
             if (!otherEmail.equals(""))
                 body.setOtherEmail(otherEmail);
 
-            viewModel.addUserData(Utils.objectToHashMap(body));
-
-            HashMap<String, String> map = new HashMap<>();
-            map.put("email", body.getPrimaryEmail());
-            viewModel.setUserData(map);
-
+            viewModel.setUserData(Utils.objectToHashMap(body));
             dismissAllowingStateLoss();
         });
     }

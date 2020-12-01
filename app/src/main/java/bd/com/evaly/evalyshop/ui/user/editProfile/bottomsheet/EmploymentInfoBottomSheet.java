@@ -19,7 +19,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditEmploymentInfoBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.profile.EmploymentRequest;
-import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
+import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -77,7 +77,7 @@ public class EmploymentInfoBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        UserInfoResponse userModel = CredentialManager.getUserInfo();
+        UserModel userModel = CredentialManager.getUserData();
 
         if (userModel != null) {
             binding.occupation.setText(userModel.getOccupation());
@@ -103,7 +103,7 @@ public class EmploymentInfoBottomSheet extends BottomSheetDialogFragment {
             body.setOccupation(occupation);
             body.setOrganization(organization);
 
-            viewModel.addUserData(Utils.objectToHashMap(body));
+            viewModel.setUserData(Utils.objectToHashMap(body));
             dismissAllowingStateLoss();
         });
 

@@ -14,12 +14,14 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditParentInfoBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.profile.ParentInfoRequest;
-import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
+import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -78,13 +80,13 @@ public class ParentsInfoBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        UserInfoResponse userModel = CredentialManager.getUserInfo();
+        UserModel userModel = CredentialManager.getUserData();
 
         if (userModel != null) {
-            binding.fatherName.setText(userModel.getFatherName());
-            binding.fatherPhoneNumber.setText(userModel.getFatherPhoneNumber());
-            binding.motherName.setText(userModel.getMotherName());
-            binding.motherPhoneNumber.setText(userModel.getMotherPhoneNumber());
+            binding.fatherName.setText(userModel.getParentsInfo().getFatherName());
+            binding.fatherPhoneNumber.setText(userModel.getParentsInfo().getFatherPhoneNumber());
+            binding.motherName.setText(userModel.getParentsInfo().getMotherName());
+            binding.motherPhoneNumber.setText(userModel.getParentsInfo().getMotherPhoneNumber());
         }
 
         binding.save.setOnClickListener(v -> {
@@ -117,17 +119,11 @@ public class ParentsInfoBottomSheet extends BottomSheetDialogFragment {
             body.setMotherName(motherName);
             body.setMotherPhoneNumber(motherPhoneNumber);
 
+            JsonObject bodyObj = new JsonObject();
+            bodyObj.add("parents_info", new Gson().toJsonTree(body).getAsJsonObject());
 
-            viewModel.addUserData(Utils.objectToHashMap(body));
+            viewModel.setUserData(bodyObj);
             dismissAllowingStateLoss();
-
-//            HashMap<String, String> data = new HashMap<>();
-//            data.put("father_name", fatherName);
-//            data.put("father_phone_number", fatherPhoneNumber);
-//            data.put("mother_name", motherName);
-//            data.put("mother_phone_number", motherPhoneNumber);
-//
-//            viewModel.setUserData(data);
         });
 
     }

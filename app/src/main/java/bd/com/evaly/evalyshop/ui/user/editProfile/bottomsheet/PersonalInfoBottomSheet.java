@@ -24,7 +24,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditPersonalInformationBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.profile.PersonalInfoRequest;
-import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
+import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -87,12 +87,12 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        UserInfoResponse userModel = CredentialManager.getUserInfo();
+        UserModel userModel = CredentialManager.getUserData();
 
         if (userModel != null) {
             binding.firstName.setText(userModel.getFirstName());
             binding.lastName.setText(userModel.getLastName());
-            binding.phone.setText(userModel.getPhoneNumber());
+            binding.phone.setText(userModel.getContact());
             binding.dateOfBirth.setText(userModel.getBirthDate());
 
             if (userModel.getGender().equals("male"))

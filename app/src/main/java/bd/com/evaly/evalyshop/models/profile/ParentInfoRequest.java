@@ -2,7 +2,9 @@ package bd.com.evaly.evalyshop.models.profile;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ParentInfoRequest{
+import java.io.Serializable;
+
+public class ParentInfoRequest implements Serializable {
 
 	@SerializedName("father_name")
 	private String fatherName;
