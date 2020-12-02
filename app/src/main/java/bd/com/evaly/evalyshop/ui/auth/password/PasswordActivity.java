@@ -1,8 +1,6 @@
 package bd.com.evaly.evalyshop.ui.auth.password;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -13,16 +11,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.orhanobut.logger.Logger;
+import com.google.gson.JsonObject;
+
+import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -228,23 +227,21 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         CredentialManager.saveUserName(phoneNumber);
         CredentialManager.savePassword(password);
         dialog.hideDialog();
-        Toast.makeText(PasswordActivity.this, "Password set Successfully, Please login!", Toast.LENGTH_SHORT).show();
-        AppController.logout(PasswordActivity.this);
-
-        MyPreference.with(this).clearAll();
-        Logger.d(CredentialManager.getToken());
-
-
-        ProviderDatabase providerDatabase = ProviderDatabase.getInstance(this);
-        providerDatabase.userInfoDao().deleteAll();
-
-        new Handler().postDelayed(() -> {
-            startActivity(new Intent(this, SignInActivity.class)
-                    .putExtra("phone", phoneNumber)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-            finish();
-        }, 300);
+        Toast.makeText(PasswordActivity.this, "Password set successfully!", Toast.LENGTH_SHORT).show();
+        signInUser();
+//        AppController.logout(PasswordActivity.this);
+//
+//        MyPreference.with(this).clearAll();
+//        ProviderDatabase providerDatabase = ProviderDatabase.getInstance(this);
+//        providerDatabase.userInfoDao().deleteAll();
+//
+//        new Handler().postDelayed(() -> {
+//            startActivity(new Intent(this, SignInActivity.class)
+//                    .putExtra("phone", phoneNumber)
+//                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+//                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+//            finish();
+//        }, 300);
     }
 
     @Override
@@ -264,5 +261,39 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         dialog.hideDialog();
         Toast.makeText(PasswordActivity.this, msg, Toast.LENGTH_SHORT).show();
 
+    }
+
+    public void signInUser() {
+        dialog.showDialog();
+        HashMap<String, String> payload = new HashMap<>();
+        payload.put("phone_number", CredentialManager.getUserName());
+        payload.put("password", CredentialManager.getPassword());
+
+        AuthApiHelper.login(payload, new ResponseListener<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int code) {
+                switch (code) {
+                    case 200:
+                    case 201:
+                    case 202:
+                        response = response.get("data").getAsJsonObject();
+                        String token = response.get("access_token").getAsString();
+                        CredentialManager.saveToken(token);
+                        CredentialManager.saveRefreshToken(response.get("refresh_token").getAsString());
+                        Balance.updateUserInfo(PasswordActivity.this, true);
+                        Toast.makeText(PasswordActivity.this, "Successfully signed in.", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        Toast.makeText(PasswordActivity.this, "Incorrect phone number or password. Please try again! ", Toast.LENGTH_SHORT).show();
+                }
+                dialog.hideDialog();
+            }
+
+            @Override
+            public void onFailed(String body, int status) {
+                dialog.hideDialog();
+                Toast.makeText(PasswordActivity.this, body, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

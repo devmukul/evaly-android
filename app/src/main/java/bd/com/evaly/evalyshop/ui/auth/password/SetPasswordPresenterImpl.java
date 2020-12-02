@@ -26,33 +26,33 @@ public class SetPasswordPresenterImpl implements SetPasswordPresenter {
 
     @Override
     public void setPassword(String otp, String password, String confirmPassword, String phoneNumber, String requestId) {
-        if (otp.trim().isEmpty() || otp.trim().length()<5){
-            if (view != null){
+        if (otp.trim().isEmpty() || otp.trim().length() < 5) {
+            if (view != null) {
                 view.onOTPEmpty();
             }
-        }else if (password.trim().isEmpty()){
-            if (view != null){
+        } else if (password.trim().isEmpty()) {
+            if (view != null) {
                 view.onPasswordEmpty();
             }
-        }else if (confirmPassword.trim().isEmpty()){
-            if (view != null){
+        } else if (confirmPassword.trim().isEmpty()) {
+            if (view != null) {
                 view.onConfirmPasswordEmpty();
             }
-        }else if (!confirmPassword.equals(password)){
-            if (view != null){
+        } else if (!confirmPassword.equals(password)) {
+            if (view != null) {
                 view.onPasswordMismatch();
             }
-        }else if (password.trim().length()<8){
-            if (view != null){
+        } else if (password.trim().length() < 8) {
+            if (view != null) {
                 view.onShortPassword();
             }
-        } else if(!Utils.isStrongPassword(password.trim()).equals("yes")){
+        } else if (!Utils.isStrongPassword(password.trim()).equals("yes")) {
 
-            if (view != null){
+            if (view != null) {
                 view.onPasswordSetFailed(Utils.isStrongPassword(password.trim()));
             }
 
-        }else {
+        } else {
             SetPasswordModel model = new SetPasswordModel(otp, password, phoneNumber);
 
             HashMap<String, String> data = new HashMap<>();
@@ -64,28 +64,27 @@ public class SetPasswordPresenterImpl implements SetPasswordPresenter {
             AuthApiHelper.setPassword(data, new DataFetchingListener<Response<JsonObject>>() {
                 @Override
                 public void onDataFetched(Response<JsonObject> response) {
-                    if (response.code() == 201){
-                        if (view!= null){
-                            view.onPasswordSetSuccess();
+                    if (response.code() == 200) {
+                        if (view != null) view.onPasswordSetSuccess();
+                    } else if (response.code() == 400) {
+                        if (view != null) {
+                            if (response.body() != null && !response.body().isJsonNull() && response.body().has("message"))
+                                view.onPasswordSetFailed(response.body().get("message").getAsString());
+                            else
+                                view.onPasswordSetFailed("Incorrect OTP");
                         }
-                    }else if (response.code() == 200){
-                        if (view!= null){
-                            view.onPasswordSetFailed("Incorrect OTP");
-                        }
-                    }else if (response.code() == 429){
-                        if (view!= null){
+                    } else if (response.code() == 429) {
+                        if (view != null)
                             view.onPasswordSetFailed("Too many attempts, try again later!");
-                        }
-                    }else {
-                        if (view!= null){
+                    } else {
+                        if (view != null)
                             view.onPasswordSetFailed(context.getResources().getString(R.string.something_wrong));
-                        }
                     }
                 }
 
                 @Override
                 public void onFailed(int status) {
-                    if (view!= null){
+                    if (view != null) {
                         view.onPasswordSetFailed(context.getResources().getString(R.string.something_wrong));
                     }
                 }

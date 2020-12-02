@@ -32,7 +32,6 @@ public class ForgotPasswordActivity extends BaseActivity {
         reset = findViewById(R.id.reset);
         close = findViewById(R.id.closeBtn);
         dialog = new ViewDialog(ForgotPasswordActivity.this);
-
         reset.setOnClickListener(v -> {
             if (number.getText().toString().equals("")) {
                 Toast.makeText(ForgotPasswordActivity.this, "Please enter number", Toast.LENGTH_SHORT).show();
@@ -43,7 +42,6 @@ public class ForgotPasswordActivity extends BaseActivity {
                 resetPassword();
             }
         });
-
         close.setOnClickListener(v -> onBackPressed());
     }
 
@@ -54,8 +52,7 @@ public class ForgotPasswordActivity extends BaseActivity {
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.hideDialog();
                 Toast.makeText(ForgotPasswordActivity.this, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
-
-                if (statusCode == 201) {
+                if (statusCode == 201 || statusCode == 200) {
                     Intent il = new Intent(ForgotPasswordActivity.this, PasswordActivity.class);
                     il.putExtra("phone", number.getText().toString());
                     il.putExtra("request_id", response.get("data").getAsJsonObject().get("request_id").getAsString());
@@ -66,25 +63,19 @@ public class ForgotPasswordActivity extends BaseActivity {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
                 dialog.hideDialog();
-                if (errorCode == 404)
+                if (errorCode == 400)
                     Toast.makeText(ForgotPasswordActivity.this, "This phone number is not registered yet", Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(ForgotPasswordActivity.this, errorBody, Toast.LENGTH_SHORT).show();
-
             }
 
             @Override
             public void onAuthError(boolean logout) {
-
                 dialog.hideDialog();
-
             }
         });
-
     }
-
 
     @Override
     public void onBackPressed() {
