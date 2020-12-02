@@ -245,7 +245,7 @@ public interface IApiClient {
     Call<CommonDataResponse<BalanceResponse>> getBalance(@Header("Authorization") String token, @Path("username") String username);
 
     @GET(UrlUtils.DOMAIN_EAUTH + "profile")
-    Call<JsonObject> getUserProfile(@Header("Authorization") String token);
+    Call<CommonDataResponse<UserModel>> getUserProfile(@Header("Authorization") String token);
 
     @PUT(UrlUtils.DOMAIN_EAUTH + "profile")
     Call<CommonDataResponse<UserModel>> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);

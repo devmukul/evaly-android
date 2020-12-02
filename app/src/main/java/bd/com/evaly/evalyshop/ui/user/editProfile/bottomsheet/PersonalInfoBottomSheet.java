@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -32,9 +34,15 @@ import bd.com.evaly.evalyshop.util.Utils;
 public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
 
     private BottomSheetEditPersonalInformationBinding binding;
+    private String dateOfBirth = "";
     DatePickerDialog.OnDateSetListener datePickerListener = (datePicker, year, month, day) -> {
-        String date = String.format("%d-%01d-%01d", year, ++month, day);
-        binding.dateOfBirth.setText(date);
+        String inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat formatter = new SimpleDateFormat(inputFormat);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month-1, day);
+        dateOfBirth = formatter.format(calendar.getTime());
+        binding.dateOfBirth.setText(Utils.formattedDateFromString("", "dd/MM/yyyy", dateOfBirth));
     };
     private EditProfileViewModel viewModel;
 
@@ -48,12 +56,6 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
                              @Nullable Bundle savedInstanceState) {
         binding = BottomSheetEditPersonalInformationBinding.inflate(inflater, container, false);
         return binding.getRoot();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
     }
 
     @Override
@@ -93,7 +95,10 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
             binding.firstName.setText(userModel.getFirstName());
             binding.lastName.setText(userModel.getLastName());
             binding.phone.setText(userModel.getContact());
-            binding.dateOfBirth.setText(userModel.getBirthDate());
+            if (userModel.getBirthDate() == null)
+                binding.dateOfBirth.setText(R.string.not_provided);
+            else
+                binding.dateOfBirth.setText(Utils.formattedDateFromString("", "dd/MM/yyyy", userModel.getBirthDate()));
 
             if (userModel.getGender().equals("male"))
                 binding.genderGroup.check(R.id.checkMale);
@@ -114,14 +119,12 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
                     datePickerListener,
                     year, month, day
             );
-
             dialog.show();
         });
 
         binding.save.setOnClickListener(v -> {
             String firstName = binding.firstName.getText().toString().trim();
             String lastName = binding.lastName.getText().toString().trim();
-            String dateOfBirth = binding.dateOfBirth.getText().toString().trim();
             String contact = binding.phone.getText().toString().trim();
             String gender = "male";
 

@@ -26,7 +26,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentAccountBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
+import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity;
@@ -250,10 +250,11 @@ public class AccountFragment extends Fragment {
 
     private void updateUserDetails() {
 
-        AuthApiHelper.getUserInfo(new ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String>() {
+        AuthApiHelper.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<UserInfoResponse> response, int statusCode) {
-                CredentialManager.saveUserInfo(response.getData());
+            public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
+                if (response.getData() != null)
+                    CredentialManager.saveUserData(response.getData());
             }
 
             @Override
@@ -266,6 +267,7 @@ public class AccountFragment extends Fragment {
 
             }
         });
+
 
     }
 

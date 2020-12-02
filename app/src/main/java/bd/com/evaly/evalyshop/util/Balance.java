@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.text.Html;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.Locale;
@@ -17,7 +16,6 @@ import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
@@ -62,20 +60,10 @@ public class Balance {
 
 
     public static void updateUserInfo(Activity context, boolean openDashboard) {
-        AuthApiHelper.getUserInfo(CredentialManager.getTokenNoBearer(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
+        AuthApiHelper.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-                JsonObject ob = response.getAsJsonObject("data");
-                UserModel userModel = new Gson().fromJson(ob, UserModel.class);
-
-                if (ob.get("first_name").isJsonNull())
-                    userModel.setFirstName("");
-
-                if (ob.get("last_name").isJsonNull())
-                    userModel.setLastName("");
-
-                CredentialManager.saveUserData(userModel);
-
+            public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
+                CredentialManager.saveUserData(response.getData());
                 ProviderDatabase providerDatabase = ProviderDatabase.getInstance(context);
                 UserInfoDao userInfoDao = providerDatabase.userInfoDao();
 
@@ -83,24 +71,8 @@ public class Balance {
                     UserInfoEntity entity = new UserInfoEntity();
                     entity.setToken(CredentialManager.getToken());
                     entity.setRefreshToken(CredentialManager.getRefreshToken());
-
-                    String fullName = "";
-
-                    if (!ob.get("first_name").isJsonNull())
-                        fullName = ob.get("first_name").getAsString();
-
-                    if (!ob.get("last_name").isJsonNull())
-                        fullName = fullName + " " + ob.get("last_name").getAsString();
-
-                    entity.setName(fullName);
-
-                    if (ob.get("image_sm") != null) {
-                        entity.setImage(ob.get("image_sm").getAsString());
-                    } else if (ob.get("profile_pic_url") != null)
-                        entity.setImage(ob.get("profile_pic_url").getAsString());
-                    else
-                        entity.setImage(null);
-
+                    entity.setName(response.getData().getFullName());
+                    entity.setImage(response.getData().getImageSm());
                     entity.setUsername(CredentialManager.getUserName());
                     entity.setPassword(CredentialManager.getPassword());
                     userInfoDao.insert(entity);
@@ -115,25 +87,6 @@ public class Balance {
                     } catch (Exception ignored) {
                     }
                 }
-
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
-
-        AuthApiHelper.getUserInfo(new ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<UserInfoResponse> response, int statusCode) {
-                CredentialManager.saveUserInfo(response.getData());
             }
 
             @Override

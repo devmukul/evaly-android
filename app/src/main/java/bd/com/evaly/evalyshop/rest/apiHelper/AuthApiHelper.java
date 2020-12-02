@@ -365,7 +365,7 @@ public class AuthApiHelper extends BaseApiHelper {
         getiApiClient().getUserInfoPay(token, username).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getUserInfo(String token, String username, ResponseListenerAuth<JsonObject, String> listener) {
+    public static void getUserProfile(String token, ResponseListenerAuth<CommonDataResponse<UserModel>, String> listener) {
         getiApiClient().getUserProfile(token).enqueue(getResponseCallBackDefault(listener));
     }
 

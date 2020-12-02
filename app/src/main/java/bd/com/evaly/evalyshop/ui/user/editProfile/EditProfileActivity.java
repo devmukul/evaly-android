@@ -43,6 +43,7 @@ import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.PersonalInfoBottom
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
+import bd.com.evaly.evalyshop.util.Utils;
 
 
 public class EditProfileActivity extends BaseActivity {
@@ -128,7 +129,7 @@ public class EditProfileActivity extends BaseActivity {
         if (userModel.getContact() != null)
             binding.contactNumber.setText(userModel.getContact());
         if (userModel.getBirthDate() != null)
-            binding.dateOfBirth.setText(userModel.getBirthDate());
+            binding.dateOfBirth.setText(Utils.formattedDateFromString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "dd/MM/yyyy", userModel.getBirthDate()));
         if (userModel.getParentsInfo().getFatherName() != null)
             binding.fatherInfo.setText(String.format("%s%s", userModel.getParentsInfo().getFatherName(), userModel.getParentsInfo().getFatherPhoneNumber() != null ?
                     String.format(", %s", userModel.getParentsInfo().getFatherPhoneNumber()) : ""));
@@ -242,12 +243,9 @@ public class EditProfileActivity extends BaseActivity {
                 if (dialog != null && dialog.isShowing() && !isFinishing() && !isDestroyed())
                     dialog.dismiss();
 
-                UserModel userModel = CredentialManager.getUserData();
-                userModel.setProfilePicUrl(response.getData().getUrl());
-                userModel.setImageSm(response.getData().getUrlSm());
-
                 HashMap<String, String> body = new HashMap<>();
                 body.put("profile_pic_url", response.getData().getUrl());
+                body.put("image_sm", response.getData().getUrlSm());
                 viewModel.setUserData(body);
 
                 HashMap<String, String> data = new HashMap<>();
