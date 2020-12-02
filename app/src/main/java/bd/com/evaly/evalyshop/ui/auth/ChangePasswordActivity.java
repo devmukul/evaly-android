@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.auth;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -19,12 +18,14 @@ import java.util.HashMap;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import retrofit2.Response;
@@ -143,14 +144,9 @@ public class ChangePasswordActivity extends BaseActivity {
                         public void onDataFetched(Response<JsonPrimitive> response) {
                             dialog.hideDialog();
                             if (response.code() == 200 || response.code() == 201) {
-                                Snackbar.make(newPassword, "Password change successfully, Please Login!", Snackbar.LENGTH_LONG).show();
-                                Intent il = new Intent(ChangePasswordActivity.this, PasswordActivity.class);
-                                il.putExtra("phone", CredentialManager.getUserName());
-                                il.putExtra("request_id", response.body().getAsJsonObject().get("data").getAsJsonObject().get("request_id").getAsString());
-                                il.putExtra("type", "signup");
-                                finish();
-                                startActivity(il);
-                                //                              new Handler().postDelayed(() -> AppController.logout(ChangePasswordActivity.this), 2000);
+                                CredentialManager.savePassword(newPassword.getText().toString());
+                                Snackbar.make(newPassword, "Password change successfully!", Snackbar.LENGTH_LONG).show();
+                                signInUser();
                             } else {
                                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                             }
@@ -160,7 +156,6 @@ public class ChangePasswordActivity extends BaseActivity {
                         public void onFailed(int status) {
                             dialog.hideDialog();
                             Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-
                         }
                     });
                 }
@@ -168,7 +163,6 @@ public class ChangePasswordActivity extends BaseActivity {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
                 dialog.hideDialog();
                 Toast.makeText(ChangePasswordActivity.this, "Couldn't change password.", Toast.LENGTH_SHORT).show();
             }
@@ -182,7 +176,41 @@ public class ChangePasswordActivity extends BaseActivity {
                     updatePassword();
             }
         });
+    }
 
+
+    public void signInUser() {
+        dialog.showDialog();
+        HashMap<String, String> payload = new HashMap<>();
+        payload.put("phone_number", CredentialManager.getUserName());
+        payload.put("password", CredentialManager.getPassword());
+
+        AuthApiHelper.login(payload, new ResponseListener<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int code) {
+                switch (code) {
+                    case 200:
+                    case 201:
+                    case 202:
+                        response = response.get("data").getAsJsonObject();
+                        String token = response.get("access_token").getAsString();
+                        CredentialManager.saveToken(token);
+                        CredentialManager.saveRefreshToken(response.get("refresh_token").getAsString());
+                        Balance.updateUserInfo(ChangePasswordActivity.this, true);
+                        Toast.makeText(ChangePasswordActivity.this, "Successfully signed in.", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        Toast.makeText(ChangePasswordActivity.this, "Incorrect phone number or password. Please try again! ", Toast.LENGTH_SHORT).show();
+                }
+                dialog.hideDialog();
+            }
+
+            @Override
+            public void onFailed(String body, int status) {
+                dialog.hideDialog();
+                ToastUtils.show(body);
+            }
+        });
     }
 
 
