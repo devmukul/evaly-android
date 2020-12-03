@@ -14,16 +14,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetAddAddressBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentAddressBinding;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.AddressItem;
-import bd.com.evaly.evalyshop.models.user.Addresses;
 import bd.com.evaly.evalyshop.ui.address.controller.AddressController;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -81,7 +79,7 @@ public class AddressFragment extends Fragment implements AddressController.Click
         binding.toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
         binding.toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.action_add)
-                addAddress(null);
+                addAddress(null, 0);
             return false;
         });
     }
@@ -91,7 +89,7 @@ public class AddressFragment extends Fragment implements AddressController.Click
                 .setCancelable(false)
                 .setMessage("Are you sure you want to delete the address?")
                 .setPositiveButton(android.R.string.yes, (dialog1, which) -> {
-                    // viewModel.deleteAddress(model.getId());
+                    viewModel.deleteAddress(model);
                 })
                 .setNegativeButton(android.R.string.no, (dialogInterface, i) -> {
 
@@ -99,15 +97,23 @@ public class AddressFragment extends Fragment implements AddressController.Click
                 .show();
     }
 
-    public void addAddress(AddressItem model) {
+    public void addAddress(AddressItem model, int position) {
         BottomSheetDialog dialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogTheme);
         final BottomSheetAddAddressBinding dialogBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
                 R.layout.bottom_sheet_add_address, null, false);
+
         if (model != null) {
             dialogBinding.address.setText(model.getAddress());
             dialogBinding.area.setText(model.getArea());
             dialogBinding.city.setText(model.getCity());
             dialogBinding.region.setText(model.getRegion());
+            if (model.getFullName() == null || model.getFullName().equals(""))
+                dialogBinding.fullName.setText(CredentialManager.getUserData().getFullName());
+            if (model.getPhoneNumber() == null || model.getPhoneNumber().equals(""))
+                dialogBinding.contactNumber.setText(CredentialManager.getUserData().getContact());
+        } else {
+            dialogBinding.fullName.setText(CredentialManager.getUserData().getFullName());
+            dialogBinding.contactNumber.setText(CredentialManager.getUserData().getContact());
         }
 
         dialogBinding.save.setOnClickListener(view -> {
@@ -115,6 +121,8 @@ public class AddressFragment extends Fragment implements AddressController.Click
             String area = dialogBinding.area.getText().toString().trim();
             String city = dialogBinding.city.getText().toString().trim();
             String region = dialogBinding.region.getText().toString().trim();
+            String phoneNumber = dialogBinding.contactNumber.getText().toString().trim();
+            String fullName = dialogBinding.fullName.getText().toString().trim();
 
             String error = null;
             if (address.isEmpty())
@@ -123,6 +131,10 @@ public class AddressFragment extends Fragment implements AddressController.Click
                 error = "Please enter area";
             else if (city.isEmpty())
                 error = "Please enter city";
+            else if (phoneNumber.equals(""))
+                error = "Pleae enter phone number";
+            else if (fullName.equals(""))
+                error = "Please enter full name";
 
             if (error != null) {
                 ToastUtils.show(error);
@@ -134,13 +146,15 @@ public class AddressFragment extends Fragment implements AddressController.Click
             body.setArea(area);
             body.setCity(city);
             body.setRegion(region);
+            body.setFullName(fullName);
+            body.setPhoneNumber(phoneNumber);
 
-            Addresses addresses = new Addresses();
-            addresses.setData(viewModel.addGetAddressList(body));
-            JsonObject jsonObject = new Gson().toJsonTree(addresses).getAsJsonObject();
-            JsonObject requestBody = new JsonObject();
-            requestBody.add("addresses", jsonObject);
-            viewModel.saveAddress(requestBody);
+            if (model == null)
+                viewModel.addAddress(body);
+            else
+                viewModel.editAddress(body, position);
+
+            viewModel.saveAddress();
             dialog.cancel();
         });
 
@@ -155,7 +169,7 @@ public class AddressFragment extends Fragment implements AddressController.Click
     }
 
     @Override
-    public void onEdit(AddressItem model) {
-        addAddress(model);
+    public void onEdit(AddressItem model, int position) {
+        addAddress(model, position);
     }
 }

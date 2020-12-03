@@ -23,7 +23,7 @@ public class AddressController extends EpoxyController {
 
     public interface ClickListener {
         void onDelete(AddressItem model);
-        void onEdit(AddressItem model);
+        void onEdit(AddressItem model, int position);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class AddressController extends EpoxyController {
                         BindAddressModel.bind(binding, model.model());
                     })
                     .onDeleteClick((model, parentView, clickedView, position) -> clickListener.onDelete(model.model()))
-                    .onEditClick((model, parentView, clickedView, position) -> clickListener.onEdit(model.model()))
+                    .onEditClick((model, parentView, clickedView, position) -> clickListener.onEdit(model.model(), position))
                     .addTo(this);
         }
 

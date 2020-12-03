@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -45,14 +46,23 @@ public class AddressViewModel extends ViewModel {
         return addressList;
     }
 
-    public List<AddressItem> addGetAddressList(AddressItem item) {
+    public void addAddress(AddressItem item) {
         addressList.add(item);
-        return addressList;
     }
 
-    public void saveAddress(JsonObject userInfo) {
+    public void editAddress(AddressItem item, int position){
+        addressList.set(position, item);
+    }
 
-        AuthApiHelper.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+    public void saveAddress() {
+
+        Addresses addresses = new Addresses();
+        addresses.setData(addressList);
+        JsonObject jsonObject = new Gson().toJsonTree(addresses).getAsJsonObject();
+        JsonObject requestBody = new JsonObject();
+        requestBody.add("addresses", jsonObject);
+
+        AuthApiHelper.setUserData(CredentialManager.getToken(), requestBody, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
                 CredentialManager.saveUserData(response.getData());
@@ -67,13 +77,14 @@ public class AddressViewModel extends ViewModel {
             @Override
             public void onAuthError(boolean logout) {
                 if (!logout)
-                    saveAddress(userInfo);
+                    saveAddress();
             }
         });
     }
 
-    public void deleteAddress(int id) {
-
+    public void deleteAddress(AddressItem item) {
+        addressList.remove(item);
+        saveAddress();
     }
 
 

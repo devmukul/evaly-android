@@ -19,11 +19,68 @@
             android:layout_marginBottom="15dp"
             android:background="@drawable/bottomsheet_top_brd" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="@string/full_name"
+            android:textColor="@color/c555"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/fullName"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_brd_small"
+            android:gravity="top"
+            android:hint="@string/enter_your_full_name"
+            android:imeOptions="actionNext"
+            android:inputType="textPostalAddress"
+            android:maxLines="1"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:singleLine="true"
+            android:textColor="@color/c666"
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/contact_number"
+            android:textColor="@color/c555"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/contact_number"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_brd_small"
+            android:gravity="top"
+            android:hint="@string/enter_contact_number"
+            android:imeOptions="actionNext"
+            android:inputType="textPostalAddress"
+            android:maxLines="1"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:singleLine="true"
+            android:textColor="@color/c666"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="10dp"
             android:text="@string/address"
             android:textColor="@color/c555"
             app:layout_constraintStart_toStartOf="parent"
