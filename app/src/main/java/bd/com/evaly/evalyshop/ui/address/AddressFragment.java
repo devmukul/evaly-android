@@ -14,15 +14,16 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetAddAddressBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentAddressBinding;
-import bd.com.evaly.evalyshop.models.profile.AddressRequest;
-import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.user.AddressItem;
+import bd.com.evaly.evalyshop.models.user.Addresses;
 import bd.com.evaly.evalyshop.ui.address.controller.AddressController;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -128,14 +129,18 @@ public class AddressFragment extends Fragment implements AddressController.Click
                 return;
             }
 
-            AddressRequest body = new AddressRequest();
-//            if (model != null)
-//                body.setId(model.getId());
+            AddressItem body = new AddressItem();
             body.setAddress(address);
             body.setArea(area);
             body.setCity(city);
             body.setRegion(region);
-            viewModel.updateAddress(body);
+
+            Addresses addresses = new Addresses();
+            addresses.setData(viewModel.addGetAddressList(body));
+            JsonObject jsonObject = new Gson().toJsonTree(addresses).getAsJsonObject();
+            JsonObject requestBody = new JsonObject();
+            requestBody.add("addresses", jsonObject);
+            viewModel.saveAddress(requestBody);
             dialog.cancel();
         });
 
