@@ -250,7 +250,10 @@ public class EditProfileActivity extends BaseActivity {
 
         binding.firstName.setText(fullName);
         binding.userNameTop.setText(fullName);
+        binding.gender.setText(Utils.capitalize(userModel.getGender()));
 
+        if (userModel.getGender() == null || userModel.getGender().equals(""))
+            binding.gender.setText(R.string.not_provided);
         binding.primaryEmail.setText(((userModel.getEmail() == null) ||
                 (userModel.getEmail() != null && userModel.getEmail().equals(""))) ? "No email address provided" : userModel.getEmail());
 

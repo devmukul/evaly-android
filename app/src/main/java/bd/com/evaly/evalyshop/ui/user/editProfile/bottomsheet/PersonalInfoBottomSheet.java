@@ -40,7 +40,7 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter = new SimpleDateFormat(inputFormat);
         Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month-1, day);
+        calendar.set(year, month-1, day, 0, 0);
         dateOfBirth = formatter.format(calendar.getTime());
         binding.dateOfBirth.setText(Utils.formattedDateFromString("", "dd/MM/yyyy", dateOfBirth));
     };
@@ -61,7 +61,7 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
+        setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog);
 
         if (getActivity() != null)
             viewModel = new ViewModelProvider(getActivity()).get(EditProfileViewModel.class);
@@ -95,17 +95,17 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
             binding.firstName.setText(userModel.getFirstName());
             binding.lastName.setText(userModel.getLastName());
             binding.phone.setText(userModel.getContact());
+
             if (userModel.getBirthDate() == null)
                 binding.dateOfBirth.setText(R.string.not_provided);
-            else
-                binding.dateOfBirth.setText(Utils.formattedDateFromString("", "dd/MM/yyyy", userModel.getBirthDate()));
-
-            if (userModel.getGender().equals("male"))
+            else {
+                dateOfBirth = Utils.formattedDateFromString("", "dd/MM/yyyy", userModel.getBirthDate());
+                binding.dateOfBirth.setText(dateOfBirth);
+            }
+            if (userModel.getGender().equalsIgnoreCase("male"))
                 binding.genderGroup.check(R.id.checkMale);
-            else if ((userModel.getGender().equals("female")))
+            else if ((userModel.getGender().equalsIgnoreCase("female")))
                 binding.genderGroup.check(R.id.checkFemale);
-            else
-                binding.genderGroup.check(R.id.checkGenderOther);
         }
 
         binding.dateOfBirth.setOnClickListener(v -> {
