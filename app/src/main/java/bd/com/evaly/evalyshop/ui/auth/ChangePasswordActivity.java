@@ -2,14 +2,13 @@ package bd.com.evaly.evalyshop.ui.auth;
 
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.databinding.DataBindingUtil;
+
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -17,10 +16,12 @@ import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.databinding.ActivityChangePasswordBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
@@ -32,120 +33,103 @@ import retrofit2.Response;
 
 public class ChangePasswordActivity extends BaseActivity {
 
-    String userAgent;
-    ViewDialog dialog;
-    private EditText oldPassword, newPassword, confirmPassword;
-    private Button changePassword;
-    private ImageView showCurrent, showNew, showNewConfirm;
+    private ViewDialog dialog;
+    private ActivityChangePasswordBinding binding;
     private boolean isCurrentShowing, isNewShowing, isNewConfirmShowing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_password);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_change_password);
 
         getSupportActionBar().setElevation(0f);
         getSupportActionBar().setTitle("Change Password");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        oldPassword = findViewById(R.id.currentPassword);
-        newPassword = findViewById(R.id.newPassword);
-        confirmPassword = findViewById(R.id.newPasswordConfirmation);
-        changePassword = findViewById(R.id.change);
-        showCurrent = findViewById(R.id.show_current_pass);
-        showNew = findViewById(R.id.show_new_pass);
-        showNewConfirm = findViewById(R.id.show_new_pass_confirm);
-
-
         dialog = new ViewDialog(this);
 
-        showNew.setOnClickListener(v -> {
+        binding.showNewPass.setOnClickListener(v -> {
             if (!isNewShowing) {
                 isNewShowing = true;
-                newPassword.setInputType(InputType.TYPE_CLASS_TEXT);
-                showNew.setImageResource(R.drawable.ic_visibility_off);
+                binding.newPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+                binding.showNewPass.setImageResource(R.drawable.ic_visibility_off);
             } else {
                 isNewShowing = false;
-                newPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                showNew.setImageResource(R.drawable.ic_visibility);
+                binding.newPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                binding.showNewPass.setImageResource(R.drawable.ic_visibility);
             }
         });
 
-        showCurrent.setOnClickListener(v -> {
+        binding.showCurrentPass.setOnClickListener(v -> {
             if (!isCurrentShowing) {
-                isCurrentShowing = !isCurrentShowing;
-                oldPassword.setInputType(InputType.TYPE_CLASS_TEXT);
-                showCurrent.setImageResource(R.drawable.ic_visibility_off);
+                isCurrentShowing = true;
+                binding.currentPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+                binding.showCurrentPass.setImageResource(R.drawable.ic_visibility_off);
             } else {
-                isCurrentShowing = !isCurrentShowing;
-                oldPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                showCurrent.setImageResource(R.drawable.ic_visibility);
+                isCurrentShowing = false;
+                binding.currentPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                binding.showCurrentPass.setImageResource(R.drawable.ic_visibility);
             }
         });
 
-        showNewConfirm.setOnClickListener(v -> {
+        binding.showCurrentPass.setOnClickListener(v -> {
             if (!isNewConfirmShowing) {
-                isNewConfirmShowing = !isNewConfirmShowing;
-                confirmPassword.setInputType(InputType.TYPE_CLASS_TEXT);
-                showNewConfirm.setImageResource(R.drawable.ic_visibility_off);
+                isNewConfirmShowing = true;
+                binding.newPasswordConfirmation.setInputType(InputType.TYPE_CLASS_TEXT);
+                binding.showNewPassConfirm.setImageResource(R.drawable.ic_visibility_off);
             } else {
-                isNewConfirmShowing = !isNewConfirmShowing;
-                confirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                showNewConfirm.setImageResource(R.drawable.ic_visibility);
+                isNewConfirmShowing = false;
+                binding.newPasswordConfirmation.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                binding.showNewPassConfirm.setImageResource(R.drawable.ic_visibility);
             }
         });
 
-        changePassword.setOnClickListener(v -> {
-            Log.d("old_password", oldPassword.getText().toString());
-            Log.d("new_password", newPassword.getText().toString());
-            if (oldPassword.getText().toString().equals("")) {
-                Toast.makeText(ChangePasswordActivity.this, "Please enter your current password", Toast.LENGTH_SHORT).show();
-            } else if (newPassword.getText().toString().equals("")) {
-                Toast.makeText(ChangePasswordActivity.this, "Please enter your new password", Toast.LENGTH_SHORT).show();
-            } else if (confirmPassword.getText().toString().equals("")) {
-                Toast.makeText(ChangePasswordActivity.this, "Please confirm your new password", Toast.LENGTH_SHORT).show();
-            } else if (!confirmPassword.getText().toString().equals(newPassword.getText().toString())) {
-                Toast.makeText(ChangePasswordActivity.this, "Password didn't match. Please enter your new password again.", Toast.LENGTH_SHORT).show();
-            } else if (!Utils.isStrongPassword(confirmPassword.getText().toString()).equals("yes")) {
-                Toast.makeText(ChangePasswordActivity.this, Utils.isStrongPassword(confirmPassword.getText().toString()), Toast.LENGTH_SHORT).show();
+        binding.change.setOnClickListener(v -> {
+            String oldPass = binding.currentPassword.getText().toString().trim();
+            String newPass = binding.newPassword.getText().toString().trim();
+            String confirmPass = binding.newPasswordConfirmation.getText().toString().trim();
+            if (oldPass.equals("")) {
+                ToastUtils.show("Please enter your current password");
+            } else if (newPass.equals("")) {
+                ToastUtils.show("Please enter your new password");
+            } else if (confirmPass.equals("")) {
+                ToastUtils.show("Please confirm your new password");
+            } else if (!confirmPass.equals(newPass)) {
+                ToastUtils.show("Password didn't match. Please enter your new password again.");
+            } else if (!Utils.isStrongPassword(confirmPass).equals("yes")) {
+                ToastUtils.show(Utils.isStrongPassword(confirmPass));
             } else {
                 updatePassword();
             }
-
         });
-
     }
 
 
     private void updatePassword() {
 
         dialog.showDialog();
-
         HashMap<String, String> parameters = new HashMap<>();
-
-        parameters.put("new_password", newPassword.getText().toString());
-        parameters.put("old_password", oldPassword.getText().toString());
+        parameters.put("new_password", binding.newPassword.getText().toString());
+        parameters.put("old_password", binding.currentPassword.getText().toString());
 
         AuthApiHelper.changePassword(CredentialManager.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-
                 dialog.hideDialog();
-
-                Toast.makeText(ChangePasswordActivity.this, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
+                ToastUtils.show(response.get("message").getAsString());
                 if (response.get("success").getAsBoolean()) {
-                    CredentialManager.savePassword(newPassword.getText().toString());
+                    CredentialManager.savePassword(binding.newPassword.getText().toString());
                     HashMap<String, String> data = new HashMap<>();
                     data.put("user", CredentialManager.getUserName());
                     data.put("host", Constants.XMPP_HOST);
-                    data.put("newpass", newPassword.getText().toString());
+                    data.put("newpass", binding.newPassword.getText().toString());
                     AuthApiHelper.changeXmppPassword(data, new DataFetchingListener<Response<JsonPrimitive>>() {
                         @Override
                         public void onDataFetched(Response<JsonPrimitive> response) {
                             dialog.hideDialog();
                             if (response.code() == 200 || response.code() == 201) {
-                                CredentialManager.savePassword(newPassword.getText().toString());
-                                Snackbar.make(newPassword, "Password change successfully!", Snackbar.LENGTH_LONG).show();
+                                CredentialManager.savePassword(binding.newPassword.getText().toString());
+                                Snackbar.make(binding.newPassword, "Password change successfully!", Snackbar.LENGTH_LONG).show();
                                 signInUser();
                             } else {
                                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
@@ -164,7 +148,11 @@ public class ChangePasswordActivity extends BaseActivity {
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 dialog.hideDialog();
-                Toast.makeText(ChangePasswordActivity.this, "Couldn't change password.", Toast.LENGTH_SHORT).show();
+                if (errorBody.contains("message")) {
+                    CommonDataResponse commonDataResponse = new Gson().fromJson(errorBody, CommonDataResponse.class);
+                    ToastUtils.show(commonDataResponse.getMessage());
+                } else
+                    ToastUtils.show("Couldn't change password.");
             }
 
             @Override
@@ -197,10 +185,10 @@ public class ChangePasswordActivity extends BaseActivity {
                         CredentialManager.saveToken(token);
                         CredentialManager.saveRefreshToken(response.get("refresh_token").getAsString());
                         Balance.updateUserInfo(ChangePasswordActivity.this, true);
-                        Toast.makeText(ChangePasswordActivity.this, "Successfully signed in.", Toast.LENGTH_SHORT).show();
+                        ToastUtils.show("Successfully signed in.");
                         break;
                     default:
-                        Toast.makeText(ChangePasswordActivity.this, "Incorrect phone number or password. Please try again! ", Toast.LENGTH_SHORT).show();
+                        ToastUtils.show("Incorrect phone number or password. Please try again! ");
                 }
                 dialog.hideDialog();
             }
@@ -226,7 +214,6 @@ public class ChangePasswordActivity extends BaseActivity {
                 onBackPressed();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }
