@@ -96,7 +96,8 @@ public class Balance {
 
             @Override
             public void onAuthError(boolean logout) {
-
+                if (!logout)
+                    updateUserInfo(context, openDashboard);
             }
         });
 

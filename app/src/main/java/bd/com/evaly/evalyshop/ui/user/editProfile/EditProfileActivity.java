@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.user.editProfile;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,8 +10,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,19 +25,28 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoDao;
+import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoEntity;
 import bd.com.evaly.evalyshop.databinding.ActivityEditProfileBinding;
+import bd.com.evaly.evalyshop.databinding.DialogContinueAsBinding;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.user.UserModel;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.EmailInfoBottomSheet;
@@ -44,6 +57,7 @@ import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 
 
 public class EditProfileActivity extends BaseActivity {
@@ -51,6 +65,7 @@ public class EditProfileActivity extends BaseActivity {
     private Context context;
     private ActivityEditProfileBinding binding;
     private EditProfileViewModel viewModel;
+    private boolean fromOtherApp = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +79,7 @@ public class EditProfileActivity extends BaseActivity {
         updateProfileData();
 
         context = this;
+        handleIntent();
 
         binding.editPicture.bringToFront();
 
@@ -97,6 +113,121 @@ public class EditProfileActivity extends BaseActivity {
                 viewModel.setInfoSavedStatus(false);
                 updateProfileData();
                 Toast.makeText(EditProfileActivity.this, "Profile updated!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+
+    private void handleIntent() {
+
+        try {
+            if (getIntent() != null && getIntent().hasExtra("user")) {
+                if (getIntent().getStringExtra("user").equalsIgnoreCase(CredentialManager.getUserName())) {
+                    fromOtherApp = true;
+                } else {
+                    if (getIntent() != null && getIntent().getStringExtra("userInfo") != null) {
+                        fromOtherApp = true;
+                        UserModel userModel = new Gson().fromJson(getIntent().getStringExtra("userInfo"), UserModel.class);
+                        final Dialog dialog = new Dialog(this, R.style.FullWidthTransparentDialog);
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setCancelable(true);
+                        final DialogContinueAsBinding dialogBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.dialog_continue_as, null, false);
+                        if (userModel.getProfilePicUrl() != null)
+                            Glide.with(this)
+                                    .load(userModel.getProfilePicUrl())
+                                    .placeholder(R.drawable.user_image)
+                                    .into(dialogBinding.picture);
+
+                        if (CredentialManager.getToken().equals(""))
+                            dialogBinding.desciption.setText("You are not logged to an account. Click on the button to login automatically.");
+                        else
+                            dialogBinding.desciption.setText("You are logged to a different account. Click on the button to switch account automatically.");
+
+                        dialogBinding.buttonText.setText(Html.fromHtml("Continue as <b>" + userModel.getFullName() + "</b>"));
+                        dialogBinding.loginWithEvaly.setOnClickListener(v -> {
+                            loginWithEvaly();
+                            dialog.dismiss();
+                        });
+                        dialog.setContentView(dialogBinding.getRoot());
+                        dialog.show();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loginWithEvaly() {
+
+        ViewDialog dialog = new ViewDialog(this);
+        dialog.showDialog();
+        HashMap<String, String> payload = new HashMap<>();
+
+        payload.put("username", getIntent().getStringExtra("user"));
+        payload.put("password", getIntent().getStringExtra("password"));
+
+        AuthApiHelper.login(payload, new ResponseListener<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int code) {
+                dialog.hideDialog();
+                switch (code) {
+                    case 200:
+                    case 201:
+                    case 202:
+                        String token = response.get("access").getAsString();
+                        CredentialManager.saveToken(token);
+                        CredentialManager.saveRefreshToken(response.get("refresh").getAsString());
+                        CredentialManager.saveUserName(getIntent().getStringExtra("user"));
+                        CredentialManager.savePassword(getIntent().getStringExtra("password"));
+                        updateUserInfo();
+                        break;
+                    default:
+                        Toast.makeText(getApplicationContext(), "Incorrect phone number or password. Please try again! ", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailed(String body, int status) {
+                dialog.hideDialog();
+                Toast.makeText(getApplicationContext(), "Server error, please try again after few minutes. " + body, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    public void updateUserInfo() {
+        AuthApiHelper.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
+                CredentialManager.saveUserData(response.getData());
+                ProviderDatabase providerDatabase = ProviderDatabase.getInstance(context);
+                UserInfoDao userInfoDao = providerDatabase.userInfoDao();
+
+                Executors.newSingleThreadExecutor().execute(() -> {
+                    UserInfoEntity entity = new UserInfoEntity();
+                    entity.setToken(CredentialManager.getToken());
+                    entity.setRefreshToken(CredentialManager.getRefreshToken());
+                    entity.setName(response.getData().getFullName());
+                    entity.setImage(response.getData().getImageSm());
+                    entity.setUsername(CredentialManager.getUserName());
+                    entity.setPassword(CredentialManager.getPassword());
+                    userInfoDao.insert(entity);
+                });
+                finish();
+                startActivity(getIntent());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    updateUserInfo();
             }
         });
 
