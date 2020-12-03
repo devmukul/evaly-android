@@ -273,7 +273,7 @@ public interface IApiClient {
     Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.DOMAIN_EAUTH+"token/refresh")
-    Call<JsonObject> refreshToken(@Body HashMap<String, String> data);
+    Call<JsonObject> refreshToken(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
     @POST(UrlUtils.CHANGE_XMPP_PASSWORD)
     Call<JsonPrimitive> changeXmppPassword(@Body HashMap<String, String> data);

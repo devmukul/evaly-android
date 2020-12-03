@@ -8,6 +8,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemAddressBinding;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
+import bd.com.evaly.evalyshop.models.user.AddressItem;
 import bd.com.evaly.evalyshop.ui.address.model.AddressListModel_;
 import bd.com.evaly.evalyshop.ui.address.model.BindAddressModel;
 import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
@@ -16,22 +17,21 @@ import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 
 public class AddressController extends EpoxyController {
 
-    private List<AddressResponse> list = new ArrayList<>();
+    private List<AddressItem> list = new ArrayList<>();
     private boolean isLoading = true;
     private ClickListener clickListener;
 
     public interface ClickListener {
-        void onDelete(AddressResponse model);
-
-        void onEdit(AddressResponse model);
+        void onDelete(AddressItem model);
+        void onEdit(AddressItem model);
     }
 
     @Override
     protected void buildModels() {
 
-        for (AddressResponse item : list) {
+        for (AddressItem item : list) {
             new AddressListModel_()
-                    .id(item.getId())
+                    .id(item.toString())
                     .model(item)
                     .onBind((model, view, position) -> {
                         ItemAddressBinding binding = (ItemAddressBinding) view.getDataBinding();
@@ -68,7 +68,7 @@ public class AddressController extends EpoxyController {
         isLoading = loading;
     }
 
-    public void setList(List<AddressResponse> list) {
+    public void setList(List<AddressItem> list) {
         this.list = list;
     }
 }

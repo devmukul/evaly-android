@@ -22,6 +22,7 @@ import bd.com.evaly.evalyshop.databinding.BottomSheetAddAddressBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentAddressBinding;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
+import bd.com.evaly.evalyshop.models.user.AddressItem;
 import bd.com.evaly.evalyshop.ui.address.controller.AddressController;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -84,12 +85,12 @@ public class AddressFragment extends Fragment implements AddressController.Click
         });
     }
 
-    public void deleteAddress(AddressResponse model) {
+    public void deleteAddress(AddressItem model) {
         new AlertDialog.Builder(getContext())
                 .setCancelable(false)
                 .setMessage("Are you sure you want to delete the address?")
                 .setPositiveButton(android.R.string.yes, (dialog1, which) -> {
-                    viewModel.deleteAddress(model.getId());
+                    // viewModel.deleteAddress(model.getId());
                 })
                 .setNegativeButton(android.R.string.no, (dialogInterface, i) -> {
 
@@ -97,7 +98,7 @@ public class AddressFragment extends Fragment implements AddressController.Click
                 .show();
     }
 
-    public void addAddress(AddressResponse model) {
+    public void addAddress(AddressItem model) {
         BottomSheetDialog dialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogTheme);
         final BottomSheetAddAddressBinding dialogBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
                 R.layout.bottom_sheet_add_address, null, false);
@@ -128,8 +129,8 @@ public class AddressFragment extends Fragment implements AddressController.Click
             }
 
             AddressRequest body = new AddressRequest();
-            if (model != null)
-                body.setId(model.getId());
+//            if (model != null)
+//                body.setId(model.getId());
             body.setAddress(address);
             body.setArea(area);
             body.setCity(city);
@@ -144,12 +145,12 @@ public class AddressFragment extends Fragment implements AddressController.Click
     }
 
     @Override
-    public void onDelete(AddressResponse model) {
+    public void onDelete(AddressItem model) {
         deleteAddress(model);
     }
 
     @Override
-    public void onEdit(AddressResponse model) {
+    public void onEdit(AddressItem model) {
         addAddress(model);
     }
 }

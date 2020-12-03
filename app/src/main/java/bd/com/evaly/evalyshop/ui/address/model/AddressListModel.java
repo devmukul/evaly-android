@@ -13,6 +13,7 @@ import com.airbnb.epoxy.EpoxyModelClass;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemAddressBinding;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
+import bd.com.evaly.evalyshop.models.user.AddressItem;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -21,7 +22,7 @@ import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 public abstract class AddressListModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
-    AddressResponse model;
+    AddressItem model;
 
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener onEditClick;

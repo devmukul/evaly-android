@@ -26,13 +26,13 @@ public class BaseApiHelper {
 
     protected static void tokenRefresh(ResponseListenerAuth<JsonObject, String> listener) {
         HashMap<String, String> data = new HashMap<>();
-       data.put("refresh_token", CredentialManager.getRefreshToken());
+        data.put("refresh_token", CredentialManager.getRefreshToken());
 
-        getiApiClient().refreshToken(data).enqueue(new Callback<JsonObject>() {
+        getiApiClient().refreshToken(CredentialManager.getToken(), data).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.code() == 200 || response.code() == 201) {
-                    JsonObject data  = response.body().getAsJsonObject("data");
+                    JsonObject data = response.body().getAsJsonObject("data");
                     String token = data.get("access_token").getAsString();
                     String refresh = data.get("refresh_token").getAsString();
                     CredentialManager.saveToken(token);

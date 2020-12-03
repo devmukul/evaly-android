@@ -125,9 +125,8 @@ public class AuthApiHelper extends BaseApiHelper {
 
         IApiClient iApiClient = getiApiClient();
         HashMap<String, String> data = new HashMap<>();
-        data.put("access", CredentialManager.getTokenNoBearer());
-        data.put("refresh", CredentialManager.getRefreshToken());
-        Call<JsonObject> call = iApiClient.refreshToken(data);
+        data.put("refresh_token", CredentialManager.getRefreshToken());
+        Call<JsonObject> call = iApiClient.refreshToken(CredentialManager.getToken(), data);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {

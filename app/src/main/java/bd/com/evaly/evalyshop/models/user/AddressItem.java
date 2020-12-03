@@ -25,7 +25,7 @@ public class AddressItem {
 	@SerializedName("status")
 	private String status;
 
-	@SerializedName("is_Primary")
+	@SerializedName(value = "is_Primary", alternate = "is_primary")
 	private boolean isPrimary;
 
 	public void setArea(String area){

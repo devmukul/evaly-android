@@ -26,11 +26,10 @@ public class TokenAuthenticator implements Authenticator {
     public Request authenticate(Route route, Response response) throws IOException {
         if (!isRefreshApiCalled) {
             HashMap<String, String> loginRequest = new HashMap<>();
-            loginRequest.put("access", CredentialManager.getTokenNoBearer());
-            loginRequest.put("refresh", CredentialManager.getRefreshToken());
+            loginRequest.put("refresh_token", CredentialManager.getRefreshToken());
 
             IApiClient apiClient = ApiClient.getClient().create(IApiClient.class);
-            retrofit2.Response<JsonObject> refreshApiResponse = apiClient.refreshToken(loginRequest).execute();
+            retrofit2.Response<JsonObject> refreshApiResponse = apiClient.refreshToken(CredentialManager.getToken(), loginRequest).execute();
 
             if (refreshApiResponse.code() != 401) {
                 JsonObject loginResponse = refreshApiResponse.body();
