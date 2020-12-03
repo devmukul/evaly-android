@@ -176,9 +176,10 @@ public class EditProfileActivity extends BaseActivity {
                     case 200:
                     case 201:
                     case 202:
-                        String token = response.get("access").getAsString();
+                        response = response.get("data").getAsJsonObject();
+                        String token = response.get("access_token").getAsString();
                         CredentialManager.saveToken(token);
-                        CredentialManager.saveRefreshToken(response.get("refresh").getAsString());
+                        CredentialManager.saveRefreshToken(response.get("refresh_token").getAsString());
                         CredentialManager.saveUserName(getIntent().getStringExtra("user"));
                         CredentialManager.savePassword(getIntent().getStringExtra("password"));
                         updateUserInfo();
