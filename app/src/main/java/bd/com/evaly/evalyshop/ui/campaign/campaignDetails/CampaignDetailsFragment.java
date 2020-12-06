@@ -35,6 +35,7 @@ import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller.CampaignCategoryController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.BindingUtils;
@@ -234,6 +235,13 @@ public class CampaignDetailsFragment extends Fragment {
     }
 
     private void liveEventObservers() {
+
+        viewModel.getBuyNowClick().observe(getViewLifecycleOwner(), campaignProductResponse -> {
+            BuyNowFragment addPhotoBottomDialogFragment =
+                    BuyNowFragment.newInstance(campaignProductResponse.getShopSlug(), campaignProductResponse.getSlug());
+            addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
+                    "BuyNow");
+        });
 
         viewModel.getCampaignDetailsLiveData().observe(getViewLifecycleOwner(), this::loadCampaignDetails);
 

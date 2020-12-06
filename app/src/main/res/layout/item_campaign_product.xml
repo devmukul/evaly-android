@@ -136,7 +136,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/c444"
                 android:textStyle="normal"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/bottomText"
                 tools:visibility="visible" />

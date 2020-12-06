@@ -17,7 +17,6 @@ import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
-import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class CampaignDetailsViewModel extends ViewModel {
     private MutableLiveData<CampaignCategoryResponse> campaignDetailsLiveData = new MutableLiveData<>();
@@ -29,6 +28,16 @@ public class CampaignDetailsViewModel extends ViewModel {
     private String search = null;
     private String type = "shop";
     private String campaign = null;
+
+    private SingleLiveEvent<CampaignProductResponse> buyNowClick = new SingleLiveEvent<>();
+
+    public void setBuyNowClick(CampaignProductResponse model) {
+        this.buyNowClick.setValue(model);
+    }
+
+    public SingleLiveEvent<CampaignProductResponse> getBuyNowClick() {
+        return buyNowClick;
+    }
 
 
     public CampaignDetailsViewModel() {

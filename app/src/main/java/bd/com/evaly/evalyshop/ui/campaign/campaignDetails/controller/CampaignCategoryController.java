@@ -38,6 +38,7 @@ public class CampaignCategoryController extends EpoxyController {
     private MainViewModel mainViewModel;
     private AppCompatActivity activity;
 
+
     public CampaignCategoryController() {
         setFilterDuplicates(true);
     }
@@ -72,6 +73,7 @@ public class CampaignCategoryController extends EpoxyController {
                             intent.putExtra("cashback_text", item1.getCashbackText());
                             activity.startActivity(intent);
                         })
+                        .buyNowClickListener((model, parentView, clickedView, position) -> viewModel.setBuyNowClick(model.model()))
                         .addTo(this);
             else if (item instanceof CampaignBrandResponse)
                 new CampaignBrandModel_()

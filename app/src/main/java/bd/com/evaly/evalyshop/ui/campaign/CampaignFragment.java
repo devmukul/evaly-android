@@ -40,6 +40,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentCampaignBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
+import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignBannerController;
 import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignController;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSliderModel_;
@@ -280,6 +281,13 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
     private void liveEventsObserver() {
 
+        viewModel.getBuyNowClick().observe(getViewLifecycleOwner(), campaignProductResponse -> {
+            BuyNowFragment addPhotoBottomDialogFragment =
+                    BuyNowFragment.newInstance(campaignProductResponse.getShopSlug(), campaignProductResponse.getSlug());
+            addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
+                    "BuyNow");
+        });
+
         viewModel.getCarouselLiveList().observe(getViewLifecycleOwner(), campaignCarouselResponses -> {
             productController.setCarouselList(campaignCarouselResponses);
             productController.requestModelBuild();
@@ -317,6 +325,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             productController = new CampaignController();
         productController.setNavController(navController);
         productController.setFilterDuplicates(true);
+        productController.setViewModel(viewModel);
         productController.setActivity((AppCompatActivity) getActivity());
         binding.recyclerView.setAdapter(productController.getAdapter());
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);

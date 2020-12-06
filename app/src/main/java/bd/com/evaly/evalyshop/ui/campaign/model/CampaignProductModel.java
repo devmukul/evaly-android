@@ -67,8 +67,6 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
         }
 
         binding.getRoot().setOnClickListener(clickListener);
-        binding.buyNow.setVisibility(View.GONE);
-        binding.buyNow.setOnClickListener(buyNowClickListener);
 
         binding.campaignName.setText(model.getBadgeText());
         if (model.getCashbackText() == null || model.getCashbackText().length() == 0)
@@ -81,6 +79,9 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
             binding.tvCashback.setText(Utils.toFirstCharUpperAll(model.getCashbackText().replace(".00", "")));
         }
         binding.bottomText.setText(model.getBottomText());
+
+
+        binding.buyNow.setOnClickListener(buyNowClickListener);
     }
 
 

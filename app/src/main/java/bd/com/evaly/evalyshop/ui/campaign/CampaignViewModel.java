@@ -19,6 +19,7 @@ import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class CampaignViewModel extends ViewModel {
 
+    private SingleLiveEvent<CampaignProductResponse> buyNowClick = new SingleLiveEvent<>();
     private MutableLiveData<List<CampaignCarouselResponse>> carouselLiveList = new MutableLiveData<>();
     private MutableLiveData<List<CampaignCategoryResponse>> categoryLiveList = new MutableLiveData<>();
     private List<CampaignCategoryResponse> categoryArrayList = new ArrayList<>();
@@ -40,6 +41,14 @@ public class CampaignViewModel extends ViewModel {
         loadCampaignCarousel();
     }
 
+
+    public void setBuyNowClick(CampaignProductResponse model) {
+        this.buyNowClick.setValue(model);
+    }
+
+    public SingleLiveEvent<CampaignProductResponse> getBuyNowClick() {
+        return buyNowClick;
+    }
 
     public void loadCampaignCarousel() {
         CampaignApiHelper.getCampaignCarousel("campaign", new ResponseListenerAuth<CommonDataResponse<List<CampaignCarouselResponse>>, String>() {

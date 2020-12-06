@@ -21,6 +21,7 @@ import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.carousel.CampaignCarouselResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
+import bd.com.evaly.evalyshop.ui.campaign.CampaignViewModel;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignButtonModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignCarouselModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignHeaderModel_;
@@ -42,6 +43,11 @@ public class CampaignController extends EpoxyController {
     private NavController navController;
     private boolean isLoading = true;
     private AppCompatActivity activity;
+    private CampaignViewModel viewModel;
+
+    public void setViewModel(CampaignViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
 
     public CampaignController() {
         setFilterDuplicates(true);
@@ -145,6 +151,9 @@ public class CampaignController extends EpoxyController {
                         intent.putExtra("product_image", item1.getImage());
                         intent.putExtra("cashback_text", item1.getCashbackText());
                         activity.startActivity(intent);
+                    })
+                    .buyNowClickListener((model, parentView, clickedView, position) -> {
+                        viewModel.setBuyNowClick(model.model());
                     })
                     .addTo(this);
         }
