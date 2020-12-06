@@ -100,7 +100,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private Dialog confirmDeliveryDialog;
     private BottomSheetDialog cancelOrderDialog;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -453,12 +452,12 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         } else {
             binding.confirmOrder.setVisibility(View.GONE);
             if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().length > 0) {
-                hidePaymentButtons();
-                binding.makePayment.setVisibility(View.VISIBLE);
-                binding.stickyButtons.setVisibility(View.VISIBLE);
+                showPaymentButtons();
+                binding.payViaGiftCard.setVisibility(View.GONE);
                 for (int i = 0; i < response.getAllowed_payment_methods().length; i++) {
                     if (response.getAllowed_payment_methods()[i].equalsIgnoreCase("gift_code")) {
                         binding.payViaGiftCard.setVisibility(View.VISIBLE);
+                        break;
                     }
                 }
             } else
@@ -559,9 +558,16 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     private void hidePaymentButtons() {
         binding.makePayment.setVisibility(View.GONE);
-        binding.payPartially.setVisibility(View.GONE);
         binding.payViaGiftCard.setVisibility(View.GONE);
         binding.stickyButtons.setVisibility(View.GONE);
+        binding.container.setPadding(0, 0, 0, 0);
+    }
+
+    private void showPaymentButtons() {
+        binding.makePayment.setVisibility(View.VISIBLE);
+        binding.payViaGiftCard.setVisibility(View.VISIBLE);
+        binding.stickyButtons.setVisibility(View.VISIBLE);
+        binding.container.setPadding(0, 0, 0, Utils.convertDpToPixel(70));
     }
 
     private void dismissProgressBar() {

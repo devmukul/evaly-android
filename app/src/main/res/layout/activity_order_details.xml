@@ -21,6 +21,7 @@
                 tools:context=".ui.order.orderDetails.OrderDetailsActivity">
 
                 <LinearLayout
+                    android:id="@+id/container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -291,7 +292,7 @@
                             android:adjustViewBounds="true"
                             android:padding="1dp"
                             android:src="@drawable/ic_up_down"
-                            android:tint="@color/black" />
+                            app:tint="@color/black" />
 
                     </LinearLayout>
 
@@ -307,7 +308,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="15dp"
-                        android:layout_marginBottom="10dp"
+                        android:layout_marginBottom="7dp"
                         android:text="@string/products"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
@@ -970,7 +971,7 @@
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:translationZ="6dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_behavior="bd.com.evaly.evalyshop.util.MoveUpwardBehavior">
 
             <LinearLayout
@@ -1015,70 +1016,6 @@
                     android:textAlignment="center"
                     android:textColor="@color/c333"
                     android:visibility="visible" />
-
-                <!--                <LinearLayout-->
-                <!--                    android:id="@+id/cart"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_marginTop="6dp"-->
-                <!--                    android:layout_marginBottom="6dp"-->
-                <!--                    android:layout_weight="0"-->
-                <!--                    android:background="@drawable/my_cart_bg"-->
-                <!--                    android:clickable="true"-->
-                <!--                    android:gravity="center"-->
-                <!--                    android:orientation="horizontal">-->
-
-                <!--                    <TextView-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="match_parent"-->
-                <!--                        android:layout_marginRight="2dp"-->
-                <!--                        android:clickable="false"-->
-                <!--                        android:fontFamily="sans-serif-thin"-->
-                <!--                        android:gravity="center"-->
-                <!--                        android:paddingStart="20dp"-->
-                <!--                        android:paddingEnd="10dp"-->
-                <!--                        android:text="MY CART"-->
-                <!--                        android:textAlignment="center"-->
-                <!--                        android:textColor="@color/c444"-->
-                <!--                        android:textSize="14sp"-->
-                <!--                        android:textStyle="bold" />-->
-
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/cartCount"-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="match_parent"-->
-                <!--                        android:background="@drawable/bg_cart_count"-->
-                <!--                        android:gravity="center"-->
-                <!--                        android:minWidth="20dp"-->
-                <!--                        android:paddingVertical="3dp"-->
-                <!--                        android:paddingStart="10dp"-->
-                <!--                        android:paddingLeft="6dp"-->
-                <!--                        android:paddingEnd="15dp"-->
-                <!--                        android:paddingRight="6dp"-->
-                <!--                        android:text="0"-->
-                <!--                        android:textColor="#155724"-->
-                <!--                        android:textStyle="bold" />-->
-                <!--                </LinearLayout>-->
-
-                <!--                <TextView-->
-                <!--                    android:id="@+id/addToCart"-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_marginStart="15dp"-->
-                <!--                    android:layout_marginTop="6dp"-->
-                <!--                    android:layout_marginEnd="15dp"-->
-                <!--                    android:layout_marginRight="12dp"-->
-                <!--                    android:layout_marginBottom="6dp"-->
-                <!--                    android:layout_weight="0"-->
-                <!--                    android:background="@drawable/available_shop_bg"-->
-                <!--                    android:clickable="true"-->
-                <!--                    android:fontFamily="sans-serif-thin"-->
-                <!--                    android:gravity="center"-->
-                <!--                    android:text="AVAILABLE AT SHOPS"-->
-                <!--                    android:textAlignment="center"-->
-                <!--                    android:textColor="#fff"-->
-                <!--                    android:textSize="14sp"-->
-                <!--                    android:textStyle="bold" />-->
             </LinearLayout>
 
 

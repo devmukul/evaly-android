@@ -17,6 +17,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentOrderListBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.controller.OrderListController;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -92,6 +93,7 @@ public class OrderListFragment extends Fragment implements OrderListController.C
                 }
             }
         });
+        controller.setClickListener(invoice -> ToastUtils.show("You will get notification/SMS when your order is accepted, after that your can pay.", true));
         controller.requestModelBuild();
     }
 

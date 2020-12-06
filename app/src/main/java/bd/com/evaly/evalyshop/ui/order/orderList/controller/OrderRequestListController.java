@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.order.orderList.controller;
 
 import com.airbnb.epoxy.EpoxyController;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ public class OrderRequestListController extends EpoxyController {
             new OrderRequestListModel_()
                     .id(item.toString())
                     .model(item)
-                    // .clickListener((model, parentView, clickedView, position) -> clickListener.onClick(model.model().getInvoiceNo()))
+                    .clickListener((model, parentView, clickedView, position) -> clickListener.onClick(model.model().getInvoiceNo()))
                     .addTo(this);
         }
 
