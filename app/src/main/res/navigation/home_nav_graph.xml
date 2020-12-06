@@ -303,6 +303,10 @@
         android:id="@+id/giftCardPaymentBottomSheet"
         android:name="bd.com.evaly.evalyshop.ui.payment.giftcard.GiftCardPaymentBottomSheet"
         android:label="GiftCardPaymentBottomSheet" />
+    <fragment
+        android:id="@+id/transactionHistory"
+        android:name="bd.com.evaly.evalyshop.ui.transaction.TransactionHistory"
+        android:label="TransactionHistory" />
 
 
     <!--    <activity-->

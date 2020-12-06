@@ -21,6 +21,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentOrderListBaseBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.ui.order.orderList.adapter.OrderListTabAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderList.controller.OrderRequestListController;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -79,6 +80,7 @@ public class OrderListBaseFragment extends Fragment {
         if (requestListController == null)
             requestListController = new OrderRequestListController();
         requestListController.setFilterDuplicates(true);
+        requestListController.setClickListener(invoice -> ToastUtils.show("You will get notification/SMS when your order is accepted, after that your can pay.", true));
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         binding.recyclerView.setLayoutManager(layoutManager);

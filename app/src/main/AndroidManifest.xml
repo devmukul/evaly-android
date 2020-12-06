@@ -83,9 +83,6 @@
             android:name=".ui.order.PayViaCard"
             android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".ui.transaction.TransactionHistory"
-            android:theme="@style/ThemeTransaction" />
         <activity android:name=".ui.offers.OffersActivity" />
         <activity
             android:name=".ui.menu.InviteEarn"
