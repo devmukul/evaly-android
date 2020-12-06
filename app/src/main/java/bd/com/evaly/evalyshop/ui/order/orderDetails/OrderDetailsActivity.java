@@ -455,6 +455,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().length > 0) {
                 hidePaymentButtons();
                 binding.makePayment.setVisibility(View.VISIBLE);
+                binding.stickyButtons.setVisibility(View.VISIBLE);
                 for (int i = 0; i < response.getAllowed_payment_methods().length; i++) {
                     if (response.getAllowed_payment_methods()[i].equalsIgnoreCase("gift_code")) {
                         binding.payViaGiftCard.setVisibility(View.VISIBLE);
@@ -560,6 +561,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         binding.makePayment.setVisibility(View.GONE);
         binding.payPartially.setVisibility(View.GONE);
         binding.payViaGiftCard.setVisibility(View.GONE);
+        binding.stickyButtons.setVisibility(View.GONE);
     }
 
     private void dismissProgressBar() {

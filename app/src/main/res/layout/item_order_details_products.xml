@@ -70,7 +70,7 @@
             android:layout_height="1dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
-            android:background="#f9f9f9" />
+            android:background="@color/f9f9f9" />
 
 
         <LinearLayout

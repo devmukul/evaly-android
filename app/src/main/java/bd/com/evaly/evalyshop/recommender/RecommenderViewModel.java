@@ -46,6 +46,8 @@ public class RecommenderViewModel extends ViewModel {
     }
 
     public void insert(String type, String slug, String name, String image) {
+        if (type.equals("shop") && name.contains("cyclone"))
+            return;
         compositeDisposable.add(
                 rsDao.insertRx(new RsEntity(type, slug, name, image, Calendar.getInstance().getTimeInMillis(), 1, 1))
                         .subscribeOn(Schedulers.io())
