@@ -56,6 +56,7 @@ import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.PersonalInfoBottom
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
@@ -66,6 +67,7 @@ public class EditProfileActivity extends BaseActivity {
     private ActivityEditProfileBinding binding;
     private EditProfileViewModel viewModel;
     private boolean fromOtherApp = false;
+    private ViewDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,7 @@ public class EditProfileActivity extends BaseActivity {
         updateProfileData();
 
         context = this;
+        dialog = new ViewDialog(this);
         handleIntent();
 
         binding.editPicture.bringToFront();
@@ -199,9 +202,11 @@ public class EditProfileActivity extends BaseActivity {
 
 
     public void updateUserInfo() {
+        dialog.showDialog();
         AuthApiHelper.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
+                dialog.hideDialog();
                 CredentialManager.saveUserData(response.getData());
                 ProviderDatabase providerDatabase = ProviderDatabase.getInstance(context);
                 UserInfoDao userInfoDao = providerDatabase.userInfoDao();
@@ -222,7 +227,9 @@ public class EditProfileActivity extends BaseActivity {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
+                dialog.hideDialog();
+                ToastUtils.show("Couldn't login, please try again");
+                finish();
             }
 
             @Override
@@ -236,9 +243,7 @@ public class EditProfileActivity extends BaseActivity {
 
 
     private void updateProfileData() {
-
         UserModel userModel = CredentialManager.getUserData();
-
         if (CredentialManager.getUserData() == null && (getIntent() != null && getIntent().hasExtra("user"))) {
             return;
         } else if (CredentialManager.getUserData() == null) {
@@ -248,9 +253,7 @@ public class EditProfileActivity extends BaseActivity {
         }
 
         setProfilePic();
-
         String fullName = CredentialManager.getUserData().getFullName();
-
         binding.firstName.setText(fullName);
         binding.userNameTop.setText(fullName);
         binding.gender.setText(Utils.capitalize(userModel.getGender()));
