@@ -239,7 +239,9 @@ public class EditProfileActivity extends BaseActivity {
 
         UserModel userModel = CredentialManager.getUserData();
 
-        if (CredentialManager.getUserData() == null) {
+        if (CredentialManager.getUserData() == null && (getIntent() != null && getIntent().hasExtra("user"))) {
+            return;
+        } else if (CredentialManager.getUserData() == null) {
             Toast.makeText(this, "Profile information not found, please logout and login again.", Toast.LENGTH_SHORT).show();
             finish();
             return;
