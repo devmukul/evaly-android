@@ -67,6 +67,7 @@ public class EditProfileActivity extends BaseActivity {
     private ActivityEditProfileBinding binding;
     private EditProfileViewModel viewModel;
     private boolean fromOtherApp = false;
+    private boolean isLoggedAgain = false;
     private ViewDialog dialog;
 
     @Override
@@ -150,7 +151,12 @@ public class EditProfileActivity extends BaseActivity {
                         dialogBinding.buttonText.setText(Html.fromHtml("Continue as <b>" + userModel.getFullName() + "</b>"));
                         dialogBinding.loginWithEvaly.setOnClickListener(v -> {
                             loginWithEvaly();
+                            isLoggedAgain = true;
                             dialog.dismiss();
+                        });
+                        dialog.setOnDismissListener(dialogInterface -> {
+                            if (!isLoggedAgain)
+                                finish();
                         });
                         dialog.setContentView(dialogBinding.getRoot());
                         dialog.show();
@@ -160,6 +166,11 @@ public class EditProfileActivity extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     private void loginWithEvaly() {

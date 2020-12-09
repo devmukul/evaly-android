@@ -21,6 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditPersonalInformationBinding;
@@ -39,8 +40,9 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
         String inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter = new SimpleDateFormat(inputFormat);
+        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
         Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month-1, day, 0, 0);
+        calendar.set(year, month, day, 0, 0);
         dateOfBirth = formatter.format(calendar.getTime());
         binding.dateOfBirth.setText(Utils.formattedDateFromString("", "dd/MM/yyyy", dateOfBirth));
     };
