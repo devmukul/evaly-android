@@ -61,7 +61,6 @@ import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
-import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
@@ -472,9 +471,9 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_cart:
                         startActivity(new Intent(MainActivity.this, CartActivity.class));
                         break;
-                    case R.id.nav_voucher:
-                        startActivity(new Intent(MainActivity.this, VoucherActivity.class));
-                        break;
+//                    case R.id.nav_voucher:
+//                        startActivity(new Intent(MainActivity.this, VoucherActivity.class));
+//                        break;
                     case R.id.nav_messages:
                         openEconnect();
                         break;

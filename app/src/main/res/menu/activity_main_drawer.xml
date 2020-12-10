@@ -38,10 +38,10 @@
         android:icon="@drawable/ic_menu_store"
         android:title="@string/favorite_shops" />
 
-    <item
-        android:id="@+id/nav_voucher"
-        android:icon="@drawable/ic_menu_voucher"
-        android:title="@string/vouchers" />
+<!--    <item-->
+<!--        android:id="@+id/nav_voucher"-->
+<!--        android:icon="@drawable/ic_menu_voucher"-->
+<!--        android:title="@string/vouchers" />-->
 
     <item
         android:id="@+id/nav_contact"

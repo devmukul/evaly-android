@@ -10,13 +10,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.JsonObject;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
+import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseViewPagerAdapter;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -43,7 +43,7 @@ public class GiftCardActivity extends AppCompatActivity {
         balance = findViewById(R.id.balance);
 
         pager = new BaseViewPagerAdapter(getSupportFragmentManager());
-        pager.addFragment(new GiftCardListFragment(),"STORE");
+        pager.addFragment(new GiftCardListFragment(), "STORE");
 
         if (!CredentialManager.getToken().equals("")) {
             pager.addFragment(new GiftCardMyFragment(), "MY GIFTS");
@@ -75,31 +75,23 @@ public class GiftCardActivity extends AppCompatActivity {
 
     public void updateBalance() {
 
-        AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
+        PaymentApiHelper.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
             @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-                response = response.getAsJsonObject("data");
-                balance.setText(String.format("Gift Card: ৳ %s", response.get("gift_card_balance").getAsString()));
+            public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
+                balance.setText(String.format("Gift Card: ৳ %s", response.getData().getGiftCardBalance()));
                 balance.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
 
-                balance.setVisibility(View.GONE);
             }
 
             @Override
             public void onAuthError(boolean logout) {
-                if (logout)
-                    AppController.logout(GiftCardActivity.this);
-                else
-                    updateBalance();
 
             }
         });
-
-
     }
 
 }

@@ -108,7 +108,6 @@ public class SignUpActivity extends BaseActivity {
                     il.putExtra("phone", phoneNumber.getText().toString());
                     il.putExtra("name", firstName.getText().toString() + " " + lastName.getText().toString());
                     il.putExtra("request_id", response.get("data").getAsJsonObject().get("request_id").getAsString());
-                    il.putExtra("test_otp", response.get("data").getAsJsonObject().get("test_otp").getAsString());
                     il.putExtra("type", "signup");
                     finish();
                     startActivity(il);

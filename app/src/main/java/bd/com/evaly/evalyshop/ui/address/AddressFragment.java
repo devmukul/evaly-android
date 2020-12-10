@@ -109,8 +109,12 @@ public class AddressFragment extends Fragment implements AddressController.Click
             dialogBinding.region.setText(model.getRegion());
             if (model.getFullName() == null || model.getFullName().equals(""))
                 dialogBinding.fullName.setText(CredentialManager.getUserData().getFullName());
+            else
+                dialogBinding.fullName.setText(model.getFullName());
             if (model.getPhoneNumber() == null || model.getPhoneNumber().equals(""))
                 dialogBinding.contactNumber.setText(CredentialManager.getUserData().getContact());
+            else
+                dialogBinding.contactNumber.setText(model.getPhoneNumber());
         } else {
             dialogBinding.fullName.setText(CredentialManager.getUserData().getFullName());
             dialogBinding.contactNumber.setText(CredentialManager.getUserData().getContact());
