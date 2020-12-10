@@ -7,14 +7,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -85,8 +82,8 @@ public class AuthApiHelper extends BaseApiHelper {
                 if (response.code() == 401) {
                     AppController.logout(context);
                 } else if (response.code() == 200 || response.code() == 201) {
-                    String token = response.body().get("access").getAsString();
-                    String refresh = response.body().get("refresh").getAsString();
+                    String token = response.body().get("data").getAsJsonObject().get("access_token").getAsString();
+                    String refresh = response.body().get("data").getAsJsonObject().get("refresh_token").getAsString();
                     CredentialManager.saveToken(token);
                     CredentialManager.saveRefreshToken(refresh);
                     listener.onDataFetched(response);
@@ -330,6 +327,9 @@ public class AuthApiHelper extends BaseApiHelper {
         getiApiClient().changePassword(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void logout(ResponseListenerAuth<JsonObject, String> listener) {
+        getiApiClient().logout(CredentialManager.getToken()).enqueue(getResponseCallBackDefault(listener));
+    }
 
     // update profile data
 

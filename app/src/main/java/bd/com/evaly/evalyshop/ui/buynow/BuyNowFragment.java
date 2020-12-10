@@ -68,6 +68,7 @@ import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -636,7 +637,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
                 if (response != null && getContext() != null) {
                     String errorMsg = response.get("message").getAsString();
-                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    ToastUtils.show(errorMsg);
                     if (response.has("data") && response.getAsJsonArray("data").size() > 0) {
                         JsonArray data = response.getAsJsonArray("data");
                         JsonObject item = data.get(0).getAsJsonObject();
@@ -662,7 +663,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 dialog.hideDialog();
-                Toast.makeText(context, "Couldn't place order, try again later.", Toast.LENGTH_SHORT).show();
+                ToastUtils.show("Couldn't place order, try again later.");
             }
 
             @Override

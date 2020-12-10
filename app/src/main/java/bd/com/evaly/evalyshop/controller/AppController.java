@@ -11,13 +11,17 @@ import android.os.Handler;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
 import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import dagger.hilt.android.HiltAndroidApp;
 
@@ -40,6 +44,7 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     public static void logout(Activity context) {
+        getInstance().logoutFromServer();
         try {
             String email = CredentialManager.getUserName();
             String strNew = email.replaceAll("[^A-Za-z0-9]", "");
@@ -49,8 +54,6 @@ public class AppController extends Application implements Application.ActivityLi
         }
 
         MyPreference.with(context).clearAll();
-
-
         ProviderDatabase providerDatabase = ProviderDatabase.getInstance(getmContext());
         providerDatabase.userInfoDao().deleteAll();
 
@@ -64,6 +67,7 @@ public class AppController extends Application implements Application.ActivityLi
 
 
     public static void logout() {
+        getInstance().logoutFromServer();
         try {
             String email = CredentialManager.getUserName();
             String strNew = email.replaceAll("[^A-Za-z0-9]", "");
@@ -71,16 +75,34 @@ public class AppController extends Application implements Application.ActivityLi
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         MyPreference.with(getmContext().getApplicationContext()).clearAll();
         ProviderDatabase providerDatabase = ProviderDatabase.getInstance(getmContext());
         providerDatabase.userInfoDao().deleteAll();
-
+        ToastUtils.show("Logged out");
         new Handler().postDelayed(() -> {
             getInstance().getApplicationContext().startActivity(new Intent(getInstance().getApplicationContext(), SignInActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             System.exit(0);
         }, 300);
+    }
+
+    private void logoutFromServer(){
+        AuthApiHelper.logout(new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     @Override

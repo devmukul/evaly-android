@@ -238,6 +238,9 @@ public interface IApiClient {
     @POST(UrlUtils.DOMAIN_EAUTH + "change-password")
     Call<JsonObject> changePassword(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
+    @POST(UrlUtils.DOMAIN_EAUTH + "logout")
+    Call<JsonObject> logout(@Header("Authorization") String token);
+
     @GET(UrlUtils.BASE_URL_AUTH + "user-info-pay/{username}/")
     Call<JsonObject> getUserInfoPay(@Header("Authorization") String token, @Path("username") String username);
 

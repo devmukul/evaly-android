@@ -87,7 +87,7 @@ public class InitializeActionBar {
             public void onAuthError(boolean logout) {
                 if (!logout)
                     getNotificationCount();
-                // else if (context != null) AppController.logout(context);
+                else if (context != null) AppController.logout(context);
             }
         });
 
@@ -131,7 +131,7 @@ public class InitializeActionBar {
                     ToastUtils.show("Couldn't open eConnect, please install from Google Playstore");
                 }
             }
-        } catch (Exception ee){
+        } catch (Exception ee) {
             ToastUtils.show("Couldn't open eConnect, please install from Google Playstore");
         }
     }
