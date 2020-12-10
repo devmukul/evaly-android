@@ -65,17 +65,7 @@ public class BaseApiHelper {
                         dataFetchingListener.onDataFetched(response.body(), response.code());
 
                     } else {
-                        String errorMessage = response.body().toString();
-                        if (response.body().toString().contains("message")) {
-                            try {
-                                CommonDataResponse errorResponse = new Gson().fromJson(response.body().toString(), CommonDataResponse.class);
-                                errorMessage = errorResponse.getMessage();
-                            } catch (Exception ignored) {
-
-                            }
-                        }
-                        dataFetchingListener.onFailed(errorMessage, response.code());
-                        dataFetchingListener.onFailed(response.toString(), response.code());
+                        dataFetchingListener.onFailed("Error occurred!", response.code());
                     }
 
                 } else if (response.code() == 401) {
@@ -96,15 +86,32 @@ public class BaseApiHelper {
                         }
                     });
                 } else {
+
                     if (response.body() != null) {
-                        dataFetchingListener.onFailed(response.toString(), response.code());
-                    } else {
-                        try {
-                            dataFetchingListener.onFailed(response.errorBody().string(), response.code());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            dataFetchingListener.onFailed("Error occurred!", response.code());
+                        String errorMessage = response.body().toString();
+                        if (response.body().toString().contains("message")) {
+                            try {
+                                CommonDataResponse errorResponse = new Gson().fromJson(response.body().toString(), CommonDataResponse.class);
+                                errorMessage = errorResponse.getMessage();
+                            } catch (Exception ignored) {
+
+                            }
                         }
+                        dataFetchingListener.onFailed(errorMessage, response.code());
+                    } else {
+                        if (response.errorBody() != null) {
+                            String errorMessage = "Error occurred!";
+                            try {
+                                CommonDataResponse errorResponse = new Gson().fromJson(response.errorBody().string(), CommonDataResponse.class);
+                                if (errorResponse != null && errorResponse.getMessage() != null)
+                                    errorMessage = errorResponse.getMessage();
+                            } catch (Exception ignored) {
+
+                            }
+                            dataFetchingListener.onFailed(errorMessage, response.code());
+                        } else
+                            dataFetchingListener.onFailed("Error occurred!", response.code());
+
                     }
                 }
             }
