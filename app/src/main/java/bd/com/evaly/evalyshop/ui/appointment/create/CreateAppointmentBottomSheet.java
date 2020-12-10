@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -84,6 +85,11 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
             if (response.getSuccess())
                 dismissAllowingStateLoss();
             mainViewModel.setRefreshCurrentFragment();
+        });
+
+        viewModel.createErrorMessage.observe(getViewLifecycleOwner(), s -> {
+            ToastUtils.show(s);
+            dialog.hideDialog();
         });
     }
 

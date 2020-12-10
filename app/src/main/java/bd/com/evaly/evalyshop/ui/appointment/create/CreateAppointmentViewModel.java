@@ -16,12 +16,14 @@ import bd.com.evaly.evalyshop.models.appointment.AppointmentRequest;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentTimeSlotResponse;
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AppointmentApiHelper;
+import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class CreateAppointmentViewModel extends ViewModel {
 
     MutableLiveData<List<AppointmentCategoryResponse>> categoryLiveList = new MutableLiveData<>();
     MutableLiveData<List<AppointmentTimeSlotResponse>> timeSlotLiveList = new MutableLiveData<>();
     MutableLiveData<CommonDataResponse<AppointmentResponse>> createdLiveList = new MutableLiveData<>();
+    SingleLiveEvent<String> createErrorMessage = new SingleLiveEvent<>();
     MutableLiveData<String> timeErrorMessage = new MutableLiveData<>();
 
 
@@ -91,11 +93,7 @@ public class CreateAppointmentViewModel extends ViewModel {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-                try {
-                    createdLiveList.setValue(new Gson().fromJson(errorBody, CommonDataResponse.class));
-                } catch (Exception e) {
-
-                }
+                createErrorMessage.setValue(errorBody);
             }
 
             @Override

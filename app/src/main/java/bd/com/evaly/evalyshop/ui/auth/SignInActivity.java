@@ -13,14 +13,11 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
@@ -39,11 +36,7 @@ public class SignInActivity extends BaseActivity {
     String token = "", userNamePhone = "", passwordValue = "";
     boolean isShowing = false;
     ViewDialog alert;
-    String userAgent;
-
     int attempt = 0;
-
-    RequestQueue queue;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,36 +51,23 @@ public class SignInActivity extends BaseActivity {
         showPassword = findViewById(R.id.show_pass);
         forgot = findViewById(R.id.forgot);
         alert = new ViewDialog(this);
-
-        queue = Volley.newRequestQueue(SignInActivity.this);
-
         close.setOnClickListener(v -> onBackPressed());
 
         Intent data = getIntent();
 
         if (data.hasExtra("phone")) {
-
             phoneNumber.setText(data.getStringExtra("phone"));
-
             phoneNumber.clearFocus();
             password.clearFocus();
 
             if (data.hasExtra("type")) {
-
                 if (data.getStringExtra("type").equals("forgetpassword"))
                     Toast.makeText(SignInActivity.this, "Password sent to your mobile. Please login using the new password", Toast.LENGTH_LONG).show();
 
                 else if (data.getStringExtra("type").equals("signup"))
                     Toast.makeText(SignInActivity.this, "Successfully signed up. Please check SMS for password.", Toast.LENGTH_LONG).show();
             }
-
-
-        } else {
-
-
-            phoneNumber.requestFocus();
-
-        }
+        } else phoneNumber.requestFocus();
 
         signUp.setOnClickListener(v -> {
             startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
@@ -128,9 +108,7 @@ public class SignInActivity extends BaseActivity {
 
     public void signInUser() {
 
-
         HashMap<String, String> payload = new HashMap<>();
-
         payload.put("phone_number", phoneNumber.getText().toString());
         payload.put("password", password.getText().toString());
 

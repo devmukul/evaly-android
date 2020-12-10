@@ -22,6 +22,7 @@ import java.util.HashMap;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.pref.ReferPref;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
@@ -97,7 +98,7 @@ public class SignUpActivity extends BaseActivity {
         if (!refText.equals(""))
             referPref.setRef(refText);
 
-        AuthApiHelper.register(hashMap, new ResponseListener<JsonObject, String>() {
+        AuthApiHelper.register(hashMap, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 alert.hideDialog();
@@ -120,6 +121,11 @@ public class SignUpActivity extends BaseActivity {
             public void onFailed(String errorBody, int errorCode) {
                 alert.hideDialog();
                 ToastUtils.show(errorBody);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
             }
         });
     }

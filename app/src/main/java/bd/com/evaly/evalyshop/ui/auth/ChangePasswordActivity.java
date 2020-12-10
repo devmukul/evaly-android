@@ -46,18 +46,6 @@ public class ChangePasswordActivity extends BaseActivity {
 
         dialog = new ViewDialog(this);
 
-        binding.showNewPass.setOnClickListener(v -> {
-            if (!isNewShowing) {
-                isNewShowing = true;
-                binding.newPassword.setInputType(InputType.TYPE_CLASS_TEXT);
-                binding.showNewPass.setImageResource(R.drawable.ic_visibility_off);
-            } else {
-                isNewShowing = false;
-                binding.newPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                binding.showNewPass.setImageResource(R.drawable.ic_visibility);
-            }
-        });
-
         binding.showCurrentPass.setOnClickListener(v -> {
             if (!isCurrentShowing) {
                 isCurrentShowing = true;
@@ -70,7 +58,19 @@ public class ChangePasswordActivity extends BaseActivity {
             }
         });
 
-        binding.showCurrentPass.setOnClickListener(v -> {
+        binding.showNewPass.setOnClickListener(v -> {
+            if (!isNewShowing) {
+                isNewShowing = true;
+                binding.newPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+                binding.showNewPass.setImageResource(R.drawable.ic_visibility_off);
+            } else {
+                isNewShowing = false;
+                binding.newPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                binding.showNewPass.setImageResource(R.drawable.ic_visibility);
+            }
+        });
+
+        binding.showNewPassConfirm.setOnClickListener(v -> {
             if (!isNewConfirmShowing) {
                 isNewConfirmShowing = true;
                 binding.newPasswordConfirmation.setInputType(InputType.TYPE_CLASS_TEXT);
