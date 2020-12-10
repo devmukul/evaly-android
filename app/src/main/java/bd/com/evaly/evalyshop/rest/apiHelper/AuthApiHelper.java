@@ -58,22 +58,8 @@ public class AuthApiHelper extends BaseApiHelper {
 
     }
 
-    public static void setPassword(HashMap<String, String> model, DataFetchingListener<Response<JsonObject>> listener) {
-
-        IApiClient iApiClient = getiApiClient();
-        Call<JsonObject> call = iApiClient.setPassword(model);
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                listener.onDataFetched(response);
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                listener.onFailed(0);
-            }
-        });
-
+    public static void setPassword(HashMap<String, String> model, ResponseListenerAuth<JsonObject, String> listener) {
+        getiApiClient().setPassword(model).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void register(HashMap<String, String> data, ResponseListener<JsonObject, String> listener) {
@@ -98,25 +84,8 @@ public class AuthApiHelper extends BaseApiHelper {
     }
 
 
-    public static void login(HashMap<String, String> data, ResponseListener<JsonObject, String> listener) {
-
-        IApiClient iApiClient = getiApiClient();
-        Call<JsonObject> call = iApiClient.login(data);
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                listener.onDataFetched(response.body(), response.code());
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                if (t instanceof IOException)
-                    listener.onFailed(AppController.getmContext().getString(R.string.networkError), 0);
-                else
-                    listener.onFailed("Error occurred, please try again later", 0);
-            }
-        });
-
+    public static void login(HashMap<String, String> data, ResponseListenerAuth<JsonObject, String> listener) {
+        getiApiClient().login(data).enqueue(getResponseCallBackDefault(listener));
     }
 
 

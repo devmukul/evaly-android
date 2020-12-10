@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.rest.apiHelper;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -9,6 +10,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import retrofit2.Call;
@@ -63,6 +65,16 @@ public class BaseApiHelper {
                         dataFetchingListener.onDataFetched(response.body(), response.code());
 
                     } else {
+                        String errorMessage = response.body().toString();
+                        if (response.body().toString().contains("message")) {
+                            try {
+                                CommonDataResponse errorResponse = new Gson().fromJson(response.body().toString(), CommonDataResponse.class);
+                                errorMessage = errorResponse.getMessage();
+                            } catch (Exception ignored) {
+
+                            }
+                        }
+                        dataFetchingListener.onFailed(errorMessage, response.code());
                         dataFetchingListener.onFailed(response.toString(), response.code());
                     }
 

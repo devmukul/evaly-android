@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
@@ -269,7 +270,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         payload.put("phone_number", CredentialManager.getUserName());
         payload.put("password", CredentialManager.getPassword());
 
-        AuthApiHelper.login(payload, new ResponseListener<JsonObject, String>() {
+        AuthApiHelper.login(payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int code) {
                 switch (code) {
@@ -293,6 +294,11 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
             public void onFailed(String body, int status) {
                 dialog.hideDialog();
                 Toast.makeText(PasswordActivity.this, body, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
             }
         });
     }

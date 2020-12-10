@@ -14,6 +14,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class ForgotPasswordActivity extends BaseActivity {
@@ -64,10 +65,10 @@ public class ForgotPasswordActivity extends BaseActivity {
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 dialog.hideDialog();
-                if (errorCode == 400)
-                    Toast.makeText(ForgotPasswordActivity.this, "This phone number is not registered yet", Toast.LENGTH_SHORT).show();
+                if (errorBody != null && !errorBody.equals(""))
+                    ToastUtils.show(errorBody);
                 else
-                    Toast.makeText(ForgotPasswordActivity.this, errorBody, Toast.LENGTH_SHORT).show();
+                    ToastUtils.show(R.string.something_wrong);
             }
 
             @Override

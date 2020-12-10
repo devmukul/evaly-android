@@ -8,7 +8,6 @@ import android.widget.Toast;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -21,7 +20,6 @@ import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
@@ -148,10 +146,9 @@ public class ChangePasswordActivity extends BaseActivity {
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 dialog.hideDialog();
-                if (errorBody.contains("message")) {
-                    CommonDataResponse commonDataResponse = new Gson().fromJson(errorBody, CommonDataResponse.class);
-                    ToastUtils.show(commonDataResponse.getMessage());
-                } else
+                if (errorBody != null && !errorBody.equals(""))
+                    ToastUtils.show(errorBody);
+                else
                     ToastUtils.show("Couldn't change password.");
             }
 
@@ -173,7 +170,7 @@ public class ChangePasswordActivity extends BaseActivity {
         payload.put("phone_number", CredentialManager.getUserName());
         payload.put("password", CredentialManager.getPassword());
 
-        AuthApiHelper.login(payload, new ResponseListener<JsonObject, String>() {
+        AuthApiHelper.login(payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int code) {
                 switch (code) {
@@ -197,6 +194,11 @@ public class ChangePasswordActivity extends BaseActivity {
             public void onFailed(String body, int status) {
                 dialog.hideDialog();
                 ToastUtils.show(body);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
             }
         });
     }

@@ -21,10 +21,12 @@ import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class SignInActivity extends BaseActivity {
@@ -132,7 +134,7 @@ public class SignInActivity extends BaseActivity {
         payload.put("phone_number", phoneNumber.getText().toString());
         payload.put("password", password.getText().toString());
 
-        AuthApiHelper.login(payload, new ResponseListener<JsonObject, String>() {
+        AuthApiHelper.login(payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int code) {
                 alert.hideDialog();
@@ -156,9 +158,17 @@ public class SignInActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailed(String body, int status) {
+            public void onFailed(String errorBody, int status) {
                 alert.hideDialog();
-                Toast.makeText(SignInActivity.this, body, Toast.LENGTH_SHORT).show();
+                if (errorBody != null && !errorBody.equals(""))
+                    ToastUtils.show(errorBody);
+                else
+                    ToastUtils.show(R.string.something_wrong);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
             }
         });
     }

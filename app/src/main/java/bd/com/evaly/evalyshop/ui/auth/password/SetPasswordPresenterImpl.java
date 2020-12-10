@@ -7,11 +7,9 @@ import com.google.gson.JsonObject;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.models.auth.SetPasswordModel;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.Utils;
-import retrofit2.Response;
 
 
 public class SetPasswordPresenterImpl implements SetPasswordPresenter {
@@ -53,7 +51,6 @@ public class SetPasswordPresenterImpl implements SetPasswordPresenter {
             }
 
         } else {
-            SetPasswordModel model = new SetPasswordModel(otp, password, phoneNumber);
 
             HashMap<String, String> data = new HashMap<>();
             data.put("otp", otp);
@@ -61,32 +58,26 @@ public class SetPasswordPresenterImpl implements SetPasswordPresenter {
             data.put("phone_number", phoneNumber);
             data.put("request_id", requestId);
 
-            AuthApiHelper.setPassword(data, new DataFetchingListener<Response<JsonObject>>() {
+            AuthApiHelper.setPassword(data, new ResponseListenerAuth<JsonObject, String>() {
                 @Override
-                public void onDataFetched(Response<JsonObject> response) {
-                    if (response.code() == 200) {
-                        if (view != null) view.onPasswordSetSuccess();
-                    } else if (response.code() == 400) {
-                        if (view != null) {
-                            if (response.body() != null && !response.body().isJsonNull() && response.body().has("message"))
-                                view.onPasswordSetFailed(response.body().get("message").getAsString());
-                            else
-                                view.onPasswordSetFailed("Incorrect OTP");
-                        }
-                    } else if (response.code() == 429) {
-                        if (view != null)
-                            view.onPasswordSetFailed("Too many attempts, try again later!");
-                    } else {
-                        if (view != null)
-                            view.onPasswordSetFailed(context.getResources().getString(R.string.something_wrong));
-                    }
+                public void onDataFetched(JsonObject response, int statusCode) {
+                    if (view != null)
+                        view.onPasswordSetSuccess();
                 }
 
                 @Override
-                public void onFailed(int status) {
-                    if (view != null) {
-                        view.onPasswordSetFailed(context.getResources().getString(R.string.something_wrong));
-                    }
+                public void onFailed(String errorBody, int errorCode) {
+                    if (errorBody != null && !errorBody.equals(""))
+                        if (view != null)
+                            view.onPasswordSetFailed(errorBody);
+                        else
+                            view.onPasswordSetFailed(context.getResources().getString(R.string.something_wrong));
+
+                }
+
+                @Override
+                public void onAuthError(boolean logout) {
+
                 }
             });
         }

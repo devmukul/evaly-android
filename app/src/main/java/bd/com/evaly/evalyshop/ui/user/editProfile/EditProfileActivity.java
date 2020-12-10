@@ -40,7 +40,6 @@ import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoDao;
 import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoEntity;
 import bd.com.evaly.evalyshop.databinding.ActivityEditProfileBinding;
 import bd.com.evaly.evalyshop.databinding.DialogContinueAsBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -182,7 +181,7 @@ public class EditProfileActivity extends BaseActivity {
         payload.put("username", getIntent().getStringExtra("user"));
         payload.put("password", getIntent().getStringExtra("password"));
 
-        AuthApiHelper.login(payload, new ResponseListener<JsonObject, String>() {
+        AuthApiHelper.login(payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int code) {
                 dialog.hideDialog();
@@ -206,7 +205,12 @@ public class EditProfileActivity extends BaseActivity {
             @Override
             public void onFailed(String body, int status) {
                 dialog.hideDialog();
-                Toast.makeText(getApplicationContext(), "Server error, please try again after few minutes. " + body, Toast.LENGTH_SHORT).show();
+                ToastUtils.show(body);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
             }
         });
     }

@@ -25,6 +25,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class SignUpActivity extends BaseActivity {
@@ -91,7 +92,6 @@ public class SignUpActivity extends BaseActivity {
         hashMap.put("last_name", lastName.getText().toString());
         hashMap.put("phone_number", phoneNumber.getText().toString());
 
-
         TextView ref = findViewById(R.id.referral);
         String refText = ref.getText().toString();
         if (!refText.equals(""))
@@ -119,7 +119,7 @@ public class SignUpActivity extends BaseActivity {
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 alert.hideDialog();
-                Toast.makeText(getApplicationContext(), errorBody, Toast.LENGTH_LONG).show();
+                ToastUtils.show(errorBody);
             }
         });
     }
