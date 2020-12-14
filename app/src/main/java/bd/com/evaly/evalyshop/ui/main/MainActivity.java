@@ -171,7 +171,9 @@ public class MainActivity extends BaseActivity {
                 });
 
         binding.fabCreate.setOnClickListener(view -> {
-            navController.navigate(R.id.action_expressFragment_Pop);
+             navController.navigate(R.id.action_expressFragment_Pop);
+
+           // navController.navigate(Uri.parse("https://evaly.com.bd/campaign/campaigns/pod-1ce6180b"));
         });
 
         AppDatabase appDatabase = AppDatabase.getInstance(this);

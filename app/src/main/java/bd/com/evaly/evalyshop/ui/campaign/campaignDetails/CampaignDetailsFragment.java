@@ -41,6 +41,7 @@ import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.BindingUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 public class CampaignDetailsFragment extends Fragment {
@@ -51,6 +52,7 @@ public class CampaignDetailsFragment extends Fragment {
     private CampaignCategoryController controller;
     private NavController navController;
     private boolean isLoading = true;
+    private ViewDialog progressDialog;
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
         Window win = activity.getWindow();
@@ -76,6 +78,7 @@ public class CampaignDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         viewModel = new ViewModelProvider(this).get(CampaignDetailsViewModel.class);
+        progressDialog = new ViewDialog(getActivity());
 
         if (getArguments() != null && getArguments().containsKey("sub_model") && getArguments().getSerializable("sub_model") != null) {
             SubCampaignResponse subCampaignResponse = (SubCampaignResponse) getArguments().getSerializable("sub_model");
@@ -83,7 +86,12 @@ public class CampaignDetailsFragment extends Fragment {
             viewModel.setCampaign(subCampaignResponse.getSlug());
         }
 
-        viewModel.setCampaignDetailsLiveData((CampaignCategoryResponse) requireArguments().getSerializable("model"));
+        if (requireArguments().containsKey("model"))
+            viewModel.setCampaignDetailsLiveData((CampaignCategoryResponse) requireArguments().getSerializable("model"));
+        else if (requireArguments().containsKey("category_slug")) {
+            viewModel.findCampaignCategoryDetails(requireArguments().getString("category_slug"));
+           // progressDialog.showDialog();
+        }
     }
 
     @Override
@@ -236,6 +244,7 @@ public class CampaignDetailsFragment extends Fragment {
 
     private void liveEventObservers() {
 
+        viewModel.hideProgressDialog.observe(getViewLifecycleOwner(), aBoolean -> progressDialog.hideDialog());
         viewModel.getBuyNowClick().observe(getViewLifecycleOwner(), campaignProductResponse -> {
             BuyNowFragment addPhotoBottomDialogFragment =
                     BuyNowFragment.newInstance(campaignProductResponse.getShopSlug(), campaignProductResponse.getSlug());
@@ -246,6 +255,7 @@ public class CampaignDetailsFragment extends Fragment {
         viewModel.getCampaignDetailsLiveData().observe(getViewLifecycleOwner(), this::loadCampaignDetails);
 
         viewModel.getLiveList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
+            progressDialog.hideDialog();
             isLoading = false;
             controller.setLoading(false);
             controller.setList(campaignProductResponses);

@@ -200,7 +200,11 @@
         android:id="@+id/expressProductSearchFragment"
         android:name="bd.com.evaly.evalyshop.ui.express.products.ExpressProductSearchFragment"
         android:label="activity_express_product_search"
-        tools:layout="@layout/activity_express_product_search"></fragment>
+        tools:layout="@layout/activity_express_product_search">
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/express" />
+    </fragment>
     <dialog
         android:id="@+id/buyNowFragment"
         android:name="bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment"
@@ -221,7 +225,13 @@
     <fragment
         android:id="@+id/campaignDetails"
         android:name="bd.com.evaly.evalyshop.ui.campaign.campaignDetails.CampaignDetailsFragment"
-        android:label="CampaignDetails" />
+        android:label="CampaignDetails">
+
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/campaign/campaigns/{category_slug}" />
+
+    </fragment>
     <fragment
         android:id="@+id/categoryFragment"
         android:name="bd.com.evaly.evalyshop.ui.category.CategoryFragment"
@@ -254,11 +264,7 @@
     <fragment
         android:id="@+id/orderListBaseFragment"
         android:name="bd.com.evaly.evalyshop.ui.order.orderList.OrderListBaseFragment"
-        android:label="OrderListBaseFragment">
-        <deepLink
-            android:autoVerify="true"
-            app:uri="https://evaly.com.bd/order/my-orders" />
-    </fragment>
+        android:label="OrderListBaseFragment" />
     <fragment
         android:id="@+id/addressFragment"
         android:name="bd.com.evaly.evalyshop.ui.address.AddressFragment"

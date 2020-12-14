@@ -17,11 +17,13 @@ import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class CampaignDetailsViewModel extends ViewModel {
     private MutableLiveData<CampaignCategoryResponse> campaignDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<CampaignParentModel>> liveList = new MutableLiveData<>();
     private SingleLiveEvent<Boolean> hideLoadingBar = new SingleLiveEvent<>();
+    protected SingleLiveEvent<Boolean> hideProgressDialog = new SingleLiveEvent<>();
     private List<CampaignParentModel> arrayList = new ArrayList<>();
     private int currentPage = 1;
     private int totalCount = 0;
@@ -43,6 +45,38 @@ public class CampaignDetailsViewModel extends ViewModel {
     public CampaignDetailsViewModel() {
 
         loadListFromApi();
+    }
+
+    public void findCampaignCategoryDetails(String slug) {
+        CampaignApiHelper.getCampaignCategory(new ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<CampaignCategoryResponse>> response, int statusCode) {
+                boolean found = false;
+                for (CampaignCategoryResponse item : response.getData()) {
+                    if (item.getSlug().equals(slug)) {
+                        campaignDetailsLiveData.setValue(item);
+                        loadListFromApi();
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                    hideProgressDialog.setValue(true);
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                ToastUtils.show("Please reload the page!");
+                hideProgressDialog.setValue(true);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void loadListFromApi() {
