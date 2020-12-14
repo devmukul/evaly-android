@@ -15,6 +15,7 @@ import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
+import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -24,6 +25,7 @@ public class CampaignDetailsViewModel extends ViewModel {
     private MutableLiveData<List<CampaignParentModel>> liveList = new MutableLiveData<>();
     private SingleLiveEvent<Boolean> hideLoadingBar = new SingleLiveEvent<>();
     protected SingleLiveEvent<Boolean> hideProgressDialog = new SingleLiveEvent<>();
+    protected MutableLiveData<SubCampaignResponse> subCampaignLiveData = new MutableLiveData<>();
     private List<CampaignParentModel> arrayList = new ArrayList<>();
     private int currentPage = 1;
     private int totalCount = 0;
@@ -41,10 +43,37 @@ public class CampaignDetailsViewModel extends ViewModel {
         return buyNowClick;
     }
 
-
     public CampaignDetailsViewModel() {
-
         loadListFromApi();
+    }
+
+    public void loadSubCampaignDetails(String category_slug, String campaign_slug) {
+        CampaignApiHelper.getSubCampaignDetails(campaign_slug, new ResponseListenerAuth<CommonDataResponse<SubCampaignDetailsResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<SubCampaignDetailsResponse> response, int statusCode) {
+                SubCampaignDetailsResponse data = response.getData();
+                SubCampaignResponse model = new SubCampaignResponse();
+                model.setName(data.getName());
+                model.setImage(data.getImage());
+                model.setSlug(data.getSlug());
+                model.setCashbackText(data.getCashbackPercentage() + "% Percentage");
+                model.setBadgeText(null);
+
+                subCampaignLiveData.setValue(model);
+                setCampaign(campaign_slug);
+                setCampaignDetailsLiveData(data.getCategory());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void findCampaignCategoryDetails(String slug) {
@@ -63,7 +92,6 @@ public class CampaignDetailsViewModel extends ViewModel {
 
                 if (!found)
                     hideProgressDialog.setValue(true);
-
             }
 
             @Override
@@ -97,7 +125,6 @@ public class CampaignDetailsViewModel extends ViewModel {
             loadBrandList();
         else if (type.equals("campaign"))
             loadCampaignList();
-
     }
 
     public void loadCampaignList() {
@@ -148,6 +175,7 @@ public class CampaignDetailsViewModel extends ViewModel {
                     }
                 });
     }
+
 
     public void loadBrandList() {
         CampaignApiHelper.getCampaignCategoryBrands(currentPage, 20, search, getCategorySlug(), campaign,

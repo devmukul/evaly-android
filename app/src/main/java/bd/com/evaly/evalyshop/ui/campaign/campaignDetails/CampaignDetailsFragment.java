@@ -88,9 +88,11 @@ public class CampaignDetailsFragment extends Fragment {
 
         if (requireArguments().containsKey("model"))
             viewModel.setCampaignDetailsLiveData((CampaignCategoryResponse) requireArguments().getSerializable("model"));
-        else if (requireArguments().containsKey("category_slug")) {
+        else if (requireArguments().containsKey("category_slug") && !requireArguments().containsKey("campaign_slug")) {
             viewModel.findCampaignCategoryDetails(requireArguments().getString("category_slug"));
-           // progressDialog.showDialog();
+        }
+        if (requireArguments().containsKey("category_slug") && requireArguments().containsKey("campaign_slug")) {
+            viewModel.loadSubCampaignDetails(requireArguments().getString("category_slug"), requireArguments().getString("campaign_slug"));
         }
     }
 
@@ -244,7 +246,14 @@ public class CampaignDetailsFragment extends Fragment {
 
     private void liveEventObservers() {
 
-        viewModel.hideProgressDialog.observe(getViewLifecycleOwner(), aBoolean -> progressDialog.hideDialog());
+        viewModel.subCampaignLiveData.observe(getViewLifecycleOwner(), subCampaignResponse -> {
+            mainViewModel.setCampaignOnClick(subCampaignResponse);
+        });
+
+        viewModel.hideProgressDialog.observe(getViewLifecycleOwner(), aBoolean -> {
+            progressDialog.hideDialog();
+        });
+
         viewModel.getBuyNowClick().observe(getViewLifecycleOwner(), campaignProductResponse -> {
             BuyNowFragment addPhotoBottomDialogFragment =
                     BuyNowFragment.newInstance(campaignProductResponse.getShopSlug(), campaignProductResponse.getSlug());

@@ -226,11 +226,12 @@
         android:id="@+id/campaignDetails"
         android:name="bd.com.evaly.evalyshop.ui.campaign.campaignDetails.CampaignDetailsFragment"
         android:label="CampaignDetails">
-
         <deepLink
             android:autoVerify="true"
             app:uri="https://evaly.com.bd/campaign/campaigns/{category_slug}" />
-
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/campaign/campaigns/{category_slug}/{campaign_slug}" />
     </fragment>
     <fragment
         android:id="@+id/categoryFragment"

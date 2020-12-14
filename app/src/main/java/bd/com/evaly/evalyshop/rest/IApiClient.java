@@ -34,6 +34,7 @@ import bd.com.evaly.evalyshop.models.campaign.carousel.CampaignCarouselResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
+import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
@@ -102,7 +103,7 @@ public interface IApiClient {
 
     @POST(BuildConfig.APPOINTMENT_URL + "common/comments")
     Call<CommonDataResponse<AppointmentCommentResponse>> createAppointmentComment(@Header("Authorization") String token,
-                                                                                            @Body AppointmentCommentRequest body);
+                                                                                  @Body AppointmentCommentRequest body);
 
 
     @GET(BuildConfig.APPOINTMENT_URL + "time-slots/{date}")
@@ -147,7 +148,8 @@ public interface IApiClient {
 
 
     // new campaign
-
+    @GET(UrlUtils.BASE_URL + "campaigns/public/{campaignSlug}")
+    Call<CommonDataResponse<SubCampaignDetailsResponse>> getSubCampaignDetails(@Path("campaignSlug") String campaignSlug);
 
     @GET(UrlUtils.BASE_URL + "campaigns/web/home")
     Call<CommonDataResponse<List<CampaignCarouselResponse>>> getCampaignCarousel(@Query("context_type") String contextType);
@@ -275,7 +277,7 @@ public interface IApiClient {
     @POST(UrlUtils.UPDATE_VCARD)
     Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);
 
-    @POST(UrlUtils.DOMAIN_EAUTH+"token/refresh")
+    @POST(UrlUtils.DOMAIN_EAUTH + "token/refresh")
     Call<JsonObject> refreshToken(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
     @POST(UrlUtils.CHANGE_XMPP_PASSWORD)
