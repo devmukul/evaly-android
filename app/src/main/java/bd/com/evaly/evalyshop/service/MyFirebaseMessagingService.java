@@ -72,6 +72,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent.putExtra("orderID", resourceId);
         } else {
             intent = new Intent(this, MainActivity.class);
+            if (type != null && type.equalsIgnoreCase("deeplink") && resourceId != null) {
+                intent.putExtra("notification_type", "deeplink");
+                intent.putExtra("resource_id", resourceId);
+            }
             intent.putExtra("pageUrl", resourceId);
         }
 

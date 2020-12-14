@@ -57,8 +57,8 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
-import bd.com.evaly.evalyshop.ui.followedShops.FollowedShopActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
+import bd.com.evaly.evalyshop.ui.followedShops.FollowedShopActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
 import bd.com.evaly.evalyshop.util.Constants;
@@ -293,6 +293,22 @@ public class MainActivity extends BaseActivity {
                 })
                 .setNegativeButton("No", null);
         exitDialog = exitDialogBuilder.create();
+
+        handleNotificationNavigation();
+    }
+
+    private void handleNotificationNavigation() {
+        Intent intent = getIntent();
+        if (intent.hasExtra("notification_type") &&
+                intent.getStringExtra("notification_type") != null &&
+                intent.hasExtra("resource_id") &&
+                intent.getStringExtra("resource_id") != null) {
+            try {
+                navController.navigate(Uri.parse(intent.getStringExtra("resource_id")));
+            } catch (Exception e) {
+
+            }
+        }
     }
 
     private void checkRemoteConfig() {

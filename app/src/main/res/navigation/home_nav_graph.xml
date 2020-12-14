@@ -133,9 +133,6 @@
         android:name="bd.com.evaly.evalyshop.ui.campaign.CampaignFragment"
         android:label="fragment_campaign"
         tools:layout="@layout/bottom_sheet_campaign">
-        <action
-            android:id="@+id/action_campaignFragment_to_campaignShopFragment"
-            app:destination="@id/campaignShopFragment" />
         <deepLink
             android:autoVerify="true"
             app:uri="https://campaign.evaly.com.bd/" />
