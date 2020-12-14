@@ -87,13 +87,16 @@ public class CampaignDetailsFragment extends Fragment {
         }
 
         if (requireArguments().containsKey("model"))
-            viewModel.setCampaignDetailsLiveData((CampaignCategoryResponse) requireArguments().getSerializable("model"));
-        else if (requireArguments().containsKey("category_slug") && !requireArguments().containsKey("campaign_slug")) {
-            viewModel.findCampaignCategoryDetails(requireArguments().getString("category_slug"));
-        }
-        if (requireArguments().containsKey("category_slug") && requireArguments().containsKey("campaign_slug")) {
-            viewModel.loadSubCampaignDetails(requireArguments().getString("category_slug"), requireArguments().getString("campaign_slug"));
-        }
+            viewModel.setCampaignCategoryLiveData((CampaignCategoryResponse) requireArguments()
+                    .getSerializable("model"));
+        else if (requireArguments().containsKey("category_slug") &&
+                !requireArguments().containsKey("campaign_slug"))
+            viewModel.findCampaignCategoryDetails(requireArguments()
+                    .getString("category_slug"));
+        else if (requireArguments().containsKey("category_slug") &&
+                requireArguments().containsKey("campaign_slug"))
+            viewModel.loadSubCampaignDetails(requireArguments()
+                    .getString("campaign_slug"));
     }
 
     @Override
@@ -239,7 +242,7 @@ public class CampaignDetailsFragment extends Fragment {
 
     private void openFilterModal() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("category", Objects.requireNonNull(viewModel.getCampaignDetailsLiveData().getValue()));
+        bundle.putSerializable("category", Objects.requireNonNull(viewModel.getCampaignCategoryLiveData().getValue()));
         bundle.putBoolean("show_clear", viewModel.getCampaign() != null);
         navController.navigate(R.id.campaignListBottomSheet, bundle);
     }
@@ -247,7 +250,13 @@ public class CampaignDetailsFragment extends Fragment {
     private void liveEventObservers() {
 
         viewModel.subCampaignLiveData.observe(getViewLifecycleOwner(), subCampaignResponse -> {
-            mainViewModel.setCampaignOnClick(subCampaignResponse);
+            if (subCampaignResponse != null)
+                mainViewModel.setCampaignOnClick(subCampaignResponse);
+            else {
+                ToastUtils.show("Campaign is not running now!");
+                if (getActivity() != null)
+                    getActivity().onBackPressed();
+            }
         });
 
         viewModel.hideProgressDialog.observe(getViewLifecycleOwner(), aBoolean -> {
@@ -261,7 +270,7 @@ public class CampaignDetailsFragment extends Fragment {
                     "BuyNow");
         });
 
-        viewModel.getCampaignDetailsLiveData().observe(getViewLifecycleOwner(), this::loadCampaignDetails);
+        viewModel.getCampaignCategoryLiveData().observe(getViewLifecycleOwner(), this::loadCampaignDetails);
 
         viewModel.getLiveList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
             progressDialog.hideDialog();

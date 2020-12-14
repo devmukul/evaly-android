@@ -21,7 +21,7 @@ import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class CampaignDetailsViewModel extends ViewModel {
-    private MutableLiveData<CampaignCategoryResponse> campaignDetailsLiveData = new MutableLiveData<>();
+    private MutableLiveData<CampaignCategoryResponse> campaignCategoryLiveData = new MutableLiveData<>();
     private MutableLiveData<List<CampaignParentModel>> liveList = new MutableLiveData<>();
     private SingleLiveEvent<Boolean> hideLoadingBar = new SingleLiveEvent<>();
     protected SingleLiveEvent<Boolean> hideProgressDialog = new SingleLiveEvent<>();
@@ -47,7 +47,7 @@ public class CampaignDetailsViewModel extends ViewModel {
         loadListFromApi();
     }
 
-    public void loadSubCampaignDetails(String category_slug, String campaign_slug) {
+    public void loadSubCampaignDetails(String campaign_slug) {
         CampaignApiHelper.getSubCampaignDetails(campaign_slug, new ResponseListenerAuth<CommonDataResponse<SubCampaignDetailsResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<SubCampaignDetailsResponse> response, int statusCode) {
@@ -61,12 +61,12 @@ public class CampaignDetailsViewModel extends ViewModel {
 
                 subCampaignLiveData.setValue(model);
                 setCampaign(campaign_slug);
-                setCampaignDetailsLiveData(data.getCategory());
+                setCampaignCategoryLiveData(data.getCategory());
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
+                subCampaignLiveData.setValue(null);
             }
 
             @Override
@@ -83,7 +83,7 @@ public class CampaignDetailsViewModel extends ViewModel {
                 boolean found = false;
                 for (CampaignCategoryResponse item : response.getData()) {
                     if (item.getSlug().equals(slug)) {
-                        campaignDetailsLiveData.setValue(item);
+                        campaignCategoryLiveData.setValue(item);
                         loadListFromApi();
                         found = true;
                         break;
@@ -109,7 +109,7 @@ public class CampaignDetailsViewModel extends ViewModel {
 
     public void loadListFromApi() {
 
-        if (campaignDetailsLiveData.getValue() == null)
+        if (campaignCategoryLiveData.getValue() == null)
             return;
 
         if (currentPage > 1 && totalCount <= arrayList.size()) {
@@ -233,9 +233,9 @@ public class CampaignDetailsViewModel extends ViewModel {
     }
 
     private String getCategorySlug() {
-        if (campaignDetailsLiveData == null || campaignDetailsLiveData.getValue() == null)
+        if (campaignCategoryLiveData == null || campaignCategoryLiveData.getValue() == null)
             return null;
-        return campaignDetailsLiveData.getValue().getSlug();
+        return campaignCategoryLiveData.getValue().getSlug();
     }
 
     public SingleLiveEvent<Boolean> getHideLoadingBar() {
@@ -254,8 +254,8 @@ public class CampaignDetailsViewModel extends ViewModel {
         return liveList;
     }
 
-    public LiveData<CampaignCategoryResponse> getCampaignDetailsLiveData() {
-        return campaignDetailsLiveData;
+    public LiveData<CampaignCategoryResponse> getCampaignCategoryLiveData() {
+        return campaignCategoryLiveData;
     }
 
     public String getCampaign() {
@@ -266,8 +266,8 @@ public class CampaignDetailsViewModel extends ViewModel {
         return currentPage;
     }
 
-    public void setCampaignDetailsLiveData(CampaignCategoryResponse model) {
-        this.campaignDetailsLiveData.setValue(model);
+    public void setCampaignCategoryLiveData(CampaignCategoryResponse model) {
+        this.campaignCategoryLiveData.setValue(model);
         if (liveList.getValue() == null) {
             loadListFromApi();
         }
@@ -282,8 +282,8 @@ public class CampaignDetailsViewModel extends ViewModel {
     }
 
     public void createLiveDataAndLoad() {
-        if (campaignDetailsLiveData == null) {
-            campaignDetailsLiveData = new MutableLiveData<>();
+        if (campaignCategoryLiveData == null) {
+            campaignCategoryLiveData = new MutableLiveData<>();
             loadProductList();
         }
     }

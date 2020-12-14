@@ -172,7 +172,6 @@ public class MainActivity extends BaseActivity {
 
         binding.fabCreate.setOnClickListener(view -> {
             navController.navigate(R.id.action_expressFragment_Pop);
-
             // navController.navigate(Uri.parse("https://evaly.com.bd/campaign/campaigns/pod-1ce6180b/all-in-one-12-discount-6b097a"));
         });
 

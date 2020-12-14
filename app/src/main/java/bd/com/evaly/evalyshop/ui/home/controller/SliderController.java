@@ -1,7 +1,7 @@
 package bd.com.evaly.evalyshop.ui.home.controller;
 
 
-import android.os.Bundle;
+import android.net.Uri;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,23 +34,14 @@ public class SliderController extends EpoxyController {
                         String url = item1.getUrl();
                         if (url.equals("") || url.equals("https://evaly.com.bd") || url.equals("https://evaly.com.bd/")) {
                             Toast.makeText(activity, "It's just a banner. No page to open.", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        if (item1.getUrl().contains("evaly.com.bd/shops")) {
-                            String[] ar = item1.getUrl().split("/shops/");
-                            if (ar.length > 1) {
-                                String slug = ar[1];
-                                Bundle bundle = new Bundle();
-                                bundle.putInt("type", 1);
-                                bundle.putString("shop_name", item1.getName());
-                                bundle.putString("shop_slug", slug);
-                                bundle.putString("category", "root");
-                                Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(R.id.shopFragment, bundle);
-                            } else
+                        } else if (item1.getUrl().contains("evaly.com.bd/")) {
+                            try {
+                                Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(Uri.parse(item1.getUrl()));
+                            } catch (Exception e) {
+
                                 Toast.makeText(activity, "It's just a banner. No page to open.", Toast.LENGTH_SHORT).show();
-                        } else if (item1.getUrl().equals("https://evaly.com.bd/express"))
-                            Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(R.id.expressProductSearchFragment);
-                        else
+                            }
+                        } else
                             Utils.CustomTab(item1.getUrl(), activity);
                     })
                     .addTo(this);
@@ -73,7 +64,7 @@ public class SliderController extends EpoxyController {
         this.activity = activity;
     }
 
-    public List<BannerItem> getList(){
+    public List<BannerItem> getList() {
         return items;
     }
 
