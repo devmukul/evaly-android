@@ -54,8 +54,7 @@ public class SliderController extends EpoxyController {
     }
 
     public void reAddData(List<BannerItem> items) {
-        this.items.clear();
-        this.items.addAll(items);
+        this.items = items;
         requestModelBuild();
 
     }

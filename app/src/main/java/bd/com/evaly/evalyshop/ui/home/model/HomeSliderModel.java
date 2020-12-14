@@ -15,7 +15,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
@@ -26,6 +25,10 @@ import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.ui.home.controller.SliderController;
+import io.reactivex.CompletableObserver;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 @EpoxyModelClass(layout = R.layout.home_model_slider)
 public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderModel.HomeSliderHolder> {
@@ -37,11 +40,21 @@ public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderMod
     @EpoxyAttribute
     Fragment fragment;
 
+    BannerDao bannerDao;
     SliderController controller;
+    CompositeDisposable compositeDisposable;
+
 
     @Override
     public void bind(@NonNull HomeSliderHolder holder) {
         super.bind(holder);
+    }
+
+    @Override
+    public void unbind(@NonNull HomeSliderHolder holder) {
+        super.unbind(holder);
+        if (compositeDisposable != null)
+            compositeDisposable.clear();
     }
 
     class HomeSliderHolder extends EpoxyHolder {
@@ -56,40 +69,51 @@ public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderMod
 
             HomeModelSliderBinding binding = HomeModelSliderBinding.bind(itemView);
 
-            controller = new SliderController();
-            controller.setActivity(activity);
+            compositeDisposable = new CompositeDisposable();
 
+            if (controller == null)
+                controller = new SliderController();
+            controller.setFilterDuplicates(true);
+            controller.setActivity(activity);
             binding.sliderPager.setAdapter(controller.getAdapter());
 
             new TabLayoutMediator(binding.sliderIndicator, binding.sliderPager,
                     (tab, position) -> tab.setText("")
             ).attach();
 
-            BannerDao bannerDao = appDatabase.bannerDao();
+            bannerDao = appDatabase.bannerDao();
 
             bannerDao.getAll().observe(fragment.getViewLifecycleOwner(), bannerItems -> {
                 controller.reAddData(bannerItems);
-                controller.requestModelBuild();
             });
 
             GeneralApiHelper.getBanners(new ResponseListenerAuth<CommonResultResponse<List<BannerItem>>, String>() {
                 @Override
                 public void onDataFetched(CommonResultResponse<List<BannerItem>> response, int statusCode) {
 
-//                    if (controller.getList().containsAll(response.getData()) && response.getData().containsAll(controller.getList())) {
-//                    } else {
-//                    }
+                    bannerDao.insertListRx(response.getData())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(new CompletableObserver() {
+                                @Override
+                                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                                    compositeDisposable.add(d);
+                                }
 
-                    Executors.newFixedThreadPool(5).execute(() -> {
-                        bannerDao.insertList(response.getData());
-                        List<String> slugs = new ArrayList<>();
-                        for (BannerItem item : response.getData())
-                            slugs.add(item.slug);
+                                @Override
+                                public void onComplete() {
+                                    List<String> slugs = new ArrayList<>();
+                                    for (BannerItem item : response.getData())
+                                        slugs.add(item.slug);
 
-                        if (slugs.size() > 0)
-                            bannerDao.deleteOld(slugs);
-                    });
+                                    if (slugs.size() > 0)
+                                        deleteOldBanners(slugs);
+                                }
 
+                                @Override
+                                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+
+                                }
+                            });
                 }
 
                 @Override
@@ -104,5 +128,28 @@ public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderMod
             });
 
         }
+
+        private void deleteOldBanners(List<String> slugs) {
+            bannerDao.deleteOldRx(slugs)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new CompletableObserver() {
+                        @Override
+                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                            compositeDisposable.add(d);
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+
+                        @Override
+                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+
+                        }
+                    });
+        }
     }
+
+
 }
