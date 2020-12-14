@@ -1,11 +1,13 @@
-package bd.com.evaly.evalyshop.ui.order.orderList.controller;
+package bd.com.evaly.evalyshop.ui.order.orderRequest;
 
 import com.airbnb.epoxy.EpoxyController;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
+import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.order.orderList.model.OrderListSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.order.orderList.model.OrderRequestListModel_;
 
@@ -32,6 +34,14 @@ public class OrderRequestListController extends EpoxyController {
         new OrderListSkeletonModel_()
                 .id("skeletonss")
                 .addIf(isLoading, this);
+
+        new NoItemModel_()
+                .id("empty item id")
+                .width(70)
+                .text("No order requests")
+                .imageTint("#777777")
+                .image(R.drawable.ic_order_thin)
+                .addIf(list.size() == 0 && !isLoading, this);
     }
 
     public void setList(List<OrderRequestResponse> list) {

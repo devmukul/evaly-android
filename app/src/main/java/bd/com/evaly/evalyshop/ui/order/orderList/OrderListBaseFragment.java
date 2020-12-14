@@ -20,7 +20,7 @@ import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentOrderListBaseBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.ui.order.orderList.adapter.OrderListTabAdapter;
-import bd.com.evaly.evalyshop.ui.order.orderList.controller.OrderRequestListController;
+import bd.com.evaly.evalyshop.ui.order.orderRequest.OrderRequestListController;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
 

@@ -17,7 +17,7 @@ import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 public class OrderListBaseViewModel extends ViewModel {
 
     private List<OrderRequestResponse> arrayList = new ArrayList<>();
-    protected MutableLiveData<List<OrderRequestResponse>> liveData = new MutableLiveData<>();
+    public MutableLiveData<List<OrderRequestResponse>> liveData = new MutableLiveData<>();
     protected SingleLiveEvent<Void> logoutLiveData = new SingleLiveEvent<>();
     private int page;
     private int count;
