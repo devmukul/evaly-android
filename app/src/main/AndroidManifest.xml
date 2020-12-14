@@ -196,7 +196,7 @@
             android:name=".ui.menu.AboutActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ui.campaign.CampaignShopActivity"
+            android:name=".ui.followedShops.FollowedShopActivity"
             android:label="Evaly Store"
             android:theme="@style/AppTheme" />
 

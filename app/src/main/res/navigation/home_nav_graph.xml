@@ -141,23 +141,9 @@
             app:uri="https://campaign.evaly.com.bd/" />
         <deepLink
             android:autoVerify="true"
-            app:uri="https://evaly.com.bd/freedom-flash-sale" />
+            app:uri="https://evaly.com.bd/campaign" />
     </fragment>
-    <fragment
-        android:id="@+id/campaignShopFragment"
-        android:name="bd.com.evaly.evalyshop.ui.campaign.CampaignShopFragment"
-        android:label="CampaignShopFragment">
 
-        <deepLink
-            android:id="@+id/deepLink"
-            android:autoVerify="true"
-            app:uri="https://evaly.com.bd/campaign/{slug}" />
-        <deepLink
-            android:id="@+id/deepLink2"
-            android:autoVerify="true"
-            app:uri="https://www.evaly.com.bd/campaign/{slug}" />
-
-    </fragment>
     <activity
         android:id="@+id/mainActivity"
         android:name="bd.com.evaly.evalyshop.ui.main.MainActivity"
@@ -177,13 +163,7 @@
             android:autoVerify="true"
             app:uri="https://www.evaly.com.bd/products/{product_slug}" />
     </activity>
-    <activity
-        android:id="@+id/newsfeedActivity"
-        android:name="bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity"
-        android:label="activity_newsfeed"
-        tools:layout="@layout/activity_newsfeed">
 
-    </activity>
     <activity
         android:id="@+id/giftCardActivity"
         android:name="bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity"
@@ -223,17 +203,7 @@
         android:id="@+id/expressProductSearchFragment"
         android:name="bd.com.evaly.evalyshop.ui.express.products.ExpressProductSearchFragment"
         android:label="activity_express_product_search"
-        tools:layout="@layout/activity_express_product_search">
-        <deepLink
-            android:autoVerify="true"
-            app:uri="https://evaly.com.bd/evaly_express_shops" />
-        <deepLink
-            android:autoVerify="true"
-            app:uri="https://express.evaly.com.bd" />
-        <deepLink
-            android:autoVerify="true"
-            app:uri="https://evaly.com.bd/express" />
-    </fragment>
+        tools:layout="@layout/activity_express_product_search"></fragment>
     <dialog
         android:id="@+id/buyNowFragment"
         android:name="bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment"
@@ -246,10 +216,7 @@
         android:id="@+id/paymentBottomSheet"
         android:name="bd.com.evaly.evalyshop.ui.payment.bottomsheet.PaymentBottomSheet"
         android:label="PaymentBottomSheet" />
-    <activity
-        android:id="@+id/orderDetailsActivity"
-        android:name="bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity"
-        android:label="OrderDetailsActivity" />
+
     <fragment
         android:id="@+id/shopQuickViewFragment"
         android:name="bd.com.evaly.evalyshop.ui.shop.quickView.ShopQuickViewFragment"
@@ -277,7 +244,11 @@
     <fragment
         android:id="@+id/appointmentFragment"
         android:name="bd.com.evaly.evalyshop.ui.appointment.AppointmentFragment"
-        android:label="AppointmentFragment" />
+        android:label="AppointmentFragment">
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/user/profile?tab=appointment" />
+    </fragment>
     <dialog
         android:id="@+id/createAppointmentBottomSheet"
         android:name="bd.com.evaly.evalyshop.ui.appointment.create.CreateAppointmentBottomSheet"
@@ -286,11 +257,19 @@
     <fragment
         android:id="@+id/orderListBaseFragment"
         android:name="bd.com.evaly.evalyshop.ui.order.orderList.OrderListBaseFragment"
-        android:label="OrderListBaseFragment" />
+        android:label="OrderListBaseFragment">
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/order/my-orders" />
+    </fragment>
     <fragment
         android:id="@+id/addressFragment"
         android:name="bd.com.evaly.evalyshop.ui.address.AddressFragment"
-        android:label="AddressFragment" />
+        android:label="AddressFragment">
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/user/profile?tab=address" />
+    </fragment>
     <dialog
         android:id="@+id/appointmentCommentBottomSheet"
         android:name="bd.com.evaly.evalyshop.ui.appointment.comment.AppointmentCommentBottomSheet"
@@ -306,24 +285,33 @@
     <fragment
         android:id="@+id/transactionHistory"
         android:name="bd.com.evaly.evalyshop.ui.transaction.TransactionHistory"
-        android:label="TransactionHistory" />
+        android:label="TransactionHistory">
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/user/profile?tab=transaction" />
+    </fragment>
 
-
-    <!--    <activity-->
-    <!--        android:id="@+id/orderDetailsActivity"-->
-    <!--        android:name="bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity"-->
-    <!--        android:label="OrderDetailsActivity">-->
-
-    <!--        <deepLink-->
-    <!--            app:uri="https://evaly.com.bd/order/my-orders?invoice_no={orderID}"/>-->
-
-    <!--    </activity>-->
-    <!--    <activity-->
-    <!--        android:id="@+id/orderListActivity"-->
-    <!--        android:name="bd.com.evaly.evalyshop.ui.order.orderList.OrderListBaseFragment"-->
-    <!--        android:label="OrderListActivity" />-->
-
-
-
+    <activity
+        android:id="@+id/orderDetailsActivity"
+        android:name="bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity"
+        android:label="OrderDetailsActivity">
+        <deepLink app:uri="https://evaly.com.bd/order/my-orders?invoice_no={orderID}" />
+    </activity>
+    <activity
+        android:id="@+id/editProfileActivity"
+        android:name="bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity"
+        android:label="EditProfileActivity">
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/user/profile?tab=basic" />
+    </activity>
+    <activity
+        android:id="@+id/changePasswordActivity"
+        android:name="bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity"
+        android:label="ChangePasswordActivity">
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/user/profile?tab=changePassword" />
+    </activity>
 
 </navigation>

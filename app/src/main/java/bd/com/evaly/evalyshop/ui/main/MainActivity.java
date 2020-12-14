@@ -57,7 +57,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
-import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
+import bd.com.evaly.evalyshop.ui.followedShops.FollowedShopActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
@@ -170,7 +170,9 @@ public class MainActivity extends BaseActivity {
                         return onNavDestinationSelected(item, navController);
                 });
 
-        binding.fabCreate.setOnClickListener(view -> navController.navigate(R.id.action_expressFragment_Pop));
+        binding.fabCreate.setOnClickListener(view -> {
+            navController.navigate(R.id.action_expressFragment_Pop);
+        });
 
         AppDatabase appDatabase = AppDatabase.getInstance(this);
         WishListDao wishListDao = appDatabase.wishListDao();
@@ -478,7 +480,7 @@ public class MainActivity extends BaseActivity {
                         openEconnect();
                         break;
                     case R.id.nav_followed_shops:
-                        Intent inf = new Intent(MainActivity.this, CampaignShopActivity.class);
+                        Intent inf = new Intent(MainActivity.this, FollowedShopActivity.class);
                         inf.putExtra("title", "Followed Shops");
                         inf.putExtra("slug", "shop-subscriptions");
                         startActivity(inf);

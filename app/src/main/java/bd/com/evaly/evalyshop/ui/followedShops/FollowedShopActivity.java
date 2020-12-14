@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.campaign;
+package bd.com.evaly.evalyshop.ui.followedShops;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,12 +33,12 @@ import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 
-public class CampaignShopActivity extends AppCompatActivity {
+public class FollowedShopActivity extends AppCompatActivity {
 
     private TabsAdapter adapter;
     private ArrayList<TabsItem> itemList;
     private ProgressBar progressBar;
-    private int page=1;
+    private int page = 1;
     private StickyScrollView nestedSV;
     private RecyclerView recyclerView;
     private ViewDialog dialog;
@@ -47,7 +47,7 @@ public class CampaignShopActivity extends AppCompatActivity {
     private String slug = "evaly1919";
     private LinearLayout not, layoutImageHolder;
     private ImageView cover;
-    
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,16 +68,16 @@ public class CampaignShopActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         cover = findViewById(R.id.cover);
         not = findViewById(R.id.not);
-        itemList=new ArrayList<>();
+        itemList = new ArrayList<>();
 
-        adapter = new TabsAdapter(CampaignShopActivity.this, this, itemList, 3);
+        adapter = new TabsAdapter(FollowedShopActivity.this, this, itemList, 3);
         nestedSV = findViewById(R.id.sticky);
         layoutImageHolder = findViewById(R.id.layoutImageHolder);
-        recyclerView=findViewById(R.id.recycle);
+        recyclerView = findViewById(R.id.recycle);
         StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
-        dialog=new ViewDialog(CampaignShopActivity.this);
+        dialog = new ViewDialog(FollowedShopActivity.this);
 
 
         if (slug.equals("shop-subscriptions"))
@@ -103,7 +103,7 @@ public class CampaignShopActivity extends AppCompatActivity {
     }
 
 
-    public void getEvalyShops(int p){
+    public void getEvalyShops(int p) {
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -116,21 +116,22 @@ public class CampaignShopActivity extends AppCompatActivity {
 
                 try {
                     JsonObject meta = response.getMeta();
-                    Glide.with(CampaignShopActivity.this)
+                    Glide.with(FollowedShopActivity.this)
                             .load(meta.get("campaign_banner").getAsString())
                             .into(cover);
 
                     cover.setOnClickListener(view -> {
-                        Intent intent = new Intent(CampaignShopActivity.this, ImagePreview.class);
+                        Intent intent = new Intent(FollowedShopActivity.this, ImagePreview.class);
                         intent.putExtra("image", meta.get("campaign_banner").getAsString());
                         startActivity(intent);
 
                     });
-                } catch (Exception ignored){ }
+                } catch (Exception ignored) {
+                }
 
                 List<CampaignShopItem> list = response.getData();
 
-                for (int i=0; i<list.size(); i++){
+                for (int i = 0; i < list.size(); i++) {
                     TabsItem tabsItem = new TabsItem();
                     tabsItem.setType(6);
                     tabsItem.setTitle(list.get(i).getShopName());
@@ -165,8 +166,7 @@ public class CampaignShopActivity extends AppCompatActivity {
     }
 
 
-
-    public void getFollowedShops(int p){
+    public void getFollowedShops(int p) {
 
         layoutImageHolder.setVisibility(View.GONE);
         isLoading = true;
@@ -184,7 +184,7 @@ public class CampaignShopActivity extends AppCompatActivity {
                 else
                     jsonArray = response.getAsJsonArray("shops");
 
-                boolean b=false;
+                boolean b = false;
                 for (int i = 0; i < jsonArray.size(); i++) {
                     JsonObject ob = jsonArray.get(i).getAsJsonObject();
                     TabsItem tabsItem = new TabsItem();
