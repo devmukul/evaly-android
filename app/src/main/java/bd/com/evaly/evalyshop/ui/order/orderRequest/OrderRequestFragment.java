@@ -38,6 +38,7 @@ public class OrderRequestFragment extends Fragment {
         setupAdapter();
         liveEvents();
         clickListeners();
+        viewModel.loadFromApi();
     }
 
     private void clickListeners() {

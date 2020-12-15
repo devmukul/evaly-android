@@ -317,5 +317,9 @@
             android:autoVerify="true"
             app:uri="https://evaly.com.bd/user/profile?tab=changePassword" />
     </activity>
+    <fragment
+        android:id="@+id/orderRequestFragment"
+        android:name="bd.com.evaly.evalyshop.ui.order.orderRequest.OrderRequestFragment"
+        android:label="OrderRequestFragment" />
 
 </navigation>

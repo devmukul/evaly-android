@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="@color/white"
-            android:elevation="1dp"
+            android:elevation="0dp"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:title="@string/order_requests" />
 
@@ -24,7 +24,10 @@
             android:layout_height="match_parent"
             android:layout_marginTop="56dp"
             android:clipToPadding="false"
+            android:paddingHorizontal="5dp"
+            android:paddingTop="2dp"
             android:paddingBottom="40dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_order_request">
 
         </androidx.recyclerview.widget.RecyclerView>

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -66,6 +67,10 @@ public class OrderListBaseFragment extends Fragment {
         binding.toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
         setupBottomSheet();
 
+        binding.orderRequestHolder.setOnClickListener(view1 -> {
+            NavHostFragment.findNavController(this).navigate(R.id.orderRequestFragment);
+        });
+
     }
 
     private void setupBottomSheet() {
@@ -99,14 +104,18 @@ public class OrderListBaseFragment extends Fragment {
 
         viewModel.liveData.observe(getViewLifecycleOwner(), orderRequestResponses -> {
             isLoading = false;
-            if (orderRequestResponses.size() > 0)
+            if (orderRequestResponses.size() > 0) {
                 binding.orderRequestBottomSheet.setVisibility(View.VISIBLE);
-            else
+                binding.hotlistHot.setVisibility(View.VISIBLE);
+                binding.hotlistHot.setText(orderRequestResponses.size() + "");
+            } else {
+                binding.hotlistHot.setVisibility(View.GONE);
                 binding.orderRequestBottomSheet.setVisibility(View.GONE);
+            }
             requestListController.setLoading(false);
             requestListController.setList(orderRequestResponses);
             requestListController.requestModelBuild();
-            binding.orderRequestCount.setText(viewModel.getCount()+"");
+            binding.orderRequestCount.setText(viewModel.getCount() + "");
         });
 
         viewModel.logoutLiveData.observe(getViewLifecycleOwner(), aVoid -> AppController.logout(getActivity()));
