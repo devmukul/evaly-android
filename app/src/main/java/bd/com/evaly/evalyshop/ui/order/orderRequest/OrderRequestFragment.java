@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.databinding.FragmentOrderRequestsBinding;
+import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListBaseViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -60,6 +62,19 @@ public class OrderRequestFragment extends Fragment {
 
         });
         binding.recycle.setAdapter(requestListController.getAdapter());
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        binding.recycle.setLayoutManager(layoutManager);
+        binding.recycle.addOnScrollListener(new PaginationScrollListener(layoutManager) {
+            @Override
+            public void loadMoreItem() {
+                if (!isLoading) {
+                    viewModel.loadFromApi();
+                    requestListController.setLoading(true);
+                    requestListController.requestModelBuild();
+                }
+            }
+        });
     }
 
 }

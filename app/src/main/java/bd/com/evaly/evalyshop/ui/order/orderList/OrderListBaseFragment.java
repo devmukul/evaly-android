@@ -14,12 +14,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentOrderListBaseBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.ui.order.orderList.adapter.OrderListTabAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderRequest.OrderRequestListController;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -105,17 +109,26 @@ public class OrderListBaseFragment extends Fragment {
         viewModel.liveData.observe(getViewLifecycleOwner(), orderRequestResponses -> {
             isLoading = false;
             if (orderRequestResponses.size() > 0) {
-                binding.orderRequestBottomSheet.setVisibility(View.VISIBLE);
                 binding.hotlistHot.setVisibility(View.VISIBLE);
                 binding.hotlistHot.setText(orderRequestResponses.size() + "");
-            } else {
+            } else
                 binding.hotlistHot.setVisibility(View.GONE);
+
+            List<OrderRequestResponse> pendingList = new ArrayList<>();
+            for (OrderRequestResponse item : orderRequestResponses) {
+                if (item.getStatus() != null && item.getStatus().equalsIgnoreCase("pending"))
+                    pendingList.add(item);
+            }
+
+            if (pendingList.size() > 0) {
+                binding.orderRequestBottomSheet.setVisibility(View.VISIBLE);
+                binding.orderRequestCount.setText(pendingList.size() + "");
+            } else {
                 binding.orderRequestBottomSheet.setVisibility(View.GONE);
             }
             requestListController.setLoading(false);
             requestListController.setList(orderRequestResponses);
             requestListController.requestModelBuild();
-            binding.orderRequestCount.setText(viewModel.getCount() + "");
         });
 
         viewModel.logoutLiveData.observe(getViewLifecycleOwner(), aVoid -> AppController.logout(getActivity()));
