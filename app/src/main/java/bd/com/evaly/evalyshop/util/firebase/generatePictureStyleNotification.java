@@ -12,8 +12,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
-import androidx.core.app.NotificationCompat;
 
+import androidx.core.app.NotificationCompat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,15 +27,15 @@ import bd.com.evaly.evalyshop.ui.main.MainActivity;
 public class generatePictureStyleNotification extends AsyncTask<String, Void, Bitmap> {
 
     private Context mContext;
-    private String title, message, imageUrl, pageUrl;
+    private String title, message, imageUrl, resource_id, type;
 
-    public generatePictureStyleNotification(Context context, String title, String message, String imageUrl, String pageUrl) {
+    public generatePictureStyleNotification(Context context, String title, String message, String type, String imageUrl, String pageUrl) {
         super();
         this.mContext = context;
         this.title = title;
         this.message = message;
         this.imageUrl = imageUrl;
-        this.pageUrl = pageUrl;
+        this.resource_id = pageUrl;
     }
 
     @Override
@@ -63,13 +63,11 @@ public class generatePictureStyleNotification extends AsyncTask<String, Void, Bi
     protected void onPostExecute(Bitmap result) {
         super.onPostExecute(result);
 
-
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANNEL_ID = "Evaly_NOTIFICATION";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_HIGH);
-
             // Configure the notification channel.
             notificationChannel.setDescription("Get important notifications from Evaly App");
             notificationChannel.enableLights(true);
@@ -79,13 +77,17 @@ public class generatePictureStyleNotification extends AsyncTask<String, Void, Bi
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
-
         Intent intent = new Intent(mContext, MainActivity.class);
-        intent.putExtra("pageUrl", pageUrl);
+        intent.putExtra("pageUrl", resource_id);
+        if (resource_id != null) {
+            intent.putExtra("notification_type", "deeplink");
+            intent.putExtra("resource_id", resource_id);
+        }
+
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 100, intent, PendingIntent.FLAG_ONE_SHOT);
 
-
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL_ID);
+        notificationBuilder.setSmallIcon(R.drawable.ic_status_icon);
         notificationBuilder
                 .setContentIntent(pendingIntent)
                 .setContentTitle(title)
@@ -93,7 +95,6 @@ public class generatePictureStyleNotification extends AsyncTask<String, Void, Bi
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(result)
                 .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(result));
-
 
         notificationManager.notify(1, notificationBuilder.build());
     }

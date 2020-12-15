@@ -35,9 +35,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 String body = remoteMessage.getData().get("body");
                 String type = remoteMessage.getData().get("type");
                 String resource_id = remoteMessage.getData().get("resource_id");
-                if (type.equals("image") && resource_id != null && !resource_id.isEmpty()) {
-                    new generatePictureStyleNotification(this, title, body,
-                            resource_id, resource_id).execute();
+                if (remoteMessage.getData().containsKey("image_url") && type.equals("image") && resource_id != null && !resource_id.isEmpty()) {
+                    String imageUrl = remoteMessage.getData().get("image_url");
+                    new generatePictureStyleNotification(this, title, body, type,
+                            imageUrl, resource_id).execute();
                 } else
                     sendNotification(body, title, resource_id, type);
             }

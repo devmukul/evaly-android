@@ -301,24 +301,47 @@ public class MainActivity extends BaseActivity {
 
     private void handleNotificationNavigation() {
         Intent intent = getIntent();
-        if (intent.hasExtra("notification_type") &&
-                intent.getStringExtra("notification_type") != null &&
-                intent.hasExtra("resource_id") &&
-                intent.getStringExtra("resource_id") != null) {
+
+        if (intent.hasExtra("notification_type") && intent.getStringExtra("notification_type") != null &&
+                intent.hasExtra("resource_id") && intent.getStringExtra("resource_id") != null) {
+
             String notificationType = intent.getStringExtra("notification_type");
             String resourceId = intent.getStringExtra("resource_id");
-            if (notificationType.equalsIgnoreCase("deeplink"))
-                try {
-                    navController.navigate(Uri.parse(intent.getStringExtra("resource_id")));
-                } catch (Exception e) {
 
-                }
-            else if (notificationType.equalsIgnoreCase("large_text")) {
-                TextBottomSheetFragment textBottomSheetFragment = TextBottomSheetFragment.newInstance(resourceId);
-                textBottomSheetFragment.show(getSupportFragmentManager(), "Large text");
-            } else if (notificationType.equalsIgnoreCase("playstore")){
-                openPlaystoreByPackage(resourceId);
+            switch (notificationType) {
+                case "deeplink":
+                    navigateToDeepLink(resourceId);
+                    break;
+                case "large_text":
+                    showLargeTextBottomSheet(resourceId);
+                    break;
+                case "playstore":
+                    openPlaystoreByPackage(resourceId);
+                    break;
+                case "url":
+                    openUrl(resourceId);
+                    break;
             }
+        }
+    }
+
+    private void navigateToDeepLink(String url) {
+        try {
+            navController.navigate(Uri.parse(url));
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void showLargeTextBottomSheet(String text) {
+        TextBottomSheetFragment textBottomSheetFragment = TextBottomSheetFragment.newInstance(text);
+        textBottomSheetFragment.show(getSupportFragmentManager(), "Large text");
+    }
+
+    private void openUrl(String url) {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        } catch (Exception e) {
         }
     }
 
@@ -652,7 +675,7 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    private void openPlaystoreByPackage(String appPackageName){
+    private void openPlaystoreByPackage(String appPackageName) {
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
         } catch (android.content.ActivityNotFoundException anfe) {
