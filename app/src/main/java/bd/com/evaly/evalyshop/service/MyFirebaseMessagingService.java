@@ -35,10 +35,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 String body = remoteMessage.getData().get("body");
                 String type = remoteMessage.getData().get("type");
                 String resource_id = remoteMessage.getData().get("resource_id");
-                if (type.equals("image")) {
-                    String image_url = remoteMessage.getData().get("image_url");
+                if (type.equals("image") && resource_id != null && !resource_id.isEmpty()) {
                     new generatePictureStyleNotification(this, title, body,
-                            image_url, resource_id).execute();
+                            resource_id, resource_id).execute();
                 } else
                     sendNotification(body, title, resource_id, type);
             }
@@ -72,8 +71,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent.putExtra("orderID", resourceId);
         } else {
             intent = new Intent(this, MainActivity.class);
-            if (type != null && type.equalsIgnoreCase("deeplink") && resourceId != null) {
-                intent.putExtra("notification_type", "deeplink");
+            if (resourceId != null) {
+                intent.putExtra("notification_type", type);
                 intent.putExtra("resource_id", resourceId);
             }
             intent.putExtra("pageUrl", resourceId);

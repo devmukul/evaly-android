@@ -57,6 +57,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.followedShops.FollowedShopActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
@@ -171,8 +172,8 @@ public class MainActivity extends BaseActivity {
                 });
 
         binding.fabCreate.setOnClickListener(view -> {
-           // navController.navigate(R.id.action_expressFragment_Pop);
-             navController.navigate(Uri.parse("http://beta.evaly.com.bd/campaign/campaigns/hot-deal-1487c3f9"));
+            navController.navigate(R.id.action_expressFragment_Pop);
+            //navController.navigate(Uri.parse("http://beta.evaly.com.bd/campaign/campaigns/hot-deal-1487c3f9"));
         });
 
         AppDatabase appDatabase = AppDatabase.getInstance(this);
@@ -304,10 +305,19 @@ public class MainActivity extends BaseActivity {
                 intent.getStringExtra("notification_type") != null &&
                 intent.hasExtra("resource_id") &&
                 intent.getStringExtra("resource_id") != null) {
-            try {
-                navController.navigate(Uri.parse(intent.getStringExtra("resource_id")));
-            } catch (Exception e) {
+            String notificationType = intent.getStringExtra("notification_type");
+            String resourceId = intent.getStringExtra("resource_id");
+            if (notificationType.equalsIgnoreCase("deeplink"))
+                try {
+                    navController.navigate(Uri.parse(intent.getStringExtra("resource_id")));
+                } catch (Exception e) {
 
+                }
+            else if (notificationType.equalsIgnoreCase("large_text")) {
+                TextBottomSheetFragment textBottomSheetFragment = TextBottomSheetFragment.newInstance(resourceId);
+                textBottomSheetFragment.show(getSupportFragmentManager(), "Large text");
+            } else if (notificationType.equalsIgnoreCase("playstore")){
+                openPlaystoreByPackage(resourceId);
             }
         }
     }
@@ -630,11 +640,7 @@ public class MainActivity extends BaseActivity {
             dialogInterface.dismiss();
             finish();
             final String appPackageName = getPackageName();
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-            } catch (android.content.ActivityNotFoundException anfe) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-            }
+            openPlaystoreByPackage(appPackageName);
         });
 
         if (isCancelable)
@@ -643,5 +649,14 @@ public class MainActivity extends BaseActivity {
         android.app.AlertDialog dialog = builder.create();
         if (!isFinishing() && !isDestroyed())
             dialog.show();
+    }
+
+
+    private void openPlaystoreByPackage(String appPackageName){
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 }
