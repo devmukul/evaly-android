@@ -240,12 +240,46 @@
         <deepLink
             android:autoVerify="true"
             app:uri="evaly.com.bd/campaign/campaigns/{category_slug}/{campaign_slug}" />
+
+        <deepLink
+            android:autoVerify="true"
+            app:uri="evaly.com.bd/campaign/campaigns/{category_slug}/{campaign_slug}?type={type}" />
+
+        <deepLink
+            android:autoVerify="true"
+            app:uri="evaly.com.bd/campaign/suppliers/{category_slug_suppliers}" />
+
+        <deepLink
+            android:autoVerify="true"
+            app:uri="evaly.com.bd/campaign/brands/{category_slug_brands}" />
+
+        <deepLink
+            android:autoVerify="true"
+            app:uri="evaly.com.bd/campaign/products/{category_slug_products}" />
+
+
         <deepLink
             android:autoVerify="true"
             app:uri="beta.evaly.com.bd/campaign/campaigns/{category_slug}" />
         <deepLink
             android:autoVerify="true"
             app:uri="beta.evaly.com.bd/campaign/campaigns/{category_slug}/{campaign_slug}" />
+
+        <deepLink
+            android:autoVerify="true"
+            app:uri="beta.evaly.com.bd/campaign/campaigns/{category_slug}/{campaign_slug}?type={type}" />
+
+        <deepLink
+            android:autoVerify="true"
+            app:uri="beta.evaly.com.bd/campaign/suppliers/{category_slug_suppliers}" />
+
+        <deepLink
+            android:autoVerify="true"
+            app:uri="beta.evaly.com.bd/campaign/brands/{category_slug_brands}" />
+
+        <deepLink
+            android:autoVerify="true"
+            app:uri="beta.evaly.com.bd/campaign/products/{category_slug_products}" />
     </fragment>
     <fragment
         android:id="@+id/categoryFragment"

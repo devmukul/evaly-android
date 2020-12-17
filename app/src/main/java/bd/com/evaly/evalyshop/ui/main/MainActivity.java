@@ -173,7 +173,7 @@ public class MainActivity extends BaseActivity {
 
         binding.fabCreate.setOnClickListener(view -> {
             navController.navigate(R.id.action_expressFragment_Pop);
-            //navController.navigate(Uri.parse("http://beta.evaly.com.bd/campaign/campaigns/hot-deal-1487c3f9"));
+            // navController.navigate(Uri.parse("http://beta.evaly.com.bd/campaign/campaigns/hot-deal-1487c3f9/instant-cashback-100-95ce60?type=products"));
         });
 
         AppDatabase appDatabase = AppDatabase.getInstance(this);

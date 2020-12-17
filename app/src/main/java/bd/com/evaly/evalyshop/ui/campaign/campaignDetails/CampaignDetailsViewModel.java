@@ -32,6 +32,12 @@ public class CampaignDetailsViewModel extends ViewModel {
     private String search = null;
     private String type = "shop";
     private String campaign = null;
+    private String selectTypeAfterLoading = null;
+    protected SingleLiveEvent<String> switchTab = new SingleLiveEvent<>();
+
+    public void setSelectTypeAfterLoading(String selectTypeAfterLoading) {
+        this.selectTypeAfterLoading = selectTypeAfterLoading;
+    }
 
     private SingleLiveEvent<CampaignProductResponse> buyNowClick = new SingleLiveEvent<>();
 
@@ -84,7 +90,12 @@ public class CampaignDetailsViewModel extends ViewModel {
                 for (CampaignCategoryResponse item : response.getData()) {
                     if (item.getSlug().equals(slug)) {
                         campaignCategoryLiveData.setValue(item);
-                        loadListFromApi();
+                        if (selectTypeAfterLoading == null)
+                            loadListFromApi();
+                        else {
+                            switchTab.setValue(selectTypeAfterLoading);
+                            selectTypeAfterLoading = null;
+                        }
                         found = true;
                         break;
                     }
@@ -269,7 +280,12 @@ public class CampaignDetailsViewModel extends ViewModel {
     public void setCampaignCategoryLiveData(CampaignCategoryResponse model) {
         this.campaignCategoryLiveData.setValue(model);
         if (liveList.getValue() == null) {
-            loadListFromApi();
+            if (selectTypeAfterLoading == null)
+                loadListFromApi();
+            else {
+                switchTab.setValue(selectTypeAfterLoading);
+                selectTypeAfterLoading = null;
+            }
         }
     }
 

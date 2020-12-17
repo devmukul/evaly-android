@@ -25,6 +25,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -86,17 +88,41 @@ public class CampaignDetailsFragment extends Fragment {
             viewModel.setCampaign(subCampaignResponse.getSlug());
         }
 
-        if (requireArguments().containsKey("model"))
+        Logger.d(new Gson().toJson(requireArguments()));
+
+        if (checkArg("model"))
             viewModel.setCampaignCategoryLiveData((CampaignCategoryResponse) requireArguments()
                     .getSerializable("model"));
-        else if (requireArguments().containsKey("category_slug") &&
+        else if (checkArg("category_slug") &&
                 !requireArguments().containsKey("campaign_slug"))
             viewModel.findCampaignCategoryDetails(requireArguments()
                     .getString("category_slug"));
-        else if (requireArguments().containsKey("category_slug") &&
+        else if (checkArg("category_slug_suppliers")) {
+            // viewModel.setSelectTypeAfterLoading("shop");
+            viewModel.findCampaignCategoryDetails(requireArguments()
+                    .getString("category_slug_suppliers"));
+        } else if (checkArg("category_slug_brands")) {
+            viewModel.setSelectTypeAfterLoading("brand");
+            viewModel.findCampaignCategoryDetails(requireArguments()
+                    .getString("category_slug_brands"));
+        } else if (checkArg("category_slug_products")) {
+            viewModel.setSelectTypeAfterLoading("product");
+            viewModel.findCampaignCategoryDetails(requireArguments()
+                    .getString("category_slug_products"));
+        } else if (checkArg("category_slug") &&
                 requireArguments().containsKey("campaign_slug"))
             viewModel.loadSubCampaignDetails(requireArguments()
                     .getString("campaign_slug"));
+        if (checkArg("type") && requireArguments().getString("type") != null) {
+            String type = requireArguments().getString("type");
+            if (!type.contains("shop") && !type.contains("suppliers"))
+                viewModel.setSelectTypeAfterLoading(requireArguments().getString("type"));
+        }
+    }
+
+
+    private boolean checkArg(String key) {
+        return requireArguments().containsKey(key);
     }
 
     @Override
@@ -247,7 +273,17 @@ public class CampaignDetailsFragment extends Fragment {
         navController.navigate(R.id.campaignListBottomSheet, bundle);
     }
 
+
     private void liveEventObservers() {
+
+        viewModel.switchTab.observe(getViewLifecycleOwner(), s -> {
+            if (s.contains("shop") || s.contains("supplier"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0));
+            else if (s.contains("brand"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
+            else if (s.contains("product"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(2));
+        });
 
         viewModel.subCampaignLiveData.observe(getViewLifecycleOwner(), subCampaignResponse -> {
             if (subCampaignResponse != null)
