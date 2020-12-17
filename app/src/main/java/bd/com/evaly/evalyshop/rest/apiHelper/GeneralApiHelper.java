@@ -12,10 +12,18 @@ import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
+import bd.com.evaly.evalyshop.models.notification.NotificationItem;
 
 
 public class GeneralApiHelper extends BaseApiHelper {
 
+    public static void getNotification(String token, int page, ResponseListenerAuth<CommonResultResponse<List<NotificationItem>>, String> listener) {
+        getiApiClient().getNotification(token, page).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void markNotificationAsRead(String token, ResponseListenerAuth<JsonObject, String> listener) {
+        getiApiClient().markNewsfeedNotificationAsRead(token).enqueue(getResponseCallBackDefault(listener));
+    }
 
     public static void getBrandsDetails(String brandSlug, ResponseListenerAuth<CommonDataResponse<BrandDetails>, String> listener) {
         getiApiClient().getBrandDetails(brandSlug).enqueue(getResponseCallBackDefault(listener));

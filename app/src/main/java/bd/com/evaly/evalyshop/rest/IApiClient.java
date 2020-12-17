@@ -626,8 +626,15 @@ public interface IApiClient {
     Call<CommonResultResponse<List<NotificationItem>>> getNewsfeedNotification(@Header("Authorization") String token,
                                                                                @Query("page") int page);
 
+    @GET(UrlUtils.BASE_URL + "notifications/")
+    Call<CommonResultResponse<List<NotificationItem>>> getNotification(@Header("Authorization") String token,
+                                                                       @Query("page") int page);
+
     @GET(UrlUtils.BASE_URL_NEWSFEED + "update-notifications/")
     Call<JsonObject> markNewsfeedNotificationAsRead(@Header("Authorization") String token);
+
+    @GET(UrlUtils.BASE_URL + "update-notifications/")
+    Call<JsonObject> markNotificationAsRead(@Header("Authorization") String token);
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "notifications_count/")
     Call<NotificationCount> getNewsfeedNotificationCount(@Header("Authorization") String token);

@@ -32,7 +32,6 @@ import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity;
 import bd.com.evaly.evalyshop.ui.balance.BalanceFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.notification.NotificationActivity;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -82,8 +81,7 @@ public class AccountFragment extends Fragment {
 
 
         binding.notification.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), NotificationActivity.class);
-            startActivity(intent);
+            NavHostFragment.findNavController(this).navigate(R.id.notificationFragment);
         });
 
         binding.transactionHistory.setOnClickListener(view -> {

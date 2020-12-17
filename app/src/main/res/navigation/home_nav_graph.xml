@@ -351,5 +351,9 @@
         android:id="@+id/orderRequestFragment"
         android:name="bd.com.evaly.evalyshop.ui.order.orderRequest.OrderRequestFragment"
         android:label="OrderRequestFragment" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="bd.com.evaly.evalyshop.ui.notification.NotificationFragment"
+        android:label="NotificationFragment" />
 
 </navigation>
