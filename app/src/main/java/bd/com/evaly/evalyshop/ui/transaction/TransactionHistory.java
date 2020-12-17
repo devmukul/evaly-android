@@ -63,7 +63,6 @@ public class TransactionHistory extends Fragment {
         balanceViewModel.getData().observe(this, balanceModel -> {
             binding.balanceHolder.setVisibility(View.VISIBLE);
             binding.balanceHolder2.setVisibility(View.VISIBLE);
-            binding.progressBarTop.setVisibility(View.GONE);
             binding.tvBalance.setText(String.format("৳ %s", balanceModel.getBalance()));
             binding.tvHoldingBalance.setText(String.format("৳ %s", balanceModel.getHoldingBalance()));
             binding.tvGiftCardBalance.setText(String.format("৳ %s", balanceModel.getGiftCardBalance()));

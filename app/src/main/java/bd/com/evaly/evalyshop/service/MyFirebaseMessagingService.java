@@ -77,6 +77,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         } else {
             intent = new Intent(this, MainActivity.class);
             if (resourceId != null) {
+                if (imageUrl != null)
+                    type = "deeplink";
                 intent.putExtra("notification_type", type);
                 intent.putExtra("resource_id", resourceId);
             }
