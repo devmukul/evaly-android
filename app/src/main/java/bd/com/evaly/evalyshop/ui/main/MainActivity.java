@@ -117,6 +117,13 @@ public class MainActivity extends BaseActivity {
         adb.show();
     }
 
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleNotificationNavigation(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (CredentialManager.isDarkMode())
@@ -296,12 +303,10 @@ public class MainActivity extends BaseActivity {
                 .setNegativeButton("No", null);
         exitDialog = exitDialogBuilder.create();
 
-        handleNotificationNavigation();
+        handleNotificationNavigation(getIntent());
     }
 
-    private void handleNotificationNavigation() {
-        Intent intent = getIntent();
-
+    private void handleNotificationNavigation(Intent intent) {
         if (intent.hasExtra("notification_type") && intent.getStringExtra("notification_type") != null &&
                 intent.hasExtra("resource_id") && intent.getStringExtra("resource_id") != null) {
 

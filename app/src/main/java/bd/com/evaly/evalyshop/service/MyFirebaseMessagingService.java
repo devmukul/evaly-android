@@ -84,8 +84,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
         }
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
