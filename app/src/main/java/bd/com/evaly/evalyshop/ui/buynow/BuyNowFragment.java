@@ -355,7 +355,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             contact_number.setText(CredentialManager.getUserData().getContact());
 
             //TODO
-           // customAddress.setText(CredentialManager.getUserData().getAddresses());
+            // customAddress.setText(CredentialManager.getUserData().getAddresses());
         }
         checkBox = bottomSheetView.findViewById(R.id.checkBox);
 
@@ -646,15 +646,17 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                             invoice = item.get("invoice_no").getAsString();
                         if (invoice == null || invoice.equals("")) {
                             if (getActivity() != null && !getActivity().isFinishing()) {
-                                if (getActivity() instanceof MainActivity && NavHostFragment.findNavController(BuyNowFragment.this) != null)
+                                if (getActivity() instanceof MainActivity)
                                     NavHostFragment.findNavController(BuyNowFragment.this).navigate(R.id.orderListBaseFragment);
                                 else
                                     getActivity().startActivity(new Intent(getContext(), OrderListActivity.class));
                             }
                         } else {
-                            Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
-                            intent.putExtra("orderID", invoice);
-                            startActivity(intent);
+                            if (getActivity() != null) {
+                                Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
+                                intent.putExtra("orderID", invoice);
+                                startActivity(intent);
+                            }
                         }
                     }
                 }

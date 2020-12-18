@@ -263,12 +263,13 @@ public class CampaignDetailsFragment extends Fragment {
     }
 
     private void openFilterModal() {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("category", Objects.requireNonNull(viewModel.getCampaignCategoryLiveData().getValue()));
-        bundle.putBoolean("show_clear", viewModel.getCampaign() != null);
-        navController.navigate(R.id.campaignListBottomSheet, bundle);
+        if (viewModel.getCampaignCategoryLiveData() != null && viewModel.getCampaignCategoryLiveData().getValue() != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("category", Objects.requireNonNull(viewModel.getCampaignCategoryLiveData().getValue()));
+            bundle.putBoolean("show_clear", viewModel.getCampaign() != null);
+            navController.navigate(R.id.campaignListBottomSheet, bundle);
+        }
     }
-
 
     private void liveEventObservers() {
 

@@ -78,7 +78,7 @@
                         android:paddingStart="15dp"
                         android:paddingEnd="15dp"
                         android:stateListAnimator="@null"
-                        android:text="Continue as HM Tamim"
+                        android:text="Continue as ..."
                         android:textAllCaps="false"
                         android:textColor="#fff"
                         android:textSize="16sp"

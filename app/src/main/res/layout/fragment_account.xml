@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/pictureHolder"
-                    android:text="HM Tamim"
+                    android:text="Evaly User"
                     android:textColor="@color/c333"
                     android:textSize="22sp"
                     android:textStyle="bold" />

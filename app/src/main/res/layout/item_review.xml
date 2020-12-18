@@ -50,7 +50,7 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="HM Tamim"
+                android:text="Evaly User"
                 android:textColor="@color/c333"
                 android:textSize="16sp"
                 android:textStyle="bold" />
