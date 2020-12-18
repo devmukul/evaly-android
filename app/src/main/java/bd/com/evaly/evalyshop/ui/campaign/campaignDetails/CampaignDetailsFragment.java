@@ -25,8 +25,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.Gson;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -87,8 +85,6 @@ public class CampaignDetailsFragment extends Fragment {
             mainViewModel.setCampaignOnClick(subCampaignResponse);
             viewModel.setCampaign(subCampaignResponse.getSlug());
         }
-
-        Logger.d(new Gson().toJson(requireArguments()));
 
         if (checkArg("model"))
             viewModel.setCampaignCategoryLiveData((CampaignCategoryResponse) requireArguments()
