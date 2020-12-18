@@ -48,7 +48,6 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
-import bd.com.evaly.evalyshop.util.Utils;
 
 public class HomeController extends EpoxyController {
 
@@ -209,12 +208,7 @@ public class HomeController extends EpoxyController {
 
         categoryCarousel
                 .models(models)
-                .padding(new Carousel.Padding(
-                        (int) Utils.convertDpToPixel(15, activity),
-                        (int) Utils.convertDpToPixel(12, activity),
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(10, activity)))
+                .padding(Carousel.Padding.dp(15, 12, 10, 10, 10))
                 .addIf(rsCategoryList.size() > 0, this);
     }
 
@@ -254,12 +248,7 @@ public class HomeController extends EpoxyController {
 
         brandCarousel
                 .models(models)
-                .padding(new Carousel.Padding(
-                        (int) Utils.convertDpToPixel(15, activity),
-                        (int) Utils.convertDpToPixel(12, activity),
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(10, activity)))
+                .padding(Carousel.Padding.dp(15, 12, 10, 10, 10))
                 .addIf(rsBrandList.size() > 0, this);
     }
 
@@ -298,12 +287,7 @@ public class HomeController extends EpoxyController {
 
         shopCarousel
                 .models(models)
-                .padding(new Carousel.Padding(
-                        (int) Utils.convertDpToPixel(15, activity),
-                        (int) Utils.convertDpToPixel(12, activity),
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(10, activity)))
+                .padding(Carousel.Padding.dp(15, 12, 10, 10, 10))
                 .addIf(rsShopList.size() > 0, this);
     }
 
@@ -340,12 +324,7 @@ public class HomeController extends EpoxyController {
                 .onBind((model, view, position) -> {
                     view.setBackground(ContextCompat.getDrawable(activity, R.drawable.white_to_grey_gradient));
                 })
-                .padding(new Carousel.Padding(
-                        (int) Utils.convertDpToPixel(5, activity),
-                        (int) Utils.convertDpToPixel(12, activity),
-                        (int) Utils.convertDpToPixel(15, activity),
-                        (int) Utils.convertDpToPixel(10, activity),
-                        0))
+                .padding(Carousel.Padding.dp(5, 12, 15, 10, 0))
                 .addTo(this);
 
     }
@@ -384,12 +363,7 @@ public class HomeController extends EpoxyController {
 
         expressCarouselModel_
                 .models(isExpressLoading ? expressDummyItemModels : expressItemModels)
-                .padding(new Carousel.Padding(
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(12, activity),
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(0, activity),
-                        0))
+                .padding(Carousel.Padding.dp(10, 12, 10, 0, 0))
                 .addTo(this);
     }
 
@@ -436,12 +410,7 @@ public class HomeController extends EpoxyController {
 
         flashSaleCarousel
                 .models(flashSaleModels)
-                .padding(new Carousel.Padding(
-                        (int) Utils.convertDpToPixel(15, activity),
-                        (int) Utils.convertDpToPixel(12, activity),
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(10, activity)))
+                .padding(Carousel.Padding.dp(15, 12, 10, 10, 10))
                 .addIf(flashSaleModels.size() > 0, this);
     }
 

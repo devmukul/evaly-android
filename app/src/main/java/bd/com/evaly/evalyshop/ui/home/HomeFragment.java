@@ -152,17 +152,17 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         recommenderViewModel.getRsBrandLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
             homeController.setRsBrandList(rsEntities);
-            // homeController.requestModelBuild();
+            homeController.requestModelBuild();
         });
 
         recommenderViewModel.getRsCategoryLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
             homeController.setRsCategoryList(rsEntities);
-            // homeController.requestModelBuild();
+            homeController.requestModelBuild();
         });
 
         recommenderViewModel.getRsShopLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
             homeController.setRsShopList(rsEntities);
-            // homeController.requestModelBuild();
+            homeController.requestModelBuild();
         });
 
         viewModel.getProductListLive().observe(getViewLifecycleOwner(), list -> {
