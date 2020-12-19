@@ -46,11 +46,6 @@ public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderMod
 
 
     @Override
-    public void bind(@NonNull HomeSliderHolder holder) {
-        super.bind(holder);
-    }
-
-    @Override
     public void unbind(@NonNull HomeSliderHolder holder) {
         super.unbind(holder);
         if (compositeDisposable != null)

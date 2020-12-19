@@ -127,15 +127,8 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
         }
     }
 
-
     @Override
     protected void setDataBindingVariables(ViewDataBinding binding) {
-    }
-
-    @Override
-    public void unbind(@NonNull DataBindingHolder holder) {
-        super.unbind(holder);
-        holder.getDataBinding().unbind();
     }
 
 }

@@ -31,17 +31,6 @@ public abstract class HomeCampaignHeaderModel extends EpoxyModelWithHolder<HomeC
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
 
-    @Override
-    public void bind(@NonNull HomeExpressHolder holder) {
-        super.bind(holder);
-    }
-
-    @Override
-    public void unbind(@NonNull HomeExpressHolder holder) {
-        super.unbind(holder);
-        holder.itemView = null;
-    }
-
     public class HomeExpressHolder extends EpoxyHolder {
         View itemView;
 

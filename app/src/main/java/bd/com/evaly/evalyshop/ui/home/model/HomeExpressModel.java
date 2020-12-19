@@ -39,18 +39,6 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
     @EpoxyAttribute
     AppDatabase appDatabase;
 
-    @Override
-    public void bind(@NonNull HomeExpressHolder holder) {
-        super.bind(holder);
-    }
-
-    @Override
-    public void unbind(@NonNull HomeExpressHolder holder) {
-        super.unbind(holder);
-        holder.itemView = null;
-    }
-
-
     class HomeExpressHolder extends EpoxyHolder {
 
         View itemView;

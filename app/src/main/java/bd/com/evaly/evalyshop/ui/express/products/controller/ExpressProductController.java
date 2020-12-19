@@ -26,10 +26,7 @@ import bd.com.evaly.evalyshop.ui.home.model.HomeCarouselModelModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressHeaderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceSkeletonModel;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceSkeletonModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressSkeletonModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class ExpressProductController extends EpoxyController {
@@ -46,9 +43,6 @@ public class ExpressProductController extends EpoxyController {
 
     @AutoModel
     HomeExpressModel_ expressModel;
-
-    @AutoModel
-    HomeTabsModel_ tabsModel;
 
     @AutoModel
     LoadingModel_ loader;

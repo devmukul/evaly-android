@@ -42,7 +42,6 @@ import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeRsCarouselModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeRsGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
@@ -57,8 +56,7 @@ public class HomeController extends EpoxyController {
     HomeWidgetModel_ widgetModel;
     @AutoModel
     HomeExpressModel_ expressModel;
-    @AutoModel
-    HomeTabsModel_ tabsModel;
+
     @AutoModel
     LoadingModel_ loader;
     @AutoModel
@@ -160,7 +158,7 @@ public class HomeController extends EpoxyController {
         // product listing
         for (ProductItem productItem : items) {
             new HomeProductGridModel_()
-                    .id(productItem.getSlug())
+                    .id("product", productItem.getSlug())
                     .model(productItem)
                     .clickListener((model, parentView, clickedView, position) -> {
                         ProductItem item = model.getModel();

@@ -13,17 +13,6 @@ import bd.com.evaly.evalyshop.R;
 @EpoxyModelClass(layout = R.layout.home_model_express_skeleton)
 public abstract class HomeExpressSkeletonModel extends EpoxyModelWithHolder<HomeExpressSkeletonModel.Holder> {
 
-    @Override
-    public void bind(@NonNull Holder holder) {
-        super.bind(holder);
-    }
-
-    @Override
-    public void unbind(@NonNull Holder holder) {
-        super.unbind(holder);
-        holder.itemView = null;
-    }
-
     class Holder extends EpoxyHolder {
         View itemView;
 
