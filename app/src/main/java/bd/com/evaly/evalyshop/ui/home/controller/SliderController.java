@@ -53,10 +53,14 @@ public class SliderController extends EpoxyController {
         requestModelBuild();
     }
 
-    public void reAddData(List<BannerItem> items) {
+    public void setData(List<BannerItem> items) {
         this.items = items;
         requestModelBuild();
+    }
 
+    public void setDataDelayed(List<BannerItem> items) {
+        this.items = items;
+        requestDelayedModelBuild(300);
     }
 
     public void setActivity(AppCompatActivity activity) {

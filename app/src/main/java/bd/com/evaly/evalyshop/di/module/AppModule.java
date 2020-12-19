@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
+import bd.com.evaly.evalyshop.data.roomdb.banner.BannerDao;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.di.qualifiers.FirebaseRemoteConfigLiveData;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
@@ -68,6 +69,14 @@ public class AppModule {
     AddressListDao addressListDao(AppDatabase appDatabase) {
         return appDatabase.addressListDao();
     }
+
+    @Provides
+    @Singleton
+    BannerDao bannerDao(AppDatabase appDatabase) {
+        return appDatabase.bannerDao();
+    }
+
+
 
     @Provides
     @Singleton

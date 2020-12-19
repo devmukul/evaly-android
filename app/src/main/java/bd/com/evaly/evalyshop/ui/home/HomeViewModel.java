@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.home;
 
+import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,6 +12,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.data.roomdb.banner.BannerDao;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -26,6 +28,10 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
+import io.reactivex.CompletableObserver;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class HomeViewModel extends ViewModel {
 
@@ -34,7 +40,7 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<List<CampaignProductResponse>> flashSaleProductList = new MutableLiveData<>();
     private MutableLiveData<List<ProductItem>> productListLive = new MutableLiveData<>();
     private List<ProductItem> productArrayList = new ArrayList<>();
-    private MutableLiveData<List<BannerItem>> bannerListLive = new MutableLiveData<>();
+    private LiveData<List<BannerItem>> bannerListLive;
     private MutableLiveData<List<ExpressServiceModel>> expressListLive = new MutableLiveData<>();
     private MutableLiveData<List<CategoryEntity>> categoryListLive = new MutableLiveData<>();
     private MutableLiveData<List<TabsItem>> brandListLive = new MutableLiveData<>();
@@ -42,13 +48,26 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<List<TabsItem>> shopListLive = new MutableLiveData<>();
     private List<TabItem> shopArrayList = new ArrayList<>();
     private int currentPageProducts = 1;
+    private CompositeDisposable compositeDisposable;
+    private BannerDao bannerDao;
 
-    public HomeViewModel() {
+    @ViewModelInject
+    public HomeViewModel(BannerDao bannerDao) {
+        this.bannerDao = bannerDao;
+        bannerListLive = bannerDao.getAll();
+        compositeDisposable = new CompositeDisposable();
         currentPageProducts = 1;
+        loadBanners();
         loadProducts();
         loadExpressServices();
         loadCampaignCategory();
         loadFlashSaleProductList();
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        compositeDisposable.clear();
     }
 
     public int getTabPosition() {
@@ -113,7 +132,29 @@ public class HomeViewModel extends ViewModel {
         GeneralApiHelper.getBanners(new ResponseListenerAuth<CommonResultResponse<List<BannerItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<BannerItem>> response, int statusCode) {
-                bannerListLive.setValue(response.getData());
+                bannerDao.insertListRx(response.getData())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new CompletableObserver() {
+                            @Override
+                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                                compositeDisposable.add(d);
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                List<String> slugs = new ArrayList<>();
+                                for (BannerItem item : response.getData())
+                                    slugs.add(item.slug);
+
+                                if (slugs.size() > 0)
+                                    deleteOldBanners(slugs);
+                            }
+
+                            @Override
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+
+                            }
+                        });
             }
 
             @Override
@@ -127,6 +168,27 @@ public class HomeViewModel extends ViewModel {
             }
         });
 
+    }
+
+    private void deleteOldBanners(List<String> slugs) {
+        bannerDao.deleteOldRx(slugs)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        compositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+
+                    }
+                });
     }
 
     private void loadExpressServices() {
@@ -247,7 +309,7 @@ public class HomeViewModel extends ViewModel {
         this.productArrayList = productArrayList;
     }
 
-    public MutableLiveData<List<BannerItem>> getBannerListLive() {
+    public LiveData<List<BannerItem>> getBannerListLive() {
         return bannerListLive;
     }
 

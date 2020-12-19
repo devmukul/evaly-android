@@ -19,6 +19,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
@@ -96,6 +97,7 @@ public class HomeController extends EpoxyController {
     private List<ProductItem> items = new ArrayList<>();
     private List<CampaignProductResponse> flashSaleProducts = new ArrayList<>();
     private List<ExpressServiceModel> itemsExpress = new ArrayList<>();
+    private List<BannerItem> bannerList = new ArrayList<>();
     private List<CampaignCategoryResponse> campaignCategoryList = new ArrayList<>();
     private List<RsEntity> rsBrandList = new ArrayList<>();
     private List<RsEntity> rsCategoryList = new ArrayList<>();
@@ -104,16 +106,27 @@ public class HomeController extends EpoxyController {
     private boolean loadingMore = true;
     private boolean isExpressLoading = true;
     private boolean isCampaignLoading = true;
+    private SliderController sliderController;
 
+
+    public HomeController() {
+        if (sliderController == null) {
+            sliderController = new SliderController();
+            sliderController.setActivity(activity);
+        }
+    }
 
     @Override
     protected void buildModels() {
 
         // slider model
         sliderModel
+                .controller(sliderController)
                 .activity(activity)
-                .fragment(fragment)
-                .appDatabase(appDatabase)
+                .list(bannerList)
+                .onBind((model, view, position) -> {
+                    sliderController.setData(bannerList);
+                })
                 .addTo(this);
 
         // home widget buttons
@@ -467,6 +480,10 @@ public class HomeController extends EpoxyController {
 
     public void setHomeViewModel(HomeViewModel homeViewModel) {
         this.homeViewModel = homeViewModel;
+    }
+
+    public void setBannerList(List<BannerItem> bannerList) {
+        this.bannerList = bannerList;
     }
 }
 
