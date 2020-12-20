@@ -178,7 +178,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_weight="0"
-            android:text="@string/gateway"
+            android:text="@string/card"
             android:textAlignment="center"
             android:textColor="@color/c666"
             android:textStyle="bold"

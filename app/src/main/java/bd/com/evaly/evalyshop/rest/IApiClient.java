@@ -521,6 +521,9 @@ public interface IApiClient {
     @POST(UrlUtils.DOMAIN + "pay/pg")
     Call<JsonObject> payViaCard(@Header("Authorization") String token, @Body HashMap<String, String> body);
 
+    @POST(BuildConfig.WEB_URL + "sebl/payment")
+    Call<JsonObject> payViaSEBL(@Header("Authorization") String token, @Query("amount") String amount, @Query("invoice") String invoice, @Query("token") String authToken, @Query("context_reference") String context);
+
 
     @POST(BuildConfig.NAGAD_URL)
     Call<JsonObject> payViaNagad(@Header("Authorization") String token, @Body HashMap<String, String> body);

@@ -104,6 +104,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             total_amount = getArguments().getDouble("total_amount");
             paid_amount = getArguments().getDouble("paid_amount");
             paymentMethods = getArguments().getStringArray("payment_methods");
+            paymentMethods[0] = "card";
             applyDeliveryFee = getArguments().getBoolean("apply_delivery_fee");
             deliveryFee = getArguments().getString("delivery_fee");
 
@@ -220,6 +221,9 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             dismissAllowingStateLoss();
         } else if (method.getName().equalsIgnoreCase(Constants.CARD)) {
             Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
+            viewModel.payViaSEBL(invoice_no, enteredAmount);
+        }else if (method.getName().equalsIgnoreCase(Constants.OTHERS)) {
+            Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
             viewModel.payViaCard(invoice_no, enteredAmount);
         } else if (method.getName().equalsIgnoreCase(Constants.NAGAD)) {
             Toast.makeText(getContext(), "Opening to Nagad gateway!", Toast.LENGTH_SHORT).show();
@@ -268,12 +272,20 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                         R.drawable.ic_cash,
                         false,
                         isEnabled));
-            } else if (paymentMethods[i].equalsIgnoreCase("card")) {
+            } else if (paymentMethods[i].equalsIgnoreCase("sebl_gateway")) {
                 methodList.add(new PaymentMethodModel(
                         Constants.CARD,
-                        "Pay from your debit/visa/master card using \nSSL payment gateway.",
+                        "Pay from your debit/visa/master card using \nSEBL payment gateway.",
                         disabledPaymentMethodText,
                         R.drawable.payment_cards,
+                        false,
+                        isEnabled));
+            }else if (paymentMethods[i].equalsIgnoreCase("sslcommerz_gateway")) {
+                methodList.add(new PaymentMethodModel(
+                        Constants.OTHERS,
+                        "Pay from your amex/others card using \nSSL payment gateway.",
+                        disabledPaymentMethodText,
+                        R.drawable.sslcommerz,
                         false,
                         isEnabled));
             } else if (paymentMethods[i].equalsIgnoreCase("bkash")) {
@@ -293,6 +305,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                         R.drawable.ic_nagad2,
                         false,
                         isEnabled));
+            } else {
+
             }
         }
 

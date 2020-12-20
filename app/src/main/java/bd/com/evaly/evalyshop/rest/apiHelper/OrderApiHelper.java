@@ -57,6 +57,11 @@ public class OrderApiHelper extends BaseApiHelper {
         getiApiClient().payViaCard(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void payViaSEBL(String token, String amount, String invoice, String context, ResponseListenerAuth<JsonObject, String> listener) {
+
+        getiApiClient().payViaSEBL(token, amount, invoice, token, context).enqueue(getResponseCallBackDefault(listener));
+    }
+
 
     public static void payViaNagad(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
 
