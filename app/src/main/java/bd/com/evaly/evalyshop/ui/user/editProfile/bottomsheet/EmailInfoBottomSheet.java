@@ -102,6 +102,7 @@ public class EmailInfoBottomSheet extends BottomSheetDialogFragment {
 
             EmailInfoRequest body = new EmailInfoRequest();
             body.setPrimaryEmail(primaryEmail);
+            body.setEmail(primaryEmail);
             if (!otherEmail.equals(""))
                 body.setOtherEmail(otherEmail);
 

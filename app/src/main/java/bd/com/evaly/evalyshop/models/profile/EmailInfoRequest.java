@@ -10,6 +10,18 @@ public class EmailInfoRequest {
 	@SerializedName("primary_email")
 	private String primaryEmail;
 
+
+	@SerializedName("email")
+	private String email;
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
 	public void setOtherEmail(String otherEmail){
 		this.otherEmail = otherEmail;
 	}
