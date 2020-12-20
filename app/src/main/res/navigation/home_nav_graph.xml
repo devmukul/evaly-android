@@ -157,17 +157,7 @@
             app:uri="beta.evaly.com.bd/products/{product_slug}" />
     </activity>
 
-    <activity
-        android:id="@+id/giftCardActivity"
-        android:name="bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity"
-        android:label="GiftCardActivity">
-        <deepLink
-            android:autoVerify="true"
-            app:uri="evaly.com.bd/gift-card" />
-        <deepLink
-            android:autoVerify="true"
-            app:uri="beta.evaly.com.bd/gift-card" />
-    </activity>
+
     <fragment
         android:id="@+id/evalyExpressFragment"
         android:name="bd.com.evaly.evalyshop.ui.express.EvalyExpressFragment"
@@ -389,5 +379,18 @@
         android:id="@+id/notificationFragment"
         android:name="bd.com.evaly.evalyshop.ui.notification.NotificationFragment"
         android:label="NotificationFragment" />
+    <fragment
+        android:id="@+id/giftCardFragment"
+        android:name="bd.com.evaly.evalyshop.ui.giftcard.GiftCardFragment"
+        android:label="GiftCardFragment">
+
+        <deepLink
+            android:autoVerify="true"
+            app:uri="evaly.com.bd/gift-card" />
+        <deepLink
+            android:autoVerify="true"
+            app:uri="beta.evaly.com.bd/gift-card" />
+
+    </fragment>
 
 </navigation>
