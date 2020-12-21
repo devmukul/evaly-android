@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/fff">
 
     <LinearLayout
@@ -24,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/fafafa"
             android:focusableInTouchMode="true"
             android:orientation="vertical">
 
@@ -36,10 +37,11 @@
                     android:id="@+id/recycle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@color/fafafa"
                     android:nestedScrollingEnabled="false"
-                    tools:listitem="@layout/item_cart"
+                    android:paddingBottom="15dp"
                     tools:itemCount="1"
-                    android:paddingBottom="40dp">
+                    tools:listitem="@layout/item_cart">
 
                 </androidx.recyclerview.widget.RecyclerView>
 
@@ -49,7 +51,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="40dp"
-                    android:background="@color/fff"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:visibility="gone"
@@ -88,10 +89,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:background="@drawable/bg_cart_checkout"
+            android:backgroundTint="@color/fff"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingTop="5dp"
-            android:paddingBottom="26dp">
+            android:paddingBottom="26dp"
+            android:translationZ="8dp">
 
 
             <CheckBox
@@ -137,13 +140,12 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_checkout"
-                android:fontFamily="sans-serif-light"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:text="@string/check_out"
                 android:textAllCaps="true"
                 android:textColor="@color/fffh"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
     </LinearLayout>
