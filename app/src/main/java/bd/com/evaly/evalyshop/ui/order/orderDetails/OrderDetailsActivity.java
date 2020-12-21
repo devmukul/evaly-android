@@ -135,14 +135,13 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
         setupOrderHistoryRecycler();
         setupProductListRecycler();
-
+        liveEvents();
         clickListeners();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        liveEvents();
     }
 
     private void setupProductListRecycler() {
@@ -257,6 +256,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     private void liveEvents() {
+
+        viewModel.balanceLiveData.observe(this, response -> {
+            CredentialManager.setBalance(response.getBalance());
+            binding.balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(response.getBalance()) + "</b>"));
+        });
 
         viewModel.deliveryStatusUpdateLiveData.observe(this, s -> {
             ToastUtils.show(s);

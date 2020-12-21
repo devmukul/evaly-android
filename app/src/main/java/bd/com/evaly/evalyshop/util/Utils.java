@@ -123,6 +123,9 @@ public class Utils {
         if (payment_method.contains("card")) {
             return true;
         }
+        if (payment_method.contains("sslcommerz")) {
+            return true;
+        }
         if (payment_method.contains("bank")) {
             return true;
         }
@@ -139,7 +142,7 @@ public class Utils {
         if (payment_method.contains("card")) {
             return true;
         }
-        if (payment_method.contains("ssl")) {
+        if (payment_method.contains("sslcommerz")) {
             return true;
         }
         return false;

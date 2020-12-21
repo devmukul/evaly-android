@@ -129,12 +129,9 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         priorityList.add("sslcommerz_gateway");
 
         ArrayList<String> newList = intersection(priorityList, paymentMethods);
-
-        for (String s : paymentMethods) {
+        for (String s : paymentMethods)
             if (!newList.contains(s))
                 newList.add(s);
-        }
-
         paymentMethods = newList;
     }
 
