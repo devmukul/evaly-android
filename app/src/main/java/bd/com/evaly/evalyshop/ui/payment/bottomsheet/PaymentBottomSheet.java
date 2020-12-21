@@ -104,7 +104,6 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             total_amount = getArguments().getDouble("total_amount");
             paid_amount = getArguments().getDouble("paid_amount");
             paymentMethods = getArguments().getStringArray("payment_methods");
-            paymentMethods[0] = "card";
             applyDeliveryFee = getArguments().getBoolean("apply_delivery_fee");
             deliveryFee = getArguments().getString("delivery_fee");
 
