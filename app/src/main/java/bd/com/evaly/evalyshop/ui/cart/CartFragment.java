@@ -65,9 +65,11 @@ import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.cart.adapter.CartAdapter;
+import bd.com.evaly.evalyshop.ui.cart.controller.CartController;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -77,7 +79,7 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static androidx.core.content.ContextCompat.getColor;
 
 @AndroidEntryPoint
-public class CartFragment extends Fragment {
+public class CartFragment extends Fragment implements CartController.CartClickListener {
 
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
@@ -617,6 +619,22 @@ public class CartFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         view = null;
+    }
+
+    @Override
+    public void onClick(String productName, String productSlug) {
+        Intent intent = new Intent(context, ViewProductActivity.class);
+        intent.putExtra("product_name", productName);
+        intent.putExtra("product_slug", productSlug);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void onShopClick(String shopName, String shopSlug) {
+        Bundle bundle = new Bundle();
+        bundle.putString("shop_name", shopName);
+        bundle.putString("shop_slug", shopSlug);
+        navController.navigate(R.id.shopFragment, bundle);
     }
 
 }

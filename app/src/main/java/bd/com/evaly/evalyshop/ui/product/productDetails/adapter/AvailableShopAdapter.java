@@ -142,6 +142,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
             cartEntity.setShopJson(sellerJson);
             cartEntity.setQuantity(1);
             cartEntity.setShopSlug(shop.getShopSlug());
+            cartEntity.setShopName(shop.getShopName());
             cartEntity.setSlug(cartItem.getSlug());
             cartEntity.setProductID(String.valueOf(shop.getShopItemId()));
 

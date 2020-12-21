@@ -4,8 +4,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 @Entity(tableName = "cart_table")
@@ -32,6 +30,9 @@ public class CartEntity implements Serializable {
     @ColumnInfo(name = "quantity")
     private int quantity;
 
+    @ColumnInfo(name = "shop_name")
+    private String shopName;
+
     @ColumnInfo(name = "shop_slug")
     private String shopSlug;
 
@@ -53,6 +54,14 @@ public class CartEntity implements Serializable {
 
     public void setShowShopTitle(boolean showShopTitle) {
         this.showShopTitle = showShopTitle;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 
     public int getId() {
@@ -94,6 +103,14 @@ public class CartEntity implements Serializable {
     public int getPriceInt() {
         try {
             return Integer.parseInt(price);
+        } catch (Exception e){
+            return 0;
+        }
+    }
+
+    public double getPriceDouble() {
+        try {
+            return Double.parseDouble(price);
         } catch (Exception e){
             return 0;
         }

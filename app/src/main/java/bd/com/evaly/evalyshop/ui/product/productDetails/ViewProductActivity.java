@@ -692,6 +692,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             cartEntity.setShopJson(sellerJson);
             cartEntity.setQuantity(1);
             cartEntity.setShopSlug(shop.getShopSlug());
+            cartEntity.setShopName(shop.getShopName());
             cartEntity.setSlug(slug);
             cartEntity.setProductID(String.valueOf(shop.getShopItemId()));
 
