@@ -190,7 +190,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         if (invoiceNo.equals("") || orderStatus.equals("") || paymentMethod.equals("") || paymentStatus.equals("")) {
             ToastUtils.show("Can't request refund, reload the page");
         } else {
-            RefundBottomSheet refundBottomSheet = RefundBottomSheet.newInstance(invoiceNo, orderStatus, paymentMethod, paymentStatus, isRefundEligible);
+            RefundBottomSheet refundBottomSheet = RefundBottomSheet.newInstance(invoiceNo, orderStatus, paymentMethod, paymentStatus, isRefundEligible, orderDetailsModel.getDate());
             refundBottomSheet.show(getSupportFragmentManager(), "Refund");
         }
     }

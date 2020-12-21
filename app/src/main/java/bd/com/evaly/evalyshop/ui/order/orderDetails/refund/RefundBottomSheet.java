@@ -20,12 +20,15 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.orhanobut.logger.Logger;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetRefundRequestBinding;
@@ -39,9 +42,13 @@ import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class RefundBottomSheet extends BottomSheetDialogFragment {
 
+    @Inject
+    FirebaseRemoteConfig remoteConfig;
     private BottomSheetRefundRequestBinding binding;
     private String invoice_no;
     private String order_status;
@@ -53,8 +60,10 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
     private int selectedOtp = 0;
     private Dialog otpAlert;
     private OrderDetailsViewModel orderDetailsViewModel;
+    private String orderRefundMinDate = "";
+    private String orderDate = "";
 
-    public static RefundBottomSheet newInstance(String invoiceNo, String orderStatus, String paymentMethod, String paymentStatus, boolean is_eligible) {
+    public static RefundBottomSheet newInstance(String invoiceNo, String orderStatus, String paymentMethod, String paymentStatus, boolean is_eligible, String orderDate) {
 
         RefundBottomSheet instance = new RefundBottomSheet();
         Bundle bundle = new Bundle();
@@ -63,6 +72,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
         bundle.putString("payment_method", paymentMethod.toLowerCase());
         bundle.putString("payment_status", paymentStatus.toLowerCase());
         bundle.putBoolean("is_eligible", is_eligible);
+        bundle.putString("order_date", orderDate);
         instance.setArguments(bundle);
         return instance;
     }
@@ -78,6 +88,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
             payment_method = getArguments().getString("payment_method");
             payment_status = getArguments().getString("payment_status");
             is_eligible = getArguments().getBoolean("is_eligible");
+            orderDate = getArguments().getString("order_date");
         }
 
         return binding.getRoot();
@@ -94,19 +105,22 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), R.layout.item_spinner_default);
 
-
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date strDate = null;
+
         try {
-            strDate = sdf.parse("22/12/2020");
+            String orderRefundMinDate = "22/12/2020";
+            if (remoteConfig != null && !remoteConfig.getString("order_refund_min_date").equals(""))
+                remoteConfig.getString("order_refund_min_date");
+            strDate = sdf.parse(orderRefundMinDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if (strDate != null && new Date().after(strDate)) {
+
+        if (strDate != null && Utils.formattedDateFromStringTimestamp("", "", orderDate) > strDate.getTime()) {
             if (!is_eligible) {
                 spinnerAdapter.add("Evaly Account");
             }
-
             if (Utils.canRefundToCard(payment_method))
                 spinnerAdapter.add("Debit/Credit Card");
             else {
