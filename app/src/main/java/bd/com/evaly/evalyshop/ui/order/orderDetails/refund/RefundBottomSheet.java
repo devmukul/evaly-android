@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -105,19 +106,24 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), R.layout.item_spinner_default);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
         Date strDate = null;
 
         try {
             String orderRefundMinDate = "22/12/2020";
             if (remoteConfig != null && !remoteConfig.getString("order_refund_min_date").equals(""))
-                remoteConfig.getString("order_refund_min_date");
+                orderRefundMinDate = remoteConfig.getString("order_refund_min_date");
             strDate = sdf.parse(orderRefundMinDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        if (strDate != null && Utils.formattedDateFromStringTimestamp("", "", orderDate) > strDate.getTime()) {
-            if (!is_eligible) {
+        if (strDate != null && Utils.formattedDateFromStringToTimestampGMT("", "", orderDate) > strDate.getTime()) {
+            if (!order_status.contains("cancel"))
+                spinnerAdapter.add("Evaly Account");
+            spinnerAdapter.add("Non Balance");
+        } else {
+            if (!is_eligible && !order_status.contains("cancel")) {
                 spinnerAdapter.add("Evaly Account");
             }
             if (Utils.canRefundToCard(payment_method))
@@ -127,9 +133,6 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                 spinnerAdapter.add("Bank");
                 spinnerAdapter.add("Nagad");
             }
-        } else {
-            spinnerAdapter.add("Evaly Account");
-            spinnerAdapter.add("Non Balance");
         }
 
         binding.spRefundOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
