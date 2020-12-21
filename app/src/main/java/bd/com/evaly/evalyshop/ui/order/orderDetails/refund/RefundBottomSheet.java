@@ -22,6 +22,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.orhanobut.logger.Logger;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
@@ -44,6 +47,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
     private String order_status;
     private String payment_method;
     private String payment_status;
+    private String paymentType;
     private ViewDialog dialog;
     private boolean is_eligible = false;
     private int selectedOtp = 0;
@@ -90,27 +94,56 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), R.layout.item_spinner_default);
 
-        if (!is_eligible) {
-            spinnerAdapter.add("Evaly Account");
-        }
 
-        if (Utils.canRefundToCard(payment_method))
-            spinnerAdapter.add("Debit/Credit Card");
-        else {
-            spinnerAdapter.add("bKash");
-            spinnerAdapter.add("Bank");
-            spinnerAdapter.add("Nagad");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Date strDate = null;
+        try {
+            strDate = sdf.parse("22/12/2020");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (strDate != null && new Date().after(strDate)) {
+            if (!is_eligible) {
+                spinnerAdapter.add("Evaly Account");
+            }
+
+            if (Utils.canRefundToCard(payment_method))
+                spinnerAdapter.add("Debit/Credit Card");
+            else {
+                spinnerAdapter.add("bKash");
+                spinnerAdapter.add("Bank");
+                spinnerAdapter.add("Nagad");
+            }
+        } else {
+            spinnerAdapter.add("Evaly Account");
+            spinnerAdapter.add("Non Balance");
         }
 
         binding.spRefundOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                String paymentType = spinnerAdapter.getItem(position);
+                paymentType = spinnerAdapter.getItem(position);
+                String paymentMethod = payment_method.toLowerCase();
+
                 if (paymentType == null)
                     return;
 
-                if (paymentType.equals("Evaly Account") || paymentType.equals("Debit/Credit Card")) {
+                if (paymentType.equals("Non Balance")) {
+                    if (paymentMethod.contains("bank") || (paymentMethod.contains("bank") && paymentMethod.contains("bkash"))) {
+                        binding.llBkashHolder.setVisibility(View.GONE);
+                        binding.llBankInfoHolder.setVisibility(View.VISIBLE);
+                        paymentType = "Bank";
+                    } else if (paymentMethod.contains("bkash")) {
+                        binding.llBkashHolder.setVisibility(View.VISIBLE);
+                        binding.llBankInfoHolder.setVisibility(View.GONE);
+                        paymentType = "bKash";
+                    } else {
+                        binding.llBkashHolder.setVisibility(View.GONE);
+                        binding.llBankInfoHolder.setVisibility(View.GONE);
+                        paymentType = "Non_balance";
+                    }
+                } else if (paymentType.equals("Evaly Account") || paymentType.equals("Debit/Credit Card")) {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
                 } else if (paymentType.equals("bKash") || paymentType.equals("Nagad")) {
@@ -133,7 +166,8 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
         binding.submitBtn.setOnClickListener(v -> {
 
             int selectedPosition = binding.spRefundOption.getSelectedItemPosition();
-            String paymentType = spinnerAdapter.getItem(selectedPosition);
+            if (paymentType == null)
+                paymentType = spinnerAdapter.getItem(selectedPosition);
 
             HashMap<String, String> body = new HashMap<>();
             body.put("invoice_no", invoice_no.toUpperCase());
