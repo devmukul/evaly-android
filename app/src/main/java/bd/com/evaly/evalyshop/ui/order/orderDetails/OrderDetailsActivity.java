@@ -30,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.JsonObject;
+import com.orhanobut.logger.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -134,8 +135,14 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
         setupOrderHistoryRecycler();
         setupProductListRecycler();
-        liveEvents();
+
         clickListeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        liveEvents();
     }
 
     private void setupProductListRecycler() {
@@ -758,14 +765,19 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         if (url.equals(BuildConfig.BKASH_URL)) {
             successURL = Constants.BKASH_SUCCESS_URL;
             paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.bkash_payment));
-            purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no);
+            purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no, "bKash");
         } else {
             successURL = Constants.SSL_SUCCESS_URL;
             if (url.contains("nagad"))
                 paymentWebBuilder.setToolbarTitle("Pay via Nagad");
-            else
+            else if (url.contains("sebl")) {
+                successURL = Constants.SEBL_SUCCESS_URL;
+                purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no, "sebl");
+                paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.visa_master_card));
+            } else
                 paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.pay_via_card));
         }
+        Logger.e(url);
         paymentWebBuilder.loadPaymentURL(url, successURL, purchaseRequestInfo);
     }
 

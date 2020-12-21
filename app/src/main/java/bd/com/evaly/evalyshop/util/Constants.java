@@ -23,7 +23,8 @@ public class Constants {
     public static final String EVALY_ACCOUNT = "Evaly Account";
     public static final String BKASH = "bKash";
     public static final String NAGAD = "Nagad";
-    public static final String CARD = "Card";
+    public static final String CARD = "Visa / Master Card";
+    public static final String OTHERS = "Others";
     public static final String BALANCE_WITH_CASH = "Evaly Account + Cash on Delivery";
     // Event specific constants
     public static final String EVT_SIGNUP_SUC = "xmpp_signup_success";
@@ -96,6 +97,7 @@ public class Constants {
 
     public static  final String BKASH_SUCCESS_URL = "success.html";
     public static final String SSL_SUCCESS_URL = "evaly.com.bd";
+    public static final String SEBL_SUCCESS_URL = BuildConfig.WEB_URL;
 
     public static List<OrderIssueModel> getDelivaryIssueList() {
 

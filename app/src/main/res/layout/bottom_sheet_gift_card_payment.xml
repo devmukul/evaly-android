@@ -129,7 +129,7 @@
                 android:visibility="visible" />
 
             <ImageView
-                android:id="@+id/bank"
+                android:id="@+id/others"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginRight="10dp"
@@ -137,15 +137,21 @@
                 android:background="@drawable/payment_select_bg"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:src="@drawable/ic_bank_icon"
-                android:visibility="visible"
-                app:tint="@color/c444" />
+                android:src="@drawable/ssl_gateway"
+                android:visibility="visible" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="0"
+            android:text="@string/card"
+            android:textAlignment="center"
+            android:textColor="@color/c666"
+            android:textStyle="bold"
+            android:visibility="visible"
             android:orientation="horizontal"
             android:paddingLeft="15dp"
             android:paddingBottom="5dp">
@@ -180,12 +186,62 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_weight="0"
-                android:text="@string/gateway"
+                android:text="@string/visa_master_card"
                 android:textAlignment="center"
                 android:textColor="@color/c666"
                 android:textStyle="bold"
                 android:visibility="visible" />
 
+
+            <TextView
+                android:id="@+id/othersText"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:text="@string/others"
+                android:textAlignment="center"
+                android:textColor="@color/c666"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingBottom="5dp">
+
+            <ImageView
+                android:id="@+id/bank"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:background="@drawable/payment_select_bg"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_bank_icon"
+                android:visibility="visible"
+                app:tint="@color/c444" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="0"
+            android:text="@string/card"
+            android:textAlignment="center"
+            android:textColor="@color/c666"
+            android:textStyle="bold"
+            android:visibility="visible"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingBottom="5dp">
 
             <TextView
                 android:id="@+id/bankText"

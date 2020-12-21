@@ -333,6 +333,12 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             addBalanceViaCard(giftCardInvoice, Utils.formatPrice(amToPay));
         });
 
+        paymentBinding.others.setOnClickListener(v -> {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            double amToPay = Double.parseDouble(paymentBinding.amountPay.getText().toString());
+            addBalanceViaSSL(giftCardInvoice, Utils.formatPrice(amToPay));
+        });
+
         paymentBinding.bank.setOnClickListener(v -> {
             isImageSelected = false;
             amount = paymentBinding.amountPay.getText().toString();
@@ -449,6 +455,48 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             return;
         }
 
+        onPaymentRedirect(BuildConfig.WEB_URL+"sebl/payment?amount="+amount+"&invoice="+invoice+"&token="+CredentialManager.getToken().replace("Bearer ", "")+"&context_reference=gift_card_order_payment", amount, giftCardInvoice);
+
+
+//        HashMap<String, String> payload = new HashMap<>();
+//        payload.put("amount", amount);
+//        payload.put("context", "gift_card_order_payment");
+//        payload.put("context_reference", invoice);
+//
+//        dialog.showDialog();
+//
+//        PaymentApiHelper.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+//            @Override
+//            public void onDataFetched(JsonObject response, int statusCode) {
+//
+//                dialog.hideDialog();
+//                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+//                String purl = response.get("payment_gateway_url").getAsString();
+//                onPaymentRedirect(purl, amount, giftCardInvoice);
+//
+//            }
+//
+//            @Override
+//            public void onFailed(String errorBody, int errorCode) {
+//                dialog.hideDialog();
+//                if (getContext() != null)
+//                    Toast.makeText(getContext(), "Error occurred!", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onAuthError(boolean logout) {
+//
+//            }
+//        });
+    }
+
+    public void addBalanceViaSSL(String invoice, String amount) {
+
+        if (paymentBinding.amountPay.getText().toString().equals("")) {
+            ToastUtils.show("Enter amount");
+            return;
+        }
+
         HashMap<String, String> payload = new HashMap<>();
         payload.put("amount", amount);
         payload.put("context", "gift_card_order_payment");
@@ -464,6 +512,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 String purl = response.get("payment_gateway_url").getAsString();
                 onPaymentRedirect(purl, amount, giftCardInvoice);
+
             }
 
             @Override
@@ -486,11 +535,16 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         if (url.equals(BuildConfig.BKASH_URL)) {
             successURL = Constants.BKASH_SUCCESS_URL;
             paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.bkash_payment));
-            purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no);
+            purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no, "gift_code");
         } else if (url.contains("nagad")) {
             successURL = Constants.SSL_SUCCESS_URL;
             paymentWebBuilder.setToolbarTitle("Pay via Nagad");
             ToastUtils.show("Opening Nagad gateway");
+        } else if (url.contains("sebl")) {
+            successURL = Constants.SSL_SUCCESS_URL+"===";
+            paymentWebBuilder.setToolbarTitle("Pay via Visa / Master Card");
+            purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no, "sebl");
+            ToastUtils.show("Opening SEBL gateway");
         } else {
             successURL = Constants.SSL_SUCCESS_URL;
             paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.pay_via_card));
