@@ -82,7 +82,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder> 
         try {
             jsonObject = new JSONObject(model.getShopJson());
             String shopName = jsonObject.getString("shop_name");
-            myViewHolder.shop.setText("Seller: " + shopName);
+            myViewHolder.shop.setText(shopName);
 
         } catch (Exception e) {
             myViewHolder.shop.setText("Seller: Unknown");

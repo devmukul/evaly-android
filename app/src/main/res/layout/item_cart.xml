@@ -2,26 +2,27 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="10dp"
     android:background="@color/white"
     android:orientation="vertical">
-
 
     <View
         android:id="@+id/dividerView"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="10dp"
         android:background="@color/fafafa" />
 
     <LinearLayout
         android:id="@+id/sellerHolder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="13dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="2dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingBottom="10dp"
@@ -29,24 +30,27 @@
 
         <ImageView
             android:id="@+id/imageView6"
-            android:layout_width="wrap_content"
-            android:layout_height="16dp"
+            android:layout_width="23dp"
+            android:layout_height="18dp"
             android:layout_marginTop="1dp"
             android:layout_weight="0"
+            android:adjustViewBounds="true"
             android:paddingLeft="5dp"
-            android:tint="@color/c555"
-            app:srcCompat="@drawable/ic_menu_store" />
+            app:srcCompat="@drawable/ic_shop_filled_2"
+            app:tint="@color/c666" />
 
         <TextView
             android:id="@+id/shop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
             android:layout_weight="1"
             android:maxLines="1"
             android:paddingLeft="5dp"
             android:paddingRight="15dp"
+            android:fontFamily="sans-serif-medium"
             android:text="@string/seller_unknown"
-            android:textColor="@color/c555"
+            android:textColor="@color/c666"
             android:textSize="14sp" />
 
         <TextView
@@ -58,8 +62,7 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -75,11 +78,13 @@
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="false"
             android:layout_centerVertical="false"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:gravity="bottom"
             android:paddingTop="10dp"
-            android:paddingRight="10dp"
+            android:buttonTint="@color/colorAccentRed"
+            android:paddingRight="5dp"
+            android:text=""
             android:paddingBottom="10dp" />
 
         <ImageView
@@ -103,10 +108,10 @@
             android:layout_toRightOf="@+id/product_image"
             android:clickable="true"
             android:maxLines="2"
-            android:text=" "
             android:textColor="@color/c444"
             android:textIsSelectable="false"
-            android:textSize="16sp" />
+            android:textSize="14sp"
+            tools:text="This is product title" />
 
         <TextView
             android:id="@+id/price"
@@ -117,7 +122,7 @@
             android:layout_marginTop="3dp"
             android:text="1000 x 2"
             android:textColor="@color/c777"
-            android:textSize="13sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/priceTotal"
@@ -128,7 +133,8 @@
             android:layout_marginTop="6dp"
             android:text="2000"
             android:textColor="#f57224"
-            android:textSize="18sp" />
+            android:fontFamily="sans-serif-medium"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/wholeSalePrice"
@@ -165,7 +171,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="false"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="15dp"
             android:orientation="horizontal">
 
             <ImageView
