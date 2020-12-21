@@ -771,6 +771,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             if (url.contains("nagad"))
                 paymentWebBuilder.setToolbarTitle("Pay via Nagad");
             else if (url.contains("sebl")) {
+                successURL = Constants.SEBL_SUCCESS_URL;
                 purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no, "sebl");
                 paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.visa_master_card));
             } else

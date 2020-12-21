@@ -67,7 +67,6 @@ public class EditProfileViewModel extends ViewModel {
         });
     }
 
-
     public void updateToXMPP(HashMap<String, String> userInfo) {
 
         AuthApiHelper.setUserDataToXmpp(userInfo, new ResponseListenerAuth<JsonObject, String>() {

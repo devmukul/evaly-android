@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.ui.giftcard;
 
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,19 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -39,6 +36,8 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.BottomSheetGiftCardPaymentBinding;
+import bd.com.evaly.evalyshop.databinding.FragmentGiftcardListBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -65,30 +64,21 @@ import static android.app.Activity.RESULT_OK;
 public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, PaymentListener {
 
     public static GiftCardPurchasedFragment instance;
+
     @Inject
     FirebaseRemoteConfig remoteConfig;
-    private View view;
-    private RecyclerView recyclerView;
+
+    private FragmentGiftcardListBinding binding;
+    private BottomSheetGiftCardPaymentBinding paymentBinding;
     private ArrayList<GiftCardListPurchasedItem> itemList;
     private GiftCardListPurchasedAdapter adapter;
-    private RequestQueue rq;
-    private BottomSheetBehavior sheetBehavior;
-    private LinearLayout layoutBottomSheet;
     private ViewDialog dialog;
     private String giftCardInvoice = "";
     private String amount;
-    private LinearLayout noItem;
-    private Context context;
     private BottomSheetDialog bottomSheetDialog;
     private BottomSheetBehavior bottomSheetBehavior;
-    private View bottomSheetInternal;
-    private LinearLayout progressContainer;
-    private ProgressBar progressBar;
     private int currentPage;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
-    private TextView amountToPayView;
-    private ImageView bkash, cards, bank, nagad;
-    private SwipeRefreshLayout swipeLayout;
     private boolean loading = true;
     private boolean isImageSelected = false;
 
@@ -108,40 +98,42 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         itemList.clear();
         adapter.notifyDataSetChanged();
         currentPage = 1;
-        swipeLayout.setRefreshing(false);
+        binding.swipeContainer.setRefreshing(false);
         getGiftCardList();
     }
 
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_giftcard_list, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentGiftcardListBinding.inflate(inflater);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         paymentWebBuilder = new PaymentWebBuilder(getActivity());
         paymentWebBuilder.setPaymentListener(this);
-        recyclerView = view.findViewById(R.id.recyclerView);
-        swipeLayout = view.findViewById(R.id.swipe_container);
-        swipeLayout.setOnRefreshListener(this);
+
+        binding.swipeContainer.setOnRefreshListener(this);
 
         itemList = new ArrayList<>();
         dialog = new ViewDialog(getActivity());
 
-        context = getContext();
-        rq = Volley.newRequestQueue(context);
-        progressContainer = view.findViewById(R.id.progressContainer);
-        progressBar = view.findViewById(R.id.progressBar);
         currentPage = 1;
 
         initializeBottomSheet();
-        noItem = view.findViewById(R.id.noItem);
 
-        LinearLayoutManager manager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(manager);
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        binding.recyclerView.setLayoutManager(manager);
 
         instance = this;
-        adapter = new GiftCardListPurchasedAdapter(context, itemList, 0);
-        recyclerView.setAdapter(adapter);
+        adapter = new GiftCardListPurchasedAdapter(getContext(), itemList, 0);
+        binding.recyclerView.setAdapter(adapter);
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
@@ -158,16 +150,15 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         getGiftCardList();
 
-        return view;
     }
 
     public void buildBankDialog(Bitmap bitmap) {
-        final AlertDialog dialogBuilder = new AlertDialog.Builder(context).create();
+        final AlertDialog dialogBuilder = new AlertDialog.Builder(getContext()).create();
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_bank_receipt, null);
         TextView amountET = dialogView.findViewById(R.id.amount);
 
-        double amToPay = Double.parseDouble(amountToPayView.getText().toString());
+        double amToPay = Double.parseDouble(paymentBinding.amountPay.getText().toString());
 
         amountET.setText((int) amToPay + "");
         amountET.setVisibility(View.GONE);
@@ -190,11 +181,11 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         cancel.setOnClickListener(view -> dialogBuilder.dismiss());
         submit.setOnClickListener(view -> {
             if (!isImageSelected) {
-                Toast.makeText(context, "Please select your bank receipt image", Toast.LENGTH_LONG).show();
+                ToastUtils.show("Please select your bank receipt image");
                 return;
             }
             if (amount.equals("")) {
-                Toast.makeText(context, "Please enter amount.", Toast.LENGTH_LONG).show();
+                ToastUtils.show("Please enter amount.");
                 return;
             }
             uploadBankDepositImage(bitmap);
@@ -207,15 +198,15 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     public void paymentViaBank(String image) {
 
-        ProgressDialog dialog = ProgressDialog.show(context, "",
+        ProgressDialog dialog = ProgressDialog.show(getContext(), "",
                 "Updating data...", true);
 
         HashMap<String, String> parameters = new HashMap<>();
         try {
-            double a = Double.parseDouble(amountToPayView.getText().toString().trim());
+            double a = Double.parseDouble(paymentBinding.amountPay.getText().toString().trim());
             parameters.put("amount", Utils.formatPrice(a));
         } catch (Exception e) {
-            Toast.makeText(context, "Invalid amount, enter only numbers!", Toast.LENGTH_SHORT).show();
+            ToastUtils.show("Invalid amount, enter only numbers!");
             return;
         }
 
@@ -227,7 +218,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.dismiss();
-                Toast.makeText(context, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
+                ToastUtils.show(response.get("message").getAsString());
 
                 if (bottomSheetBehavior != null)
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -256,7 +247,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     private void uploadBankDepositImage(final Bitmap bitmap) {
 
-        ProgressDialog dialog = ProgressDialog.show(context, "",
+        ProgressDialog dialog = ProgressDialog.show(getContext(), "",
                 "Uploading image...", true);
 
         ImageApiHelper.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
@@ -302,56 +293,56 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     public void initializeBottomSheet() {
 
-        bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_gift_card_payment);
+        if (bottomSheetDialog == null) {
+            bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogTheme);
+            paymentBinding = BottomSheetGiftCardPaymentBinding.inflate(LayoutInflater.from(getContext()));
+            bottomSheetDialog.setContentView(paymentBinding.getRoot());
+        }
 
-        bottomSheetInternal = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        View bottomSheetInternal = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
         bottomSheetInternal.setPadding(0, 0, 0, 0);
 
         new KeyboardUtil(getActivity(), bottomSheetInternal);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
-        layoutBottomSheet = bottomSheetDialog.findViewById(R.id.bottom_sheet);
-
-        amountToPayView = bottomSheetDialog.findViewById(R.id.amountPay);
-        bkash = bottomSheetDialog.findViewById(R.id.bkash);
-        nagad = bottomSheetDialog.findViewById(R.id.nagad);
-        cards = bottomSheetDialog.findViewById(R.id.card);
-        bank = bottomSheetDialog.findViewById(R.id.bank);
-
-        TextView offerText = bottomSheetDialog.findViewById(R.id.offerText);
         if (remoteConfig.getString("nagad_description").isEmpty())
-            offerText.setVisibility(View.GONE);
+            paymentBinding.offerText.setVisibility(View.GONE);
         else {
-            offerText.setVisibility(View.VISIBLE);
-            offerText.setText("• " + remoteConfig.getString("nagad_description"));
+            paymentBinding.offerText.setVisibility(View.VISIBLE);
+            paymentBinding.offerText.setText("• " + remoteConfig.getString("nagad_description"));
         }
 
         TextView full_or_partial = bottomSheetDialog.findViewById(R.id.full_or_partial);
         full_or_partial.setVisibility(View.GONE);
 
-        bkash.setOnClickListener(v -> {
+        paymentBinding.bkash.setOnClickListener(v -> {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             onPaymentRedirect(BuildConfig.BKASH_URL, amount, giftCardInvoice);
         });
 
-        nagad.setOnClickListener(v -> {
+        paymentBinding.nagad.setOnClickListener(v -> {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-            double amToPay = Double.parseDouble(amountToPayView.getText().toString());
+            double amToPay = Double.parseDouble(paymentBinding.amountPay.getText().toString());
             payViaNagad(giftCardInvoice, Utils.formatPrice(amToPay));
         });
 
-        cards.setOnClickListener(v -> {
+        paymentBinding.card.setOnClickListener(v -> {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-            double amToPay = Double.parseDouble(amountToPayView.getText().toString());
+            double amToPay = Double.parseDouble(paymentBinding.amountPay.getText().toString());
             addBalanceViaCard(giftCardInvoice, Utils.formatPrice(amToPay));
         });
 
-        bank.setOnClickListener(v -> {
+        paymentBinding.others.setOnClickListener(v -> {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            double amToPay = Double.parseDouble(paymentBinding.amountPay.getText().toString());
+            addBalanceViaSSL(giftCardInvoice, Utils.formatPrice(amToPay));
+        });
+
+        paymentBinding.bank.setOnClickListener(v -> {
             isImageSelected = false;
-            amount = amountToPayView.getText().toString();
-            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
+            amount = paymentBinding.amountPay.getText().toString();
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
                     R.drawable.ic_upload_image_large);
             buildBankDialog(bitmap);
         });
@@ -364,7 +355,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         initializeBottomSheet();
 
         giftCardInvoice = item.getInvoiceNo();
-        amountToPayView.setText(Utils.formatPrice(item.getTotal()));
+        paymentBinding.amountPay.setText(Utils.formatPrice(item.getTotal()));
         amount = item.getTotal() + "";
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         bottomSheetDialog.show();
@@ -376,52 +367,51 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         loading = false;
 
         if (currentPage == 1) {
-            progressContainer.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
+            binding.progressContainer.setVisibility(View.VISIBLE);
+            binding.progressBar.setVisibility(View.GONE);
         } else {
-            progressContainer.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
+            binding.progressContainer.setVisibility(View.GONE);
+            binding.progressBar.setVisibility(View.VISIBLE);
         }
 
-        GiftCardApiHelper.getPurchasedGiftCardList("purchased", currentPage, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<List<GiftCardListPurchasedItem>> response, int statusCode) {
+        GiftCardApiHelper.getPurchasedGiftCardList("purchased", currentPage,
+                new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
+                    @Override
+                    public void onDataFetched(CommonDataResponse<List<GiftCardListPurchasedItem>> response, int statusCode) {
 
-                loading = true;
-                progressBar.setVisibility(View.GONE);
-                if (currentPage == 1)
-                    progressContainer.setVisibility(View.GONE);
+                        loading = true;
+                        binding.progressBar.setVisibility(View.GONE);
+                        if (currentPage == 1)
+                            binding.progressContainer.setVisibility(View.GONE);
 
-                itemList.addAll(response.getData());
-                adapter.notifyItemRangeInserted(itemList.size() - response.getData().size(), response.getData().size());
-                currentPage++;
+                        itemList.addAll(response.getData());
+                        adapter.notifyItemRangeInserted(itemList.size() - response.getData().size(), response.getData().size());
+                        currentPage++;
 
-                if (itemList.size() == 0 && currentPage == 1) {
-                    loading = false;
-                    noItem.setVisibility(View.VISIBLE);
+                        if (itemList.size() == 0 && currentPage == 1) {
+                            loading = false;
+                            binding.noItem.setVisibility(View.VISIBLE);
+                            binding.noText.setText("You have not purchased any gift cards");
+                        } else {
+                            binding.noItem.setVisibility(View.GONE);
+                        }
 
-                    TextView noText = view.findViewById(R.id.noText);
-                    noText.setText("You have not purchased any gift cards");
-                } else {
-                    noItem.setVisibility(View.GONE);
-                }
+                        if (response.getData().size() < 10)
+                            loading = false;
 
-                if (response.getData().size() < 10)
-                    loading = false;
+                    }
 
-            }
+                    @Override
+                    public void onFailed(String errorBody, int errorCode) {
 
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
+                    }
 
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    getGiftCardList();
-            }
-        });
+                    @Override
+                    public void onAuthError(boolean logout) {
+                        if (!logout)
+                            getGiftCardList();
+                    }
+                });
 
     }
 
@@ -460,12 +450,12 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     public void addBalanceViaCard(String invoice, String amount) {
 
-        if (amountToPayView.getText().toString().equals("")) {
-            Toast.makeText(context, "Enter amount", Toast.LENGTH_SHORT).show();
+        if (paymentBinding.amountPay.getText().toString().equals("")) {
+            ToastUtils.show("Enter amount");
             return;
         }
 
-        onPaymentRedirect(BuildConfig.WEB_URL+"sebl/payment?amount="+amount+"&invoice="+invoice+"&token="+CredentialManager.getToken().replace("Bearer ", "")+"&context_reference=gift_card", amount, giftCardInvoice);
+        onPaymentRedirect(BuildConfig.WEB_URL+"sebl/payment?amount="+amount+"&invoice="+invoice+"&token="+CredentialManager.getToken().replace("Bearer ", "")+"&context_reference=gift_card_order_payment", amount, giftCardInvoice);
 
 
 //        HashMap<String, String> payload = new HashMap<>();
@@ -498,6 +488,45 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 //
 //            }
 //        });
+    }
+
+    public void addBalanceViaSSL(String invoice, String amount) {
+
+        if (paymentBinding.amountPay.getText().toString().equals("")) {
+            ToastUtils.show("Enter amount");
+            return;
+        }
+
+        HashMap<String, String> payload = new HashMap<>();
+        payload.put("amount", amount);
+        payload.put("context", "gift_card_order_payment");
+        payload.put("context_reference", invoice);
+
+        dialog.showDialog();
+
+        PaymentApiHelper.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+
+                dialog.hideDialog();
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                String purl = response.get("payment_gateway_url").getAsString();
+                onPaymentRedirect(purl, amount, giftCardInvoice);
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                dialog.hideDialog();
+                if (getContext() != null)
+                    Toast.makeText(getContext(), "Error occurred!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void onPaymentRedirect(String url, String amount, String invoice_no) {

@@ -100,9 +100,6 @@
             android:name=".ui.voucher.VoucherActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.giftcard.GiftCardActivity"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".ui.search.SearchCategory"
             android:theme="@style/AppTheme.NoActionBar" />
 

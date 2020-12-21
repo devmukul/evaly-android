@@ -1,180 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottom_sheet"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bottom_sheet_round_create_post"
-    android:clickable="true"
-    android:orientation="vertical"
-    android:paddingLeft="8dp"
-    android:paddingTop="3dp"
-    android:paddingRight="8dp"
-    android:paddingBottom="15dp"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="56dp"
-    app:layout_behavior="@string/bottom_sheet_behavior">
+<layout>
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="5dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingTop="5dp">
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_sheet_round_create_post"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingLeft="8dp"
+        android:paddingTop="3dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="15dp"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="56dp"
+        app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:text="@string/amount_bdt"
+                android:textColor="@color/c666"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/full_or_partial"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:layout_weight="0"
+                android:background="@drawable/make_payment"
+                android:paddingLeft="6dp"
+                android:paddingTop="3dp"
+                android:paddingRight="6dp"
+                android:paddingBottom="3dp"
+                android:text="@string/partial_pay"
+                android:textColor="@color/fffh"
+                android:textSize="13sp"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/amountPay"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="1"
-            android:text="@string/amount_bdt"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/input_brd"
+            android:clickable="false"
+            android:digits="1234567890"
+            android:drawableRight="@drawable/ic_edit_drawable"
+            android:focusableInTouchMode="false"
+            android:hint="@string/amount"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:text="Choose Payment Method:"
             android:textColor="@color/c666"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/full_or_partial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
-            android:layout_weight="0"
-            android:background="@drawable/make_payment"
-            android:paddingLeft="6dp"
-            android:paddingTop="3dp"
-            android:paddingRight="6dp"
-            android:paddingBottom="3dp"
-            android:text="@string/partial_pay"
-            android:textColor="@color/fffh"
-            android:textSize="13sp"
-            android:visibility="visible" />
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingBottom="5dp">
 
-    <EditText
-        android:id="@+id/amountPay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/input_brd"
-        android:clickable="false"
-        android:digits="1234567890"
-        android:drawableRight="@drawable/ic_edit_drawable"
-        android:focusableInTouchMode="false"
-        android:hint="@string/amount"
-        android:imeOptions="actionDone"
-        android:inputType="number"
-        android:paddingLeft="15dp"
-        android:paddingTop="10dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="10dp" />
+            <ImageView
+                android:id="@+id/bkash"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:background="@drawable/payment_select_bg"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:src="@drawable/payment_icon_bkash"
+                android:visibility="visible" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="15dp"
-        android:text="Choose Payment Method:"
-        android:textColor="@color/c666"
-        android:textSize="16sp" />
+            <ImageView
+                android:id="@+id/nagad"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:background="@drawable/payment_select_bg"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_nagad2"
+                android:visibility="visible" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:paddingLeft="15dp"
-        android:paddingBottom="5dp">
+            <ImageView
+                android:id="@+id/card"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:background="@drawable/payment_select_bg"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:src="@drawable/cardpayment"
+                android:visibility="visible" />
 
-        <ImageView
-            android:id="@+id/bkash"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0"
-            android:background="@drawable/payment_select_bg"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:src="@drawable/payment_icon_bkash"
-            android:visibility="visible" />
+            <ImageView
+                android:id="@+id/others"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:background="@drawable/payment_select_bg"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:src="@drawable/ssl_gateway"
+                android:visibility="visible" />
 
-        <ImageView
-            android:id="@+id/nagad"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0"
-            android:background="@drawable/payment_select_bg"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_nagad2"
-            android:visibility="visible" />
+        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/card"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0"
-            android:background="@drawable/payment_select_bg"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:src="@drawable/cardpayment"
-            android:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/bank"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0"
-            android:background="@drawable/payment_select_bg"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_bank_icon"
-            android:visibility="visible"
-            app:tint="@color/c444" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="15dp"
-        android:paddingBottom="5dp">
-
-        <TextView
-            android:id="@+id/bKashText"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0"
-            android:text="@string/bkash"
-            android:textAlignment="center"
-            android:textColor="@color/c666"
-            android:textStyle="bold"
-            android:visibility="visible" />
-
-        <TextView
-            android:id="@+id/nagadText"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0"
-            android:text="@string/nagad"
-            android:textAlignment="center"
-            android:textColor="@color/c666"
-            android:textStyle="bold"
-            android:visibility="visible" />
-
-        <TextView
-            android:id="@+id/gatewayText"
-            android:layout_width="80dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_weight="0"
@@ -182,33 +151,123 @@
             android:textAlignment="center"
             android:textColor="@color/c666"
             android:textStyle="bold"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:id="@+id/bKashText"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:text="@string/bkash"
+                android:textAlignment="center"
+                android:textColor="@color/c666"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/nagadText"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:text="@string/nagad"
+                android:textAlignment="center"
+                android:textColor="@color/c666"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/gatewayText"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:text="@string/visa_master_card"
+                android:textAlignment="center"
+                android:textColor="@color/c666"
+                android:textStyle="bold"
+                android:visibility="visible" />
 
 
-        <TextView
-            android:id="@+id/bankText"
-            android:layout_width="80dp"
+            <TextView
+                android:id="@+id/othersText"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:text="@string/others"
+                android:textAlignment="center"
+                android:textColor="@color/c666"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingBottom="5dp">
+
+            <ImageView
+                android:id="@+id/bank"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:background="@drawable/payment_select_bg"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_bank_icon"
+                android:visibility="visible"
+                app:tint="@color/c444" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_weight="0"
-            android:text="@string/bank"
+            android:text="@string/card"
             android:textAlignment="center"
             android:textColor="@color/c666"
             android:textStyle="bold"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:id="@+id/bankText"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:text="@string/bank"
+                android:textAlignment="center"
+                android:textColor="@color/c666"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/offerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:paddingVertical="5dp"
+            android:text="10% discount on Nagad payment"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/offerText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="15dp"
-        android:paddingVertical="5dp"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:text="10% discount on Nagad payment" />
-
-</LinearLayout>
+</layout>

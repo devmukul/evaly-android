@@ -22,7 +22,6 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
-import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
 
 @EpoxyModelClass(layout = R.layout.home_model_quick_access)
 public abstract class HomeWidgetModel extends DataBindingEpoxyModel {
@@ -43,8 +42,7 @@ public abstract class HomeWidgetModel extends DataBindingEpoxyModel {
 
         binding.btn1Image.setOnClickListener(v -> navController.navigate(R.id.newsfeedFragment));
         binding.btn2Image.setOnClickListener(v -> {
-            Intent ni = new Intent(activity, GiftCardActivity.class);
-            activity.startActivity(ni);
+            navController.navigate(R.id.giftCardFragment);
         });
 
         binding.btn3Image.setOnClickListener(v -> navController.navigate(R.id.campaignFragment));
