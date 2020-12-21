@@ -55,7 +55,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     private AppCompatActivity activityInstance;
     private PaymentMethodController controller;
     private ViewDialog dialog;
-    private String[] paymentMethods;
+    private ArrayList<String> paymentMethods;
     private String balanceText, deliveryFee;
     private boolean applyDeliveryFee;
     private String disabledPaymentMethods = "", disabledPaymentMethodText = "", nagadBadgeText = "", nagadDescription = "";
@@ -63,7 +63,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     public static PaymentBottomSheet newInstance(String invoiceNo,
                                                  double totalAmount,
                                                  double paidAmount,
-                                                 String[] paymentMethods,
+                                                 ArrayList<String> paymentMethods,
                                                  boolean applyDeliveryFee,
                                                  String deliveryFee,
                                                  PaymentOptionListener paymentOptionListener) {
@@ -73,12 +73,13 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         bundle.putString("invoice_no", invoiceNo);
         bundle.putDouble("total_amount", totalAmount);
         bundle.putDouble("paid_amount", paidAmount);
-        bundle.putStringArray("payment_methods", paymentMethods);
+        bundle.putStringArrayList("payment_methods", paymentMethods);
         bundle.putBoolean("apply_delivery_fee", applyDeliveryFee);
         bundle.putString("delivery_fee", deliveryFee);
         instance.setArguments(bundle);
         return instance;
     }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -103,7 +104,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             invoice_no = getArguments().getString("invoice_no");
             total_amount = getArguments().getDouble("total_amount");
             paid_amount = getArguments().getDouble("paid_amount");
-            paymentMethods = getArguments().getStringArray("payment_methods");
+            paymentMethods = getArguments().getStringArrayList("payment_methods");
             applyDeliveryFee = getArguments().getBoolean("apply_delivery_fee");
             deliveryFee = getArguments().getString("delivery_fee");
 
@@ -112,7 +113,35 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             disabledPaymentMethodText = remoteConfig.getString("disabled_payment_text");
             nagadBadgeText = remoteConfig.getString("nagad_badge_text");
             nagadDescription = remoteConfig.getString("nagad_description");
+
+            prioritySorting();
         }
+    }
+
+    private void prioritySorting() {
+        ArrayList<String> priorityList = new ArrayList<>();
+        priorityList.add("bkash");
+        priorityList.add("nagad");
+        priorityList.add("sebl_gateway");
+        priorityList.add("balance");
+        priorityList.add("cod+balance");
+        priorityList.add("cod");
+        priorityList.add("sslcommerz_gateway");
+
+        ArrayList<String> newList = intersection(priorityList, paymentMethods);
+
+        for (String s : paymentMethods) {
+            if (!newList.contains(s))
+                newList.add(s);
+        }
+
+        paymentMethods = newList;
+    }
+
+    private ArrayList<String> intersection(ArrayList<String> list, ArrayList<String> list2) {
+        ArrayList<String> result = new ArrayList<>(list);
+        result.retainAll(list2);
+        return result;
     }
 
     @NonNull
@@ -221,7 +250,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         } else if (method.getName().equalsIgnoreCase(Constants.CARD)) {
             Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
             viewModel.payViaSEBL(invoice_no, enteredAmount);
-        }else if (method.getName().equalsIgnoreCase(Constants.OTHERS)) {
+        } else if (method.getName().equalsIgnoreCase(Constants.OTHERS)) {
             Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
             viewModel.payViaCard(invoice_no, enteredAmount);
         } else if (method.getName().equalsIgnoreCase(Constants.NAGAD)) {
@@ -243,51 +272,11 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         if (paymentMethods == null)
             return;
 
-        for (int i = 0; i < paymentMethods.length; i++) {
+        for (int i = 0; i < paymentMethods.size(); i++) {
 
-            boolean isEnabled = !disabledPaymentMethods.contains(paymentMethods[i]);
+            boolean isEnabled = !disabledPaymentMethods.contains(paymentMethods.get(i));
 
-            if (paymentMethods[i].equalsIgnoreCase("balance")) {
-                methodList.add(new PaymentMethodModel(
-                        "Evaly Account",
-                        balanceText,
-                        disabledPaymentMethodText,
-                        R.drawable.payment_icon_evaly,
-                        false,
-                        isEnabled));
-            } else if (paymentMethods[i].equalsIgnoreCase("cod+balance")) {
-                methodList.add(new PaymentMethodModel(
-                        Constants.BALANCE_WITH_CASH,
-                        balanceText,
-                        disabledPaymentMethodText,
-                        R.drawable.payment_icon_evaly,
-                        false,
-                        isEnabled));
-            } else if (paymentMethods[i].equalsIgnoreCase("cod")) {
-                methodList.add(new PaymentMethodModel(
-                        Constants.CASH_ON_DELIVERY,
-                        "Payment on delivery.",
-                        disabledPaymentMethodText,
-                        R.drawable.ic_cash,
-                        false,
-                        isEnabled));
-            } else if (paymentMethods[i].equalsIgnoreCase("sebl_gateway")) {
-                methodList.add(new PaymentMethodModel(
-                        Constants.CARD,
-                        "Pay from your debit/visa/master card using \nSEBL payment gateway.",
-                        disabledPaymentMethodText,
-                        R.drawable.payment_cards,
-                        false,
-                        isEnabled));
-            }else if (paymentMethods[i].equalsIgnoreCase("sslcommerz_gateway")) {
-                methodList.add(new PaymentMethodModel(
-                        Constants.OTHERS,
-                        "Pay from your amex/others card using \nSSL payment gateway.",
-                        disabledPaymentMethodText,
-                        R.drawable.sslcommerz,
-                        false,
-                        isEnabled));
-            } else if (paymentMethods[i].equalsIgnoreCase("bkash")) {
+            if (paymentMethods.get(i).equalsIgnoreCase("bkash")) {
                 methodList.add(new PaymentMethodModel(
                         Constants.BKASH,
                         "Pay from your bKash account using \nbKash payment gateway.",
@@ -295,7 +284,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                         R.drawable.payment_bkash_square,
                         false,
                         isEnabled));
-            } else if (paymentMethods[i].equalsIgnoreCase("nagad")) {
+            } else if (paymentMethods.get(i).equalsIgnoreCase("nagad")) {
                 methodList.add(new PaymentMethodModel(
                         Constants.NAGAD,
                         nagadDescription.equals("") ? "Pay from your Nagad account using \nNagad payment gateway." : nagadDescription,
@@ -304,8 +293,46 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                         R.drawable.ic_nagad2,
                         false,
                         isEnabled));
-            } else {
-
+            } else if (paymentMethods.get(i).equalsIgnoreCase("sebl_gateway")) {
+                methodList.add(new PaymentMethodModel(
+                        Constants.CARD,
+                        "Pay from your debit/visa/mastercard using \nSEBL payment gateway.",
+                        disabledPaymentMethodText,
+                        R.drawable.payment_cards,
+                        false,
+                        isEnabled));
+            } else if (paymentMethods.get(i).equalsIgnoreCase("balance")) {
+                methodList.add(new PaymentMethodModel(
+                        "Evaly Account",
+                        balanceText,
+                        disabledPaymentMethodText,
+                        R.drawable.payment_icon_evaly,
+                        false,
+                        isEnabled));
+            } else if (paymentMethods.get(i).equalsIgnoreCase("cod+balance")) {
+                methodList.add(new PaymentMethodModel(
+                        Constants.BALANCE_WITH_CASH,
+                        balanceText,
+                        disabledPaymentMethodText,
+                        R.drawable.payment_icon_evaly,
+                        false,
+                        isEnabled));
+            } else if (paymentMethods.get(i).equalsIgnoreCase("cod")) {
+                methodList.add(new PaymentMethodModel(
+                        Constants.CASH_ON_DELIVERY,
+                        "Payment on delivery.",
+                        disabledPaymentMethodText,
+                        R.drawable.ic_cash,
+                        false,
+                        isEnabled));
+            } else if (paymentMethods.get(i).equalsIgnoreCase("sslcommerz_gateway")) {
+                methodList.add(new PaymentMethodModel(
+                        Constants.OTHERS,
+                        "Pay from your amex/others card using \nSSL payment gateway.",
+                        disabledPaymentMethodText,
+                        R.drawable.sslcommerz,
+                        false,
+                        isEnabled));
             }
         }
 

@@ -175,6 +175,7 @@
                                     android:paddingLeft="6dp"
                                     android:paddingTop="3dp"
                                     android:paddingRight="6dp"
+                                    android:visibility="gone"
                                     android:paddingBottom="3dp"
                                     android:text="@string/claim"
                                     android:textColor="@color/white"

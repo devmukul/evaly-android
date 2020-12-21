@@ -458,11 +458,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             hidePaymentButtons();
         } else {
             binding.confirmOrder.setVisibility(View.GONE);
-            if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().length > 0) {
+            if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().size() > 0) {
                 showPaymentButtons();
                 binding.payViaGiftCard.setVisibility(View.GONE);
-                for (int i = 0; i < response.getAllowed_payment_methods().length; i++) {
-                    if (response.getAllowed_payment_methods()[i].equalsIgnoreCase("gift_code")) {
+                for (int i = 0; i < response.getAllowed_payment_methods().size(); i++) {
+                    if (response.getAllowed_payment_methods().get(i).equalsIgnoreCase("gift_code")) {
                         binding.payViaGiftCard.setVisibility(View.VISIBLE);
                         break;
                     }

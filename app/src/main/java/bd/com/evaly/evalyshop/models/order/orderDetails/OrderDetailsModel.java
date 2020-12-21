@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.models.order.orderDetails;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDetailsModel {
@@ -74,9 +75,9 @@ public class OrderDetailsModel {
 	private boolean applyDeliveryCharge;
 
 	@SerializedName("allowed_payment_methods")
-	private String [] allowed_payment_methods;
+	private ArrayList<String> allowed_payment_methods;
 
-	public String[] getAllowed_payment_methods() {
+	public ArrayList<String> getAllowed_payment_methods() {
 		return allowed_payment_methods;
 	}
 
