@@ -139,6 +139,9 @@ public class Utils {
         if (payment_method.contains("card")) {
             return true;
         }
+        if (payment_method.contains("ssl")) {
+            return true;
+        }
         return false;
     }
 

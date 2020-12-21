@@ -62,6 +62,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
     private OrderDetailsViewModel orderDetailsViewModel;
     private String orderRefundMinDate = "";
     private String orderDate = "";
+    private String nonBalanceType = "";
 
     public static RefundBottomSheet newInstance(String invoiceNo, String orderStatus, String paymentMethod, String paymentStatus, boolean is_eligible, String orderDate) {
 
@@ -100,9 +101,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         orderDetailsViewModel = new ViewModelProvider(requireActivity()).get(OrderDetailsViewModel.class);
-
         dialog = new ViewDialog(getActivity());
-
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), R.layout.item_spinner_default);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -147,16 +146,18 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                     if (paymentMethod.contains("bank") || (paymentMethod.contains("bank") && paymentMethod.contains("bkash"))) {
                         binding.llBkashHolder.setVisibility(View.GONE);
                         binding.llBankInfoHolder.setVisibility(View.VISIBLE);
-                        paymentType = "Bank";
+                        nonBalanceType = "Bank";
                     } else if (paymentMethod.contains("bkash")) {
                         binding.llBkashHolder.setVisibility(View.VISIBLE);
                         binding.llBankInfoHolder.setVisibility(View.GONE);
-                        paymentType = "bKash";
+                        binding.bkashTitle.setText("bKash Account Number");
+                        nonBalanceType = "Bkash";
                     } else {
                         binding.llBkashHolder.setVisibility(View.GONE);
                         binding.llBankInfoHolder.setVisibility(View.GONE);
-                        paymentType = "Non_balance";
+                        nonBalanceType = "Non_balance";
                     }
+                    paymentType = "Non_balance";
                 } else if (paymentType.equals("Evaly Account") || paymentType.equals("Debit/Credit Card")) {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
@@ -185,10 +186,13 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
             HashMap<String, String> body = new HashMap<>();
             body.put("invoice_no", invoice_no.toUpperCase());
+            if (!nonBalanceType.equals(""))
+                body.put("refund_type", "Non_balance");
 
             if (paymentType.equals("Evaly Account")) {
                 body.put("refund_type", "Balance");
-            } else if (paymentType.equals("bKash")) {
+            } else if (paymentType.equals("bKash") || nonBalanceType.equals("Bkash")) {
+
                 String bkashNumber = binding.etNumber.getText().toString().trim();
                 if (bkashNumber.equals("")) {
                     Toast.makeText(getContext(), "Please enter your bKash account number.", Toast.LENGTH_SHORT).show();
@@ -197,9 +201,12 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                     Toast.makeText(getContext(), "Please enter valid bKash account number.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                body.put("refund_type", "Bkash");
+                if (nonBalanceType.equals(""))
+                    body.put("refund_type", "Bkash");
                 body.put("bkash_account", bkashNumber);
+
             } else if (paymentType.equals("Nagad")) {
+
                 String number = binding.etNumber.getText().toString().trim();
                 if (number.equals("")) {
                     Toast.makeText(getContext(), "Please enter your Nagad account number.", Toast.LENGTH_SHORT).show();
@@ -210,7 +217,8 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                 }
                 body.put("refund_type", "Nagad");
                 body.put("nagad_account", number);
-            } else if (paymentType.equals("Bank")) {
+
+            } else if (paymentType.equals("Bank") || nonBalanceType.equals("Bank")) {
                 String bankName = binding.etBankName.getText().toString().trim();
                 String branchName = binding.etBranch.getText().toString().trim();
                 String routingNumber = binding.etBranchRouting.getText().toString();
@@ -233,7 +241,9 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                     Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                body.put("refund_type", "Bank");
+
+                if (nonBalanceType.equals(""))
+                    body.put("refund_type", "Bank");
                 body.put("bank_name", bankName);
                 body.put("branch_name", branchName);
                 body.put("branch_routing_number", routingNumber);

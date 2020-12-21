@@ -418,8 +418,8 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="mother_s_name">Mother\'s Name</string>
     <string name="terms_amp_conditions"><![CDATA[Terms & Conditions]]></string>
     <string name="enter_contact_number">Enter contact number</string>
-    <string name="visa_master_card">Visa / Master Card</string>
+    <string name="visa_master_card">Visa/Mastercard</string>
     <string name="card">Card</string>
-    <string name="others">Others</string>
+    <string name="others">AMEX/Others</string>
 
 </resources>

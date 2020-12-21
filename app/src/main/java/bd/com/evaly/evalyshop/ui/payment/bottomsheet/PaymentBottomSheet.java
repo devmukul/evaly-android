@@ -366,15 +366,13 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
 
     @Override
     public void payViaCard(String url) {
-        if (getContext() != null) {
-            if (paymentOptionRedirectListener == null || url == null || invoice_no == null || invoice_no.equals("") || url.equals(""))
-                Toast.makeText(getContext(), "Unable to make payment, try again later!", Toast.LENGTH_SHORT).show();
-            else {
-                if (getActivity() != null) {
-                    paymentOptionRedirectListener.onPaymentRedirect(url, enteredAmount, invoice_no);
-                }
-                if (isVisible() && !isRemoving() && !isDetached())
-                    dismissAllowingStateLoss();
+        if (paymentOptionRedirectListener == null || url == null || url.equals("")) {
+           // Toast.makeText(getContext(), "Unable to make payment, try again later!", Toast.LENGTH_SHORT).show();
+        } else {
+            if (isVisible() && !isRemoving() && !isDetached())
+                dismissAllowingStateLoss();
+            if (getActivity() != null) {
+                paymentOptionRedirectListener.onPaymentRedirect(url, enteredAmount, invoice_no);
             }
         }
     }

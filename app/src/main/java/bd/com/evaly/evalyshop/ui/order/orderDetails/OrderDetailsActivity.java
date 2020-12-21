@@ -496,6 +496,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             payMethod = payMethod.replaceAll("binding.balance", "Evaly Account");
             payMethod = payMethod.replaceAll("bank", "Bank Account");
             payMethod = payMethod.replaceAll("gift_code", "Gift Code");
+            payMethod = payMethod.replaceAll("_", " ");
             payMethod = payMethod.replaceAll(",", ", ");
             payMethod = payMethod.replaceAll("  ", " ");
             binding.paymentMethod.setText(Utils.capitalize(payMethod));
