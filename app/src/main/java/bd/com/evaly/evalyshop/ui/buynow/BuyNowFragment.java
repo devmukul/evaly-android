@@ -60,6 +60,7 @@ import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
+import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
@@ -351,14 +352,19 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         btnBottomSheet = bottomSheetView.findViewById(R.id.bs_button);
         contact_number = bottomSheetView.findViewById(R.id.contact_number);
         customAddress = bottomSheetView.findViewById(R.id.customAddress);
-        if (CredentialManager.getUserData() != null) {
-            contact_number.setText(CredentialManager.getUserData().getContact());
 
-            //TODO
-            // customAddress.setText(CredentialManager.getUserData().getAddresses());
+        UserModel userData = CredentialManager.getUserData();
+        if (userData != null) {
+            contact_number.setText(userData.getContacts());
+
+            if (userData.getAddresses() != null &&
+                    userData.getAddresses().getData() != null &&
+                    userData.getAddresses().getData().size() > 0) {
+                customAddress.setText(userData.getAddresses().getData().get(0).getFullAddress());
+            }
         }
-        checkBox = bottomSheetView.findViewById(R.id.checkBox);
 
+        checkBox = bottomSheetView.findViewById(R.id.checkBox);
 
         list = new ArrayList<>();
 
