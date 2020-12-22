@@ -19,21 +19,19 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -58,6 +56,7 @@ import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
+import bd.com.evaly.evalyshop.databinding.FragmentCartBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
@@ -72,6 +71,7 @@ import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -84,33 +84,30 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
 
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
-    private RecyclerView recyclerView;
+    private FragmentCartBinding binding;
     private CartAdapter adapter;
     private LinearLayoutManager manager;
     private Context context;
-    private CheckBox selectAll;
-    private Button checkout, btnBottomSheet;
+    private Button btnBottomSheet;
     private EditText customAddress, contact_number;
     private Switch addressSwitch;
-    private Spinner addressSpinner;
     private List<String> spinnerArray;
-    private List<Integer> spinnerArrayID;
     private ViewDialog dialog;
-    private boolean cartItem = false;
-    private ViewDialog alert;
     private CompoundButton.OnCheckedChangeListener selectAllListener;
     private BottomSheetDialog bottomSheetDialog;
     private View bottomSheetView;
     private View view;
     private AppDatabase appDatabase;
     private CartDao cartDao;
-    private Toolbar mToolbar;
     private int paymentMethod = 2;
     private double totalPriceDouble = 0;
     private TextView tvTotalPrice;
     private NavController navController;
     private String deliveryChargeText = null;
     private String deliveryChargeApplicable = null;
+    private TextView deliveryDuration;
+    private CartController controller;
+    private CartViewModel viewModel;
 
     public CartFragment() {
         // Required empty public constructor
@@ -123,12 +120,14 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_cart, container, false);
+        binding = FragmentCartBinding.inflate(inflater);
+        return binding.getRoot();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(CartViewModel.class);
         context = getContext();
         dialog = new ViewDialog(getActivity());
         appDatabase = AppDatabase.getInstance(getContext());
@@ -141,67 +140,13 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
 
         this.view = view;
         checkRemoteConfig();
-        mToolbar = view.findViewById(R.id.toolbar);
-        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
-        mToolbar.setNavigationOnClickListener(view1 -> {
-            if (getActivity() != null)
-                getActivity().onBackPressed();
-        });
-        mToolbar.inflateMenu(R.menu.delete_btn);
-        mToolbar.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case android.R.id.home:
-                    return true;
-                case R.id.action_delete:
 
-                    if (adapter.getItemCount() == 0) {
-                        Toast.makeText(context, "No item is available in cart to delete", Toast.LENGTH_SHORT).show();
-                    } else {
-                        new AlertDialog.Builder(context)
-                                .setMessage("Are you sure you want to delete the selected products from the cart?")
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+        setupToolbar();
+        setupRecycler();
+        liveEvents();
 
-                                    Executors.newSingleThreadExecutor().execute(() -> {
-                                        List<CartEntity> listAdapter = adapter.getItemList();
-                                        for (int i = 0; i < listAdapter.size(); i++) {
-                                            if (listAdapter.get(i).isSelected())
-                                                cartDao.deleteBySlug(listAdapter.get(i).getProductID());
-                                        }
-                                    });
-
-                                })
-                                .setNegativeButton(android.R.string.no, null).show();
-                    }
-                    return true;
-            }
-
-            return false;
-        });
-
-        recyclerView = view.findViewById(R.id.recycle);
-        checkout = view.findViewById(R.id.button);
-        selectAll = view.findViewById(R.id.checkBox);
-        alert = new ViewDialog(getActivity());
         tvTotalPrice = view.findViewById(R.id.totalPrice);
-        manager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(manager);
-        adapter = new CartAdapter(context, cartDao);
-        adapter.setHasStableIds(true);
 
-        adapter.setListener(new CartAdapter.CartListener() {
-            @Override
-            public void updateCartFromRecycler() {
-
-            }
-
-            @Override
-            public void uncheckSelectAllBtn(boolean isChecked) {
-                CartFragment.this.uncheckSelectAllBtn(isChecked);
-            }
-        });
-
-        recyclerView.setAdapter(adapter);
 
         // bottom sheet
 
@@ -210,104 +155,13 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
         bottomSheetDialog.setContentView(bottomSheetView);
         btnBottomSheet = bottomSheetView.findViewById(R.id.bs_button);
 
-        TextView deliveryDuration = bottomSheetView.findViewById(R.id.deliveryDuration);
-        checkout.setOnClickListener(v -> {
-
-            if (CredentialManager.getToken().equals("")) {
-                Toast.makeText(context, "You need to login first.", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(requireActivity(), SignInActivity.class));
-                return;
-            }
-            boolean selected = false;
-            boolean isExpress = false;
-            boolean showDeliveryCharge = false;
-
-            HashMap<String, Integer> shopAmountMap = new HashMap<>();
-            HashMap<String, Boolean> shopExpressMap = new HashMap<>();
-
-            for (int i = 0; i < adapter.getItemList().size(); i++) {
-                CartEntity cartItem = adapter.getItemList().get(i);
-                if (cartItem.isSelected()) {
-                    String ss = cartItem.getShopSlug();
-                    Integer am = shopAmountMap.get(ss);
-
-                    if (shopAmountMap.containsKey(ss) && am != null)
-                        shopAmountMap.put(ss, am + cartItem.getPriceInt() * cartItem.getQuantity());
-                    else
-                        shopAmountMap.put(ss, cartItem.getPriceInt() * cartItem.getQuantity());
-
-                    selected = true;
-
-                    JsonObject shopObject = JsonParser.parseString(cartItem.getShopJson()).getAsJsonObject();
-                    if (shopObject.has("is_express_shop")) {
-                        if (shopObject.get("is_express_shop").getAsBoolean() || shopObject.get("is_express_shop").getAsString().equals("1"))
-                            isExpress = true;
-                        if (deliveryChargeApplicable != null) {
-                            String[] array = deliveryChargeApplicable.split(",");
-                            for (String s : array) {
-                                String shopTitle = shopObject.get("shop_name").getAsString();
-                                if (shopTitle.toLowerCase().contains(s.toLowerCase())) {
-                                    showDeliveryCharge = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                    } else {
-                        if (cartItem.getShopSlug().contains("evaly-express"))
-                            isExpress = true;
-                    }
-                    shopExpressMap.put(ss, isExpress);
-                }
-            }
-
-            for (String key : shopAmountMap.keySet()) {
-                Integer am = shopAmountMap.get(key);
-                Boolean express = shopExpressMap.get(key);
-
-                int minAmount = 500;
-                if (express && key.contains("food"))
-                    minAmount = 300;
-
-                if (!key.equals("evaly-amol-1") && am != null && am < minAmount) {
-                    Toast.makeText(getContext(), "You have to order more than TK. " + minAmount + " from an individual shop", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
-
-            checkLocationPermission();
-
-            TextView tvDeliveryChargeText = bottomSheetView.findViewById(R.id.deliveryChargeText);
-            LinearLayout deliveryChargeHolder = bottomSheetView.findViewById(R.id.deliveryChargeHolder);
-            LinearLayout vatHolder = bottomSheetView.findViewById(R.id.vatHolder);
-            if (isExpress) {
-                deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
-            } else {
-                deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
-            }
-
-            if (showDeliveryCharge && isExpress) {
-                if (deliveryChargeText != null)
-                    tvDeliveryChargeText.setText(deliveryChargeText);
-                deliveryChargeHolder.setVisibility(View.VISIBLE);
-                vatHolder.setVisibility(View.VISIBLE);
-            } else {
-                deliveryChargeHolder.setVisibility(View.GONE);
-                vatHolder.setVisibility(View.GONE);
-            }
-
-            if (!selected)
-                Toast.makeText(context, "Please select item from cart", Toast.LENGTH_SHORT).show();
-            else {
-                bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
-                bottomSheetDialog.show();
-            }
+        deliveryDuration = bottomSheetView.findViewById(R.id.deliveryDuration);
+        binding.checkoutBtn.setOnClickListener(v -> {
+            checkoutClicked();
         });
-
 
         selectAllListener = (buttonView, isChecked) -> {
             Executors.newSingleThreadExecutor().execute(() -> {
-
                 List<CartEntity> listAdapter = cartDao.getAll();
                 for (int i = 0; i < listAdapter.size(); i++) {
                     cartDao.markSelected(listAdapter.get(i).getProductID(), isChecked);
@@ -320,7 +174,7 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
         privacyText.setMovementMethod(LinkMovementMethod.getInstance());
         CheckBox checkBox = bottomSheetView.findViewById(R.id.checkBox);
 
-        selectAll.setOnCheckedChangeListener(selectAllListener);
+        binding.checkBox.setOnCheckedChangeListener(selectAllListener);
 
         btnBottomSheet.setOnClickListener(v -> {
 
@@ -348,9 +202,7 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
         contact_number = bottomSheetView.findViewById(R.id.contact_number);
         addressSwitch = bottomSheetView.findViewById(R.id.addressSwitch);
         customAddress = bottomSheetView.findViewById(R.id.customAddress);
-        addressSpinner = bottomSheetView.findViewById(R.id.spinner);
         spinnerArray = new ArrayList<>();
-        spinnerArrayID = new ArrayList<>();
 
         UserModel userData = CredentialManager.getUserData();
         if (userData != null) {
@@ -391,8 +243,158 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
             }
         });
 
-        getCartList();
+        // getCartList();
 
+    }
+
+    private void liveEvents() {
+        viewModel.liveList.observe(getViewLifecycleOwner(), cartEntities -> {
+            controller.setList(cartEntities);
+            controller.requestModelBuild();
+        });
+    }
+
+    private void setupRecycler() {
+        if (controller == null)
+            controller = new CartController();
+        controller.setCartClickListener(this);
+        controller.setViewModel(viewModel);
+        manager = new LinearLayoutManager(context);
+        binding.recyclerView.setLayoutManager(manager);
+        binding.recyclerView.setAdapter(controller.getAdapter());
+    }
+
+    private void checkoutClicked() {
+
+        if (CredentialManager.getToken().equals("")) {
+            Toast.makeText(context, "You need to login first.", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(requireActivity(), SignInActivity.class));
+            return;
+        }
+        boolean selected = false;
+        boolean isExpress = false;
+        boolean showDeliveryCharge = false;
+
+        HashMap<String, Integer> shopAmountMap = new HashMap<>();
+        HashMap<String, Boolean> shopExpressMap = new HashMap<>();
+
+        for (int i = 0; i < adapter.getItemList().size(); i++) {
+            CartEntity cartItem = adapter.getItemList().get(i);
+            if (cartItem.isSelected()) {
+                String ss = cartItem.getShopSlug();
+                Integer am = shopAmountMap.get(ss);
+
+                if (shopAmountMap.containsKey(ss) && am != null)
+                    shopAmountMap.put(ss, am + cartItem.getPriceInt() * cartItem.getQuantity());
+                else
+                    shopAmountMap.put(ss, cartItem.getPriceInt() * cartItem.getQuantity());
+
+                selected = true;
+
+                JsonObject shopObject = JsonParser.parseString(cartItem.getShopJson()).getAsJsonObject();
+                if (shopObject.has("is_express_shop")) {
+                    if (shopObject.get("is_express_shop").getAsBoolean() || shopObject.get("is_express_shop").getAsString().equals("1"))
+                        isExpress = true;
+                    if (deliveryChargeApplicable != null) {
+                        String[] array = deliveryChargeApplicable.split(",");
+                        for (String s : array) {
+                            String shopTitle = shopObject.get("shop_name").getAsString();
+                            if (shopTitle.toLowerCase().contains(s.toLowerCase())) {
+                                showDeliveryCharge = true;
+                                break;
+                            }
+                        }
+                    }
+
+                } else {
+                    if (cartItem.getShopSlug().contains("evaly-express"))
+                        isExpress = true;
+                }
+                shopExpressMap.put(ss, isExpress);
+            }
+        }
+
+        for (String key : shopAmountMap.keySet()) {
+            Integer am = shopAmountMap.get(key);
+            Boolean express = shopExpressMap.get(key);
+
+            int minAmount = 500;
+            if (express && key.contains("food"))
+                minAmount = 300;
+
+            if (!key.equals("evaly-amol-1") && am != null && am < minAmount) {
+                Toast.makeText(getContext(), "You have to order more than TK. " + minAmount + " from an individual shop", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        checkLocationPermission();
+
+        TextView tvDeliveryChargeText = bottomSheetView.findViewById(R.id.deliveryChargeText);
+        LinearLayout deliveryChargeHolder = bottomSheetView.findViewById(R.id.deliveryChargeHolder);
+        LinearLayout vatHolder = bottomSheetView.findViewById(R.id.vatHolder);
+        if (isExpress) {
+            deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
+        } else {
+            deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
+        }
+
+        if (showDeliveryCharge && isExpress) {
+            if (deliveryChargeText != null)
+                tvDeliveryChargeText.setText(deliveryChargeText);
+            deliveryChargeHolder.setVisibility(View.VISIBLE);
+            vatHolder.setVisibility(View.VISIBLE);
+        } else {
+            deliveryChargeHolder.setVisibility(View.GONE);
+            vatHolder.setVisibility(View.GONE);
+        }
+
+        if (!selected)
+            Toast.makeText(context, "Please select item from cart", Toast.LENGTH_SHORT).show();
+        else {
+            bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
+            bottomSheetDialog.show();
+        }
+
+    }
+
+    private void setupToolbar() {
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        binding.toolbar.setNavigationOnClickListener(view1 -> {
+            if (getActivity() != null)
+                getActivity().onBackPressed();
+        });
+        binding.toolbar.inflateMenu(R.menu.delete_btn);
+        binding.toolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case android.R.id.home:
+                    return true;
+                case R.id.action_delete:
+
+                    if (adapter.getItemCount() == 0) {
+                        Toast.makeText(context, "No item is available in cart to delete", Toast.LENGTH_SHORT).show();
+                    } else {
+                        new AlertDialog.Builder(context)
+                                .setMessage("Are you sure you want to delete the selected products from the cart?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+
+                                    Executors.newSingleThreadExecutor().execute(() -> {
+                                        List<CartEntity> listAdapter = adapter.getItemList();
+                                        for (int i = 0; i < listAdapter.size(); i++) {
+                                            if (listAdapter.get(i).isSelected())
+                                                cartDao.deleteBySlug(listAdapter.get(i).getProductID());
+                                        }
+                                    });
+
+                                })
+                                .setNegativeButton(android.R.string.no, null).show();
+                    }
+                    return true;
+            }
+
+            return false;
+        });
     }
 
     private void checkLocationPermission() {
@@ -448,9 +450,9 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
     public void uncheckSelectAllBtn(boolean isChecked) {
 
         if (!isChecked) {
-            selectAll.setOnCheckedChangeListener(null);
-            selectAll.setChecked(false);
-            selectAll.setOnCheckedChangeListener(selectAllListener);
+            binding.checkBox.setOnCheckedChangeListener(null);
+            binding.checkBox.setChecked(false);
+            binding.checkBox.setOnCheckedChangeListener(selectAllListener);
         } else {
 
             boolean isAllSelected = true;
@@ -461,9 +463,9 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
                     break;
                 }
             }
-            selectAll.setOnCheckedChangeListener(null);
-            selectAll.setChecked(isAllSelected);
-            selectAll.setOnCheckedChangeListener(selectAllListener);
+            binding.checkBox.setOnCheckedChangeListener(null);
+            binding.checkBox.setChecked(isAllSelected);
+            binding.checkBox.setOnCheckedChangeListener(selectAllListener);
         }
     }
 
@@ -476,7 +478,7 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
 
                 LinearLayout empty = view.findViewById(R.id.empty);
                 LinearLayout cal = view.findViewById(R.id.cal);
-                recyclerView.setVisibility(View.GONE);
+                binding.recyclerView.setVisibility(View.GONE);
                 cal.setVisibility(View.GONE);
                 empty.setVisibility(View.VISIBLE);
                 Button button = view.findViewById(R.id.button);
@@ -485,7 +487,7 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
                 scrollView.setBackgroundColor(getColor(getContext(), R.color.white));
             } else {
                 totalPriceDouble = 0;
-                cartItem = true;
+                // cartItem = true;
 
                 adapter.setItemList(cartEntities);
 

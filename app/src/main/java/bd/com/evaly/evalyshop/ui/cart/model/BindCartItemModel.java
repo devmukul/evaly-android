@@ -25,7 +25,7 @@ public class BindCartItemModel {
                 .into(binding.productImage);
 
         binding.checkBox.setChecked(model.isSelected());
-        binding.quantity.setText(model.getQuantity());
+        binding.quantity.setText(""+model.getQuantity());
 
         binding.priceTotal.setText(Utils.formatPriceSymbol(model.getPriceInt() * model.getQuantity()));
         binding.price.setText(String.format("%s x %d", Utils.formatPriceSymbol(model.getPriceInt()), model.getQuantity()));

@@ -23,7 +23,7 @@ import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 
-@Database(entities = {CategoryEntity.class, WishListEntity.class, CartEntity.class, BannerItem.class, ExpressServiceModel.class, AddressResponse.class}, version = 17, exportSchema = false)
+@Database(entities = {CategoryEntity.class, WishListEntity.class, CartEntity.class, BannerItem.class, ExpressServiceModel.class, AddressResponse.class}, version = 18, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
