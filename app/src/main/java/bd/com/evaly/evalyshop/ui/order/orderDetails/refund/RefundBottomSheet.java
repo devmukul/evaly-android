@@ -23,11 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.orhanobut.logger.Logger;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -105,20 +101,11 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
         dialog = new ViewDialog(getActivity());
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), R.layout.item_spinner_default);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
-        Date strDate = null;
+        String orderRefundMinDate = "2020-12-21T10:33:38.000Z";
+        if (remoteConfig != null && !remoteConfig.getString("order_refund_min_date").equals(""))
+            orderRefundMinDate = remoteConfig.getString("order_refund_min_date");
 
-        try {
-            String orderRefundMinDate = "22/12/2020";
-            if (remoteConfig != null && !remoteConfig.getString("order_refund_min_date").equals(""))
-                orderRefundMinDate = remoteConfig.getString("order_refund_min_date");
-            strDate = sdf.parse(orderRefundMinDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if (strDate != null && Utils.formattedDateFromStringToTimestampGMT("", "", orderDate) > strDate.getTime()) {
+        if (Utils.formattedDateFromStringToTimestampGMT("", "", orderDate) > Utils.formattedDateFromStringToTimestampGMT("", "", orderRefundMinDate)) {
             if (!order_status.contains("cancel"))
                 spinnerAdapter.add("Evaly Account");
             spinnerAdapter.add("Non Balance");
