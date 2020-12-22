@@ -10,6 +10,8 @@ import androidx.room.Query;
 
 import java.util.List;
 
+import io.reactivex.Completable;
+
 @Dao
 public interface CartDao {
 
@@ -52,6 +54,17 @@ public interface CartDao {
     @Query("UPDATE cart_table SET is_selected = :s WHERE product_id = :productID")
     void markSelected(String productID, boolean s);
 
+    @Query("UPDATE cart_table SET quantity = quantity+1 WHERE product_id = :productID")
+    Completable rxIncreaseQuantity(String productID);
+
+    @Query("UPDATE cart_table SET quantity = quantity-1 WHERE product_id = :productID")
+    Completable rxDecreaseQuantity(String productID);
+
+    @Query("DELETE FROM cart_table WHERE product_id = :productID")
+    Completable rxDeleteBySlug(String productID);
+
+    @Query("DELETE FROM cart_table")
+    Completable rxDeleteAll();
 
 }
 

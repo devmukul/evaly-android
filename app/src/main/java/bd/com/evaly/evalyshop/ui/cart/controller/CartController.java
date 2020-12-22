@@ -7,6 +7,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.ItemCartBinding;
+import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
 import bd.com.evaly.evalyshop.ui.cart.model.BindCartItemModel;
 import bd.com.evaly.evalyshop.ui.cart.model.CartItemModel_;
 
@@ -14,9 +15,14 @@ public class CartController extends EpoxyController {
 
     private List<CartEntity> list = new ArrayList<>();
     private CartClickListener cartClickListener;
+    private CartViewModel viewModel;
 
     public CartController() {
         setFilterDuplicates(true);
+    }
+
+    public void setViewModel(CartViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 
     public void setCartClickListener(CartClickListener cartClickListener) {
@@ -41,10 +47,10 @@ public class CartController extends EpoxyController {
                         cartClickListener.onShopClick(model.model().getShopName(), model.model().getShopSlug());
                     })
                     .increaseQuantity((model, parentView, clickedView, position) -> {
-                        // call viewmodel
+                        viewModel.increaseQuantity(model.model().getSlug());
                     })
                     .deceaseQuantity((model, parentView, clickedView, position) -> {
-                        // call viewmodel
+                        viewModel.decreaseQuantity(model.model().getSlug());
                     })
                     .addTo(this);
         }
