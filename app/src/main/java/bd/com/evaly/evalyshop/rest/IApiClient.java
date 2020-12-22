@@ -672,9 +672,7 @@ public interface IApiClient {
 
     // evaly express services
 
-    // UrlUtils.BASE_URL +
-    // TODO
-    @GET("https://api.evaly.com.bd/core/public/express-services/")
+    @GET(UrlUtils.BASE_URL + "/public/express-services/")
     Call<List<ExpressServiceModel>> getExpressServicesList();
 
 
