@@ -135,14 +135,13 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
         setupOrderHistoryRecycler();
         setupProductListRecycler();
-
+        liveEvents();
         clickListeners();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        liveEvents();
     }
 
     private void setupProductListRecycler() {
@@ -190,7 +189,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         if (invoiceNo.equals("") || orderStatus.equals("") || paymentMethod.equals("") || paymentStatus.equals("")) {
             ToastUtils.show("Can't request refund, reload the page");
         } else {
-            RefundBottomSheet refundBottomSheet = RefundBottomSheet.newInstance(invoiceNo, orderStatus, paymentMethod, paymentStatus, isRefundEligible);
+            RefundBottomSheet refundBottomSheet = RefundBottomSheet.newInstance(invoiceNo, orderStatus, paymentMethod, paymentStatus, isRefundEligible, orderDetailsModel.getDate());
             refundBottomSheet.show(getSupportFragmentManager(), "Refund");
         }
     }
@@ -257,6 +256,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     private void liveEvents() {
+
+        viewModel.balanceLiveData.observe(this, response -> {
+            CredentialManager.setBalance(response.getBalance());
+            binding.balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(response.getBalance()) + "</b>"));
+        });
 
         viewModel.deliveryStatusUpdateLiveData.observe(this, s -> {
             ToastUtils.show(s);
@@ -458,11 +462,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             hidePaymentButtons();
         } else {
             binding.confirmOrder.setVisibility(View.GONE);
-            if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().length > 0) {
+            if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().size() > 0) {
                 showPaymentButtons();
                 binding.payViaGiftCard.setVisibility(View.GONE);
-                for (int i = 0; i < response.getAllowed_payment_methods().length; i++) {
-                    if (response.getAllowed_payment_methods()[i].equalsIgnoreCase("gift_code")) {
+                for (int i = 0; i < response.getAllowed_payment_methods().size(); i++) {
+                    if (response.getAllowed_payment_methods().get(i).equalsIgnoreCase("gift_code")) {
                         binding.payViaGiftCard.setVisibility(View.VISIBLE);
                         break;
                     }
@@ -496,6 +500,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             payMethod = payMethod.replaceAll("binding.balance", "Evaly Account");
             payMethod = payMethod.replaceAll("bank", "Bank Account");
             payMethod = payMethod.replaceAll("gift_code", "Gift Code");
+            payMethod = payMethod.replaceAll("_", " ");
             payMethod = payMethod.replaceAll(",", ", ");
             payMethod = payMethod.replaceAll("  ", " ");
             binding.paymentMethod.setText(Utils.capitalize(payMethod));

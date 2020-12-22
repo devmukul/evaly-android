@@ -25,8 +25,10 @@ import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
+import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 
@@ -42,6 +44,7 @@ public class OrderDetailsViewModel extends ViewModel {
     private MutableLiveData<CommonDataResponse<String>> refundEligibilityLiveData = new MutableLiveData<>();
     private MutableLiveData<CommonDataResponse<String>> refundDeleteLiveData = new MutableLiveData<>();
     private MutableLiveData<CommonDataResponse<OrderDetailsModel>> updateAddress = new MutableLiveData<>();
+    protected MutableLiveData<BalanceResponse> balanceLiveData = new MutableLiveData<>();
     private String invoiceNo;
 
     @ViewModelInject
@@ -50,12 +53,34 @@ public class OrderDetailsViewModel extends ViewModel {
         getOrderDetails();
         getDeliveryHero();
         getOrderHistory();
+        if (CredentialManager.getBalance() == 0)
+            updateBalance();
     }
 
     public void refresh() {
         getOrderDetails();
         getDeliveryHero();
         getOrderHistory();
+    }
+
+    public void updateBalance() {
+
+        PaymentApiHelper.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
+                balanceLiveData.setValue(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void updateProductDeliveryStatus(HashMap<String, String> data) {

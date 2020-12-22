@@ -644,7 +644,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="0"
                             android:gravity="right"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:paddingLeft="20dp"
                             android:paddingRight="20dp">
 
@@ -672,6 +672,23 @@
                                     android:textSize="14sp" />
 
                             </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:id="@+id/withdrawRefund"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right"
+                                android:layout_marginStart="-5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_withdraw_refund"
+                                android:clickable="false"
+                                android:paddingLeft="9dp"
+                                android:paddingTop="5dp"
+                                android:paddingRight="10dp"
+                                android:paddingBottom="5dp"
+                                android:text="X"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -696,23 +713,6 @@
                             android:paddingRight="15dp"
                             android:paddingBottom="8dp"
                             android:text="@string/confirm_order"
-                            android:textAlignment="center"
-                            android:textColor="@color/fffh"
-                            android:visibility="gone" />
-
-
-                        <TextView
-                            android:id="@+id/withdrawRefund"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:background="@drawable/make_payment"
-                            android:clickable="true"
-                            android:paddingLeft="15dp"
-                            android:paddingTop="8dp"
-                            android:paddingRight="15dp"
-                            android:paddingBottom="8dp"
-                            android:text="Cancel Refund Request"
                             android:textAlignment="center"
                             android:textColor="@color/fffh"
                             android:visibility="gone" />

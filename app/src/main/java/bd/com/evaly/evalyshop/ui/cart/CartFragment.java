@@ -62,6 +62,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
+import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.cart.adapter.CartAdapter;
@@ -351,11 +352,15 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
         spinnerArray = new ArrayList<>();
         spinnerArrayID = new ArrayList<>();
 
-        if (CredentialManager.getUserData() != null) {
-            contact_number.setText(CredentialManager.getUserData().getContacts());
+        UserModel userData = CredentialManager.getUserData();
+        if (userData != null) {
+            contact_number.setText(userData.getContacts());
 
-            // TODO
-            //customAddress.setText(CredentialManager.getUserData().getAddresses());
+            if (userData.getAddresses() != null &&
+                    userData.getAddresses().getData() != null &&
+                    userData.getAddresses().getData().size() > 0) {
+                customAddress.setText(userData.getAddresses().getData().get(0).getFullAddress());
+            }
         }
 
         if (getActivity() instanceof MainActivity)

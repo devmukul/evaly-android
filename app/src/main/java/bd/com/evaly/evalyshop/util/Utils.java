@@ -123,6 +123,12 @@ public class Utils {
         if (payment_method.contains("card")) {
             return true;
         }
+        if (payment_method.contains("sslcommerz")) {
+            return true;
+        }
+        if (payment_method.contains("sebl")) {
+            return true;
+        }
         if (payment_method.contains("bank")) {
             return true;
         }
@@ -137,6 +143,9 @@ public class Utils {
             return false;
         }
         if (payment_method.contains("card")) {
+            return true;
+        }
+        if (payment_method.contains("sslcommerz")) {
             return true;
         }
         return false;

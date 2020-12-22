@@ -13,7 +13,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import bd.evaly.evalypaymentlibrary.BuildConfig;
 import bd.evaly.evalypaymentlibrary.R;
 import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
 import im.delight.android.webview.AdvancedWebView;
@@ -75,8 +74,7 @@ public final class PaymentWebActivity extends AppCompatActivity implements Advan
 
     @Override
     public void onPageStarted(String url, Bitmap favicon) {
-        Log.e("+++", url);
-         if (url.contains(PaymentWebBuilder.getSuccessUrl()) && !PaymentWebBuilder.getPurchaseInformation().getGateway().equalsIgnoreCase("sebl")) {
+         if (url.contains(PaymentWebBuilder.getSuccessUrl()) && !(PaymentWebBuilder.getPurchaseInformation() != null && PaymentWebBuilder.getPurchaseInformation().getGateway().equalsIgnoreCase("sebl"))) {
             if (PaymentWebBuilder.getUpayListener() != null) {
                 try {
                     URL successURL = new URL(url);

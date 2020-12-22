@@ -23,8 +23,8 @@ public class Constants {
     public static final String EVALY_ACCOUNT = "Evaly Account";
     public static final String BKASH = "bKash";
     public static final String NAGAD = "Nagad";
-    public static final String CARD = "Visa / Master Card";
-    public static final String OTHERS = "Others";
+    public static final String CARD = "Visa/Mastercard";
+    public static final String OTHERS = "AMEX/Others";
     public static final String BALANCE_WITH_CASH = "Evaly Account + Cash on Delivery";
     // Event specific constants
     public static final String EVT_SIGNUP_SUC = "xmpp_signup_success";
@@ -95,7 +95,7 @@ public class Constants {
     public static final String TYPE_FEED = "feed";
     public static final String EVALY_LOGO = "https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/media/2019-08-04_090235.843922android-icon-200x200.png";
 
-    public static  final String BKASH_SUCCESS_URL = "success.html";
+    public static final String BKASH_SUCCESS_URL = "success.html";
     public static final String SSL_SUCCESS_URL = "evaly.com.bd";
     public static final String SEBL_SUCCESS_URL = BuildConfig.WEB_URL;
 

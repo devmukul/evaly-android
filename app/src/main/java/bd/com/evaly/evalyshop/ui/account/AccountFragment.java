@@ -213,7 +213,6 @@ public class AccountFragment extends Fragment {
         }
     }
 
-
     private void getMessageCount() {
 
         if (Calendar.getInstance().getTimeInMillis() - CredentialManager.getMessageCounterLastUpdated() < 600000) {
