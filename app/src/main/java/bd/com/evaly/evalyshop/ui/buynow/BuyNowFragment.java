@@ -641,28 +641,30 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
                 dismissDialog();
 
-                if (response != null && getContext() != null) {
-                    String errorMsg = response.get("message").getAsString();
-                    ToastUtils.show(errorMsg);
-                    if (response.has("data") && response.getAsJsonArray("data").size() > 0) {
-                        JsonArray data = response.getAsJsonArray("data");
-                        JsonObject item = data.get(0).getAsJsonObject();
-                        String invoice = null;
-                        if (item.has("invoice_no"))
-                            invoice = item.get("invoice_no").getAsString();
+                if (response == null || getContext() == null)
+                    return;
+
+                String message = response.get("message").getAsString();
+                ToastUtils.show(message);
+
+                if (response.has("data") && response.getAsJsonArray("data").size() > 0) {
+                    JsonArray data = response.getAsJsonArray("data");
+                    JsonObject item = data.get(0).getAsJsonObject();
+
+                    String invoice = null;
+                    if (item.has("invoice_no"))
+                        invoice = item.get("invoice_no").getAsString();
+
+                    if (getContext() != null && getActivity() != null && !getActivity().isFinishing() && !getActivity().isDestroyed()) {
                         if (invoice == null || invoice.equals("")) {
-                            if (getActivity() != null && !getActivity().isFinishing()) {
-                                if (getActivity() instanceof MainActivity)
-                                    NavHostFragment.findNavController(BuyNowFragment.this).navigate(R.id.orderListBaseFragment);
-                                else
-                                    getActivity().startActivity(new Intent(getContext(), OrderListActivity.class));
-                            }
+                            if (getActivity() instanceof MainActivity)
+                                navController.navigate(R.id.orderListBaseFragment);
+                            else
+                                getContext().startActivity(new Intent(getContext(), OrderListActivity.class));
                         } else {
-                            if (getActivity() != null) {
-                                Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
-                                intent.putExtra("orderID", invoice);
-                                startActivity(intent);
-                            }
+                            Intent intent = new Intent(getContext(), OrderDetailsActivity.class);
+                            intent.putExtra("orderID", invoice);
+                            startActivity(intent);
                         }
                     }
                 }
