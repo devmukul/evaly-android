@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/price"
                 android:layout_alignStart="@+id/product_name"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="3dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="2000"
                 android:textColor="#f57224"
@@ -143,17 +143,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/priceTotal"
-                android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="@id/priceTotal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/priceTotal">
+                app:layout_constraintTop_toTopOf="@id/priceTotal">
 
                 <ImageView
                     android:id="@+id/minus"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:layout_weight="0"
                     android:background="@drawable/circle_bg"
                     android:clickable="true"
@@ -177,12 +176,12 @@
                     android:paddingRight="10dp"
                     android:text="1"
                     android:textColor="@color/c333"
-                    android:textSize="18sp" />
+                    android:textSize="17sp" />
 
                 <ImageView
                     android:id="@+id/plus"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:layout_weight="0"
                     android:background="@drawable/circle_bg"
                     android:clickable="true"

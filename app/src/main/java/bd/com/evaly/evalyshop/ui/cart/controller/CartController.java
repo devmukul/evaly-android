@@ -89,10 +89,10 @@ public class CartController extends EpoxyController {
                         cartClickListener.onShopClick(model.model().getShopName(), model.model().getShopSlug());
                     })
                     .increaseQuantity((model, parentView, clickedView, position) -> {
-                        viewModel.increaseQuantity(model.model().getSlug());
+                        viewModel.increaseQuantity(model.model().getProductID());
                     })
                     .deceaseQuantity((model, parentView, clickedView, position) -> {
-                        viewModel.decreaseQuantity(model.model().getSlug());
+                        viewModel.decreaseQuantity(model.model().getProductID());
                     })
                     .addTo(this);
 

@@ -30,20 +30,20 @@ public class CartViewModel extends ViewModel {
         compositeDisposable = new CompositeDisposable();
     }
 
-    public void increaseQuantity(String slug) {
-        compositeDisposable.add(cartDao.rxIncreaseQuantity(slug)
+    public void increaseQuantity(String id) {
+        compositeDisposable.add(cartDao.rxIncreaseQuantity(id)
                 .subscribeOn(Schedulers.io())
                 .subscribe());
     }
 
-    public void decreaseQuantity(String slug) {
-        compositeDisposable.add(cartDao.rxDecreaseQuantity(slug)
+    public void decreaseQuantity(String id) {
+        compositeDisposable.add(cartDao.rxDecreaseQuantity(id)
                 .subscribeOn(Schedulers.io())
                 .subscribe());
     }
 
-    public void delete(String slug) {
-        compositeDisposable.add(cartDao.rxDeleteBySlug(slug)
+    public void delete(String id) {
+        compositeDisposable.add(cartDao.rxDeleteBySlug(id)
                 .subscribeOn(Schedulers.io())
                 .subscribe());
     }

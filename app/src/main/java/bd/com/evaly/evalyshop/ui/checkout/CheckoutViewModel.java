@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.ui.checkout;
 
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.JsonObject;
@@ -19,6 +20,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public class CheckoutViewModel extends ViewModel {
 
     protected LiveData<List<CartEntity>> liveList;
+    protected MutableLiveData<JsonObject> orderPlacedLiveData = new MutableLiveData<>();
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
 
@@ -34,7 +36,7 @@ public class CheckoutViewModel extends ViewModel {
         OrderApiHelper.placeOrder(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-
+                orderPlacedLiveData.setValue(response);
             }
 
             @Override

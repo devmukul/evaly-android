@@ -74,6 +74,7 @@
                     android:tint="@color/c444" />
 
                 <TextView
+                    android:id="@+id/address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
@@ -119,6 +120,7 @@
                     app:tint="@color/c444" />
 
                 <TextView
+                    android:id="@+id/contact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
