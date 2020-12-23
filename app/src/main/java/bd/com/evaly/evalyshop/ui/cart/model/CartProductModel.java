@@ -37,9 +37,14 @@ public abstract class CartProductModel extends DataBindingEpoxyModel {
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
         ItemCartProductBinding binding = (ItemCartProductBinding) holder.getDataBinding();
-        binding.container.setOnClickListener(clickListener);
+        binding.imageHolder.setOnClickListener(clickListener);
+        binding.productName.setOnClickListener(clickListener);
+        binding.price.setOnClickListener(clickListener);
+        binding.priceTotal.setOnClickListener(clickListener);
         binding.plus.setOnClickListener(increaseQuantity);
         binding.minus.setOnClickListener(deceaseQuantity);
+        binding.checkBox.setClickable(false);
+        binding.checkBoxHolder.setOnClickListener(view -> binding.checkBox.toggleAnimated());
     }
 
     @Override
