@@ -42,6 +42,9 @@ public interface CartDao {
     @Query("SELECT * FROM cart_table ORDER BY shop_slug, time desc")
     LiveData<List<CartEntity>> getAllLive();
 
+    @Query("SELECT * FROM cart_table  WHERE is_selected = 1 ORDER BY shop_slug, time desc")
+    LiveData<List<CartEntity>> getAllSelectedLive();
+
     @Query("SELECT COUNT(id) FROM cart_table")
     int getCount();
 
