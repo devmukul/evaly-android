@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:background="@drawable/bg_white_round_bottom"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
+            android:paddingTop="5dp"
+            android:paddingBottom="20dp">
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="false"
+                android:layout_centerVertical="false"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dp"
+                android:buttonTint="@color/colorAccentRed"
+                android:gravity="bottom"
+                android:paddingTop="10dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="10dp"
+                android:text="" />
+
+            <ImageView
+                android:id="@+id/product_image"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_below="@+id/sellerHolder"
+                android:layout_marginRight="10dp"
+                android:layout_toRightOf="@+id/checkBox"
+                android:adjustViewBounds="true"
+                android:clickable="true"
+                app:srcCompat="@drawable/ic_placeholder_small" />
+
+            <TextView
+                android:id="@+id/product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/sellerHolder"
+                android:layout_alignParentTop="false"
+                android:layout_marginRight="20dp"
+                android:layout_toRightOf="@+id/product_image"
+                android:clickable="true"
+                android:maxLines="2"
+                android:textColor="@color/c444"
+                android:textIsSelectable="false"
+                android:textSize="14sp"
+                tools:text="This is product title" />
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/product_name"
+                android:layout_alignStart="@+id/product_name"
+                android:layout_marginTop="3dp"
+                android:text="1000 x 2"
+                android:textColor="@color/c777"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/priceTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/price"
+                android:layout_alignStart="@+id/product_name"
+                android:layout_marginTop="6dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="2000"
+                android:textColor="#f57224"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/wholeSalePrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/priceTotal"
+                android:layout_toRightOf="@+id/product_image"
+                android:text="2100"
+                android:textColor="#f57224"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/price"
+                android:layout_alignStart="@+id/product_name"
+                android:layout_alignParentBottom="false"
+                android:layout_marginTop="5dp"
+                android:drawableLeft="@drawable/ic_time_small"
+                android:drawablePadding="5dp"
+                android:paddingBottom="5dp"
+                android:text="1 minute ago"
+                android:textColor="@color/c777"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/countHolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/priceTotal"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="false"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/minus"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="0"
+                    android:background="@drawable/circle_bg"
+                    android:clickable="true"
+                    android:padding="7dp"
+                    app:srcCompat="@drawable/ic_minus"
+                    app:tint="@color/c333" />
+
+                <EditText
+                    android:id="@+id/quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:maxLines="1"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="1"
+                    android:textColor="@color/c333"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/plus"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="0"
+                    android:background="@drawable/circle_bg"
+                    android:clickable="true"
+                    android:padding="7dp"
+                    app:srcCompat="@drawable/ic_plus"
+                    app:tint="@color/c333" />
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/trash"
+                android:layout_width="50dp"
+                android:layout_height="36dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="5dp"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="5dp"
+                android:tint="@color/colorAccent"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_trash" />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</layout>

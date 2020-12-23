@@ -7,17 +7,14 @@ import com.bumptech.glide.request.RequestOptions;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
-import bd.com.evaly.evalyshop.databinding.ItemCartBinding;
+import bd.com.evaly.evalyshop.databinding.ItemCartProductBinding;
 import bd.com.evaly.evalyshop.util.Utils;
 
-public class BindCartItemModel {
+public class CartProductBinder {
 
     @SuppressLint("DefaultLocale")
-    public static void bind(ItemCartBinding binding, CartEntity model) {
-
-        binding.shop.setText(model.getShopName());
+    public static void bind(ItemCartProductBinding binding, CartEntity model) {
         binding.productName.setText(model.getName());
-
         Glide.with(binding.getRoot())
                 .load(model.getImage())
                 .placeholder(R.drawable.ic_placeholder_small)
@@ -25,7 +22,7 @@ public class BindCartItemModel {
                 .into(binding.productImage);
 
         binding.checkBox.setChecked(model.isSelected());
-        binding.quantity.setText(""+model.getQuantity());
+        binding.quantity.setText("" + model.getQuantity());
 
         binding.priceTotal.setText(Utils.formatPriceSymbol(model.getPriceInt() * model.getQuantity()));
         binding.price.setText(String.format("%s x %d", Utils.formatPriceSymbol(model.getPriceInt()), model.getQuantity()));

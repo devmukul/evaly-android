@@ -1,15 +1,20 @@
 package bd.com.evaly.evalyshop.ui.cart.controller;
 
+import androidx.core.content.ContextCompat;
+
 import com.airbnb.epoxy.EpoxyController;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
-import bd.com.evaly.evalyshop.databinding.ItemCartBinding;
+import bd.com.evaly.evalyshop.databinding.ItemCartProductBinding;
+import bd.com.evaly.evalyshop.databinding.ItemCartShopBinding;
 import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
-import bd.com.evaly.evalyshop.ui.cart.model.BindCartItemModel;
-import bd.com.evaly.evalyshop.ui.cart.model.CartItemModel_;
+import bd.com.evaly.evalyshop.ui.cart.model.CartProductBinder;
+import bd.com.evaly.evalyshop.ui.cart.model.CartProductModel_;
+import bd.com.evaly.evalyshop.ui.cart.model.CartShopModel_;
 
 public class CartController extends EpoxyController {
 
@@ -35,11 +40,48 @@ public class CartController extends EpoxyController {
 
     @Override
     protected void buildModels() {
+
+        int index = 0;
         for (CartEntity item : list) {
-            new CartItemModel_()
+
+            boolean addShopHeader;
+            boolean endOfGroup;
+
+            String thisShopSlug = list.get(index).getShopSlug();
+            if (index == 0)
+                addShopHeader = true;
+            else
+                addShopHeader = !list.get(index - 1).getShopSlug().equals(thisShopSlug);
+
+            if (index == (list.size() - 1))
+                endOfGroup = true;
+            else
+                endOfGroup = !list.get(index + 1).getShopSlug().equals(thisShopSlug);
+
+            new CartShopModel_()
+                    .id("cart_shop_item", item.getSlug() + " " + item.getShopSlug())
+                    .model(item)
+                    .onBind((model, view, position) -> {
+                        ItemCartShopBinding binding = (ItemCartShopBinding) view.getDataBinding();
+                        String shopName = model.model().getShopName();
+                        if (shopName != null && !shopName.equals(""))
+                            binding.shop.setText(shopName);
+                        else
+                            binding.shop.setText("Unknown Seller");
+                    })
+                    .addIf(addShopHeader, this);
+
+            new CartProductModel_()
                     .id("cart_item", item.getSlug() + " " + item.getShopSlug())
                     .model(item)
-                    .onBind((model, view, position) -> BindCartItemModel.bind((ItemCartBinding) view.getDataBinding(), model.model()))
+                    .onBind((model, view, position) -> {
+                        ItemCartProductBinding binding = (ItemCartProductBinding) view.getDataBinding();
+                        CartProductBinder.bind(binding, model.model());
+                        if (endOfGroup)
+                            binding.container.setBackground(ContextCompat.getDrawable(binding.container.getContext(), R.drawable.bg_white_round_bottom));
+                        else
+                            binding.container.setBackground(ContextCompat.getDrawable(binding.container.getContext(), R.drawable.bg_white_square));
+                    })
                     .clickListener((model, parentView, clickedView, position) -> {
                         cartClickListener.onClick(model.model().getName(), model.model().getSlug());
                     })
@@ -53,6 +95,8 @@ public class CartController extends EpoxyController {
                         viewModel.decreaseQuantity(model.model().getSlug());
                     })
                     .addTo(this);
+
+            index++;
         }
     }
 

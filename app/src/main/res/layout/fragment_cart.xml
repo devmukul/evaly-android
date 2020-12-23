@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/fafafa"
+                android:background="@color/f8f8f8"
                 android:focusableInTouchMode="true"
                 android:orientation="vertical">
 
@@ -39,8 +39,8 @@
                         android:id="@+id/recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/fafafa"
-                        android:nestedScrollingEnabled="false"
+                        android:background="@color/f8f8f8"
+                        android:paddingTop="2dp"
                         android:paddingBottom="15dp"
                         tools:itemCount="1"
                         tools:listitem="@layout/item_cart">
