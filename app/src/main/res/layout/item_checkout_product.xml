@@ -1,101 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="15dp"
-    android:layout_marginBottom="3dp"
-    android:orientation="horizontal">
+<layout>
 
-    <FrameLayout
-        android:layout_width="81dp"
-        android:layout_height="81dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:background="@drawable/input_brd"
-        android:padding="1dp">
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:clipToPadding="true"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
-            app:cardPreventCornerOverlap="true">
-
-            <ImageView
-                android:id="@+id/productImage"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center_horizontal"
-                android:adjustViewBounds="true"
-                android:padding="1dp"
-                app:srcCompat="@drawable/ic_placeholder_small" />
-        </androidx.cardview.widget.CardView>
-
-    </FrameLayout>
-
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="clip_horizontal"
-        android:orientation="vertical">
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="3dp"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/productName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginEnd="20dp"
-            android:textColor="@color/c555"
-            tools:text="This is the product title, variation name is on bottom" />
+        <FrameLayout
+            android:layout_width="81dp"
+            android:layout_height="81dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/input_brd"
+            android:padding="1dp">
 
-        <TextView
-            android:id="@+id/variation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginEnd="20dp"
-            android:layout_weight="0"
-            android:textColor="@color/c333"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            tools:text="Size: 20" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:clipToPadding="true"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:cardPreventCornerOverlap="true">
 
+                <ImageView
+                    android:id="@+id/productImage"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:padding="1dp"
+                    app:srcCompat="@drawable/ic_placeholder_small" />
+            </androidx.cardview.widget.CardView>
 
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:gravity="clip_horizontal"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/price_quan"
+                android:id="@+id/productName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
                 android:layout_marginTop="2dp"
-                android:layout_weight="1"
-                android:textColor="@color/c666"
-                tools:text="1 x 4,00000" />
+                android:layout_marginEnd="20dp"
+                android:textColor="@color/c555"
+                tools:text="This is the product title, variation name is on bottom" />
 
             <TextView
-                android:id="@+id/price"
+                android:id="@+id/variation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
-                android:layout_marginRight="20dp"
-                android:layout_weight="1"
-                android:fontFamily="sans-serif-medium"
-                android:textAlignment="textEnd"
-                android:textColor="@color/c666"
-                tools:text="4,00000" />
+                android:layout_marginEnd="20dp"
+                android:layout_weight="0"
+                android:textColor="@color/c333"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                tools:text="Size: 20" />
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/price_quan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="1"
+                    android:textColor="@color/c666"
+                    tools:text="1 x 4,00000" />
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-medium"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/c666"
+                    tools:text="4,00000" />
+
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</layout>

@@ -55,6 +55,7 @@ import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
+import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
@@ -477,6 +478,10 @@ public interface IApiClient {
 
     @POST(UrlUtils.DOMAIN + "order-request-go/api/v1/order-requests/place-order")
     Call<JsonObject> placeOrder(@Header("Authorization") String token, @Body JsonObject body);
+
+
+    @POST(UrlUtils.DOMAIN + "order-request-go/api/v1/order-requests/place-order")
+    Call<CommonDataResponse<List<OrderDetailsModel>>> placeOrder(@Header("Authorization") String token, @Body PlaceOrderItem body);
 
     @GET(UrlUtils.BASE_URL + "custom/orders/{invoiceNo}/")
     Call<OrderDetailsModel> getOrderDetails(@Header("Authorization") String token, @Path("invoiceNo") String invoiceNo);

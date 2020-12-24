@@ -10,7 +10,6 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,11 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -38,10 +37,10 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.FragmentCheckoutBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
-import bd.com.evaly.evalyshop.ui.cart.CartFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
@@ -60,6 +59,10 @@ public class CheckoutFragment extends Fragment {
     private FragmentCheckoutBinding binding;
     private CheckoutViewModel viewModel;
     private String deliveryChargeText = null, deliveryChargeApplicable = null, deliveryDuration;
+    private NavController navController;
+
+    public CheckoutFragment() {
+    }
 
     @Nullable
     @Override
@@ -72,7 +75,7 @@ public class CheckoutFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(CheckoutViewModel.class);
-
+        navController = NavHostFragment.findNavController(CheckoutFragment.this);
         checkRemoteConfig();
         updateViews();
         clickListeners();
@@ -225,55 +228,52 @@ public class CheckoutFragment extends Fragment {
 
         viewModel.orderPlacedLiveData.observe(getViewLifecycleOwner(), response -> {
 
-            if (response != null && getActivity() != null) {
-                String message = response.get("message").getAsString();
-                ToastUtils.show(message);
+            if (response != null && getActivity() != null)
+                return;
 
-                if (response.has("data")) {
-                    JsonArray data = response.getAsJsonArray("data");
-                    if (data.size() > 0)
-                        orderPlaced();
+            ToastUtils.show(response.getMessage());
+            List<OrderDetailsModel> list = response.getData();
+            if (list.size() > 0) {
+                viewModel.deleteSelected();
+                ToastUtils.show("Your order has been placed!");
+            }
 
-                    for (int i = 0; i < data.size(); i++) {
-                        JsonObject item = data.get(i).getAsJsonObject();
-                        String invoice = null;
-                        if (item.has("invoice_no"))
-                            invoice = item.get("invoice_no").getAsString();
-                        if (invoice == null || invoice.equals("")) {
-                            if (getActivity() != null && !getActivity().isFinishing()) {
-                                if (getActivity() instanceof MainActivity && NavHostFragment.findNavController(CheckoutFragment.this) != null)
-                                    NavHostFragment.findNavController(CheckoutFragment.this).navigate(R.id.orderListBaseFragment);
-                                else
-                                    getActivity().startActivity(new Intent(getContext(), OrderListActivity.class));
-                            }
-                            break;
-                        } else {
-                            Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
-                            intent.putExtra("orderID", invoice);
-                            startActivity(intent);
-                        }
+            for (OrderDetailsModel item : list) {
+                String invoice = null;
+                if (item.getInvoiceNo() != null)
+                    invoice = item.getInvoiceNo();
+                if (invoice == null || invoice.equals("")) {
+                    if (getActivity() != null && !getActivity().isFinishing()) {
+                        if (getActivity() instanceof MainActivity && navController != null)
+                            navController.navigate(R.id.orderListBaseFragment);
+                        else
+                            getActivity().startActivity(new Intent(getContext(), OrderListActivity.class));
                     }
+                    break;
+                } else {
+                    Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
+                    intent.putExtra("orderID", invoice);
+                    startActivity(intent);
                 }
             }
         });
-
     }
 
 
-    private JsonObject generateOrderJson() {
+    private PlaceOrderItem generateOrderJson() {
 
-        PlaceOrderItem orderObejct = new PlaceOrderItem();
+        PlaceOrderItem orderObject = new PlaceOrderItem();
 
-        orderObejct.setContactNumber(binding.contact.getText().toString());
-        orderObejct.setCustomerAddress(binding.address.getText().toString());
-        orderObejct.setOrderOrigin("app");
+        orderObject.setContactNumber(binding.contact.getText().toString());
+        orderObject.setCustomerAddress(binding.address.getText().toString());
+        orderObject.setOrderOrigin("app");
 
         if (CredentialManager.getLatitude() != null && CredentialManager.getLongitude() != null) {
-            orderObejct.setDeliveryLatitude(CredentialManager.getLatitude());
-            orderObejct.setDeliveryLongitude(CredentialManager.getLongitude());
+            orderObject.setDeliveryLatitude(CredentialManager.getLatitude());
+            orderObject.setDeliveryLongitude(CredentialManager.getLongitude());
         }
 
-        orderObejct.setPaymentMethod("evaly_pay");
+        orderObject.setPaymentMethod("evaly_pay");
 
         List<OrderItemsItem> productList = new ArrayList<>();
 
@@ -297,22 +297,9 @@ public class CheckoutFragment extends Fragment {
             }
         }
 
-        orderObejct.setOrderItems(productList);
+        orderObject.setOrderItems(productList);
 
-        return new Gson().toJsonTree(orderObejct).getAsJsonObject();
-    }
-
-    public void orderPlaced() {
-
-//        Executors.newSingleThreadExecutor().execute(() -> {
-//            List<CartEntity> listAdapter = adapter.getItemList();
-//            for (int i = 0; i < listAdapter.size(); i++) {
-//                if (listAdapter.get(i).isSelected())
-//                    cartDao.deleteBySlug(listAdapter.get(i).getProductID());
-//            }
-//        });
-
-        ToastUtils.show("Your order has been placed!");
+        return orderObject;
     }
 
     @Override

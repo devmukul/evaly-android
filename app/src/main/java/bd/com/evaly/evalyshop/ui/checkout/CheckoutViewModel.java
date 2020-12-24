@@ -5,22 +5,23 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.gson.JsonObject;
-
 import java.util.List;
 
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
+import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class CheckoutViewModel extends ViewModel {
 
     protected LiveData<List<CartEntity>> liveList;
-    protected MutableLiveData<JsonObject> orderPlacedLiveData = new MutableLiveData<>();
+    protected MutableLiveData<CommonDataResponse<List<OrderDetailsModel>>> orderPlacedLiveData = new MutableLiveData<>();
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
 
@@ -31,11 +32,18 @@ public class CheckoutViewModel extends ViewModel {
         compositeDisposable = new CompositeDisposable();
     }
 
-    public void placeOrder(JsonObject payload) {
 
-        OrderApiHelper.placeOrder(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+    public void deleteSelected() {
+        compositeDisposable.add(cartDao.rxDeleteSelected()
+                .subscribeOn(Schedulers.io())
+                .subscribe());
+    }
+
+    public void placeOrder(PlaceOrderItem payload) {
+
+        OrderApiHelper.placeOrder(payload, new ResponseListenerAuth<CommonDataResponse<List<OrderDetailsModel>>, String>() {
             @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<List<OrderDetailsModel>> response, int statusCode) {
                 orderPlacedLiveData.setValue(response);
             }
 
