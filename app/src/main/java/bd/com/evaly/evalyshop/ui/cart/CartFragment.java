@@ -16,19 +16,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-
-import java.util.List;
-import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
-import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.FragmentCartBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
@@ -49,13 +46,9 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
     private CompoundButton.OnCheckedChangeListener selectAllListener;
     private AppDatabase appDatabase;
     private CartDao cartDao;
-    private int paymentMethod = 2;
-    private double totalPriceDouble = 0;
-    private NavController navController;
-    private String deliveryChargeText = null;
-    private String deliveryChargeApplicable = null;
     private CartController controller;
     private CartViewModel viewModel;
+    private NavController navController;
 
     public CartFragment() {
         // Required empty public constructor
@@ -85,26 +78,22 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        navController = NavHostFragment.findNavController(this);
         setupToolbar();
         setupRecycler();
         liveEvents();
+        clickListeners();
 
+    }
 
+    private void clickListeners() {
         binding.checkoutBtn.setOnClickListener(v -> {
             checkoutClicked();
         });
 
-        selectAllListener = (buttonView, isChecked) -> {
-            Executors.newSingleThreadExecutor().execute(() -> {
-                List<CartEntity> listAdapter = cartDao.getAll();
-                for (int i = 0; i < listAdapter.size(); i++) {
-                    cartDao.markSelected(listAdapter.get(i).getProductID(), isChecked);
-                }
-            });
-        };
-
-        binding.checkBox.setOnCheckedChangeListener(selectAllListener);
+        binding.checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            viewModel.selectAll(!isChecked);
+        });
     }
 
     private void liveEvents() {
@@ -145,7 +134,6 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
                 case android.R.id.home:
                     return true;
                 case R.id.action_delete:
-
                     if (viewModel.liveList.getValue().size() == 0) {
                         Toast.makeText(context, "No item is available in cart to delete", Toast.LENGTH_SHORT).show();
                     } else {
@@ -153,15 +141,7 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
                                 .setMessage("Are you sure you want to delete the selected products from the cart?")
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
-
-                                    Executors.newSingleThreadExecutor().execute(() -> {
-                                        List<CartEntity> listAdapter = viewModel.liveList.getValue();
-                                        for (int i = 0; i < listAdapter.size(); i++) {
-                                            if (listAdapter.get(i).isSelected())
-                                                cartDao.deleteBySlug(listAdapter.get(i).getProductID());
-                                        }
-                                    });
-
+                                    viewModel.deleteSelected();
                                 })
                                 .setNegativeButton(android.R.string.no, null).show();
                     }
@@ -170,30 +150,6 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
 
             return false;
         });
-    }
-
-
-    public void uncheckSelectAllBtn(boolean isChecked) {
-
-        if (!isChecked) {
-            binding.checkBox.setOnCheckedChangeListener(null);
-            binding.checkBox.setChecked(false);
-            binding.checkBox.setOnCheckedChangeListener(selectAllListener);
-        } else {
-
-            boolean isAllSelected = true;
-
-            List<CartEntity> list = viewModel.liveList.getValue();
-            for (int i = 0; i < list.size(); i++) {
-                if (!list.get(i).isSelected()) {
-                    isAllSelected = false;
-                    break;
-                }
-            }
-            binding.checkBox.setOnCheckedChangeListener(null);
-            binding.checkBox.setChecked(isAllSelected);
-            binding.checkBox.setOnCheckedChangeListener(selectAllListener);
-        }
     }
 
     @Override

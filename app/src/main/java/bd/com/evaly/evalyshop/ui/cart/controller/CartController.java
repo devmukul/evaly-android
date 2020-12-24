@@ -82,6 +82,9 @@ public class CartController extends EpoxyController {
                         else
                             binding.container.setBackground(ContextCompat.getDrawable(binding.container.getContext(), R.drawable.bg_white_square));
                     })
+                    .checkedListener((checkBox, isChecked, entity) -> {
+                        viewModel.selectBySlug(entity.getProductID(), isChecked);
+                    })
                     .clickListener((model, parentView, clickedView, position) -> {
                         cartClickListener.onClick(model.model().getName(), model.model().getSlug());
                     })

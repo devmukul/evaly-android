@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.ui.cart;
 
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.JsonObject;
@@ -20,6 +21,7 @@ import io.reactivex.schedulers.Schedulers;
 public class CartViewModel extends ViewModel {
 
     protected LiveData<List<CartEntity>> liveList;
+    protected MutableLiveData<Boolean> isAllSelected = new MutableLiveData<>();
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
 
@@ -50,6 +52,24 @@ public class CartViewModel extends ViewModel {
 
     public void deleteAll() {
         compositeDisposable.add(cartDao.rxDeleteAll()
+                .subscribeOn(Schedulers.io())
+                .subscribe());
+    }
+
+    public void deleteSelected() {
+        compositeDisposable.add(cartDao.rxDeleteSelected()
+                .subscribeOn(Schedulers.io())
+                .subscribe());
+    }
+
+    public void selectAll(boolean select) {
+        compositeDisposable.add(cartDao.rxSelectAll(select)
+                .subscribeOn(Schedulers.io())
+                .subscribe());
+    }
+
+    public void selectBySlug(String id, boolean select) {
+        compositeDisposable.add(cartDao.rxSelectById(id, select)
                 .subscribeOn(Schedulers.io())
                 .subscribe());
     }

@@ -21,7 +21,7 @@ public class CartProductBinder {
                 .apply(new RequestOptions().override(250, 250))
                 .into(binding.productImage);
 
-        binding.checkBox.setChecked(model.isSelected());
+        binding.checkBox.setChecked(model.isSelected(), true);
         binding.quantity.setText("" + model.getQuantity());
 
         binding.priceTotal.setText(Utils.formatPriceSymbol(model.getPriceInt() * model.getQuantity()));

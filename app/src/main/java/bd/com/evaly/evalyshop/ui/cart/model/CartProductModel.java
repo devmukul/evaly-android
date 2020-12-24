@@ -33,6 +33,9 @@ public abstract class CartProductModel extends DataBindingEpoxyModel {
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener deceaseQuantity;
 
+    @EpoxyAttribute(DoNotHash)
+    CheckedListener checkedListener;
+
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
@@ -44,7 +47,9 @@ public abstract class CartProductModel extends DataBindingEpoxyModel {
         binding.plus.setOnClickListener(increaseQuantity);
         binding.minus.setOnClickListener(deceaseQuantity);
         binding.checkBox.setClickable(false);
-        binding.checkBoxHolder.setOnClickListener(view -> binding.checkBox.toggleAnimated());
+        binding.checkBoxHolder.setOnClickListener(view -> {
+            checkedListener.onCheckedChanged(binding.checkBox, !binding.checkBox.isChecked(), model);
+        });
     }
 
     @Override

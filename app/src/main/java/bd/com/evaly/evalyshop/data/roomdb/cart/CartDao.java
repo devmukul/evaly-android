@@ -60,14 +60,23 @@ public interface CartDao {
     @Query("UPDATE cart_table SET quantity = quantity+1 WHERE product_id = :productID")
     Completable rxIncreaseQuantity(String productID);
 
-    @Query("UPDATE cart_table SET quantity = quantity-1 WHERE product_id = :productID")
+    @Query("UPDATE cart_table SET quantity = quantity-1 WHERE product_id = :productID AND quantity > 1")
     Completable rxDecreaseQuantity(String productID);
+
+    @Query("UPDATE cart_table SET is_selected = :select")
+    Completable rxSelectAll(boolean select);
 
     @Query("DELETE FROM cart_table WHERE product_id = :productID")
     Completable rxDeleteBySlug(String productID);
 
+    @Query("UPDATE cart_table SET is_selected = :select WHERE product_id = :productID")
+    Completable rxSelectById(String productID, boolean select);
+
     @Query("DELETE FROM cart_table")
     Completable rxDeleteAll();
+
+    @Query("DELETE FROM cart_table WHERE is_selected = 1")
+    Completable rxDeleteSelected();
 
 }
 
