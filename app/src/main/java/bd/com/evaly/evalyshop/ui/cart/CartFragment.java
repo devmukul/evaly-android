@@ -26,11 +26,14 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.FragmentCartBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.cart.controller.CartController;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -49,6 +52,9 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
     private CartController controller;
     private CartViewModel viewModel;
     private NavController navController;
+    private CompoundButton.OnCheckedChangeListener allCheckedListener = (compoundButton, isChecked) -> {
+        viewModel.selectAll(isChecked);
+    };
 
     public CartFragment() {
         // Required empty public constructor
@@ -78,12 +84,12 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        navController = NavHostFragment.findNavController(this);
+        if (getContext() instanceof MainActivity)
+            navController = NavHostFragment.findNavController(this);
         setupToolbar();
         setupRecycler();
         liveEvents();
         clickListeners();
-
     }
 
     private void clickListeners() {
@@ -91,15 +97,27 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
             checkoutClicked();
         });
 
-        binding.checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            viewModel.selectAll(!isChecked);
-        });
+        binding.checkBox.setOnCheckedChangeListener(allCheckedListener);
     }
 
     private void liveEvents() {
         viewModel.liveList.observe(getViewLifecycleOwner(), cartEntities -> {
             controller.setList(cartEntities);
             controller.requestModelBuild();
+
+            boolean allSelected = cartEntities.size() > 0;
+            double totalPrice = 0;
+            for (CartEntity entity : cartEntities) {
+                if (!entity.isSelected()) {
+                    allSelected = false;
+                } else
+                    totalPrice += entity.getPriceDouble() * entity.getQuantity();
+            }
+
+            binding.checkBox.setOnCheckedChangeListener(null);
+            binding.checkBox.setChecked(allSelected);
+            binding.checkBox.setOnCheckedChangeListener(allCheckedListener);
+            binding.totalPrice.setText(Utils.formatPriceSymbol(totalPrice));
         });
     }
 
@@ -114,12 +132,10 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
     }
 
     private void checkoutClicked() {
-
         if (CredentialManager.getToken().equals("")) {
             Toast.makeText(context, "You need to login first.", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(requireActivity(), SignInActivity.class));
         }
-
     }
 
     private void setupToolbar() {
