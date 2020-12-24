@@ -26,6 +26,8 @@ public abstract class CheckoutProductModel extends DataBindingEpoxyModel {
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
         ItemCheckoutProductBinding binding = (ItemCheckoutProductBinding) holder.getDataBinding();
+
+        binding.productName.setText(model.getName());
         binding.price.setText(Utils.formatPriceSymbol(model.getPriceDouble() * model.getQuantity()));
         binding.priceQuan.setText(String.format(Locale.ENGLISH, "%s x %s",
                 Utils.formatPriceSymbol(model.getPriceDouble()), model.getQuantity()));

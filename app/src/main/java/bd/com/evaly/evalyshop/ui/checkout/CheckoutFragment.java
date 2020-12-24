@@ -21,7 +21,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -40,7 +39,9 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
+import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.checkout.controller.CheckoutProductController;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
@@ -60,6 +61,7 @@ public class CheckoutFragment extends Fragment {
     private CheckoutViewModel viewModel;
     private String deliveryChargeText = null, deliveryChargeApplicable = null, deliveryDuration;
     private NavController navController;
+    private CheckoutProductController controller;
 
     public CheckoutFragment() {
     }
@@ -75,16 +77,38 @@ public class CheckoutFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(CheckoutViewModel.class);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         navController = NavHostFragment.findNavController(CheckoutFragment.this);
         checkRemoteConfig();
-        updateViews();
+        setupRecycler();
         clickListeners();
+        liveEvents();
+        updateInfo();
+    }
+
+    private void updateInfo() {
+        UserModel userModel = CredentialManager.getUserData();
+        binding.contact.setText(CredentialManager.getUserData().getUsername());
+
+        if (userModel.getAddresses() != null &&
+                userModel.getAddresses().getData() != null &&
+                userModel.getAddresses().getData().size() > 0)
+            binding.address.setText(CredentialManager.getUserData().getAddresses().getData().get(0).getFullAddress());
+    }
+
+    private void setupRecycler() {
+        if (controller == null)
+            controller = new CheckoutProductController();
+        binding.recyclerView.setAdapter(controller.getAdapter());
     }
 
     private void clickListeners() {
 
         binding.btnPlaceOrder.setOnClickListener(view -> {
-
             if (CredentialManager.getToken().equals("")) {
                 startActivity(new Intent(getContext(), SignInActivity.class));
                 return;
@@ -111,7 +135,6 @@ public class CheckoutFragment extends Fragment {
 
     private void updateViews() {
 
-
         binding.privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
         binding.privacyText.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -123,6 +146,8 @@ public class CheckoutFragment extends Fragment {
         HashMap<String, Boolean> shopExpressMap = new HashMap<>();
 
         List<CartEntity> itemList = viewModel.liveList.getValue();
+        if (itemList == null)
+            itemList = new ArrayList<>();
         for (int i = 0; i < itemList.size(); i++) {
             CartEntity cartItem = itemList.get(i);
             if (cartItem.isSelected()) {
@@ -226,11 +251,15 @@ public class CheckoutFragment extends Fragment {
 
     private void liveEvents() {
 
-        viewModel.orderPlacedLiveData.observe(getViewLifecycleOwner(), response -> {
+        viewModel.liveList.observe(getViewLifecycleOwner(), cartEntities -> {
+            controller.setList(cartEntities);
+            controller.requestModelBuild();
+            updateViews();
+        });
 
+        viewModel.orderPlacedLiveData.observe(getViewLifecycleOwner(), response -> {
             if (response != null && getActivity() != null)
                 return;
-
             ToastUtils.show(response.getMessage());
             List<OrderDetailsModel> list = response.getData();
             if (list.size() > 0) {
