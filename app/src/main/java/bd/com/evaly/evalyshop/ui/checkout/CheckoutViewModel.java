@@ -1,8 +1,10 @@
 package bd.com.evaly.evalyshop.ui.checkout;
 
+import androidx.hilt.Assisted;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
@@ -21,14 +23,20 @@ import io.reactivex.schedulers.Schedulers;
 public class CheckoutViewModel extends ViewModel {
 
     protected LiveData<List<CartEntity>> liveList;
+    protected MutableLiveData<CartEntity> singleProductLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse<List<OrderDetailsModel>>> orderPlacedLiveData = new MutableLiveData<>();
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
 
     @ViewModelInject
-    public CheckoutViewModel(CartDao cartDao) {
+    public CheckoutViewModel(CartDao cartDao, @Assisted SavedStateHandle savedStateHandle) {
         this.cartDao = cartDao;
-        liveList = cartDao.getAllSelectedLive();
+
+        if (savedStateHandle != null && savedStateHandle.contains("model"))
+            singleProductLiveData.setValue(savedStateHandle.get("model"));
+        else
+            liveList = cartDao.getAllSelectedLive();
+
         compositeDisposable = new CompositeDisposable();
     }
 

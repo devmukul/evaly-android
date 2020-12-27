@@ -15,7 +15,7 @@
             android:layout_height="81dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:background="@drawable/input_brd"
+            android:background="@drawable/brd_product_image"
             android:padding="1dp">
 
             <androidx.cardview.widget.CardView

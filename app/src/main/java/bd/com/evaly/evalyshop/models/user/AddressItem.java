@@ -48,6 +48,10 @@ public class AddressItem {
         return address + ", " + area + ", " + city + ", " + region;
     }
 
+    public String getFullAddressLine() {
+        return address + ", " + area + "\n" + city + ", " + region;
+    }
+
     public String getFullName() {
         return fullName;
     }

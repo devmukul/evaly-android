@@ -1,27 +1,19 @@
 package bd.com.evaly.evalyshop.ui.buynow;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,8 +28,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,7 +37,6 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
@@ -55,26 +44,16 @@ import bd.com.evaly.evalyshop.databinding.FragmentBuyNowBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
-import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
-import bd.com.evaly.evalyshop.models.user.UserModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
-import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
-import bd.com.evaly.evalyshop.util.LocationUtils;
-import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
-
-import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 @AndroidEntryPoint
 public class BuyNowFragment extends BottomSheetDialogFragment implements VariationAdapter.ClickListenerVariation {
@@ -82,31 +61,20 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
     private FragmentBuyNowBinding binding;
-    private Button btnBottomSheet;
-    private EditText customAddress, contact_number;
-    private BottomSheetDialog bottomSheetDialog;
-    private CheckBox checkBox;
-    private View bottomSheetView;
     private SkeletonScreen skeleton;
     private Context context;
     private ArrayList<ShopItem> itemsList;
     private String shop_slug = "tvs-bangladesh";
-    private String shopName = "";
     private String shop_item_slug = "tvs-apache-rtr-160cc-single-disc";
-    private int shop_item_id;
     private int quantityCount = 1;
     private double productPriceInt = 0;
     private AppDatabase appDatabase;
     private CartDao cartDao;
     private VariationAdapter adapterVariation;
     private ViewDialog dialog;
-    private List<OrderItemsItem> list;
-    private boolean isExpress = false;
     private CartEntity cartItem;
     private AvailableShopModel shopItem;
     private NavController navController;
-    private String deliveryChargeText = null;
-    private String deliveryChargeApplicable = null;
 
 
     public static BuyNowFragment newInstance(String shopSlug, String productSlug) {
@@ -176,64 +144,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         return binding.getRoot();
     }
 
-    private void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            updateLocation();
-        else
-            requestPermissions(new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION},
-                    1212);
-    }
-
-    private void updateLocation() {
-
-        LocationUtils locationUtils = new LocationUtils();
-        locationUtils.getLocation(getContext(), new LocationUtils.LocationResult() {
-            @Override
-            public void gotLocation(Location location) {
-                if (getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed())
-                    return;
-                if (getContext() == null || location == null)
-                    return;
-                if (location.getLatitude() == 0 || location.getLongitude() == 0)
-                    return;
-
-                CredentialManager.saveLongitude(String.valueOf(location.getLongitude()));
-                CredentialManager.saveLatitude(String.valueOf(location.getLatitude()));
-            }
-        });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 1212:
-                if (checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                        && checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    updateLocation();
-                }
-                break;
-            case 0:
-                break;
-        }
-    }
-
-    private void inflateFromApi() {
-        skeleton.show();
-        getProductDetails();
-    }
-
 
     public void inflateFromModel() {
         skeleton.hide();
 
-        shop_item_id = shopItem.getShopItemId();
-        isExpress = shopItem.isExpressShop();
         shop_item_slug = cartItem.getSlug();
         shop_slug = shopItem.getShopSlug();
-        isExpress = shopItem.isExpressShop();
         productPriceInt = shopItem.getPrice();
 
         if (shopItem.getDiscountedPrice() != null)
@@ -246,7 +162,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         binding.productName.setText(cartItem.getName());
         binding.shopName.setText(String.format("Seller: %s", shopItem.getShopName()));
-        shopName = shopItem.getShopName();
         binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(productPriceInt)));
         binding.quantity.setText("1");
         binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
@@ -260,34 +175,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         binding.variationHolder.setVisibility(View.GONE);
 
         binding.addToCart.setOnClickListener(v -> {
-
-            int quantity = 1;
-            try {
-                quantity = Integer.parseInt(binding.quantity.getText().toString());
-            } catch (Exception ignore) {
-            }
-
-            Calendar calendar = Calendar.getInstance();
-            String price = Utils.formatPrice(shopItem.getPrice());
-
-            if (shopItem.getDiscountedPrice() != null)
-                if (shopItem.getDiscountedPrice() > 0)
-                    price = Utils.formatPrice(shopItem.getDiscountedPrice());
-
-            String sellerJson = new Gson().toJson(shopItem);
-
-            CartEntity cartEntity = new CartEntity();
-            cartEntity.setName(cartItem.getName());
-            cartEntity.setImage(cartItem.getImage());
-            cartEntity.setPriceRound(price);
-            cartEntity.setTime(calendar.getTimeInMillis());
-            cartEntity.setShopJson(sellerJson);
-            cartEntity.setQuantity(quantity);
-            cartEntity.setShopSlug(shopItem.getShopSlug());
-            cartEntity.setShopName(shopItem.getShopName());
-            cartEntity.setSlug(cartItem.getImage());
-            cartEntity.setProductID(String.valueOf(shopItem.getShopItemId()));
-
+            CartEntity cartEntity = getCartItem();
             Executors.newSingleThreadExecutor().execute(() -> {
                 List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
                 if (dbItem.size() == 0)
@@ -295,11 +183,52 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 else
                     cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + quantityCount);
             });
-
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
             dismiss();
-
         });
+
+        binding.buyNow.setOnClickListener(view1 -> {
+            if (CredentialManager.getToken().equals("")) {
+                startActivity(new Intent(context, SignInActivity.class));
+                return;
+            }
+            CartEntity cartEntity = getCartItem();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("model", cartEntity);
+            navController.navigate(R.id.checkoutFragment, bundle);
+        });
+    }
+
+
+    private CartEntity getCartItem() {
+        int quantity = 1;
+        try {
+            quantity = Integer.parseInt(binding.quantity.getText().toString());
+        } catch (Exception ignore) {
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        String price = Utils.formatPrice(shopItem.getPrice());
+
+        if (shopItem.getDiscountedPrice() != null)
+            if (shopItem.getDiscountedPrice() > 0)
+                price = Utils.formatPrice(shopItem.getDiscountedPrice());
+
+        String sellerJson = new Gson().toJson(shopItem);
+
+        CartEntity cartEntity = new CartEntity();
+        cartEntity.setName(cartItem.getName());
+        cartEntity.setImage(cartItem.getImage());
+        cartEntity.setPriceRound(price);
+        cartEntity.setTime(calendar.getTimeInMillis());
+        cartEntity.setShopJson(sellerJson);
+        cartEntity.setQuantity(quantity);
+        cartEntity.setShopSlug(shopItem.getShopSlug());
+        cartEntity.setShopName(shopItem.getShopName());
+        cartEntity.setSlug(cartItem.getImage());
+        cartEntity.setProductID(String.valueOf(shopItem.getShopItemId()));
+
+        return cartEntity;
     }
 
     @SuppressLint("DefaultLocale")
@@ -314,7 +243,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        checkRemoteConfig();
+
         context = view.getContext();
 
         if (getActivity() instanceof MainActivity)
@@ -344,144 +273,11 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             inflateQuantity();
         });
 
-        // bottom sheet
 
-        bottomSheetDialog = new BottomSheetDialog(context, R.style.TransparentBottomSheetDialog);
-        bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_checkout, null);
-        bottomSheetDialog.setContentView(bottomSheetView);
-
-        btnBottomSheet = bottomSheetView.findViewById(R.id.bs_button);
-        contact_number = bottomSheetView.findViewById(R.id.contact_number);
-        customAddress = bottomSheetView.findViewById(R.id.customAddress);
-
-        UserModel userData = CredentialManager.getUserData();
-        if (userData != null) {
-            contact_number.setText(userData.getContacts());
-
-            if (userData.getAddresses() != null &&
-                    userData.getAddresses().getData() != null &&
-                    userData.getAddresses().getData().size() > 0) {
-                customAddress.setText(userData.getAddresses().getData().get(0).getFullAddress());
-            }
-        }
-
-        checkBox = bottomSheetView.findViewById(R.id.checkBox);
-
-        list = new ArrayList<>();
-
-        btnBottomSheet.setOnClickListener(view12 -> {
-
-            if (CredentialManager.getToken().equals("")) {
-                startActivity(new Intent(context, SignInActivity.class));
-                return;
-            }
-            if (!checkBox.isChecked()) {
-                Toast.makeText(context, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
-                return;
-            }
-            if (customAddress.getText().toString().equals("")) {
-                Toast.makeText(context, "Please enter address.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (!Utils.isValidNumber(contact_number.getText().toString())) {
-                Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            PlaceOrderItem orderJson = new PlaceOrderItem();
-
-            orderJson.setContactNumber(contact_number.getText().toString());
-            orderJson.setCustomerAddress(customAddress.getText().toString());
-            orderJson.setPaymentMethod("evaly_pay");
-            orderJson.setOrderOrigin("app");
-
-            if (CredentialManager.getLatitude() != null && CredentialManager.getLongitude() != null) {
-                orderJson.setDeliveryLatitude(CredentialManager.getLatitude());
-                orderJson.setDeliveryLongitude(CredentialManager.getLongitude());
-            }
-
-            OrderItemsItem item = new OrderItemsItem();
-            item.setQuantity(Integer.parseInt(binding.quantity.getText().toString()));
-            item.setShopItemId(shop_item_id);
-
-            int minOrderValue = 500;
-
-            if (shop_slug.contains("food") && isExpress)
-                minOrderValue = 300;
-
-            if (!shop_slug.equals("evaly-amol-1") && productPriceInt * item.getQuantity() < minOrderValue) {
-                Toast.makeText(getContext(), "You have to order more than TK. " + minOrderValue + " from an individual shop", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            list = new ArrayList<>();
-            list.add(item);
-
-            orderJson.setOrderItems(list);
-
-            JsonObject payload = new Gson().toJsonTree(orderJson).getAsJsonObject();
-
-            placeOrder(payload);
-        });
-
-        TextView deliveryDuration = bottomSheetView.findViewById(R.id.deliveryDuration);
-
-        binding.buyNow.setOnClickListener(view1 -> {
-            if (CredentialManager.getToken().equals("")) {
-                startActivity(new Intent(context, SignInActivity.class));
-                return;
-            }
-            if (shop_slug.contains("evaly-express"))
-                deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
-            else
-                deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign.");
-
-            LinearLayout deliveryChargeHolder = bottomSheetView.findViewById(R.id.deliveryChargeHolder);
-
-            if (isExpress) {
-                deliveryChargeHolder.setVisibility(View.VISIBLE);
-            } else {
-                deliveryChargeHolder.setVisibility(View.GONE);
-            }
-
-
-            boolean showDeliveryCharge = false;
-            if (deliveryChargeApplicable != null) {
-                String[] array = deliveryChargeApplicable.split(",");
-                for (String s : array) {
-                    if (shopName.toLowerCase().contains(s.toLowerCase())) {
-                        showDeliveryCharge = true;
-                        break;
-                    }
-                }
-            }
-
-            TextView tvDeliveryChargeText = bottomSheetView.findViewById(R.id.deliveryChargeText);
-            LinearLayout vatHolder = bottomSheetView.findViewById(R.id.vatHolder);
-            if (isExpress) {
-                deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
-            } else {
-                deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
-            }
-
-            if (showDeliveryCharge && isExpress) {
-                tvDeliveryChargeText.setText(deliveryChargeText);
-                deliveryChargeHolder.setVisibility(View.VISIBLE);
-                vatHolder.setVisibility(View.VISIBLE);
-            } else {
-                deliveryChargeHolder.setVisibility(View.GONE);
-                vatHolder.setVisibility(View.GONE);
-            }
-
-            checkLocationPermission();
-            bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
-            bottomSheetDialog.show();
-        });
-
-
-        if (shopItem == null)
-            inflateFromApi();
-        else
+        if (shopItem == null) {
+            skeleton.show();
+            getProductDetails();
+        } else
             inflateFromModel();
 
     }
@@ -499,18 +295,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             }
         });
         return bottomSheetDialog;
-    }
-
-
-    private void checkRemoteConfig() {
-        mFirebaseRemoteConfig
-                .fetchAndActivate()
-                .addOnCompleteListener(getActivity(), task -> {
-                    if (task.isSuccessful()) {
-                        deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
-                        deliveryChargeText = mFirebaseRemoteConfig.getString("delivery_charge_text");
-                    }
-                });
     }
 
     public void getProductDetails() {
@@ -552,7 +336,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         } catch (Exception ignored) {
         }
 
-        isExpress = itemsList.get(position).isExpress();
 
         if (firstItem.getShopItemDiscountedPrice() != null)
             if (!(firstItem.getShopItemDiscountedPrice().equals("0.0") || firstItem.getShopItemDiscountedPrice().equals("0"))) {
@@ -564,13 +347,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         binding.productName.setText(firstItem.getShopItemName());
         binding.shopName.setText(String.format("Seller: %s", firstItem.getShopName()));
-        shopName = firstItem.getShopName();
         binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(productPriceInt)));
         binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
         binding.quantity.setText("1");
         binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
-
-        shop_item_id = firstItem.getShopItemId();
 
         if (getContext() != null && this.isVisible() && !requireActivity().isDestroyed())
             Glide.with(getContext())
@@ -589,27 +369,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             binding.variationHolder.setVisibility(View.GONE);
 
         binding.addToCart.setOnClickListener(v -> {
-
-            Calendar calendar = Calendar.getInstance();
-            String price = firstItem.getShopItemPrice();
-
-            if (firstItem.getShopItemDiscountedPrice() != null)
-                if (!(firstItem.getShopItemDiscountedPrice().trim().equals("0") || firstItem.getShopItemDiscountedPrice().trim().equals("0.0")))
-                    price = firstItem.getShopItemDiscountedPrice();
-
-            String sellerJson = new Gson().toJson(firstItem);
-
-            CartEntity cartEntity = new CartEntity();
-            cartEntity.setName(firstItem.getShopItemName());
-            cartEntity.setImage(firstItem.getShopItemImage());
-            cartEntity.setPriceRound(price);
-            cartEntity.setTime(calendar.getTimeInMillis());
-            cartEntity.setShopJson(sellerJson);
-            cartEntity.setQuantity(quantityCount);
-            cartEntity.setShopSlug(firstItem.getShopSlug());
-            cartEntity.setSlug(shop_item_slug);
-            cartEntity.setProductID(String.valueOf(firstItem.getShopItemId()));
-
+            CartEntity cartEntity = getCartEntity(firstItem);
             Executors.newSingleThreadExecutor().execute(() -> {
                 List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
                 if (dbItem.size() == 0)
@@ -617,76 +377,50 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 else
                     cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + quantityCount);
             });
-
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
             dismiss();
+        });
 
+
+        binding.buyNow.setOnClickListener(view1 -> {
+            if (CredentialManager.getToken().equals("")) {
+                startActivity(new Intent(context, SignInActivity.class));
+                return;
+            }
+
+            CartEntity cartEntity = getCartEntity(firstItem);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("model", cartEntity);
+            navController.navigate(R.id.checkoutFragment, bundle);
         });
 
     }
 
 
-    public void placeOrder(JsonObject payload) {
+    public CartEntity getCartEntity(ShopItem firstItem) {
+        Calendar calendar = Calendar.getInstance();
+        String price = firstItem.getShopItemPrice();
 
-        dialog.showDialog();
+        if (firstItem.getShopItemDiscountedPrice() != null)
+            if (!(firstItem.getShopItemDiscountedPrice().trim().equals("0") || firstItem.getShopItemDiscountedPrice().trim().equals("0.0")))
+                price = firstItem.getShopItemDiscountedPrice();
 
-        OrderApiHelper.placeOrder(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
+        String sellerJson = new Gson().toJson(firstItem);
 
-                if (bottomSheetDialog.isShowing())
-                    bottomSheetDialog.dismiss();
+        CartEntity cartEntity = new CartEntity();
+        cartEntity.setName(firstItem.getShopItemName());
+        cartEntity.setImage(firstItem.getShopItemImage());
+        cartEntity.setPriceRound(price);
+        cartEntity.setTime(calendar.getTimeInMillis());
+        cartEntity.setShopJson(sellerJson);
+        cartEntity.setQuantity(quantityCount);
+        cartEntity.setShopSlug(firstItem.getShopSlug());
+        cartEntity.setSlug(shop_item_slug);
+        cartEntity.setProductID(String.valueOf(firstItem.getShopItemId()));
 
-                if (dialog.isShowing())
-                    dialog.hideDialog();
-
-                dismissDialog();
-
-                if (response == null || getContext() == null)
-                    return;
-
-                String message = response.get("message").getAsString();
-                ToastUtils.show(message);
-
-                if (response.has("data") && response.getAsJsonArray("data").size() > 0) {
-                    JsonArray data = response.getAsJsonArray("data");
-                    JsonObject item = data.get(0).getAsJsonObject();
-
-                    String invoice = null;
-                    if (item.has("invoice_no"))
-                        invoice = item.get("invoice_no").getAsString();
-
-                    if (getContext() != null && getActivity() != null && !getActivity().isFinishing() && !getActivity().isDestroyed()) {
-                        if (invoice == null || invoice.equals("")) {
-                            if (getActivity() instanceof MainActivity)
-                                navController.navigate(R.id.orderListBaseFragment);
-                            else
-                                getContext().startActivity(new Intent(getContext(), OrderListActivity.class));
-                        } else {
-                            Intent intent = new Intent(getContext(), OrderDetailsActivity.class);
-                            intent.putExtra("orderID", invoice);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                dialog.hideDialog();
-                ToastUtils.show("Couldn't place order, try again later.");
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    placeOrder(payload);
-                else if (getContext() != null)
-                    AppController.logout(getActivity());
-            }
-        });
-
+        return cartEntity;
     }
+
 
     private void dismissDialog() {
         if (getActivity() != null) {

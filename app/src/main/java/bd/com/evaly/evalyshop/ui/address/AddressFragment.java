@@ -136,7 +136,7 @@ public class AddressFragment extends Fragment implements AddressController.Click
             else if (city.isEmpty())
                 error = "Please enter city";
             else if (phoneNumber.equals(""))
-                error = "Pleae enter phone number";
+                error = "Please enter phone number";
             else if (fullName.equals(""))
                 error = "Please enter full name";
 

@@ -70,6 +70,7 @@ public class CheckoutFragment extends Fragment {
     private NavController navController;
     private CheckoutProductController controller;
     private AddressItem addressModel = null;
+    private int minPrice = 0;
 
     public CheckoutFragment() {
     }
@@ -108,7 +109,7 @@ public class CheckoutFragment extends Fragment {
                 userModel.getAddresses().getData() != null &&
                 userModel.getAddresses().getData().size() > 0) {
             addressModel = userModel.getAddresses().getData().get(0);
-            binding.address.setText(addressModel.getFullAddress());
+            binding.address.setText(addressModel.getFullAddressLine());
         }
     }
 
@@ -140,6 +141,14 @@ public class CheckoutFragment extends Fragment {
 
             if (!Utils.isValidNumber(binding.contact.getText().toString())) {
                 ToastUtils.show("Please enter a correct phone number");
+                return;
+            }
+            if (addressModel == null || binding.address.getText().toString().equals("")) {
+                ToastUtils.show("Please enter your address");
+                return;
+            }
+            if (minPrice > 0) {
+                Toast.makeText(getContext(), "You have to order more than TK. " + minPrice + " from an individual shop", Toast.LENGTH_SHORT).show();
                 return;
             }
             viewModel.placeOrder(generateOrderJson());
@@ -213,8 +222,7 @@ public class CheckoutFragment extends Fragment {
                 minAmount = 300;
 
             if (!key.equals("evaly-amol-1") && am != null && am < minAmount) {
-                Toast.makeText(getContext(), "You have to order more than TK. " + minAmount + " from an individual shop", Toast.LENGTH_SHORT).show();
-                return;
+                minPrice = minAmount;
             }
         }
 
@@ -271,6 +279,15 @@ public class CheckoutFragment extends Fragment {
 
     private void liveEvents() {
 
+        viewModel.singleProductLiveData.observe(getViewLifecycleOwner(), cartEntity -> {
+            if (cartEntity != null) {
+                List<CartEntity> list = new ArrayList<>();
+                list.add(cartEntity);
+                controller.setList(list);
+                controller.requestModelBuild();
+                updateViews();
+            }
+        });
         viewModel.liveList.observe(getViewLifecycleOwner(), cartEntities -> {
             controller.setList(cartEntities);
             controller.requestModelBuild();
@@ -313,6 +330,11 @@ public class CheckoutFragment extends Fragment {
         final BottomSheetAddAddressBinding dialogBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
                 R.layout.bottom_sheet_add_address, null, false);
 
+        dialogBinding.fullName.setVisibility(View.GONE);
+        dialogBinding.fullNameTitle.setVisibility(View.GONE);
+        dialogBinding.contactNumber.setVisibility(View.GONE);
+        dialogBinding.contactTitle.setVisibility(View.GONE);
+
         if (model != null) {
             dialogBinding.address.setText(model.getAddress());
             dialogBinding.area.setText(model.getArea());
@@ -336,8 +358,6 @@ public class CheckoutFragment extends Fragment {
             String area = dialogBinding.area.getText().toString().trim();
             String city = dialogBinding.city.getText().toString().trim();
             String region = dialogBinding.region.getText().toString().trim();
-            String phoneNumber = dialogBinding.contactNumber.getText().toString().trim();
-            String fullName = dialogBinding.fullName.getText().toString().trim();
 
             String error = null;
             if (address.isEmpty())
@@ -346,10 +366,6 @@ public class CheckoutFragment extends Fragment {
                 error = "Please enter area";
             else if (city.isEmpty())
                 error = "Please enter city";
-            else if (phoneNumber.equals(""))
-                error = "Pleae enter phone number";
-            else if (fullName.equals(""))
-                error = "Please enter full name";
 
             if (error != null) {
                 ToastUtils.show(error);
@@ -361,13 +377,9 @@ public class CheckoutFragment extends Fragment {
             body.setArea(area);
             body.setCity(city);
             body.setRegion(region);
-            body.setFullName(fullName);
-            body.setPhoneNumber(phoneNumber);
-
             addressModel = body;
 
-            binding.address.setText(body.getFullAddress());
-            binding.userName.setText(body.getFullName());
+            binding.address.setText(body.getFullAddressLine());
             dialog.cancel();
         });
 
@@ -411,7 +423,7 @@ public class CheckoutFragment extends Fragment {
         PlaceOrderItem orderObject = new PlaceOrderItem();
 
         orderObject.setContactNumber(binding.contact.getText().toString());
-        orderObject.setCustomerAddress(binding.address.getText().toString());
+        orderObject.setCustomerAddress(addressModel.getFullAddressLine());
         orderObject.setOrderOrigin("app");
 
         if (CredentialManager.getLatitude() != null && CredentialManager.getLongitude() != null) {
@@ -422,22 +434,18 @@ public class CheckoutFragment extends Fragment {
         orderObject.setPaymentMethod("evaly_pay");
 
         List<OrderItemsItem> productList = new ArrayList<>();
-
         List<CartEntity> adapterItems = viewModel.liveList.getValue();
 
         for (int i = 0; i < adapterItems.size(); i++) {
-
             if (adapterItems.get(i).isSelected()) {
                 String fromShopJson = adapterItems.get(i).getShopJson();
                 OrderItemsItem item = new OrderItemsItem();
                 item.setQuantity(adapterItems.get(i).getQuantity());
-
                 try {
                     JSONObject sellerJson = new JSONObject(fromShopJson);
                     String item_id = sellerJson.getString("shop_item_id");
                     item.setShopItemId(Integer.parseInt(item_id));
                     productList.add(item);
-
                 } catch (Exception e) {
                 }
             }
