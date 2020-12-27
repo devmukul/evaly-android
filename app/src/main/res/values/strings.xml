@@ -422,5 +422,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="card">Card</string>
     <string name="others">SSLCommerz</string>
     <string name="change_cap">CHANGE</string>
+    <string name="save_contact_number">Save Contact Number</string>
 
 </resources>

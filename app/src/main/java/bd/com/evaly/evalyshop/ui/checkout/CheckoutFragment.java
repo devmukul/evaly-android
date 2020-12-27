@@ -10,16 +10,19 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -29,16 +32,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
+import bd.com.evaly.evalyshop.databinding.BottomSheetAddAddressBinding;
+import bd.com.evaly.evalyshop.databinding.BottomSheetCheckoutContactBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentCheckoutBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
+import bd.com.evaly.evalyshop.models.user.AddressItem;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.checkout.controller.CheckoutProductController;
@@ -107,6 +114,14 @@ public class CheckoutFragment extends Fragment {
     }
 
     private void clickListeners() {
+
+        binding.btnEditContactNumber.setOnClickListener(v -> {
+            editContact();
+        });
+
+        binding.btnEditAddress.setOnClickListener(v -> {
+            editAddress(null);
+        });
 
         binding.btnPlaceOrder.setOnClickListener(view -> {
             if (CredentialManager.getToken().equals("")) {
@@ -286,6 +301,101 @@ public class CheckoutFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public void editAddress(AddressItem model) {
+        BottomSheetDialog dialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogTheme);
+        final BottomSheetAddAddressBinding dialogBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
+                R.layout.bottom_sheet_add_address, null, false);
+
+        if (model != null) {
+            dialogBinding.address.setText(model.getAddress());
+            dialogBinding.area.setText(model.getArea());
+            dialogBinding.city.setText(model.getCity());
+            dialogBinding.region.setText(model.getRegion());
+            if (model.getFullName() == null || model.getFullName().equals(""))
+                dialogBinding.fullName.setText(CredentialManager.getUserData().getFullName());
+            else
+                dialogBinding.fullName.setText(model.getFullName());
+            if (model.getPhoneNumber() == null || model.getPhoneNumber().equals(""))
+                dialogBinding.contactNumber.setText(CredentialManager.getUserData().getContact());
+            else
+                dialogBinding.contactNumber.setText(model.getPhoneNumber());
+        } else {
+            dialogBinding.fullName.setText(CredentialManager.getUserData().getFullName());
+            dialogBinding.contactNumber.setText(CredentialManager.getUserData().getContact());
+        }
+
+        dialogBinding.save.setOnClickListener(view -> {
+            String address = dialogBinding.address.getText().toString().trim();
+            String area = dialogBinding.area.getText().toString().trim();
+            String city = dialogBinding.city.getText().toString().trim();
+            String region = dialogBinding.region.getText().toString().trim();
+            String phoneNumber = dialogBinding.contactNumber.getText().toString().trim();
+            String fullName = dialogBinding.fullName.getText().toString().trim();
+
+            String error = null;
+            if (address.isEmpty())
+                error = "Please enter address line 1";
+            else if (area.isEmpty())
+                error = "Please enter area";
+            else if (city.isEmpty())
+                error = "Please enter city";
+            else if (phoneNumber.equals(""))
+                error = "Pleae enter phone number";
+            else if (fullName.equals(""))
+                error = "Please enter full name";
+
+            if (error != null) {
+                ToastUtils.show(error);
+                return;
+            }
+
+            AddressItem body = new AddressItem();
+            body.setAddress(address);
+            body.setArea(area);
+            body.setCity(city);
+            body.setRegion(region);
+            body.setFullName(fullName);
+            body.setPhoneNumber(phoneNumber);
+
+
+            binding.address.setText(body.getFullAddress());
+            dialog.cancel();
+        });
+
+        Objects.requireNonNull(dialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        dialog.setContentView(dialogBinding.getRoot());
+        dialog.show();
+    }
+
+
+    public void editContact() {
+        BottomSheetDialog dialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogTheme);
+        final BottomSheetCheckoutContactBinding dialogBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
+                R.layout.bottom_sheet_checkout_contact, null, false);
+
+
+        dialogBinding.save.setOnClickListener(view -> {
+
+            String phoneNumber = dialogBinding.contact.getText().toString().trim();
+            String error = null;
+
+            if (phoneNumber.equals(""))
+                error = "Pleae enter phone number";
+
+            if (error != null) {
+                ToastUtils.show(error);
+                return;
+            }
+
+            binding.contact.setText(phoneNumber);
+            dialog.cancel();
+        });
+
+        Objects.requireNonNull(dialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        dialog.setContentView(dialogBinding.getRoot());
+        dialog.show();
     }
 
 
