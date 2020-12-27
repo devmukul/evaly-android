@@ -15,6 +15,7 @@ import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
 import bd.com.evaly.evalyshop.ui.cart.model.CartProductBinder;
 import bd.com.evaly.evalyshop.ui.cart.model.CartProductModel_;
 import bd.com.evaly.evalyshop.ui.cart.model.CartShopModel_;
+import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 
 public class CartController extends EpoxyController {
 
@@ -101,6 +102,13 @@ public class CartController extends EpoxyController {
 
             index++;
         }
+
+        new NoItemModel_()
+                .id("empty_page")
+                .image(R.drawable.ic_empty_cart_rappi)
+                .text("Nothing is added to cart.")
+                .width(300)
+                .addIf(list.size() == 0, this);
     }
 
     public interface CartClickListener {

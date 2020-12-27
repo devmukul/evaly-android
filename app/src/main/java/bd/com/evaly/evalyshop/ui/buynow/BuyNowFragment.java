@@ -415,6 +415,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         cartEntity.setShopJson(sellerJson);
         cartEntity.setQuantity(quantityCount);
         cartEntity.setShopSlug(firstItem.getShopSlug());
+        cartEntity.setShopName(firstItem.getShopName());
         cartEntity.setSlug(shop_item_slug);
         cartEntity.setProductID(String.valueOf(firstItem.getShopItemId()));
 

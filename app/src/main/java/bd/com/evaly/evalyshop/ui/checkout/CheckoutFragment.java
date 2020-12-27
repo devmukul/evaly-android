@@ -290,6 +290,9 @@ public class CheckoutFragment extends DialogFragment {
         });
 
         viewModel.orderPlacedLiveData.observe(getViewLifecycleOwner(), response -> {
+
+            ToastUtils.show(response.getMessage());
+            
             if (response != null && getActivity() != null)
                 return;
             ToastUtils.show(response.getMessage());

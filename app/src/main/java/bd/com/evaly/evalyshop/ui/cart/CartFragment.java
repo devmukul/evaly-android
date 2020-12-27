@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +30,7 @@ import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.smoothCheckBox.SmoothCheckBox;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -43,7 +43,8 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
     private CartController controller;
     private CartViewModel viewModel;
     private NavController navController;
-    private CompoundButton.OnCheckedChangeListener allCheckedListener = (compoundButton, isChecked) -> {
+
+    private SmoothCheckBox.OnCheckedChangeListener allCheckedListener = (compoundButton, isChecked) -> {
         viewModel.selectAll(isChecked);
     };
 

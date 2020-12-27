@@ -40,7 +40,7 @@
                     android:text=""
                     app:color_checked="@color/colorAccentRed"
                     app:color_tick="@color/fffh"
-                    app:color_unchecked_stroke="@color/aaa"
+                    app:color_unchecked_stroke="@color/ddd"
                     app:layout_constraintBottom_toBottomOf="@id/imageHolder"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/imageHolder" />
