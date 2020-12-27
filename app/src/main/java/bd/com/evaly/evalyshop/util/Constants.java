@@ -24,7 +24,7 @@ public class Constants {
     public static final String BKASH = "bKash";
     public static final String NAGAD = "Nagad";
     public static final String CARD = "Visa/Mastercard";
-    public static final String OTHERS = "AMEX/Others";
+    public static final String OTHERS = "SSLCommerz";
     public static final String BALANCE_WITH_CASH = "Evaly Account + Cash on Delivery";
     // Event specific constants
     public static final String EVT_SIGNUP_SUC = "xmpp_signup_success";

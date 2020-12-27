@@ -75,7 +75,7 @@ public class OrderListBaseFragment extends Fragment {
         setupBottomSheet();
 
         binding.orderRequestHolder.setOnClickListener(view1 -> {
-            if (getActivity() != null && navController != null)
+            if (getActivity() != null && getContext() != null && navController != null)
                 navController.navigate(R.id.orderRequestFragment);
         });
 

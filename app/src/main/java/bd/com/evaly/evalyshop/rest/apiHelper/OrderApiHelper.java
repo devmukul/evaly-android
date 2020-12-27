@@ -13,6 +13,7 @@ import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
+import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 
@@ -40,6 +41,9 @@ public class OrderApiHelper extends BaseApiHelper {
         getiApiClient().placeOrder(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void placeOrder(PlaceOrderItem body, ResponseListenerAuth<CommonDataResponse<List<OrderDetailsModel>>, String> listener) {
+        getiApiClient().placeOrder(CredentialManager.getToken(), body).enqueue(getResponseCallBackDefault(listener));
+    }
 
     public static void makePartialPayment(String token, ParitalPaymentModel body, ResponseListenerAuth<JsonObject, String> listener) {
 

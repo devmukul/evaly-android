@@ -325,7 +325,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             } else if (paymentMethods.get(i).equalsIgnoreCase("sslcommerz_gateway")) {
                 methodList.add(new PaymentMethodModel(
                         Constants.OTHERS,
-                        "Pay from your amex/others card using \nSSL payment gateway.",
+                        "Pay from your amex/other cards using \nSSLCommerz payment gateway.",
                         disabledPaymentMethodText,
                         R.drawable.sslcommerz,
                         false,

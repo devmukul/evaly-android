@@ -392,5 +392,9 @@
             app:uri="beta.evaly.com.bd/gift-card" />
 
     </fragment>
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="bd.com.evaly.evalyshop.ui.checkout.CheckoutFragment"
+        android:label="CheckoutFragment" />
 
 </navigation>

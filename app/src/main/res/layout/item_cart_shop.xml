@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_white_round_top"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/sellerHolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="2dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="23dp"
+                android:layout_height="18dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="0"
+                android:adjustViewBounds="true"
+                android:paddingLeft="5dp"
+                app:srcCompat="@drawable/ic_shop_filled_2"
+                app:tint="@color/c666" />
+
+            <TextView
+                android:id="@+id/shop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:paddingLeft="5dp"
+                android:paddingRight="15dp"
+                android:text="@string/seller_unknown"
+                android:textColor="@color/c666"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/variation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/c555"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</layout>
