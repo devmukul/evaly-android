@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
@@ -22,8 +23,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class CheckoutViewModel extends ViewModel {
 
-    protected LiveData<List<CartEntity>> liveList;
-    protected MutableLiveData<CartEntity> singleProductLiveData = new MutableLiveData<>();
+    protected LiveData<List<CartEntity>> liveList = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse<List<OrderDetailsModel>>> orderPlacedLiveData = new MutableLiveData<>();
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
@@ -32,9 +32,13 @@ public class CheckoutViewModel extends ViewModel {
     public CheckoutViewModel(CartDao cartDao, @Assisted SavedStateHandle savedStateHandle) {
         this.cartDao = cartDao;
 
-        if (savedStateHandle != null && savedStateHandle.contains("model"))
-            singleProductLiveData.setValue(savedStateHandle.get("model"));
-        else
+        if (savedStateHandle != null && savedStateHandle.contains("model")) {
+            List<CartEntity> list = new ArrayList<>();
+            list.add(savedStateHandle.get("model"));
+            MutableLiveData<List<CartEntity>> tempList = new MutableLiveData<>();
+            tempList.setValue(list);
+            liveList = tempList;
+        }else
             liveList = cartDao.getAllSelectedLive();
 
         compositeDisposable = new CompositeDisposable();

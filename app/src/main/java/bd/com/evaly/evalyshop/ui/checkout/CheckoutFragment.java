@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -60,7 +60,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 @AndroidEntryPoint
-public class CheckoutFragment extends Fragment {
+public class CheckoutFragment extends DialogFragment {
 
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
@@ -73,6 +73,7 @@ public class CheckoutFragment extends Fragment {
     private int minPrice = 0;
 
     public CheckoutFragment() {
+        //setCancelable(false);
     }
 
     @Nullable
@@ -85,6 +86,7 @@ public class CheckoutFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme);
         viewModel = new ViewModelProvider(this).get(CheckoutViewModel.class);
     }
 
@@ -120,6 +122,8 @@ public class CheckoutFragment extends Fragment {
     }
 
     private void clickListeners() {
+
+        binding.toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
 
         binding.btnEditContactNumber.setOnClickListener(v -> {
             editContact();
@@ -279,15 +283,6 @@ public class CheckoutFragment extends Fragment {
 
     private void liveEvents() {
 
-        viewModel.singleProductLiveData.observe(getViewLifecycleOwner(), cartEntity -> {
-            if (cartEntity != null) {
-                List<CartEntity> list = new ArrayList<>();
-                list.add(cartEntity);
-                controller.setList(list);
-                controller.requestModelBuild();
-                updateViews();
-            }
-        });
         viewModel.liveList.observe(getViewLifecycleOwner(), cartEntities -> {
             controller.setList(cartEntities);
             controller.requestModelBuild();
