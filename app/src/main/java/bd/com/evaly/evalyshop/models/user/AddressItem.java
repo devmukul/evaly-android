@@ -45,7 +45,7 @@ public class AddressItem {
     }
 
     public String getFullAddress() {
-        return address + ", " + city + ", " + region;
+        return address + ", " + area + ", " + city + ", " + region;
     }
 
     public String getFullName() {

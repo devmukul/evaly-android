@@ -69,6 +69,7 @@ public class CheckoutFragment extends Fragment {
     private String deliveryChargeText = null, deliveryChargeApplicable = null, deliveryDuration;
     private NavController navController;
     private CheckoutProductController controller;
+    private AddressItem addressModel = null;
 
     public CheckoutFragment() {
     }
@@ -99,12 +100,16 @@ public class CheckoutFragment extends Fragment {
 
     private void updateInfo() {
         UserModel userModel = CredentialManager.getUserData();
-        binding.contact.setText(CredentialManager.getUserData().getUsername());
+
+        binding.userName.setText(userModel.getFullName());
+        binding.contact.setText(userModel.getUsername());
 
         if (userModel.getAddresses() != null &&
                 userModel.getAddresses().getData() != null &&
-                userModel.getAddresses().getData().size() > 0)
-            binding.address.setText(CredentialManager.getUserData().getAddresses().getData().get(0).getFullAddress());
+                userModel.getAddresses().getData().size() > 0) {
+            addressModel = userModel.getAddresses().getData().get(0);
+            binding.address.setText(addressModel.getFullAddress());
+        }
     }
 
     private void setupRecycler() {
@@ -120,7 +125,7 @@ public class CheckoutFragment extends Fragment {
         });
 
         binding.btnEditAddress.setOnClickListener(v -> {
-            editAddress(null);
+            editAddress(addressModel);
         });
 
         binding.btnPlaceOrder.setOnClickListener(view -> {
@@ -359,8 +364,10 @@ public class CheckoutFragment extends Fragment {
             body.setFullName(fullName);
             body.setPhoneNumber(phoneNumber);
 
+            addressModel = body;
 
             binding.address.setText(body.getFullAddress());
+            binding.userName.setText(body.getFullName());
             dialog.cancel();
         });
 
