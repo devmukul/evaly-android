@@ -14,7 +14,6 @@ import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.databinding.HomeModelFlashsaleHeaderBinding;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
@@ -26,8 +25,6 @@ public abstract class HomeExpressHeaderModel extends DataBindingEpoxyModel {
     public AppCompatActivity activity;
     @EpoxyAttribute
     public Fragment fragment;
-    @EpoxyAttribute
-    AppDatabase appDatabase;
     @EpoxyAttribute
     String title;
     @EpoxyAttribute

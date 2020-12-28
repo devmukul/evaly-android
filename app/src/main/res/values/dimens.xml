@@ -1,11 +1,9 @@
-<resources>
-
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <dimen name="nav_header_height">100dp</dimen>
-
     <dimen name="newsfeed_verified_icon">17dp</dimen>
-
     <dimen name="tab_height">150dp</dimen>
-
     <dimen name="eight_dp">8dp</dimen>
+    <dimen name="design_bottom_navigation_active_text_size" tools:override="true">@dimen/design_bottom_navigation_text_size</dimen>
+
 </resources>

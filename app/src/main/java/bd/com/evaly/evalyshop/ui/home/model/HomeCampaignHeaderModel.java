@@ -13,7 +13,6 @@ import com.airbnb.epoxy.EpoxyModelClass;
 import com.airbnb.epoxy.EpoxyModelWithHolder;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.databinding.HomeModelCampaignHeaderBinding;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
@@ -25,8 +24,6 @@ public abstract class HomeCampaignHeaderModel extends EpoxyModelWithHolder<HomeC
     public AppCompatActivity activity;
     @EpoxyAttribute
     public Fragment fragment;
-    @EpoxyAttribute
-    AppDatabase appDatabase;
 
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;

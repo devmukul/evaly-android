@@ -20,7 +20,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
@@ -48,7 +47,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private FragmentHomeBinding binding;
     private NavController navController;
     private HomeController homeController;
-    private AppDatabase appDatabase;
     private HomeViewModel viewModel;
 
     public HomeFragment() {
@@ -70,14 +68,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         activity = (MainActivity) getActivity();
         context = getContext();
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        appDatabase = AppDatabase.getInstance(getActivity());
-
         binding.swipeRefresh.setOnRefreshListener(this);
         return binding.getRoot();
     }

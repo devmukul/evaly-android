@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
@@ -24,40 +24,35 @@ import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.express.products.model.ExpressTitleModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeCarouselModelModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressHeaderModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceSkeletonModel_;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class ExpressProductController extends EpoxyController {
 
+    @AutoModel
+    LoadingModel_ loader;
+    @AutoModel
+    ExpressTitleModel_ titleModel;
+    @AutoModel
+    NoProductModel_ noProductModel;
+    @AutoModel
+    HomeCarouselModelModel_ expressCarousel;
+    @AutoModel
+    HomeExpressHeaderModel_ expressHeaderModel;
     private AppCompatActivity activity;
     private Fragment fragment;
     private List<ProductItem> items = new ArrayList<>();
     private List<ExpressServiceModel> itemsExpress = new ArrayList<>();
-    private AppDatabase appDatabase;
     private boolean loadingMore = false;
     private boolean emptyPage = false;
     private String title;
     private boolean isExpressLoading = true;
+    private ExpressServiceDao expressServiceDao;
 
-    @AutoModel
-    HomeExpressModel_ expressModel;
-
-    @AutoModel
-    LoadingModel_ loader;
-
-    @AutoModel
-    ExpressTitleModel_ titleModel;
-
-    @AutoModel
-    NoProductModel_ noProductModel;
-
-    @AutoModel
-    HomeCarouselModelModel_ expressCarousel;
-
-    @AutoModel
-    HomeExpressHeaderModel_ expressHeaderModel;
+    public void setExpressServiceDao(ExpressServiceDao expressServiceDao) {
+        this.expressServiceDao = expressServiceDao;
+    }
 
     public void showEmptyPage(boolean emptyPage, boolean build) {
         this.emptyPage = emptyPage;
@@ -128,7 +123,6 @@ public class ExpressProductController extends EpoxyController {
 
     public void setActivity(AppCompatActivity activity) {
         this.activity = activity;
-        appDatabase = AppDatabase.getInstance(activity);
     }
 
     public void setFragment(Fragment fragment) {

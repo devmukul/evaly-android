@@ -17,13 +17,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.ui.wishlist.adapter.WishListAdapter;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class WishListFragment extends Fragment {
 
     private ArrayList<WishListEntity> wishLists;
@@ -33,8 +36,8 @@ public class WishListFragment extends Fragment {
     private ViewDialog alert;
     private View view;
     private Toolbar mToolbar;
-    private AppDatabase appDatabase;
-    private WishListDao wishListDao;
+    @Inject
+    WishListDao wishListDao;
 
     public WishListFragment() {
         // Required empty public constructor
@@ -48,10 +51,6 @@ public class WishListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        appDatabase = AppDatabase.getInstance(getContext());
-        wishListDao = appDatabase.wishListDao();
-
     }
 
     @Override
@@ -67,7 +66,6 @@ public class WishListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
 
         mToolbar = view.findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
@@ -120,6 +118,4 @@ public class WishListFragment extends Fragment {
         super.onDestroyView();
         view = null;
     }
-
-
 }

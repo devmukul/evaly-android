@@ -18,7 +18,6 @@ public class TokenContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-
         providerDatabase = ProviderDatabase.getInstance(getContext());
         userInfoDao = providerDatabase.userInfoDao();
         return true;

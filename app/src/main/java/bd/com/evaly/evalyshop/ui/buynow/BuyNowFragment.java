@@ -37,7 +37,6 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.FragmentBuyNowBinding;
@@ -61,6 +60,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
+    @Inject
+    CartDao cartDao;
     private FragmentBuyNowBinding binding;
     private SkeletonScreen skeleton;
     private Context context;
@@ -69,8 +70,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private String shop_item_slug = "tvs-apache-rtr-160cc-single-disc";
     private int quantityCount = 1;
     private double productPriceInt = 0;
-    private AppDatabase appDatabase;
-    private CartDao cartDao;
     private VariationAdapter adapterVariation;
     private ViewDialog dialog;
     private CartEntity cartItem;
@@ -120,11 +119,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
 
-        Bundle args = getArguments();
-        appDatabase = AppDatabase.getInstance(getContext());
-        cartDao = appDatabase.cartDao();
         dialog = new ViewDialog(getActivity());
 
+        Bundle args = getArguments();
         if (args.containsKey("shopSlug"))
             shop_slug = args.getString("shopSlug");
         if (args.containsKey("productSlug"))

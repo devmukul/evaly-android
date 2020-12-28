@@ -48,7 +48,6 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
@@ -96,10 +95,13 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
     @Inject
     RecommenderViewModel recommenderViewModel;
+    @Inject
+    WishListDao wishListDao;
+    @Inject
+    CartDao cartDao;
+
     long startTime = 0;
     ProductVariantsItem firstProductVariantsItem;
-
-
     private String slug = "", category = "", name = "", productImage = "";
     private double productPrice;
     private ArrayList<Products> products;
@@ -113,10 +115,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
     private boolean isAddedToWishList;
     private SpecificationAdapter specificationAdapter;
     private String shareURL = "https://evaly.com.bd";
-    private BottomSheetDialog bottomSheetDialog;
     private BottomSheetDialog newsfeedShareDialog;
-    private WishListDao wishListDao;
-    private CartDao cartDao;
     private ActivityViewProductBinding binding;
     private ViewProductViewModel viewModel;
     private List<ProductSpecificationsItem> specificationsItemList = new ArrayList<>();
@@ -177,10 +176,6 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
         if (getIntent().hasExtra("cashback_text"))
             cashbackText = getIntent().getStringExtra("cashback_text");
-
-        AppDatabase appDatabase = AppDatabase.getInstance(this);
-        wishListDao = appDatabase.wishListDao();
-        cartDao = appDatabase.cartDao();
 
         cartDao.getLiveCount().observe(this, integer -> binding.cartCount.setText(integer.toString()));
 

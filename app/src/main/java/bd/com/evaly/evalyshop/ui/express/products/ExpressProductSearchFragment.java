@@ -20,9 +20,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
 import bd.com.evaly.evalyshop.databinding.ActivityExpressProductSearchBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
@@ -33,9 +34,13 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 import bd.com.evaly.evalyshop.ui.express.products.controller.ExpressProductController;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class ExpressProductSearchFragment extends Fragment {
 
+    @Inject
+    ExpressServiceDao expressServiceDao;
     private ActivityExpressProductSearchBinding binding;
     private List<ProductItem> itemList;
     private int currentPage = 1, totalCount = 0;
@@ -43,7 +48,6 @@ public class ExpressProductSearchFragment extends Fragment {
     private String query;
     private boolean firstLoad = true;
     private ExpressProductController expressProductController;
-    private ExpressServiceDao expressServiceDao;
 
     public ExpressProductSearchFragment() {
 
@@ -66,13 +70,13 @@ public class ExpressProductSearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        expressServiceDao = AppDatabase.getInstance(getContext()).expressServiceDao();
         currentPage = 1;
         itemList = new ArrayList<>();
         if (expressProductController == null)
             expressProductController = new ExpressProductController();
         expressProductController.setActivity((AppCompatActivity) getActivity());
         expressProductController.setFragment(this);
+        expressProductController.setExpressServiceDao(expressServiceDao);
         expressProductController.setFilterDuplicates(true);
         binding.recyclerView.setAdapter(expressProductController.getAdapter());
         binding.back.setOnClickListener(v -> getActivity().onBackPressed());

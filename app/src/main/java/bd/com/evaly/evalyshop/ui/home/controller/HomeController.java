@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
@@ -102,7 +101,6 @@ public class HomeController extends EpoxyController {
     private List<RsEntity> rsBrandList = new ArrayList<>();
     private List<RsEntity> rsCategoryList = new ArrayList<>();
     private List<RsEntity> rsShopList = new ArrayList<>();
-    private AppDatabase appDatabase;
     private boolean loadingMore = true;
     private boolean isExpressLoading = true;
     private boolean isCampaignLoading = true;
@@ -467,7 +465,6 @@ public class HomeController extends EpoxyController {
 
     public void setActivity(AppCompatActivity activity) {
         this.activity = activity;
-        appDatabase = AppDatabase.getInstance(activity);
     }
 
     public void setFragment(Fragment fragment) {

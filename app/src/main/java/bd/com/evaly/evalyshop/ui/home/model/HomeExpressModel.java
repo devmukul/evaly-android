@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
 import bd.com.evaly.evalyshop.databinding.HomeModelExpressBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -37,7 +36,7 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
     @EpoxyAttribute
     public Fragment fragment;
     @EpoxyAttribute
-    AppDatabase appDatabase;
+    ExpressServiceDao expressServiceDao;
 
     class HomeExpressHolder extends EpoxyHolder {
 
@@ -59,7 +58,6 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
 
             NavController navController = NavHostFragment.findNavController(fragment);
 
-            ExpressServiceDao expressServiceDao = appDatabase.expressServiceDao();
 
             binding.btnGrocery.setOnClickListener(emptyListener);
             binding.btnPharmacy.setOnClickListener(emptyListener);

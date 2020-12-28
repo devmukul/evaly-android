@@ -12,7 +12,6 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.browseProduct.BrowseProductViewModel;
 import bd.com.evaly.evalyshop.ui.browseProduct.model.BrowseProductTabsModel_;
@@ -25,7 +24,6 @@ public class BrowseProductController extends EpoxyController {
     private AppCompatActivity activity;
     private Fragment fragment;
     private List<ProductItem> items = new ArrayList<>();
-    private AppDatabase appDatabase;
     private String categorySlug;
     private BrowseProductViewModel browseProductViewModel;
 
@@ -86,7 +84,6 @@ public class BrowseProductController extends EpoxyController {
 
     public void setActivity(AppCompatActivity activity) {
         this.activity = activity;
-        appDatabase = AppDatabase.getInstance(activity);
     }
 
     public void setFragment(Fragment fragment) {
