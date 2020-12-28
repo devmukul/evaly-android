@@ -479,9 +479,9 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         binding.billtoName1.setText(String.format("%s %s", response.getCustomer().getFirstName(), response.getCustomer().getLastName()));
         binding.billtoAddress1.setText(response.getCustomerAddress());
         binding.billtoPhone.setText(response.getContactNumber());
-        binding.totalPrice.setText(String.format("৳ %s", Utils.formatPrice(response.getTotal())));
-        binding.paidAmount.setText(String.format("৳ %s", Utils.formatPrice(response.getPaidAmount())));
-        binding.duePrice.setText(String.format(Locale.ENGLISH, "৳ %s", Utils.formatPrice((Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount())))));
+        binding.totalPrice.setText(Utils.formatPriceSymbol(response.getTotal()));
+        binding.paidAmount.setText(Utils.formatPriceSymbol(response.getPaidAmount()));
+        binding.duePrice.setText(Utils.formatPriceSymbol((Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount()))));
 
         if (response.getCustomerNote() != null && !response.getCustomerNote().equals("")) {
             binding.tvCampaignRule.setText(response.getCustomerNote());

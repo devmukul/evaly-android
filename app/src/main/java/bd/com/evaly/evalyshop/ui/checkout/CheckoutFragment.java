@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -97,11 +99,18 @@ public class CheckoutFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(CheckoutFragment.this);
+        startAnimation();
         checkRemoteConfig();
         setupRecycler();
         clickListeners();
         liveEvents();
         updateInfo();
+    }
+
+    private void startAnimation() {
+        Animation mLoadAnimation = AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in);
+        mLoadAnimation.setDuration(800);
+        binding.getRoot().startAnimation(mLoadAnimation);
     }
 
     private void updateInfo() {

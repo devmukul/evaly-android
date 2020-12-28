@@ -76,35 +76,21 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
         }
 
         if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0)) {
-//            if (cashbackRate == 0) {
-//                binding.tvCashback.setText("Unavailable");
-//                binding.tvCashback.bringToFront();
-//                binding.tvCashback.setVisibility(View.VISIBLE);
-//                binding.price.setVisibility(View.GONE);
-//            } else {
-//                binding.price.setVisibility(View.VISIBLE);
-//                binding.price.setText("Unavailable");
-//                binding.tvCashback.setVisibility(View.GONE);
-//            }
             binding.tvCashback.setVisibility(View.GONE);
             binding.price.setVisibility(View.GONE);
             binding.price.setText(Utils.formatPriceSymbol(0));
-
         } else if (model.getMinDiscountedPriceD() != 0) {
-
             if (model.getMinDiscountedPriceD() < model.getMinPriceD()) {
-                binding.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
+                binding.priceDiscount.setText(Utils.formatPriceSymbol(model.getMinPrice()));
                 binding.priceDiscount.setVisibility(View.VISIBLE);
                 binding.priceDiscount.setPaintFlags(binding.priceDiscount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinDiscountedPriceD()));
+                binding.price.setText(Utils.formatPriceSymbol(model.getMinDiscountedPrice()));
             } else {
                 binding.priceDiscount.setVisibility(View.GONE);
-                binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
+                binding.price.setText(Utils.formatPriceSymbol(model.getMinPrice()));
             }
-
         } else
-            binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
-
+            binding.price.setText(Utils.formatPriceSymbol(model.getMinPrice()));
 
         binding.getRoot().setOnClickListener(clickListener);
 

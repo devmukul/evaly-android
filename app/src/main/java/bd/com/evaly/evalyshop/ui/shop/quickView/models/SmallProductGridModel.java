@@ -22,6 +22,7 @@ import java.util.Locale;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemShopProductSmallBinding;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.util.Utils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -88,17 +89,17 @@ public abstract class SmallProductGridModel extends DataBindingEpoxyModel {
         } else if (model.getMinDiscountedPriceD() != 0) {
 
             if (model.getMinDiscountedPriceD() < model.getMinPriceD()) {
-                binding.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
+                binding.priceDiscount.setText(Utils.formatPriceSymbol(model.getMinPrice()));
                 binding.priceDiscount.setVisibility(View.VISIBLE);
                 binding.priceDiscount.setPaintFlags(binding.priceDiscount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinDiscountedPriceD()));
+                binding.price.setText(Utils.formatPriceSymbol(model.getMinDiscountedPrice()));
             } else {
                 binding.priceDiscount.setVisibility(View.GONE);
-                binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
+                binding.price.setText(Utils.formatPriceSymbol(model.getMinPrice()));
             }
 
         } else
-            binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
+            binding.price.setText(Utils.formatPriceSymbol(model.getMinPrice()));
 
 
         binding.getRoot().setOnClickListener(clickListener);

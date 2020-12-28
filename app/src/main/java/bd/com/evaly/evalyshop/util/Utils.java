@@ -203,22 +203,32 @@ public class Utils {
             return String.format(Locale.ENGLISH, "%.2f", d);
     }
 
+    public static String formatPriceComma(double d) {
+        if (d == (int) d)
+            return String.format(Locale.ENGLISH, "%,d", (int) d);
+        else
+            return String.format(Locale.ENGLISH, "%,.2f", d);
+    }
+
     public static String formatPrice(String s) {
-
         double d = Double.parseDouble(s);
-
         return formatPrice(d);
+    }
+
+    public static String formatPriceComma(String s) {
+        double d = Double.parseDouble(s);
+        return formatPriceComma(d);
     }
 
     public static String formatPriceSymbol(String s) {
         if (s == null)
             return "৳ 0";
-        return "৳ " + formatPrice(s);
+        return "৳ " + formatPriceComma(s);
     }
 
 
     public static String formatPriceSymbol(double s) {
-        return "৳ " + formatPrice(s);
+        return "৳ " + formatPriceComma(s);
     }
 
     public static float convertDpToPixel(float dp, Context context) {

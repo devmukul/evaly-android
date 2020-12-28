@@ -12,8 +12,6 @@ import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
 
-import java.util.Locale;
-
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemCampaignProductBinding;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
@@ -53,17 +51,17 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
         } else if (model.getDiscountedPrice() != 0) {
             binding.price.setVisibility(View.VISIBLE);
             if (model.getDiscountedPrice() < model.getPrice()) {
-                binding.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
+                binding.priceDiscount.setText(Utils.formatPriceSymbol(model.getPrice()));
                 binding.priceDiscount.setVisibility(View.VISIBLE);
                 binding.priceDiscount.setPaintFlags(binding.priceDiscount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getDiscountedPrice()));
+                binding.price.setText(Utils.formatPriceSymbol(model.getDiscountedPrice()));
             } else {
                 binding.priceDiscount.setVisibility(View.GONE);
-                binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
+                binding.price.setText(Utils.formatPriceSymbol(model.getPrice()));
             }
         } else {
             binding.price.setVisibility(View.VISIBLE);
-            binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
+            binding.price.setText(Utils.formatPriceSymbol(model.getPrice()));
         }
 
         binding.getRoot().setOnClickListener(clickListener);

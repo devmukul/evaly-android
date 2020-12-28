@@ -96,10 +96,7 @@ public abstract class OrderListModel extends DataBindingEpoxyModel {
         else if (orderStatus.toLowerCase().equals("processing"))
             binding.status.setBackgroundColor(Color.parseColor("#5ac1de"));
 
-        binding.phone.setText("৳ " + Utils.formatPrice(model.getTotal()));
-
-
-
+        binding.phone.setText(Utils.formatPriceSymbol(model.getTotal()));
 
         binding.getRoot().setOnClickListener(clickListener);
     }

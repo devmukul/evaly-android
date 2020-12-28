@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
@@ -120,10 +122,19 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
         if (CredentialManager.getToken().equals("")) {
             ToastUtils.show("You need to login first.");
             startActivity(new Intent(requireActivity(), SignInActivity.class));
-        } else if (viewModel.liveList.getValue().size() == 0) {
+        } else if (viewModel.liveList.getValue() == null || viewModel.liveList.getValue().size() == 0) {
             ToastUtils.show("No product is added to the cart");
         } else {
-            navController.navigate(R.id.checkoutFragment);
+            int count = 0;
+            List<CartEntity> list = viewModel.liveList.getValue();
+            for (CartEntity item : list) {
+                if (item.isSelected())
+                    count++;
+            }
+            if (count > 0)
+                navController.navigate(R.id.checkoutFragment);
+            else
+                ToastUtils.show("Please select items before checkout");
         }
     }
 
