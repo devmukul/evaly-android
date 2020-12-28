@@ -325,12 +325,13 @@ public class CheckoutFragment extends DialogFragment {
         });
 
         viewModel.orderPlacedLiveData.observe(getViewLifecycleOwner(), response -> {
+            if (getActivity() == null)
+                return;
 
             ToastUtils.show(response.getMessage());
             List<OrderDetailsModel> list = response.getData();
-            if (list.size() > 0) {
+            if (list.size() > 0 && (getArguments() == null || !getArguments().containsKey("model"))) {
                 viewModel.deleteSelected();
-                ToastUtils.show("Your order has been placed!");
             }
 
             if (isVisible())

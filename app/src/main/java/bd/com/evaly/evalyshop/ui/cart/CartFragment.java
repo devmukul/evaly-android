@@ -28,6 +28,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentCartBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.cart.controller.CartController;
+import bd.com.evaly.evalyshop.ui.checkout.CheckoutFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -131,9 +132,14 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
                 if (item.isSelected())
                     count++;
             }
-            if (count > 0)
-                navController.navigate(R.id.checkoutFragment);
-            else
+            if (count > 0) {
+                if (getActivity() instanceof MainActivity)
+                    navController.navigate(R.id.checkoutFragment);
+                else {
+                    CheckoutFragment fragment = new CheckoutFragment();
+                    fragment.show(getParentFragmentManager(), "cart");
+                }
+            } else
                 ToastUtils.show("Please select items before checkout");
         }
     }
