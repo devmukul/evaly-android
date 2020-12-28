@@ -15,6 +15,7 @@ import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
 import bd.com.evaly.evalyshop.data.roomdb.banner.BannerDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
+import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.di.qualifiers.FirebaseRemoteConfigLiveData;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
@@ -81,6 +82,12 @@ public class AppModule {
     @Singleton
     CartDao cartDao(AppDatabase appDatabase) {
         return appDatabase.cartDao();
+    }
+
+    @Provides
+    @Singleton
+    WishListDao wishListDao(AppDatabase appDatabase) {
+        return appDatabase.wishListDao();
     }
 
     @Provides

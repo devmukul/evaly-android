@@ -77,6 +77,10 @@ public class MainActivity extends BaseActivity {
     public boolean isLaunchActivity = true;
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
+    @Inject
+    WishListDao wishListDao;
+    @Inject
+    CartDao cartDao;
     private AlertDialog exitDialog;
     private AlertDialog.Builder exitDialogBuilder;
     private NavController navController;
@@ -183,9 +187,6 @@ public class MainActivity extends BaseActivity {
             // navController.navigate(Uri.parse("http://beta.evaly.com.bd/campaign/campaigns/hot-deal-1487c3f9/instant-cashback-100-95ce60?type=products"));
         });
 
-        AppDatabase appDatabase = AppDatabase.getInstance(this);
-        WishListDao wishListDao = appDatabase.wishListDao();
-        CartDao cartDao = appDatabase.cartDao();
 
         BottomNavigationItemView itemView = binding.bottomNavigationView.findViewById(R.id.wishListFragment);
         View wishListBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, binding.bottomNavigationView, false);

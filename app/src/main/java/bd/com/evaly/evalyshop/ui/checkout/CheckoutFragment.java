@@ -60,6 +60,7 @@ import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
@@ -79,6 +80,7 @@ public class CheckoutFragment extends DialogFragment {
     private CheckoutProductController controller;
     private AddressItem addressModel = null;
     private int minPrice = 0;
+    private ViewDialog dialog;
 
     public CheckoutFragment() {
         //setCancelable(false);
@@ -103,6 +105,7 @@ public class CheckoutFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(CheckoutFragment.this);
+        dialog = new ViewDialog(getActivity());
         startAnimation();
         checkRemoteConfig();
         setupRecycler();
@@ -113,7 +116,7 @@ public class CheckoutFragment extends DialogFragment {
 
     private void startAnimation() {
         Animation mLoadAnimation = AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in);
-        mLoadAnimation.setDuration(800);
+        mLoadAnimation.setDuration(1000);
         binding.getRoot().startAnimation(mLoadAnimation);
     }
 
@@ -172,6 +175,7 @@ public class CheckoutFragment extends DialogFragment {
                 Toast.makeText(getContext(), "You have to order more than TK. " + minPrice + " from an individual shop", Toast.LENGTH_SHORT).show();
                 return;
             }
+            dialog.showDialog();
             viewModel.placeOrder(generateOrderJson());
         });
     }
@@ -308,6 +312,11 @@ public class CheckoutFragment extends DialogFragment {
             binding.address.setText(addressItem.getFullAddressLine());
         });
 
+        viewModel.errorOrder.observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean)
+                dialog.hideDialog();
+        });
+
         viewModel.liveList.observe(getViewLifecycleOwner(), cartEntities -> {
             controller.setList(cartEntities);
             controller.requestModelBuild();
@@ -327,7 +336,7 @@ public class CheckoutFragment extends DialogFragment {
         viewModel.orderPlacedLiveData.observe(getViewLifecycleOwner(), response -> {
             if (getActivity() == null)
                 return;
-
+            dialog.hideDialog();
             ToastUtils.show(response.getMessage());
             List<OrderDetailsModel> list = response.getData();
             if (list.size() > 0 && (getArguments() == null || !getArguments().containsKey("model"))) {
@@ -456,7 +465,7 @@ public class CheckoutFragment extends DialogFragment {
         PlaceOrderItem orderObject = new PlaceOrderItem();
 
         orderObject.setContactNumber(binding.contact.getText().toString());
-        orderObject.setCustomerAddress(addressModel.getFullAddressLine());
+        orderObject.setCustomerAddress(addressModel.getFullAddress());
         orderObject.setOrderOrigin("app");
 
         if (CredentialManager.getLatitude() != null && CredentialManager.getLongitude() != null) {

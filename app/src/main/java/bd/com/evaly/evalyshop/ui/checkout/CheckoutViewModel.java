@@ -17,6 +17,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
+import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -24,6 +25,7 @@ import io.reactivex.schedulers.Schedulers;
 public class CheckoutViewModel extends ViewModel {
 
     protected LiveData<List<CartEntity>> liveList = new MutableLiveData<>();
+    protected SingleLiveEvent<Boolean> errorOrder = new SingleLiveEvent<>();
     protected MutableLiveData<CommonDataResponse<List<OrderDetailsModel>>> orderPlacedLiveData = new MutableLiveData<>();
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
@@ -61,6 +63,7 @@ public class CheckoutViewModel extends ViewModel {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
+                errorOrder.setValue(true);
                 ToastUtils.show("Couldn't place order, try again later.");
             }
 

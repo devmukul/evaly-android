@@ -172,7 +172,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="17dp"
-                    android:layout_marginBottom="10dp"
                     android:fontFamily="sans-serif-medium"
                     android:text="@string/products"
                     android:textColor="@color/black"
@@ -182,10 +181,8 @@
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/bg_white_round"
                     android:minHeight="100dp"
                     android:nestedScrollingEnabled="false"
-                    android:paddingBottom="10dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:itemCount="1"
                     tools:listitem="@layout/item_checkout_product" />
@@ -327,7 +324,7 @@
                         android:layout_weight="0"
                         android:paddingLeft="5dp"
                         android:text="@string/i_agree_to_the_terms_amp_conditions_and_purchasing_policy_of_evaly"
-                        android:textColor="@color/c777"
+                        android:textColor="@color/c555"
                         android:textSize="13sp" />
 
                 </LinearLayout>
