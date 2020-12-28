@@ -397,4 +397,9 @@
         android:name="bd.com.evaly.evalyshop.ui.checkout.CheckoutFragment"
         android:label="CheckoutFragment" />
 
+    <dialog
+        android:id="@+id/addressDialogFragment"
+        android:name="bd.com.evaly.evalyshop.ui.address.AddressFragment"
+        android:label="LocationDialogFragment" />
+
 </navigation>

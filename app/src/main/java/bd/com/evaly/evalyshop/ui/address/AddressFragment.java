@@ -10,16 +10,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.Objects;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetAddAddressBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentAddressBinding;
+import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.AddressItem;
 import bd.com.evaly.evalyshop.ui.address.controller.AddressController;
@@ -27,11 +30,14 @@ import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class AddressFragment extends Fragment implements AddressController.ClickListener {
+public class AddressFragment extends BottomSheetDialogFragment implements AddressController.ClickListener {
 
-    AddressViewModel viewModel;
+    @Inject
+    SharedObservers sharedObservers;
+    private AddressViewModel viewModel;
     private FragmentAddressBinding binding;
     private AddressController controller;
+    private boolean isPicker = false;
 
     @Nullable
     @Override
@@ -43,6 +49,8 @@ public class AddressFragment extends Fragment implements AddressController.Click
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null && getArguments().containsKey("is_picker"))
+            isPicker = true;
         viewModel = new ViewModelProvider(this).get(AddressViewModel.class);
     }
 
@@ -72,11 +80,19 @@ public class AddressFragment extends Fragment implements AddressController.Click
     }
 
     private void updateViews() {
-
+        if (isPicker)
+            binding.toolbar.setTitle(getString(R.string.select_address));
+        else
+            binding.toolbar.setTitle(getString(R.string.addresses));
     }
 
     private void clickListeners() {
-        binding.toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
+        binding.toolbar.setNavigationOnClickListener(view -> {
+            if (isPicker)
+                dismissAllowingStateLoss();
+            else
+                getActivity().onBackPressed();
+        });
         binding.toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.action_add)
                 addAddress(null, 0);
@@ -165,6 +181,14 @@ public class AddressFragment extends Fragment implements AddressController.Click
         Objects.requireNonNull(dialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         dialog.setContentView(dialogBinding.getRoot());
         dialog.show();
+    }
+
+    @Override
+    public void onClick(AddressItem model) {
+        if (isPicker) {
+            sharedObservers.onAddressChanged.setValue(model);
+            dismissAllowingStateLoss();
+        }
     }
 
     @Override

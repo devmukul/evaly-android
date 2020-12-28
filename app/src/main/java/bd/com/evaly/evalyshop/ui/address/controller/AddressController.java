@@ -7,7 +7,6 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemAddressBinding;
-import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.user.AddressItem;
 import bd.com.evaly.evalyshop.ui.address.model.AddressListModel_;
 import bd.com.evaly.evalyshop.ui.address.model.BindAddressModel;
@@ -22,6 +21,7 @@ public class AddressController extends EpoxyController {
     private ClickListener clickListener;
 
     public interface ClickListener {
+        void onClick(AddressItem model);
         void onDelete(AddressItem model);
         void onEdit(AddressItem model, int position);
     }
@@ -37,6 +37,7 @@ public class AddressController extends EpoxyController {
                         ItemAddressBinding binding = (ItemAddressBinding) view.getDataBinding();
                         BindAddressModel.bind(binding, model.model());
                     })
+                    .onClickListener((model, parentView, clickedView, position) -> clickListener.onClick(model.model()))
                     .onDeleteClick((model, parentView, clickedView, position) -> clickListener.onDelete(model.model()))
                     .onEditClick((model, parentView, clickedView, position) -> clickListener.onEdit(model.model(), position))
                     .addTo(this);

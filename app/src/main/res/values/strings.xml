@@ -425,5 +425,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="change_cap">CHANGE</string>
     <string name="save_contact_number">Save Contact Number</string>
     <string name="items_colon">Items:</string>
+    <string name="select_address">Select Address</string>
 
 </resources>

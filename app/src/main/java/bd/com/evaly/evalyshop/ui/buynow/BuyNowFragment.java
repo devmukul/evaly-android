@@ -193,6 +193,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }
+            if (isVisible())
+                dismissAllowingStateLoss();
+
             CartEntity cartEntity = getCartItem();
             Bundle bundle = new Bundle();
             bundle.putSerializable("model", cartEntity);

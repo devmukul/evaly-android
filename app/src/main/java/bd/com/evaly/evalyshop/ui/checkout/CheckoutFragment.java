@@ -44,12 +44,14 @@ import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.BottomSheetAddAddressBinding;
 import bd.com.evaly.evalyshop.databinding.BottomSheetCheckoutContactBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentCheckoutBinding;
+import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.user.AddressItem;
 import bd.com.evaly.evalyshop.models.user.UserModel;
+import bd.com.evaly.evalyshop.ui.address.AddressFragment;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.checkout.controller.CheckoutProductController;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
@@ -67,6 +69,8 @@ public class CheckoutFragment extends DialogFragment {
 
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
+    @Inject
+    SharedObservers sharedObservers;
     private FragmentCheckoutBinding binding;
     private CheckoutViewModel viewModel;
     private String deliveryChargeApplicable = null, deliveryDuration;
@@ -135,7 +139,9 @@ public class CheckoutFragment extends DialogFragment {
 
     private void clickListeners() {
 
-        binding.toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
+        binding.toolbar.setNavigationOnClickListener(v -> {
+            getActivity().onBackPressed();
+        });
 
         binding.btnEditContactNumber.setOnClickListener(v -> {
             editContact();
@@ -145,12 +151,15 @@ public class CheckoutFragment extends DialogFragment {
             editAddress(addressModel);
         });
 
+        binding.changeAddress.setOnClickListener(v -> {
+            openLocationSelector();
+        });
+
         binding.btnPlaceOrder.setOnClickListener(view -> {
             if (CredentialManager.getToken().equals("")) {
                 startActivity(new Intent(getContext(), SignInActivity.class));
                 return;
             }
-
             if (!Utils.isValidNumber(binding.contact.getText().toString())) {
                 ToastUtils.show("Please enter a correct phone number");
                 return;
@@ -165,14 +174,20 @@ public class CheckoutFragment extends DialogFragment {
             }
             viewModel.placeOrder(generateOrderJson());
         });
+    }
 
+    private void openLocationSelector() {
+        AddressFragment addressFragment = new AddressFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("is_picker", true);
+        addressFragment.setArguments(bundle);
+        addressFragment.show(getParentFragmentManager(), "Address Picker");
     }
 
     private void checkRemoteConfig() {
         deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
         deliveryChargeAmount = mFirebaseRemoteConfig.getDouble("delivery_charge_amount");
     }
-
 
     private void updateViews() {
 
@@ -288,6 +303,11 @@ public class CheckoutFragment extends DialogFragment {
 
     private void liveEvents() {
 
+        sharedObservers.onAddressChanged.observe(getViewLifecycleOwner(), addressItem -> {
+            addressModel = addressItem;
+            binding.address.setText(addressItem.getFullAddressLine());
+        });
+
         viewModel.liveList.observe(getViewLifecycleOwner(), cartEntities -> {
             controller.setList(cartEntities);
             controller.requestModelBuild();
@@ -312,6 +332,9 @@ public class CheckoutFragment extends DialogFragment {
                 viewModel.deleteSelected();
                 ToastUtils.show("Your order has been placed!");
             }
+
+            if (isVisible())
+                dismissAllowingStateLoss();
 
             for (OrderDetailsModel item : list) {
                 String invoice = null;
