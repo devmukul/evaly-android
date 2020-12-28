@@ -32,7 +32,7 @@
                 android:layout_weight="0"
                 android:adjustViewBounds="true"
                 android:paddingLeft="5dp"
-                app:srcCompat="@drawable/ic_shop_filled_2"
+                app:srcCompat="@drawable/ic_shop"
                 app:tint="@color/c666" />
 
             <TextView

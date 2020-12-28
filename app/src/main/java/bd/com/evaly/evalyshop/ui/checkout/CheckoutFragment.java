@@ -81,6 +81,7 @@ public class CheckoutFragment extends DialogFragment {
     private AddressItem addressModel = null;
     private int minPrice = 0;
     private ViewDialog dialog;
+    private double totalDeliveryCharge;
 
     public CheckoutFragment() {
         //setCancelable(false);
@@ -201,7 +202,7 @@ public class CheckoutFragment extends DialogFragment {
         boolean selected = false;
         boolean isExpress = false;
         boolean showDeliveryCharge = false;
-
+        totalDeliveryCharge = 0;
         HashMap<String, Integer> shopAmountMap = new HashMap<>();
         HashMap<String, Boolean> shopExpressMap = new HashMap<>();
 
@@ -223,8 +224,10 @@ public class CheckoutFragment extends DialogFragment {
 
                 JsonObject shopObject = JsonParser.parseString(cartItem.getShopJson()).getAsJsonObject();
                 if (shopObject.has("is_express_shop")) {
-                    if (shopObject.get("is_express_shop").getAsBoolean() || shopObject.get("is_express_shop").getAsString().equals("1"))
+                    if (shopObject.get("is_express_shop").getAsBoolean() || shopObject.get("is_express_shop").getAsString().equals("1")) {
+                        totalDeliveryCharge += deliveryChargeAmount;
                         isExpress = true;
+                    }
                     if (deliveryChargeApplicable != null) {
                         String[] array = deliveryChargeApplicable.split(",");
                         for (String s : array) {
@@ -237,8 +240,10 @@ public class CheckoutFragment extends DialogFragment {
                     }
 
                 } else {
-                    if (cartItem.getShopSlug().contains("evaly-express"))
+                    if (cartItem.getShopSlug().contains("evaly-express")) {
+                        totalDeliveryCharge += deliveryChargeAmount;
                         isExpress = true;
+                    }
                 }
                 shopExpressMap.put(ss, isExpress);
             }
@@ -266,8 +271,8 @@ public class CheckoutFragment extends DialogFragment {
         }
 
         if (showDeliveryCharge && isExpress) {
-            if (deliveryChargeAmount > 0)
-                binding.deliveryCharge.setText(Utils.formatPriceSymbol(deliveryChargeAmount));
+            if (totalDeliveryCharge > 0)
+                binding.deliveryCharge.setText(Utils.formatPriceSymbol(totalDeliveryCharge));
             binding.vatHolder.setVisibility(View.VISIBLE);
         } else {
             binding.vatHolder.setVisibility(View.GONE);
@@ -304,7 +309,6 @@ public class CheckoutFragment extends DialogFragment {
         });
     }
 
-
     private void liveEvents() {
 
         sharedObservers.onAddressChanged.observe(getViewLifecycleOwner(), addressItem -> {
@@ -328,8 +332,8 @@ public class CheckoutFragment extends DialogFragment {
                 totalItems += cartEntity.getQuantity();
             }
             binding.subtotal.setText(Utils.formatPriceSymbol(totalAmount));
-            binding.totalAmount.setText(Utils.formatPriceSymbol(totalAmount + deliveryChargeAmount));
-            binding.totalText.setText(String.format("%s %s", getString(R.string.total_colon), Utils.formatPriceSymbol(totalAmount)));
+            binding.totalAmount.setText(Utils.formatPriceSymbol(totalAmount + totalDeliveryCharge));
+            binding.totalText.setText(String.format("%s %s", getString(R.string.total_colon), Utils.formatPriceSymbol(totalAmount + totalDeliveryCharge)));
             binding.totalItems.setText(String.format(Locale.ENGLISH, "%s %d", getString(R.string.items_colon), totalItems));
         });
 
@@ -338,30 +342,28 @@ public class CheckoutFragment extends DialogFragment {
                 return;
             dialog.hideDialog();
             ToastUtils.show(response.getMessage());
+
             List<OrderDetailsModel> list = response.getData();
-            if (list.size() > 0 && (getArguments() == null || !getArguments().containsKey("model"))) {
+            if (list == null || list.size() == 0)
+                return;
+
+            if ((getArguments() == null || !getArguments().containsKey("model"))) {
                 viewModel.deleteSelected();
             }
 
             if (isVisible())
                 dismissAllowingStateLoss();
 
-            for (OrderDetailsModel item : list) {
-                String invoice = null;
-                if (item.getInvoiceNo() != null)
-                    invoice = item.getInvoiceNo();
-                if (invoice == null || invoice.equals("")) {
-                    if (getActivity() != null && !getActivity().isFinishing()) {
-                        if (getActivity() instanceof MainActivity && navController != null)
-                            navController.navigate(R.id.orderListBaseFragment);
-                        else
-                            getActivity().startActivity(new Intent(getContext(), OrderListActivity.class));
-                    }
-                    break;
-                } else {
+            if (getActivity() != null && !getActivity().isFinishing()) {
+                if (list.size() == 1 && list.get(0).getInvoiceNo() != null && !list.get(0).getInvoiceNo().equals("")) {
                     Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
-                    intent.putExtra("orderID", invoice);
+                    intent.putExtra("orderID", list.get(0).getInvoiceNo());
                     startActivity(intent);
+                } else {
+                    if (getActivity() instanceof MainActivity && navController != null)
+                        navController.navigate(R.id.orderListBaseFragment);
+                    else
+                        getActivity().startActivity(new Intent(getContext(), OrderListActivity.class));
                 }
             }
         });

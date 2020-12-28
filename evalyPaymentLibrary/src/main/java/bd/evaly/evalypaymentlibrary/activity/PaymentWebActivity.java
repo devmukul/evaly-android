@@ -85,7 +85,7 @@ public final class PaymentWebActivity extends AppCompatActivity implements Advan
             }
             mWebView.destroy();
             finish();
-        }else if (url.equalsIgnoreCase(PaymentWebBuilder.getSuccessUrl()) && PaymentWebBuilder.getPurchaseInformation().getGateway().equalsIgnoreCase("sebl")){
+        }else if (url.toLowerCase().contains(PaymentWebBuilder.getSuccessUrl()) && PaymentWebBuilder.getPurchaseInformation().getGateway().equalsIgnoreCase("sebl")){
              if (PaymentWebBuilder.getUpayListener() != null) {
                  try {
                      URL successURL = new URL(url);

@@ -3,8 +3,6 @@ package bd.com.evaly.evalyshop.recommender;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.orhanobut.logger.Logger;
-
 import java.util.Calendar;
 import java.util.List;
 
@@ -46,7 +44,7 @@ public class RecommenderViewModel extends ViewModel {
     }
 
     public void insert(String type, String slug, String name, String image) {
-        if (type.equals("shop") && name.contains("cyclone"))
+        if (type.equals("shop") && name.contains("cyclone") && name.contains("flash"))
             return;
         compositeDisposable.add(
                 rsDao.insertRx(new RsEntity(type, slug, name, image, Calendar.getInstance().getTimeInMillis(), 1, 1))
@@ -59,7 +57,6 @@ public class RecommenderViewModel extends ViewModel {
 
                             @Override
                             public void onError(Throwable e) {
-                                Logger.e(e.toString());
                                 updateOpenCount(type, slug);
                             }
                         }));

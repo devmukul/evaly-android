@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,7 +26,9 @@ import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentOrderListBaseBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.adapter.OrderListTabAdapter;
+import bd.com.evaly.evalyshop.ui.order.orderRequest.OrderRequestFragment;
 import bd.com.evaly.evalyshop.ui.order.orderRequest.OrderRequestListController;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -51,7 +54,8 @@ public class OrderListBaseFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        navController = NavHostFragment.findNavController(this);
+        if (getActivity() instanceof MainActivity)
+            navController = NavHostFragment.findNavController(this);
         OrderListTabAdapter pager = new OrderListTabAdapter(this);
 
         binding.pager.setAdapter(pager);
@@ -77,6 +81,12 @@ public class OrderListBaseFragment extends Fragment {
         binding.orderRequestHolder.setOnClickListener(view1 -> {
             if (getActivity() != null && getContext() != null && navController != null)
                 navController.navigate(R.id.orderRequestFragment);
+            else {
+                OrderRequestFragment fragment = new OrderRequestFragment();
+                FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+                ft.add(R.id.fragmentHolder, fragment, "order request list");
+                ft.commit();
+            }
         });
 
     }

@@ -97,7 +97,7 @@ public class Constants {
 
     public static final String BKASH_SUCCESS_URL = "success.html";
     public static final String SSL_SUCCESS_URL = "evaly.com.bd";
-    public static final String SEBL_SUCCESS_URL = BuildConfig.WEB_URL;
+    public static final String SEBL_SUCCESS_URL = "evaly.com.bd/order";
 
     public static List<OrderIssueModel> getDelivaryIssueList() {
 
