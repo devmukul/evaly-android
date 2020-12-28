@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -66,7 +67,8 @@ public class CheckoutFragment extends DialogFragment {
     FirebaseRemoteConfig mFirebaseRemoteConfig;
     private FragmentCheckoutBinding binding;
     private CheckoutViewModel viewModel;
-    private String deliveryChargeText = null, deliveryChargeApplicable = null, deliveryDuration;
+    private String deliveryChargeApplicable = null, deliveryDuration;
+    private double deliveryChargeAmount = 0;
     private NavController navController;
     private CheckoutProductController controller;
     private AddressItem addressModel = null;
@@ -93,7 +95,8 @@ public class CheckoutFragment extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        navController = NavHostFragment.findNavController(CheckoutFragment.this);
+        if (getActivity() instanceof MainActivity)
+            navController = NavHostFragment.findNavController(CheckoutFragment.this);
         checkRemoteConfig();
         setupRecycler();
         clickListeners();
@@ -138,10 +141,6 @@ public class CheckoutFragment extends DialogFragment {
                 startActivity(new Intent(getContext(), SignInActivity.class));
                 return;
             }
-            if (!binding.checkBox.isChecked()) {
-                Toast.makeText(getContext(), "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
-                return;
-            }
 
             if (!Utils.isValidNumber(binding.contact.getText().toString())) {
                 ToastUtils.show("Please enter a correct phone number");
@@ -162,13 +161,13 @@ public class CheckoutFragment extends DialogFragment {
 
     private void checkRemoteConfig() {
         deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
-        deliveryChargeText = mFirebaseRemoteConfig.getString("delivery_charge_text");
+        deliveryChargeAmount = mFirebaseRemoteConfig.getDouble("delivery_charge_amount");
     }
 
 
     private void updateViews() {
 
-        binding.privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
+        binding.privacyText.setText(Html.fromHtml("Upon clicking on 'Place Order', I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
         binding.privacyText.setMovementMethod(LinkMovementMethod.getInstance());
 
         boolean selected = false;
@@ -232,7 +231,6 @@ public class CheckoutFragment extends DialogFragment {
 
         checkLocationPermission();
 
-
         if (isExpress) {
             binding.deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
         } else {
@@ -240,12 +238,10 @@ public class CheckoutFragment extends DialogFragment {
         }
 
         if (showDeliveryCharge && isExpress) {
-            if (deliveryChargeText != null)
-                binding.deliveryChargeText.setText(deliveryChargeText);
-            binding.deliveryChargeHolder.setVisibility(View.VISIBLE);
+            if (deliveryChargeAmount > 0)
+                binding.deliveryCharge.setText(Utils.formatPriceSymbol(deliveryChargeAmount));
             binding.vatHolder.setVisibility(View.VISIBLE);
         } else {
-            binding.deliveryChargeHolder.setVisibility(View.GONE);
             binding.vatHolder.setVisibility(View.GONE);
         }
     }
@@ -287,14 +283,20 @@ public class CheckoutFragment extends DialogFragment {
             controller.setList(cartEntities);
             controller.requestModelBuild();
             updateViews();
+            double totalAmount = 0;
+            int totalItems = 0;
+            for (CartEntity cartEntity : cartEntities) {
+                totalAmount += cartEntity.getPriceDouble() * cartEntity.getQuantity();
+                totalItems += cartEntity.getQuantity();
+            }
+            binding.subtotal.setText(Utils.formatPriceSymbol(totalAmount));
+            binding.totalAmount.setText(Utils.formatPriceSymbol(totalAmount + deliveryChargeAmount));
+            binding.totalText.setText(String.format("%s %s", getString(R.string.total_colon), Utils.formatPriceSymbol(totalAmount)));
+            binding.totalItems.setText(String.format(Locale.ENGLISH, "%s %d", getString(R.string.items_colon), totalItems));
         });
 
         viewModel.orderPlacedLiveData.observe(getViewLifecycleOwner(), response -> {
 
-            ToastUtils.show(response.getMessage());
-            
-            if (response != null && getActivity() != null)
-                return;
             ToastUtils.show(response.getMessage());
             List<OrderDetailsModel> list = response.getData();
             if (list.size() > 0) {
@@ -392,14 +394,14 @@ public class CheckoutFragment extends DialogFragment {
         final BottomSheetCheckoutContactBinding dialogBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
                 R.layout.bottom_sheet_checkout_contact, null, false);
 
-
+        dialogBinding.contact.setText(binding.contact.getText().toString());
         dialogBinding.save.setOnClickListener(view -> {
 
             String phoneNumber = dialogBinding.contact.getText().toString().trim();
             String error = null;
 
             if (phoneNumber.equals(""))
-                error = "Pleae enter phone number";
+                error = "Please enter phone number";
 
             if (error != null) {
                 ToastUtils.show(error);

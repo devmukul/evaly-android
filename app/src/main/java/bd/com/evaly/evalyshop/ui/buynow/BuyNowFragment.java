@@ -50,6 +50,7 @@ import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
+import bd.com.evaly.evalyshop.ui.checkout.CheckoutFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -195,7 +196,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             CartEntity cartEntity = getCartItem();
             Bundle bundle = new Bundle();
             bundle.putSerializable("model", cartEntity);
-            navController.navigate(R.id.checkoutFragment, bundle);
+            // navController.navigate(R.id.checkoutFragment, bundle);
+            CheckoutFragment checkoutFragment = new CheckoutFragment();
+            checkoutFragment.setArguments(bundle);
+            checkoutFragment.show(getParentFragmentManager(), "Checkout");
         });
     }
 

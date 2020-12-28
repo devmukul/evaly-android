@@ -65,20 +65,20 @@
                 android:textColor="@color/c333"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                tools:text="Size: 20"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                tools:text="Size: 20" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
-                android:background="@color/f9f9f9" />
+                android:background="@color/fafafa" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <TextView

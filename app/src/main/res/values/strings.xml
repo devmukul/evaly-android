@@ -161,6 +161,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="call">Call</string>
     <string name="location">Location</string>
     <string name="delivery">Delivery</string>
+    <string name="delivery_charge">Delivery Charge</string>
     <string name="reviews">Reviews</string>
     <string name="category">Category</string>
     <string name="categories">Categories</string>
@@ -423,5 +424,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="others">SSLCommerz</string>
     <string name="change_cap">CHANGE</string>
     <string name="save_contact_number">Save Contact Number</string>
+    <string name="items_colon">Items:</string>
 
 </resources>

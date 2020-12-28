@@ -149,6 +149,7 @@
     <string name="no_orders_found">কোন অর্ডার নেই</string>
     <string name="location">অবস্থান</string>
     <string name="delivery">ডেলিভারি</string>
+    <string name="delivery_charge">ডেলিভারি</string>
     <string name="categories">বিভাগ</string>
     <string name="category">বিভাগ</string>
     <string name="all_products">সব প্রোডাক্ট</string>
@@ -215,7 +216,7 @@
     <string name="more_replies">টি রিপ্লে দেখুন</string>
     <string name="evaly_express">ইভ্যালি এক্সপ্রেস</string>
     <string name="total">মোট</string>
-    <string name="subtotal">মোট</string>
+    <string name="subtotal">সাবটোটাল</string>
     <string name="paid_amount">পরিশোধিত হয়েছে</string>
     <string name="due_amount">বাকি রয়েছে</string>
     <string name="order_summary">অর্ডার সংক্ষিপ্তসার</string>
@@ -239,4 +240,7 @@
     <string name="create_appointment">অ্যাপয়েন্টমেন্ট তৈরি করুন</string>
     <string name="time_slot">সময় স্লট</string>
     <string name="order_requests">অর্ডার রিকোয়েস্ট</string>
+    <string name="items_colon">আইটেম:</string>
+    <string name="change_cap">পরিবর্তন করুন</string>
+    <string name="save_contact_number">যোগাযোগ নম্বর সংরক্ষণ করুন</string>
 </resources>

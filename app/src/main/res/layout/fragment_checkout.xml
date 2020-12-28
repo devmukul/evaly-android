@@ -30,7 +30,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingHorizontal="15dp">
+                android:paddingHorizontal="15dp"
+                android:paddingBottom="140dp">
 
 
                 <LinearLayout
@@ -68,8 +69,9 @@
                     android:padding="15dp">
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="19dp"
+                        android:layout_height="19dp"
+                        android:layout_marginStart="2dp"
                         android:src="@drawable/ic_home"
                         app:tint="@color/c444" />
 
@@ -77,26 +79,25 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginStart="13dp"
                         android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/userName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginEnd="15dp"
                             android:layout_weight="1"
-                            android:textSize="16sp"
                             android:fontFamily="sans-serif-medium"
                             android:textColor="@color/c333"
+                            android:textSize="15sp"
                             tools:text="HM Tamim" />
 
                         <TextView
                             android:id="@+id/address"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginEnd="15dp"
+                            android:layout_marginTop="2dp"
                             android:layout_weight="1"
                             android:textColor="@color/c333"
                             android:textSize="14sp"
@@ -106,8 +107,8 @@
 
                     <ImageView
                         android:id="@+id/btnEditAddress"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="29dp"
+                        android:layout_height="29dp"
                         android:background="@drawable/btn_circle_eee"
                         android:padding="8dp"
                         android:src="@drawable/ic_edit_pen"
@@ -135,8 +136,9 @@
                     android:padding="15dp">
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="19dp"
+                        android:layout_height="19dp"
+                        android:layout_marginStart="2dp"
                         android:src="@drawable/ic_phone_thin"
                         app:tint="@color/c444" />
 
@@ -144,18 +146,18 @@
                         android:id="@+id/contact"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
+                        android:layout_marginStart="13dp"
                         android:layout_marginEnd="15dp"
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="@color/c333"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         tools:text="01751977045" />
 
                     <ImageView
                         android:id="@+id/btnEditContactNumber"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="29dp"
+                        android:layout_height="29dp"
                         android:background="@drawable/btn_circle_eee"
                         android:padding="8dp"
                         android:src="@drawable/ic_edit_pen" />
@@ -234,11 +236,11 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="৳ 0"
                                     android:textAlignment="textEnd"
                                     android:textColor="@color/black"
-                                    android:textSize="15sp"
-                                    android:textStyle="bold"
-                                    tools:text="৳ 5000" />
+                                    android:textSize="15sp" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -250,10 +252,11 @@
                                 android:orientation="horizontal">
 
                                 <TextView
+                                    android:id="@+id/deliveryText"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="@string/delivery"
+                                    android:text="@string/delivery_charge"
                                     android:textColor="@color/c555" />
 
                                 <TextView
@@ -261,11 +264,11 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="৳ 0"
                                     android:textAlignment="textEnd"
                                     android:textColor="@color/black"
-                                    android:textSize="15sp"
-                                    android:textStyle="bold"
-                                    tools:text="৳ 0" />
+                                    android:textSize="15sp" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -291,11 +294,10 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:fontFamily="sans-serif-medium"
+                                    android:text="৳ 0"
                                     android:textAlignment="textEnd"
                                     android:textColor="@color/black"
-                                    android:textSize="15sp"
-                                    android:textStyle="bold"
-                                    tools:text="৳ 5000" />
+                                    android:textSize="15sp" />
                             </LinearLayout>
                         </LinearLayout>
 
@@ -311,17 +313,6 @@
                     android:gravity="top"
                     android:orientation="horizontal">
 
-
-                    <CheckBox
-                        android:id="@+id/checkBox"
-                        style="@style/Widget.AppCompat.CompoundButton.CheckBox"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0"
-                        android:buttonTint="@color/black"
-                        android:text="" />
-
-
                     <TextView
                         android:id="@+id/privacyText"
                         android:layout_width="wrap_content"
@@ -331,7 +322,7 @@
                         android:layout_weight="0"
                         android:paddingLeft="5dp"
                         android:text="@string/i_agree_to_the_terms_amp_conditions_and_purchasing_policy_of_evaly"
-                        android:textColor="@color/c444"
+                        android:textColor="@color/c777"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -372,41 +363,6 @@
 
                 </LinearLayout>
 
-
-                <LinearLayout
-                    android:id="@+id/deliveryChargeHolder"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="top"
-                    android:orientation="horizontal"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="20dp"
-                        android:layout_weight="0"
-                        android:padding="1dp"
-                        app:srcCompat="@drawable/ic_delivery"
-                        app:tint="#9A8FFD" />
-
-                    <TextView
-                        android:id="@+id/deliveryChargeText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_weight="0"
-                        android:gravity="center_vertical"
-                        android:minHeight="20dp"
-                        android:paddingLeft="5dp"
-                        android:text="Delivery charge (40tk) will be added for orders from Unimart, MeenaClick, Shwapno and Bengal Meat express shops"
-                        android:textColor="@color/c666"
-                        android:textSize="13sp" />
-
-                </LinearLayout>
-
-
                 <LinearLayout
                     android:id="@+id/vatHolder"
                     android:layout_width="match_parent"
@@ -436,20 +392,60 @@
 
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/btnPlaceOrder"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="40dp"
-                    android:background="@drawable/black_btn"
-                    android:stateListAnimator="@null"
-                    android:text="@string/place_order"
-                    android:textColor="@color/fffh" />
-
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bottom_sheet_round"
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:translationZ="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="15dp"
+                android:orientation="horizontal"
+                android:paddingHorizontal="3dp">
+
+                <TextView
+                    android:id="@+id/totalItems"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Items (3)"
+                    android:textColor="@color/c444"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/totalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Total: ৳ 0"
+                    android:textColor="@color/c444"
+                    android:textSize="15sp" />
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnPlaceOrder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/black_btn"
+                android:stateListAnimator="@null"
+                android:text="@string/place_order"
+                android:textColor="@color/fffh" />
+
+        </LinearLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
