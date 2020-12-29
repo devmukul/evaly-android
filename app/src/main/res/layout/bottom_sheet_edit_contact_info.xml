@@ -18,62 +18,62 @@
         android:background="@drawable/bottomsheet_top_brd" />
 
 
-        <TextView
-            android:id="@+id/fn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="3dp"
-            android:text="@string/phone_number"
-            android:textColor="@color/c555"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/fn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:text="@string/phone_number"
+        android:textColor="@color/c555"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/phone"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/input_brd_small"
-            android:hint="@string/contact_number"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:imeOptions="actionGo"
-            android:textColor="@color/c666"
-            android:paddingLeft="15dp"
-            android:inputType="numberDecimal"
-            android:textSize="16sp" />
+    <EditText
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_weight="1"
+        android:background="@drawable/input_brd_small"
+        android:hint="@string/contact_number"
+        android:imeOptions="actionGo"
+        android:inputType="numberDecimal"
+        android:maxLines="1"
+        android:paddingLeft="15dp"
+        android:singleLine="true"
+        android:textColor="@color/c666"
+        android:textSize="16sp" />
 
 
-        <TextView
-            android:id="@+id/ln"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="3dp"
-            android:text="@string/email"
-            android:textColor="@color/c555"
-            android:layout_marginTop="15dp"
-            app:layout_constraintStart_toStartOf="@id/lastName"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/ln"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/email"
+        android:textColor="@color/c555"
+        app:layout_constraintStart_toStartOf="@id/lastName"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/email"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/input_brd_small"
-            android:hint="@string/email_address"
-            android:paddingLeft="15dp"
-            android:textSize="16sp"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:imeOptions="actionDone"
-            android:textColor="@color/c666"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@id/ln" />
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:background="@drawable/input_brd_small"
+        android:hint="@string/email_address"
+        android:imeOptions="actionDone"
+        android:maxLines="1"
+        android:paddingLeft="15dp"
+        android:singleLine="true"
+        android:textColor="@color/c666"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@id/ln" />
 
 
     <Button

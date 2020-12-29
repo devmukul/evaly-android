@@ -35,13 +35,13 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/input_bg"
+                android:drawableEnd="@drawable/ic_sort_down"
                 android:gravity="center_vertical"
                 android:inputType="number"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:text="Select date"
                 android:textColor="@color/c333"
-                android:drawableEnd="@drawable/ic_sort_down"
                 android:textSize="16sp" />
 
             <TextView

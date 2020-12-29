@@ -22,13 +22,13 @@
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
                 android:textColor="@color/c333"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="15dp"
-                tools:text="Terms &amp; Conditions"
                 android:visibility="gone"
-                tools:visibility="visible"/>
+                tools:text="Terms &amp; Conditions"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/text"
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/c333"
                 android:textSize="15sp"
-                tools:visibility="gone"/>
+                tools:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -44,8 +44,8 @@
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_text_list"
-                tools:itemCount="5"/>
+                tools:itemCount="5"
+                tools:listitem="@layout/item_text_list" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

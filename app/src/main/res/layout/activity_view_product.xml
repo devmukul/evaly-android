@@ -758,8 +758,8 @@
                                 android:layout_weight="0"
                                 android:gravity="center_horizontal"
                                 android:paddingBottom="10dp"
-                                android:textColor="@color/c777"
-                                android:text="This product is currently \nnot available at any shop" />
+                                android:text="This product is currently \nnot available at any shop"
+                                android:textColor="@color/c777" />
 
                         </LinearLayout>
 
@@ -853,10 +853,10 @@
                     android:layout_height="wrap_content"
                     android:background="@color/separator_light"
                     android:nestedScrollingEnabled="false"
-                    android:visibility="gone"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:paddingBottom="20dp" />
+                    android:paddingBottom="20dp"
+                    android:visibility="gone" />
 
                 <ProgressBar
                     android:id="@+id/progressBar"

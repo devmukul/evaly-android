@@ -8,8 +8,8 @@
     android:background="@drawable/menu_box"
     android:gravity="top|center_horizontal"
     android:orientation="vertical"
-    app:cardElevation="0dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp"
+    app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/category_item"

@@ -16,12 +16,12 @@
             android:layout_weight="0"
             android:background="@color/white"
             android:visibility="visible"
-            app:tabTextAppearance="@style/TabTextAppearance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tabPaddingBottom="10dp"
             app:tabSelectedTextColor="@color/black"
+            app:tabTextAppearance="@style/TabTextAppearance"
             app:tabTextColor="@color/c777">
 
 

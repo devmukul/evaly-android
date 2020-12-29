@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -71,10 +72,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="3dp"
                                 android:layout_toRightOf="@id/pictureHolder"
-                                tools:text="User Name"
                                 android:textColor="@color/c333"
                                 android:textSize="16sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                tools:text="User Name" />
 
                             <TextView
                                 android:id="@+id/date"
@@ -82,9 +83,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/user_name"
                                 android:layout_alignStart="@id/user_name"
-                                tools:text="2 hours ago"
                                 android:textColor="@color/c777"
-                                android:textSize="13sp" />
+                                android:textSize="13sp"
+                                tools:text="2 hours ago" />
 
 
                         </RelativeLayout>
@@ -101,9 +102,9 @@
                             android:paddingTop="5dp"
                             android:paddingRight="17dp"
                             android:paddingBottom="20dp"
-                            tools:text="Status text..."
                             android:textColor="@color/c444"
-                            android:textSize="17sp" />
+                            android:textSize="17sp"
+                            tools:text="Status text..." />
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/cardLink"
@@ -126,11 +127,11 @@
                             android:id="@+id/postImage"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:minHeight="300dp"
                             android:layout_below="@id/text"
                             android:adjustViewBounds="true"
-                            android:visibility="visible"
-                            android:background="@color/eee"/>
+                            android:background="@color/eee"
+                            android:minHeight="300dp"
+                            android:visibility="visible" />
 
 
                     </LinearLayout>

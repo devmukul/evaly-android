@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/bottom_sheet_round_create_post"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -63,23 +63,24 @@
             android:id="@+id/llSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="7dp"
             android:background="@drawable/round_box_less"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="7dp">
+
             <TextView
                 android:id="@+id/tvCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="(0) "
                 android:textColor="@color/c555"
-                android:textStyle="bold"
-                android:text="(0) " />
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/c555"
-                android:text="Send" />
+                android:text="Send"
+                android:textColor="@color/c555" />
         </LinearLayout>
 
     </LinearLayout>
@@ -94,6 +95,6 @@
         android:id="@+id/rvContacts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/share_with_contact_item"/>
+        tools:listitem="@layout/share_with_contact_item" />
 
 </LinearLayout>

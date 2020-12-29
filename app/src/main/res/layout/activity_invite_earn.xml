@@ -103,15 +103,15 @@
         </androidx.cardview.widget.CardView>
 
         <!--<android.support.v7.widget.CardView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginLeft="20dp"-->
-            <!--android:layout_marginRight="20dp"-->
-            <!--android:layout_marginTop="20dp"-->
-            <!--android:layout_weight="0"-->
-            <!--app:cardCornerRadius="10dp"-->
-            <!--app:cardElevation="0dp"-->
-            <!--app:cardBackgroundColor="@color/eeeeee">-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:layout_marginRight="20dp"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:layout_weight="0"-->
+        <!--app:cardCornerRadius="10dp"-->
+        <!--app:cardElevation="0dp"-->
+        <!--app:cardBackgroundColor="@color/eeeeee">-->
         <!--</android.support.v7.widget.CardView>-->
 
         <LinearLayout

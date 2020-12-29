@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/badge"
         android:layout_width="wrap_content"
@@ -17,8 +18,8 @@
             android:paddingEnd="5dp"
             android:paddingBottom="2dp"
             android:text="0"
-            android:visibility="invisible"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="@color/fffh" />
+            android:textColor="@color/fffh"
+            android:visibility="invisible" />
     </FrameLayout>
 </layout>

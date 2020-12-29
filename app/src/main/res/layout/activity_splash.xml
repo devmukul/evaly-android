@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:background="@color/white"
+    android:gravity="center"
     tools:context=".controller.SplashActivity">
 
     <ImageView
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:tint="@color/black"
-        app:srcCompat="@drawable/logo"/>
+        app:srcCompat="@drawable/logo" />
 
 </LinearLayout>

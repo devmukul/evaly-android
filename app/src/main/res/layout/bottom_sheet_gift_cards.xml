@@ -135,9 +135,9 @@
                 android:maxLength="11"
                 android:maxLines="1"
                 android:padding="10dp"
-                android:textColorHint="@color/c777"
-                android:textColor="@color/c555"
                 android:singleLine="true"
+                android:textColor="@color/c555"
+                android:textColorHint="@color/c777"
                 android:textSize="16sp" />
 
             <LinearLayout

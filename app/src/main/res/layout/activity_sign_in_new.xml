@@ -15,10 +15,10 @@
         android:layout_height="wrap_content"
         android:background="?attr/actionBarItemBackground"
         android:padding="10dp"
-        app:srcCompat="@drawable/ic_close_new"
         android:tint="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_close_new" />
 
 
     <ImageView
@@ -29,8 +29,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/black"
-        app:srcCompat="@drawable/ic_evaly_new_logo" />
+        app:srcCompat="@drawable/ic_evaly_new_logo"
+        app:tint="@color/black" />
 
 
     <EditText
@@ -44,6 +44,7 @@
         android:drawableLeft="@drawable/ic_input_phone"
         android:drawablePadding="10dp"
         android:hint="@string/phone_number"
+        android:imeOptions="actionNext"
         android:inputType="number"
         android:maxLength="11"
         android:paddingLeft="15dp"
@@ -51,7 +52,6 @@
         android:paddingRight="15dp"
         android:paddingBottom="15dp"
         android:textColorHint="@color/c666"
-        android:imeOptions="actionNext"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/relativeLayout3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,8 +77,8 @@
             android:drawableLeft="@drawable/ic_input_lock"
             android:drawablePadding="10dp"
             android:hint="@string/password"
-            android:inputType="textPassword"
             android:imeOptions="actionDone"
+            android:inputType="textPassword"
             android:paddingLeft="15dp"
             android:paddingTop="15dp"
             android:paddingRight="15dp"

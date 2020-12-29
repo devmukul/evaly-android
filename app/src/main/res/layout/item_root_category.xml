@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/category_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/rootCategoryBg"
         android:foreground="?selectableItemBackground"
         android:gravity="top|center_horizontal"
-        android:background="@color/rootCategoryBg"
         android:orientation="vertical">
 
         <View

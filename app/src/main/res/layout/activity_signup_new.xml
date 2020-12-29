@@ -2,7 +2,6 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,21 +14,21 @@
         android:layout_height="wrap_content"
         android:background="?attr/actionBarItemBackground"
         android:padding="10dp"
-        app:srcCompat="@drawable/ic_close_new"
         android:tint="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_close_new" />
 
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
+        android:tint="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/f_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:tint="@color/black"
         app:srcCompat="@drawable/ic_evaly_new_logo" />
 
 
@@ -82,13 +81,13 @@
         android:layout_marginBottom="15dp"
         android:background="@drawable/input_bg"
         android:hint="@string/phone_number"
+        android:imeOptions="actionDone"
         android:inputType="number"
         android:maxLength="11"
         android:paddingLeft="20dp"
         android:paddingTop="15dp"
         android:paddingRight="20dp"
         android:paddingBottom="15dp"
-        android:imeOptions="actionDone"
         android:textColorHint="@color/c666"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/referral"

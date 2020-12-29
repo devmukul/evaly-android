@@ -2,7 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="viewModel"
             type="bd.com.evaly.evalyshop.ui.campaign.CampaignViewModel" />
@@ -20,97 +22,95 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/bottom_sheet"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/fff"
-            android:orientation="vertical">
-
             <LinearLayout
+                android:id="@+id/bottom_sheet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:tag="sticky"
-                android:paddingBottom="10dp"
-                android:background="@color/fff">
-            <View
-                android:layout_width="70dp"
-                android:layout_height="4dp"
-                android:background="@drawable/bottomsheet_top_brd"
-                android:layout_gravity="center"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="5dp"/>
+                android:background="@color/fff"
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/campaigns"
-                android:textSize="16sp"
-                android:textColor="@color/c333"
-                android:layout_marginLeft="20dp"
-                android:layout_marginBottom="10dp"
-                android:textStyle="bold"/>
-            </LinearLayout>
-
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginBottom="50dp"
-                android:layout_marginTop="30dp"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:orientation="vertical"
-                tools:listitem="@layout/item_campaign"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:itemCount="7"
-                android:nestedScrollingEnabled="false"
-                android:paddingBottom="25dp"
-                android:paddingTop="5dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:clipToPadding="false"
-                android:visibility="gone"/>
-
-
-
-
-            <LinearLayout
-                android:id="@+id/layoutNot"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:visibility="gone">
-
-                <ImageView
-                    android:layout_width="50dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_star_flying"
-                    app:tint="@color/c666" />
+                    android:background="@color/fff"
+                    android:orientation="vertical"
+                    android:paddingBottom="10dp"
+                    android:tag="sticky">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                    <View
+                        android:layout_width="70dp"
+                        android:layout_height="4dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@drawable/bottomsheet_top_brd" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:text="@string/campaigns"
+                        android:textColor="@color/c333"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="50dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/no_campaign_is_available_right_now"
-                    android:textColor="@color/c555"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="25dp"
-                    android:textSize="15sp"/>
+                    android:layout_weight="0"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="25dp"
+                    android:visibility="gone"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="7"
+                    tools:listitem="@layout/item_campaign" />
+
+
+                <LinearLayout
+                    android:id="@+id/layoutNot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_star_flying"
+                        app:tint="@color/c666" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="25dp"
+                        android:text="@string/no_campaign_is_available_right_now"
+                        android:textColor="@color/c555"
+                        android:textSize="15sp" />
+
+
+                </LinearLayout>
 
 
             </LinearLayout>
-
-
-
-        </LinearLayout>
         </bd.com.evaly.evalyshop.views.StickyScrollView>
     </androidx.cardview.widget.CardView>
 

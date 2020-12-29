@@ -19,14 +19,14 @@
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:maxWidth="80dp"
-            android:text="Hot deal"
-            android:layout_gravity="center_horizontal"
-            android:maxLines="2"
-            android:gravity="center_horizontal"
             android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:maxWidth="80dp"
+            android:maxLines="2"
+            android:text="Hot deal"
             android:textSize="12sp" />
     </LinearLayout>
 </layout>

@@ -175,11 +175,11 @@
                                     android:paddingLeft="6dp"
                                     android:paddingTop="3dp"
                                     android:paddingRight="6dp"
-                                    android:visibility="gone"
                                     android:paddingBottom="3dp"
                                     android:text="@string/claim"
                                     android:textColor="@color/white"
-                                    android:textSize="13sp" />
+                                    android:textSize="13sp"
+                                    android:visibility="gone" />
 
 
                                 <TextView
@@ -216,8 +216,8 @@
                     android:layout_marginBottom="15dp"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="10dp"
-                    app:cardMaxElevation="0dp"
                     app:cardElevation="0dp"
+                    app:cardMaxElevation="0dp"
                     app:cardPreventCornerOverlap="true"
                     app:cardUseCompatPadding="true">
 
