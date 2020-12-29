@@ -41,7 +41,7 @@ public class OrderApiHelper extends BaseApiHelper {
         getiApiClient().placeOrder(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void placeOrder(PlaceOrderItem body, ResponseListenerAuth<CommonDataResponse<List<OrderDetailsModel>>, String> listener) {
+    public static void placeOrder(PlaceOrderItem body, ResponseListenerAuth<CommonDataResponse<List<JsonObject>>, String> listener) {
         getiApiClient().placeOrder(CredentialManager.getToken(), body).enqueue(getResponseCallBackDefault(listener));
     }
 

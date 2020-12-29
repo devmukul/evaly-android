@@ -481,7 +481,7 @@ public interface IApiClient {
 
 
     @POST(UrlUtils.DOMAIN + "order-request-go/api/v1/order-requests/place-order")
-    Call<CommonDataResponse<List<OrderDetailsModel>>> placeOrder(@Header("Authorization") String token, @Body PlaceOrderItem body);
+    Call<CommonDataResponse<List<JsonObject>>> placeOrder(@Header("Authorization") String token, @Body PlaceOrderItem body);
 
     @GET(UrlUtils.BASE_URL + "custom/orders/{invoiceNo}/")
     Call<OrderDetailsModel> getOrderDetails(@Header("Authorization") String token, @Path("invoiceNo") String invoiceNo);

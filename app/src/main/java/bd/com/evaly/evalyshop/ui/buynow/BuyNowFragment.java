@@ -398,7 +398,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             CartEntity cartEntity = getCartEntity(firstItem);
             Bundle bundle = new Bundle();
             bundle.putSerializable("model", cartEntity);
-            navController.navigate(R.id.checkoutFragment, bundle);
+            if (navController != null)
+                navController.navigate(R.id.checkoutFragment, bundle);
         });
 
     }

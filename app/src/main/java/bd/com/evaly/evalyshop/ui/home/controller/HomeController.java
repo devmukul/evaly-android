@@ -401,7 +401,8 @@ public class HomeController extends EpoxyController {
 
         for (CampaignProductResponse item : flashSaleProducts) {
             flashSaleModels.add(new CampaignSmallProductModel_()
-                    .id("flashsale", item.getSlug())
+                    .id("flash_sale_item", item.getSlug())
+                    .model(item)
                     .clickListener((model, parentView, clickedView, position) -> {
                         CampaignProductResponse item1 = model.model();
                         Intent intent = new Intent(activity, ViewProductActivity.class);
@@ -413,8 +414,7 @@ public class HomeController extends EpoxyController {
                         intent.putExtra("product_image", item1.getImage());
                         intent.putExtra("cashback_text", item1.getCashbackText());
                         activity.startActivity(intent);
-                    })
-                    .model(item));
+                    }));
         }
 
         flashSaleCarousel

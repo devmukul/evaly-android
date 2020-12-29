@@ -6,13 +6,10 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ViewDataBinding;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
-
-import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemCampaignSmallProductBinding;
@@ -39,10 +36,6 @@ public abstract class CampaignSmallProductModel extends DataBindingEpoxyModel {
         super.bind(holder);
 
         ItemCampaignSmallProductBinding binding = (ItemCampaignSmallProductBinding) holder.getDataBinding();
-        if (binding.getRoot().getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
-            params.setFullSpan(false);
-        }
 
         binding.title.setText(Html.fromHtml(model.getName()));
         BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300, false);
@@ -53,17 +46,17 @@ public abstract class CampaignSmallProductModel extends DataBindingEpoxyModel {
         } else if (model.getDiscountedPrice() != 0) {
             binding.price.setVisibility(View.VISIBLE);
             if (model.getDiscountedPrice() < model.getPrice()) {
-                binding.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
+                binding.priceDiscount.setText(Utils.formatPriceSymbol(model.getPrice()));
                 binding.priceDiscount.setVisibility(View.VISIBLE);
                 binding.priceDiscount.setPaintFlags(binding.priceDiscount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getDiscountedPrice()));
+                binding.price.setText(Utils.formatPriceSymbol(model.getDiscountedPrice()));
             } else {
                 binding.priceDiscount.setVisibility(View.GONE);
-                binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
+                binding.price.setText(Utils.formatPriceSymbol(model.getPrice()));
             }
         } else {
             binding.price.setVisibility(View.VISIBLE);
-            binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
+            binding.price.setText(Utils.formatPriceSymbol(model.getPrice()));
         }
 
         binding.getRoot().setOnClickListener(clickListener);
@@ -76,8 +69,6 @@ public abstract class CampaignSmallProductModel extends DataBindingEpoxyModel {
                 binding.tvCashback.setVisibility(View.VISIBLE);
             binding.tvCashback.setText(Utils.toFirstCharUpperAll(model.getCashbackText().replace(".00", "")));
         }
-
-        // binding.bottomText.setText(model.getBottomText());
     }
 
 
