@@ -185,9 +185,7 @@
         <activity
             android:name=".ui.menu.ContactActivity"
             android:theme="@style/AppThemeViewProduct" />
-        <activity
-            android:name=".ui.menu.AboutActivity"
-            android:theme="@style/AppTheme" />
+
         <activity
             android:name=".ui.followedShops.FollowedShopActivity"
             android:label="Evaly Store"

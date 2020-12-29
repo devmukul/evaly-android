@@ -132,7 +132,8 @@ public class CheckoutFragment extends DialogFragment {
                 userModel.getAddresses().getData().size() > 0) {
             addressModel = userModel.getAddresses().getData().get(0);
             binding.address.setText(addressModel.getFullAddressLine());
-        }
+        } else
+            binding.address.setText("No address provided");
     }
 
     private void setupRecycler() {
@@ -168,8 +169,8 @@ public class CheckoutFragment extends DialogFragment {
                 ToastUtils.show("Please enter a correct phone number");
                 return;
             }
-            if (addressModel == null || binding.address.getText().toString().equals("")) {
-                ToastUtils.show("Please enter your address");
+            if (addressModel == null || binding.address.getText().toString().equals("") || binding.address.getText().toString().equals("No address provided")) {
+                ToastUtils.show("Please enter delivery address");
                 return;
             }
             if (minPrice > 0) {
@@ -199,7 +200,7 @@ public class CheckoutFragment extends DialogFragment {
         binding.privacyText.setText(Html.fromHtml("Upon clicking on 'Place Order', I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
         binding.privacyText.setMovementMethod(LinkMovementMethod.getInstance());
 
-        boolean selected = false;
+
         boolean isExpress = false;
         boolean showDeliveryCharge = false;
         totalDeliveryCharge = 0;
@@ -219,8 +220,6 @@ public class CheckoutFragment extends DialogFragment {
                     shopAmountMap.put(ss, am + cartItem.getPriceInt() * cartItem.getQuantity());
                 else
                     shopAmountMap.put(ss, cartItem.getPriceInt() * cartItem.getQuantity());
-
-                selected = true;
 
                 JsonObject shopObject = JsonParser.parseString(cartItem.getShopJson()).getAsJsonObject();
                 if (shopObject.has("is_express_shop")) {

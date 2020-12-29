@@ -4,85 +4,63 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.google.gson.JsonPrimitive;
-import com.orhanobut.logger.Logger;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ActivityContactBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import retrofit2.Response;
 
 import static bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity.setWindowFlag;
 
 public class ContactActivity extends BaseActivity {
 
-    TextView call1, call2, call3;
 
-    ViewDialog dialog;
-    private List<String> rosterList;
+    private ActivityContactBinding binding;
+    private ViewDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contact);
-
-
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_contact);
 
         dialog = new ViewDialog(this);
-        rosterList = new ArrayList<>();
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        //make fully Android Transparent Status bar
         setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
 
-        ImageView mapImage = findViewById(R.id.mapImage);
 
-        Glide.with(this).load(R.drawable.map_high_res).into(mapImage);
+        Glide.with(this).load(R.drawable.map_high_res).into(binding.mapImage);
 
-        LinearLayout callBox = findViewById(R.id.callBox);
-        callBox.setOnClickListener(v -> {
+        binding.callBox.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_DIAL);
             intent.setData(Uri.parse("tel:09638111666"));
             startActivity(intent);
         });
 
-
-        LinearLayout emailBox = findViewById(R.id.emailBox);
-        emailBox.setOnClickListener(v -> {
+        binding.emailBox.setOnClickListener(v -> {
             if (CredentialManager.getToken().equals("")) {
                 Toast.makeText(getApplicationContext(), "Please login to send message", Toast.LENGTH_LONG).show();
             } else
-               setUpXmpp();
+                openEconnect();
         });
 
-        LinearLayout facebookBox = findViewById(R.id.facebookBox);
-        facebookBox.setOnClickListener(v -> {
+        binding.facebookBox.setOnClickListener(v -> {
             try {
                 getPackageManager().getPackageInfo("com.facebook.katana", 0);
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("fb://page/1567333923329329")));
@@ -103,14 +81,10 @@ public class ContactActivity extends BaseActivity {
             }
         };
 
-        LinearLayout mapsBox = findViewById(R.id.mapsBox);
-        mapsBox.setOnClickListener(openMaps);
 
-        View mapsView = findViewById(R.id.mapOpener);
-        mapsView.setOnClickListener(openMaps);
-
-        ImageView back = findViewById(R.id.backArrow);
-        back.setOnClickListener(v -> finish());
+        binding.mapsBox.setOnClickListener(openMaps);
+        binding.mapOpener.setOnClickListener(openMaps);
+        binding.backArrow.setOnClickListener(v -> finish());
 
     }
 
@@ -119,38 +93,32 @@ public class ContactActivity extends BaseActivity {
         super.onResume();
     }
 
-    private void setUpXmpp() {
+    private void openEconnect() {
+        Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
+        try {
+            RosterTable roasterModel = new RosterTable();
+            roasterModel.id = Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST;
+            roasterModel.rosterName = "Evaly";
+            roasterModel.imageUrl = Constants.EVALY_LOGO;
+            launchIntent.putExtra("to", "OPEN_CHAT_DETAILS");
+            launchIntent.putExtra("from", "contact");
+            launchIntent.putExtra("user", CredentialManager.getUserName());
+            launchIntent.putExtra("password", CredentialManager.getPassword());
+            launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+            launchIntent.putExtra("roster", new Gson().toJson(roasterModel));
+            startActivity(launchIntent);
 
-            Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
+        } catch (ActivityNotFoundException e) {
             try {
-                RosterTable roasterModel = new RosterTable();
-                roasterModel.id = Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST;
-                roasterModel.rosterName = "Evaly";
-                roasterModel.imageUrl = Constants.EVALY_LOGO;
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
+            } catch (Exception e2) {
+                ToastUtils.show("Please install eConnect app for live chat");
+            }
 
-                launchIntent.putExtra("to", "OPEN_CHAT_DETAILS");
-                launchIntent.putExtra("from", "contact");
-                launchIntent.putExtra("user", CredentialManager.getUserName());
-                launchIntent.putExtra("password", CredentialManager.getPassword());
-                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
-                launchIntent.putExtra("roster", new Gson().toJson(roasterModel));
-
-//                launchIntent.putExtra("to", "OPEN_CHAT_LIST");
-//                launchIntent.putExtra("user", CredentialManager.getUserName());
-//                launchIntent.putExtra("password", CredentialManager.getPassword());
-//                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
-//                launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(launchIntent);
-
-            } catch (ActivityNotFoundException e) {
-                try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
-                } catch (android.content.ActivityNotFoundException anfe) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
-                } catch (Exception e2) {
-                    ToastUtils.show("Please install eConnect app for live chat");
-                }
-
+        } catch (Exception e) {
+            ToastUtils.show("Please install eConnect app");
         }
     }
 
