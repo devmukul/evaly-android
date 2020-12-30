@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.rest.apiHelper;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -118,6 +119,7 @@ public class BaseApiHelper {
 
             @Override
             public void onFailure(Call<T> call, Throwable t) {
+                Logger.e(t.toString());
                 if (t instanceof IOException)
                     dataFetchingListener.onFailed(AppController.getmContext().getString(R.string.networkError), 0);
                 else

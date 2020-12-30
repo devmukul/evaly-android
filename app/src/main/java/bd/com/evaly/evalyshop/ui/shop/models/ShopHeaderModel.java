@@ -30,7 +30,6 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
-import bd.com.evaly.evalyshop.ui.shop.delivery.DeliveryBottomSheetFragment;
 
 @EpoxyModelClass(layout = R.layout.shop_model_header)
 public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderModel.ShopHeaderHolder> {
@@ -100,7 +99,7 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
             });
 
             binding.btn1Image.setOnClickListener(v -> {
-                String phone = shop.getContactNumber();
+                String phone = shopInfo.getContactNumber();
                 if (fragment.getView() == null)
                     return;
                 final Snackbar snackBar = Snackbar.make(fragment.getView(), phone + "\n", Snackbar.LENGTH_LONG);
@@ -120,7 +119,7 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
                 final Snackbar snackBar = Snackbar.make(fragment.getView(), address + "\n", Snackbar.LENGTH_LONG);
                 snackBar.setAction("Copy", v1 -> {
                     ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("address", shopInfo.getAddress());
+                    ClipData clip = ClipData.newPlainText("address", shopInfo.getShopAddress());
                     if (clipboard != null)
                         clipboard.setPrimaryClip(clip);
 
@@ -133,8 +132,8 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
             binding.btn3Title.setText("Delivery");
             binding.btn3Image.setImageDrawable(AppController.getmContext().getResources().getDrawable(R.drawable.ic_delivery));
             binding.btn3Image.setOnClickListener(v -> {
-                DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopInfo.getShopDeliveryOptions());
-                deliveryBottomSheetFragment.show(fragment.getParentFragmentManager(), "delivery option");
+//                DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopInfo.getShopDeliveryOptions());
+//                deliveryBottomSheetFragment.show(fragment.getParentFragmentManager(), "delivery option");
 //                });
 //            } else {
 //                binding.btn3Title.setText("T&C");
@@ -145,18 +144,18 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
 //                        description = "Not available now";
 //                    TextBottomSheetFragment textBottomSheetFragment = TextBottomSheetFragment.newInstance("Terms & Conditions", description);
 //                    textBottomSheetFragment.show(fragment.getParentFragmentManager(), "tc");
-//                });
-//            }
+            });
 
-                binding.btn4Image.setOnClickListener(v -> {
-                    Intent intent = new Intent(activity, ReviewsActivity.class);
-                    intent.putExtra("ratingJson", ratingJson);
-                    intent.putExtra("type", "shop");
-                    intent.putExtra("item_value", shopInfo.getSlug());
-                    activity.startActivity(intent);
-                });
 
-                binding.llInbox.setOnClickListener(v -> {
+            binding.btn4Image.setOnClickListener(v -> {
+                Intent intent = new Intent(activity, ReviewsActivity.class);
+                intent.putExtra("ratingJson", ratingJson);
+                intent.putExtra("type", "shop");
+                intent.putExtra("item_value", shopInfo.getSlug());
+                activity.startActivity(intent);
+            });
+
+            binding.llInbox.setOnClickListener(v -> {
                     viewModel.setOnChatClickLiveData(true);
                 });
 

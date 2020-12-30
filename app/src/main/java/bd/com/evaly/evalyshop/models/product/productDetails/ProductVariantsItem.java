@@ -29,7 +29,7 @@ public class ProductVariantsItem{
 	private List<String> productImages;
 
 	@SerializedName("approved")
-	private int approved;
+	private boolean approved;
 
 	@SerializedName("variant_id")
 	private int variantId;
@@ -114,11 +114,11 @@ public class ProductVariantsItem{
 		return productImages;
 	}
 
-	public void setApproved(int approved){
+	public void setApproved(boolean approved){
 		this.approved = approved;
 	}
 
-	public int getApproved(){
+	public boolean getApproved(){
 		return approved;
 	}
 

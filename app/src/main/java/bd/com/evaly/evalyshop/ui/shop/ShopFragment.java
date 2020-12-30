@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,9 +37,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.models.shop.shopDetails.Data;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
-import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
@@ -144,7 +141,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.appBarLayout.homeSearch.setOnClickListener(view12 -> {
             Bundle bundle = new Bundle();
             bundle.putString("shop_slug", slug);
-            bundle.putString("shop_name", shopDetailsModel.getName());
+            bundle.putString("shop_name", shopDetailsModel.getShopName());
             bundle.putString("campaign_slug", campaign_slug);
             bundle.putString("brand_slug", brandSlug);
             NavHostFragment.findNavController(this).navigate(R.id.shopSearchActivity, bundle);
@@ -162,7 +159,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         controller.setFilterDuplicates(true);
 
         if (fullShopDetailsModel != null)
-            controller.setAttr(fullShopDetailsModel);
+            controller.setAttr(shopDetailsModel);
 
         int spanCount = 2;
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -197,7 +194,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
         viewModelLiveDataObservers();
     }
-
 
 
     private void initRecommender() {
@@ -266,7 +262,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             if (aBoolean)
                 setUpXmpp();
         });
-
 
 
         viewModel.getBuyNowLiveData().observe(getViewLifecycleOwner(), s -> {
@@ -354,14 +349,14 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                     Logger.d(new Gson().toJson(shopDetailsModel));
                     RosterTable rosterTable = new RosterTable();
-                    rosterTable.name = shopDetailsModel.getName();
+                    rosterTable.name = shopDetailsModel.getShopName();
                     if (shopDetailsModel.getOwnerName() == null || shopDetailsModel.getOwnerName().isEmpty()) {
                         rosterTable.id = shopDetailsModel.getContactNumber() + "@" + Constants.XMPP_HOST;
                     } else {
                         rosterTable.id = shopDetailsModel.getOwnerName() + "@" + Constants.XMPP_HOST;
                     }
 
-                    rosterTable.imageUrl = shopDetailsModel.getLogoImage();
+                    rosterTable.imageUrl = shopDetailsModel.getShopImage();
                     rosterTable.status = 0;
                     rosterTable.lastMessage = "";
                     rosterTable.time = 0;

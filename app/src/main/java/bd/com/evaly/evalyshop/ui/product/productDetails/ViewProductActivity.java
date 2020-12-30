@@ -515,10 +515,12 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         specificationsItemList.add(new ProductSpecificationsItem("Brand", firstProductVariantsItem.getBrandName(), 0));
         specificationsItemList.add(new ProductSpecificationsItem("Category", firstProductVariantsItem.getCategoryName(), 1));
 
+
         for (int i = 0; i < productSpecificationsItemList.size(); i++) {
             if (!productSpecificationsItemList.get(i).getSpecificationName().equals(""))
                 specificationsItemList.add(productSpecificationsItemList.get(i));
         }
+
         specificationAdapter.notifyDataSetChanged();
         shareURL = "https://evaly.com.bd/products/" + slug;
         populateProductByVariant(firstProductVariantsItem);

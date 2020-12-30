@@ -21,11 +21,16 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 
 public class BrowseProductController extends EpoxyController {
 
+    @AutoModel
+    BrowseProductTabsModel_ tabsModel;
+    @AutoModel
+    LoadingModel_ loader;
     private AppCompatActivity activity;
     private Fragment fragment;
-    private List<ProductItem> items = new ArrayList<>();
+    private final List<ProductItem> items = new ArrayList<>();
     private String categorySlug;
     private BrowseProductViewModel browseProductViewModel;
+    private boolean loadingMore = true;
 
     public BrowseProductViewModel getBrowseProductViewModel() {
         return browseProductViewModel;
@@ -34,14 +39,6 @@ public class BrowseProductController extends EpoxyController {
     public void setBrowseProductViewModel(BrowseProductViewModel browseProductViewModel) {
         this.browseProductViewModel = browseProductViewModel;
     }
-
-    @AutoModel
-    BrowseProductTabsModel_ tabsModel;
-
-    @AutoModel
-    LoadingModel_ loader;
-
-    private boolean loadingMore = true;
 
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
@@ -57,7 +54,7 @@ public class BrowseProductController extends EpoxyController {
                 .browseProductViewModel(browseProductViewModel)
                 .addTo(this);
 
-        for (ProductItem productItem: items) {
+        for (ProductItem productItem : items) {
             new HomeProductGridModel_()
                     .id(productItem.getUniqueId())
                     .model(productItem)
@@ -77,7 +74,7 @@ public class BrowseProductController extends EpoxyController {
         loader.addIf(loadingMore, this);
     }
 
-    public void addData(List<ProductItem> productItems){
+    public void addData(List<ProductItem> productItems) {
         this.items.addAll(productItems);
         requestModelBuild();
     }
@@ -98,7 +95,7 @@ public class BrowseProductController extends EpoxyController {
         this.categorySlug = categorySlug;
     }
 
-    public void clear(){
+    public void clear() {
         items.clear();
     }
 }

@@ -39,7 +39,7 @@ public class SubTabsFragment extends Fragment {
     private String slug = "root";
     private String category;
     private int brandCounter = 1, shopCounter = 1;
-    private String json = "[]";
+    private final String json = "[]";
     private FragmentBrowseProductTabBinding binding;
     private TabsViewModel viewModel;
 

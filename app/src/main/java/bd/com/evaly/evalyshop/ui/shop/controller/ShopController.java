@@ -24,7 +24,6 @@ import bd.com.evaly.evalyshop.databinding.ShopModelTitleCategoryBinding;
 import bd.com.evaly.evalyshop.databinding.ShopModelTitleProductBinding;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
@@ -186,7 +185,7 @@ public class ShopController extends EpoxyController {
                         if (model.cashbackRate() > 0)
                             intent.putExtra("cashback_text", model.cashbackRate() + "% Cashback");
                         if (model.isShop())
-                            intent.putExtra("shop_slug", shopInfo.getData().getShop().getSlug());
+                            intent.putExtra("shop_slug", shopInfo.getSlug());
 
                         if (item.getImageUrls().size() > 0)
                             intent.putExtra("product_image", item.getImageUrls().get(0));
@@ -256,7 +255,7 @@ public class ShopController extends EpoxyController {
         this.viewModel = viewModel;
     }
 
-    public ShopDetailsModel getShopInfo() {
+    public ShopDetailsResponse getShopInfo() {
         return shopInfo;
     }
 

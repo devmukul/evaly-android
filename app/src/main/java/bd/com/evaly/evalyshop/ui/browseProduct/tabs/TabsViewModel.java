@@ -9,7 +9,7 @@ public class TabsViewModel extends ViewModel {
 
     private int tabPosition = -1;
 
-    private MutableLiveData<Integer> itemCount = new MutableLiveData<>();
+    private final MutableLiveData<Integer> itemCount = new MutableLiveData<>();
 
     public LiveData<Integer> getItemCount() {
         return itemCount;
@@ -18,8 +18,6 @@ public class TabsViewModel extends ViewModel {
     public void setItemCount(int itemCount) {
         this.itemCount.setValue(itemCount);
     }
-
-
 
 
     public int getIntCount() {

@@ -20,7 +20,7 @@ public class CommonResultResponse<T> {
     @Expose
     private String previous;
 
-    @SerializedName("results")
+    @SerializedName(value = "results", alternate = "data")
     @Expose
     private T data;
 

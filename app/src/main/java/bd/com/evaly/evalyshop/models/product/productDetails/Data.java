@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.models.product.productDetails;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Data{
@@ -21,6 +22,8 @@ public class Data{
 	}
 
 	public List<ProductSpecificationsItem> getProductSpecifications(){
+		if (productSpecifications == null)
+			return new ArrayList<>();
 		return productSpecifications;
 	}
 

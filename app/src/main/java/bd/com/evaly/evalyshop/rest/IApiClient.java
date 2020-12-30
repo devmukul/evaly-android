@@ -340,7 +340,7 @@ public interface IApiClient {
 
     // product APIs
 
-    @GET(UrlUtils.PUBLIC_PRODUCTS)
+    @GET(UrlUtils.BASE_CATALOG + "products")
     Call<CommonResultResponse<List<ProductItem>>> getCategoryBrandProducts(@Query("page") int page, @Query("category") String category, @Query("brand") String brand, @Query("limit") int limit);
 
     @GET(UrlUtils.BASE_URL + "public/shops/items/{shopSlug}/")
@@ -349,7 +349,7 @@ public interface IApiClient {
     @GET(UrlUtils.CAMPAIGNS + "/{campaignSlug}/shops/{shopSlug}/items")
     Call<JsonObject> getCampaignShopProducts(@Path("campaignSlug") String campaignSlug, @Path("shopSlug") String shopSlug, @Query("page") int page, @Query("limit") int limit, @Query("category_slug") String categorySlug, @Query("search") String search);
 
-    @GET(UrlUtils.BASE_URL + "/public/shops/{shopSlug}/items/{shopItem}/variants")
+    @GET(UrlUtils.BASE_CATALOG + "/shop-items/{shopSlug}/items/{shopItem}/variants")
     Call<CommonDataResponse<List<ShopItem>>> getProductVariants(@Path("shopSlug") String shopSlug, @Path("shopItem") String shopItem);
 
     @GET(UrlUtils.BASE_URL + "public/product/shops/{variantId}/")
@@ -377,7 +377,7 @@ public interface IApiClient {
                                                   @Query("search") String search,
                                                   @Query("brand_slug") String brandSlug);
 
-    @GET(UrlUtils.BASE_URL + "public/products/{slug}/")
+    @GET(UrlUtils.BASE_CATALOG + "products/{slug}")
     Call<ProductDetailsModel> getProductDetails(@Path("slug") String slug);
 
     // Categories API
@@ -400,7 +400,7 @@ public interface IApiClient {
     Call<JsonObject> getShopsOfCategories(@Path("category") String category, @Query("page") int page, @Query("limit") int limit);
 
 
-    @GET(UrlUtils.BASE_URL + "public/shops/categories/{shopSlug}/")
+    @GET(UrlUtils.BASE_CATALOG + "/shop-items/{shopSlug}/categories")
     Call<JsonObject> getCategoriesofShop(@Path("shopSlug") String shopSlug, @Query("page") int page);
 
 

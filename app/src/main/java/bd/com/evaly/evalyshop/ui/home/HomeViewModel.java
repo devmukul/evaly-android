@@ -6,8 +6,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.material.tabs.TabItem;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -233,65 +231,7 @@ public class HomeViewModel extends ViewModel {
 
             }
         });
-
     }
-
-
-    public void loadBrands(int counter) {
-        ProductApiHelper.getBrandsOfCategories("root", counter, 12, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject res, int statusCode) {
-
-                JsonArray jsonArray = res.getAsJsonArray("results");
-
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    JsonObject ob = jsonArray.get(i).getAsJsonObject();
-                    TabsItem tabsItem = new TabsItem();
-                    tabsItem.setTitle(ob.get("name").getAsString());
-                    tabsItem.setImage(ob.get("image_url").isJsonNull() ? null : ob.get("image_url").getAsString());
-                    tabsItem.setSlug(ob.get("slug").getAsString());
-                    tabsItem.setCategory("root");
-                    brandArrayList.add(tabsItem);
-                }
-
-                brandListLive.setValue(brandArrayList);
-            }
-
-            @Override
-            public void onFailed(String body, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-    }
-
-
-    public void loadCategories() {
-
-        GeneralApiHelper.getRootCategories(new ResponseListenerAuth<List<CategoryEntity>, String>() {
-            @Override
-            public void onDataFetched(List<CategoryEntity> response, int statusCode) {
-                categoryListLive.setValue(response);
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
-
-    }
-
 
     public MutableLiveData<List<ProductItem>> getProductListLive() {
         return productListLive;

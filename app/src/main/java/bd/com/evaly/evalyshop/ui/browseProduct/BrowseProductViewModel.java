@@ -6,7 +6,6 @@ public class BrowseProductViewModel extends ViewModel {
 
     private int tabPosition = -1;
 
-
     public int getTabPosition() {
         return tabPosition;
     }
