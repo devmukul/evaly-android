@@ -20,12 +20,6 @@ public class AddressController extends EpoxyController {
     private boolean isLoading = true;
     private ClickListener clickListener;
 
-    public interface ClickListener {
-        void onClick(AddressItem model);
-        void onDelete(AddressItem model);
-        void onEdit(AddressItem model, int position);
-    }
-
     @Override
     protected void buildModels() {
 
@@ -55,8 +49,8 @@ public class AddressController extends EpoxyController {
         new NoItemModel_()
                 .id("no_item")
                 .text("No address added")
-                .width(70)
-                .image(R.drawable.ic_location_track)
+                .width(5)
+                .image(R.drawable.ic_home)
                 .imageTint("#777777")
                 .addIf(!isLoading && list.size() == 0, this);
     }
@@ -71,5 +65,13 @@ public class AddressController extends EpoxyController {
 
     public void setList(List<AddressItem> list) {
         this.list = list;
+    }
+
+    public interface ClickListener {
+        void onClick(AddressItem model);
+
+        void onDelete(AddressItem model);
+
+        void onEdit(AddressItem model, int position);
     }
 }

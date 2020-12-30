@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 
 import java.util.Set;
 
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+
 public class MyPreference {
     public static Builder with(Context context) {
         return new Builder(context);
@@ -111,8 +113,10 @@ public class MyPreference {
         }
 
         public Builder clearAll() {
+            boolean darkMode = CredentialManager.isDarkMode();
             editor.clear();
             editor.apply();
+            CredentialManager.setDarkMode(darkMode);
             return this;
         }
 

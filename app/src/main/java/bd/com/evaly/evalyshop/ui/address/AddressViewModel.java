@@ -50,7 +50,7 @@ public class AddressViewModel extends ViewModel {
         addressList.add(item);
     }
 
-    public void editAddress(AddressItem item, int position){
+    public void editAddress(AddressItem item, int position) {
         addressList.set(position, item);
     }
 

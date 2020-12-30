@@ -23,7 +23,6 @@ public abstract class AddressListModel extends DataBindingEpoxyModel {
     @EpoxyAttribute
     AddressItem model;
 
-
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener onClickListener;
 
