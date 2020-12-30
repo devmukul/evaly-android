@@ -5,7 +5,9 @@ import com.google.gson.JsonObject;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.rest.IApiClient;
@@ -31,6 +33,11 @@ public class ShopApiHelper extends BaseApiHelper {
 
         call.enqueue(getResponseCallBackDefault(listener));
 
+    }
+
+
+    public  static void getShopDetails(String slug, ResponseListenerAuth<CommonDataResponse<ShopDetailsResponse>, String> listener){
+        getiApiClient().getShopDetails(CredentialManager.getToken(), slug).enqueue(getResponseCallBackDefault(listener));
     }
 
 

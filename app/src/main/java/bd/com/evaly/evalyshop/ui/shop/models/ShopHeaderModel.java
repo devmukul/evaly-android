@@ -27,9 +27,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ShopModelHeaderBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
-import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
-import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
+import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 import bd.com.evaly.evalyshop.ui.shop.delivery.DeliveryBottomSheetFragment;
@@ -42,7 +40,7 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
     @EpoxyAttribute
     public Fragment fragment;
     @EpoxyAttribute
-    ShopDetailsModel shopInfo;
+    ShopDetailsResponse shopInfo;
     @EpoxyAttribute
     ShopViewModel viewModel;
     int subCount = 0;
@@ -65,22 +63,21 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
             params.setFullSpan(true);
 
-            if (shopInfo == null || shopInfo.getData() == null)
+            if (shopInfo == null)
                 return;
 
-            Shop shop = shopInfo.getData().getShop();
 
-            binding.name.setText(shop.getName());
+            binding.name.setText(shopInfo.getShopName());
 
             Glide.with(binding.getRoot())
-                    .load(shop.getLogoImage())
+                    .load(shopInfo.getShopName())
                     .skipMemoryCache(true)
                     .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
                     .into(binding.logo);
 
-            subCount = shopInfo.getData().getSubscriberCount();
+            subCount = shopInfo.getSubscriberCount();
 
-            if (shopInfo.getData().isSubscribed())
+            if (shopInfo.isSubscribed())
                 binding.followText.setText(String.format(Locale.ENGLISH, "Unfollow (%d)", subCount));
             else
                 binding.followText.setText(String.format(Locale.ENGLISH, "Follow (%d)", subCount));
@@ -109,7 +106,7 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
                 final Snackbar snackBar = Snackbar.make(fragment.getView(), phone + "\n", Snackbar.LENGTH_LONG);
                 snackBar.setAction("Call", v12 -> {
                     Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:" + shop.getContactNumber()));
+                    intent.setData(Uri.parse("tel:" + shopInfo.getContactNumber()));
                     activity.startActivity(intent);
                     snackBar.dismiss();
                 });
@@ -117,13 +114,13 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
             });
 
             binding.btn2Image.setOnClickListener(v -> {
-                String phone = shop.getAddress();
+                String address = shopInfo.getShopAddress();
                 if (fragment.getView() == null)
                     return;
-                final Snackbar snackBar = Snackbar.make(fragment.getView(), phone + "\n", Snackbar.LENGTH_LONG);
+                final Snackbar snackBar = Snackbar.make(fragment.getView(), address + "\n", Snackbar.LENGTH_LONG);
                 snackBar.setAction("Copy", v1 -> {
                     ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("address", shop.getAddress());
+                    ClipData clip = ClipData.newPlainText("address", shopInfo.getAddress());
                     if (clipboard != null)
                         clipboard.setPrimaryClip(clip);
 
@@ -132,50 +129,50 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
                 snackBar.show();
             });
 
-            if (shop.getCampaign() == null) {
-                binding.btn3Title.setText("Delivery");
-                binding.btn3Image.setImageDrawable(AppController.getmContext().getResources().getDrawable(R.drawable.ic_delivery));
-                binding.btn3Image.setOnClickListener(v -> {
-                    DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopInfo.getShopDeliveryOptions());
-                    deliveryBottomSheetFragment.show(fragment.getParentFragmentManager(), "delivery option");
+
+            binding.btn3Title.setText("Delivery");
+            binding.btn3Image.setImageDrawable(AppController.getmContext().getResources().getDrawable(R.drawable.ic_delivery));
+            binding.btn3Image.setOnClickListener(v -> {
+                DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopInfo.getShopDeliveryOptions());
+                deliveryBottomSheetFragment.show(fragment.getParentFragmentManager(), "delivery option");
+//                });
+//            } else {
+//                binding.btn3Title.setText("T&C");
+//                binding.btn3Image.setImageDrawable(AppController.getmContext().getResources().getDrawable(R.drawable.ic_terms_and_conditions));
+//                binding.btn3Image.setOnClickListener(v -> {
+//                    String description = shop.getCampaign().getDescription();
+//                    if (description == null)
+//                        description = "Not available now";
+//                    TextBottomSheetFragment textBottomSheetFragment = TextBottomSheetFragment.newInstance("Terms & Conditions", description);
+//                    textBottomSheetFragment.show(fragment.getParentFragmentManager(), "tc");
+//                });
+//            }
+
+                binding.btn4Image.setOnClickListener(v -> {
+                    Intent intent = new Intent(activity, ReviewsActivity.class);
+                    intent.putExtra("ratingJson", ratingJson);
+                    intent.putExtra("type", "shop");
+                    intent.putExtra("item_value", shopInfo.getSlug());
+                    activity.startActivity(intent);
                 });
-            } else {
-                binding.btn3Title.setText("T&C");
-                binding.btn3Image.setImageDrawable(AppController.getmContext().getResources().getDrawable(R.drawable.ic_terms_and_conditions));
-                binding.btn3Image.setOnClickListener(v -> {
-                    String description = shop.getCampaign().getDescription();
-                    if (description == null)
-                        description = "Not available now";
-                    TextBottomSheetFragment textBottomSheetFragment = TextBottomSheetFragment.newInstance("Terms & Conditions", description);
-                    textBottomSheetFragment.show(fragment.getParentFragmentManager(), "tc");
+
+                binding.llInbox.setOnClickListener(v -> {
+                    viewModel.setOnChatClickLiveData(true);
                 });
+
+                viewModel.getRatingSummary().observe(fragment.getViewLifecycleOwner(), response -> {
+                    response = response.getAsJsonObject("data");
+                    ratingJson = response.toString();
+                    double avg = response.get("avg_rating").getAsDouble();
+                    int totalRatings = response.get("total_ratings").getAsInt();
+                    binding.ratingsCount.setText(String.format(Locale.ENGLISH, "(%d)", totalRatings));
+                    binding.ratingBar.setRating((float) avg);
+                });
+
+                viewModel.loadRatings();
+
             }
-
-            binding.btn4Image.setOnClickListener(v -> {
-                Intent intent = new Intent(activity, ReviewsActivity.class);
-                intent.putExtra("ratingJson", ratingJson);
-                intent.putExtra("type", "shop");
-                intent.putExtra("item_value", shop.getSlug());
-                activity.startActivity(intent);
-            });
-
-            binding.llInbox.setOnClickListener(v -> {
-                viewModel.setOnChatClickLiveData(true);
-            });
-
-            viewModel.getRatingSummary().observe(fragment.getViewLifecycleOwner(), response -> {
-                response = response.getAsJsonObject("data");
-                ratingJson = response.toString();
-                double avg = response.get("avg_rating").getAsDouble();
-                int totalRatings = response.get("total_ratings").getAsInt();
-                binding.ratingsCount.setText(String.format(Locale.ENGLISH, "(%d)", totalRatings));
-                binding.ratingBar.setRating((float) avg);
-            });
-
-            viewModel.loadRatings();
 
         }
 
     }
-
-}

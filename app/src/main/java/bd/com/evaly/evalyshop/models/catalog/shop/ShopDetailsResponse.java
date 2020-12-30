@@ -43,6 +43,39 @@ public class ShopDetailsResponse{
 	@SerializedName("campaign_start_at")
 	private String campaignStartAt;
 
+	@SerializedName("subscribed")
+	private boolean subscribed;
+
+	@SerializedName("subscriber_count")
+	private int subscriberCount;
+
+	@SerializedName("shop_address")
+	private String shopAddress;
+
+	public String getShopAddress() {
+		return shopAddress;
+	}
+
+	public void setShopAddress(String shopAddress) {
+		this.shopAddress = shopAddress;
+	}
+
+	public boolean isSubscribed() {
+		return subscribed;
+	}
+
+	public void setSubscribed(boolean subscribed) {
+		this.subscribed = subscribed;
+	}
+
+	public int getSubscriberCount() {
+		return subscriberCount;
+	}
+
+	public void setSubscriberCount(int subscriberCount) {
+		this.subscriberCount = subscriberCount;
+	}
+
 	public void setOwnerName(String ownerName){
 		this.ownerName = ownerName;
 	}

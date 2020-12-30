@@ -35,6 +35,7 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
+import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
@@ -359,8 +360,12 @@ public interface IApiClient {
 
     // with token
 
-    @GET(UrlUtils.BASE_URL + "public/shops/items/{shopSlug}/")
+    @GET(UrlUtils.BASE_CATALOG + "shop-items/{shopSlug}/items")
     Call<ShopDetailsModel> getShopDetails(@Header("Authorization") String token, @Path("shopSlug") String shopSlug, @Query("page") int page, @Query("limit") int limit, @Query("category_slug") String categorySlug, @Query("search") String search);
+
+    @GET(UrlUtils.BASE_CATALOG + "shop/{shopSlug}/items")
+    Call<CommonDataResponse<ShopDetailsResponse>> getShopDetails(@Header("Authorization") String token, @Path("shopSlug") String shopSlug);
+
 
     @GET(UrlUtils.CAMPAIGNS + "/{campaignSlug}/shops/{shopSlug}/items")
     Call<ShopDetailsModel> getCampaignShopDetails(@Header("Authorization") String token,

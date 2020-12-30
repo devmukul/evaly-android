@@ -19,6 +19,8 @@ public class UrlUtils {
     public static final String DOMAIN_EAUTH = DOMAIN+"eauth/api/v1/auth/";
 
     public static final String BASE_URL = DOMAIN + "core/";
+    public static final String BASE_CATALOG = DOMAIN + "go-catalog/api/v1/public/";
+
     public static final String BASE_URL_AUTH = DOMAIN_AUTH + "";
     public static final String BASE_URL_AUTH_API = DOMAIN_AUTH + "api/";
     public static final String BASE_URL_NEWSFEED = DOMAIN + "newsfeed/";

@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +35,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentShopBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Data;
@@ -72,7 +74,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private boolean clickFromCategory = false;
     private ShopViewModel viewModel;
     private FragmentShopBinding binding;
-    private Shop shopDetailsModel;
+    private ShopDetailsResponse shopDetailsModel;
     private ShopDetailsModel fullShopDetailsModel;
     private String brandSlug;
 
@@ -201,8 +203,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private void initRecommender() {
         recommenderViewModel.insert("shop",
                 shopDetailsModel.getSlug(),
-                shopDetailsModel.getName(),
-                shopDetailsModel.getLogoImage());
+                shopDetailsModel.getShopName(),
+                shopDetailsModel.getShopImage());
     }
 
     private void updateRecommender() {
@@ -217,6 +219,41 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void viewModelLiveDataObservers() {
 
+        viewModel.shopDetailsLive.observe(getViewLifecycleOwner(), response -> {
+            shopDetailsModel = response;
+
+            if (controller.getShopInfo() == null) {
+                controller.setAttr(response);
+            }
+
+            binding.appBarLayout.homeSearch.setEnabled(true);
+
+            controller.setLoadingMore(false);
+
+
+            if (totalCount == 0)
+                controller.showEmptyPage(true, true);
+
+            if (clickFromCategory) {
+                binding.recyclerView.postDelayed(() -> binding.recyclerView.smoothScrollToPosition(4), 200);
+                clickFromCategory = false;
+            }
+
+            binding.shimmerHolder.animate().alpha(0.0f)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            binding.shimmer.stopShimmer();
+                            binding.shimmer.setVisibility(View.GONE);
+                            binding.shimmerHolder.setVisibility(View.GONE);
+                        }
+                    });
+
+
+            initRecommender();
+        });
+
         viewModel.getShopCategoryListLiveData().observe(getViewLifecycleOwner(), categoryList -> {
             controller.setCategoriesLoading(false);
             if (fullShopDetailsModel == null)
@@ -230,7 +267,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 setUpXmpp();
         });
 
-        viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopDetailsModel -> loadShopDetails(shopDetailsModel));
+
 
         viewModel.getBuyNowLiveData().observe(getViewLifecycleOwner(), s -> {
             if (getActivity() != null) {
@@ -299,52 +336,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    public void loadShopDetails(ShopDetailsModel response) {
-
-        fullShopDetailsModel = response;
-
-        isLoading = false;
-
-        Data shopData = response.getData();
-        Shop shopDetails = shopData.getShop();
-
-        totalCount = response.getCount();
-
-        if (controller.getShopInfo() == null) {
-            controller.setAttr(response);
-            if (shopData.getMeta() != null)
-                controller.setCashbackRate(shopData.getMeta().get("cashback_rate").getAsInt());
-            shopDetailsModel = shopDetails;
-        }
-
-        binding.appBarLayout.homeSearch.setEnabled(true);
-
-        controller.setLoadingMore(false);
-
-        totalCount = response.getCount();
-
-        if (totalCount == 0)
-            controller.showEmptyPage(true, true);
-
-        if (clickFromCategory) {
-            binding.recyclerView.postDelayed(() -> binding.recyclerView.smoothScrollToPosition(4), 200);
-            clickFromCategory = false;
-        }
-
-        binding.shimmerHolder.animate().alpha(0.0f)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        binding.shimmer.stopShimmer();
-                        binding.shimmer.setVisibility(View.GONE);
-                        binding.shimmerHolder.setVisibility(View.GONE);
-                    }
-                });
-
-        initRecommender();
     }
 
     private void setUpXmpp() {

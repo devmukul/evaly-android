@@ -22,6 +22,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ShopModelTitleCategoryBinding;
 import bd.com.evaly.evalyshop.databinding.ShopModelTitleProductBinding;
+import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
@@ -59,7 +60,7 @@ public class ShopController extends EpoxyController {
     private List<TabsItem> categoryItems = new ArrayList<>();
     private String campaignSlug;
 
-    private ShopDetailsModel shopInfo;
+    private ShopDetailsResponse shopInfo;
     private int cashbackRate = 0;
     private ShopViewModel viewModel;
     private boolean loadingMore = true;
@@ -90,7 +91,7 @@ public class ShopController extends EpoxyController {
             requestModelBuild();
     }
 
-    public void setAttr(ShopDetailsModel info) {
+    public void setAttr(ShopDetailsResponse info) {
         this.shopInfo = info;
     }
 
@@ -106,8 +107,8 @@ public class ShopController extends EpoxyController {
         categoryTitleModel
                 .clickListener(view -> {
                     Bundle bundle = new Bundle();
-                    bundle.putString("shop_name", shopInfo.getData().getShop().getName());
-                    bundle.putString("shop_slug", shopInfo.getData().getShop().getSlug());
+                    bundle.putString("shop_name", shopInfo.getShopName());
+                    bundle.putString("shop_slug", shopInfo.getSlug());
                     bundle.putString("campaign_slug", campaignSlug);
                     NavHostFragment.findNavController(fragment).navigate(R.id.shopQuickViewFragment, bundle);
                 })
