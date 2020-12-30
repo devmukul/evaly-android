@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
+import com.google.gson.JsonObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,6 @@ import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
@@ -26,7 +27,7 @@ public class CheckoutViewModel extends ViewModel {
 
     protected LiveData<List<CartEntity>> liveList = new MutableLiveData<>();
     protected SingleLiveEvent<Boolean> errorOrder = new SingleLiveEvent<>();
-    protected MutableLiveData<CommonDataResponse<List<OrderDetailsModel>>> orderPlacedLiveData = new MutableLiveData<>();
+    protected MutableLiveData<CommonDataResponse<List<JsonObject>>> orderPlacedLiveData = new MutableLiveData<>();
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
 
@@ -55,9 +56,9 @@ public class CheckoutViewModel extends ViewModel {
 
     public void placeOrder(PlaceOrderItem payload) {
 
-        OrderApiHelper.placeOrder(payload, new ResponseListenerAuth<CommonDataResponse<List<OrderDetailsModel>>, String>() {
+        OrderApiHelper.placeOrder(payload, new ResponseListenerAuth<CommonDataResponse<List<JsonObject>>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<List<OrderDetailsModel>> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<List<JsonObject>> response, int statusCode) {
                 orderPlacedLiveData.setValue(response);
             }
 

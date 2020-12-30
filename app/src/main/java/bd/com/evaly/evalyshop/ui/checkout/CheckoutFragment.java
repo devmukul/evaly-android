@@ -46,7 +46,6 @@ import bd.com.evaly.evalyshop.databinding.BottomSheetCheckoutContactBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentCheckoutBinding;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.user.AddressItem;
@@ -342,7 +341,7 @@ public class CheckoutFragment extends DialogFragment {
             dialog.hideDialog();
             ToastUtils.show(response.getMessage());
 
-            List<OrderDetailsModel> list = response.getData();
+            List<JsonObject> list = response.getData();
             if (list == null || list.size() == 0)
                 return;
 
@@ -354,9 +353,9 @@ public class CheckoutFragment extends DialogFragment {
                 dismissAllowingStateLoss();
 
             if (getActivity() != null && !getActivity().isFinishing()) {
-                if (list.size() == 1 && list.get(0).getInvoiceNo() != null && !list.get(0).getInvoiceNo().equals("")) {
+                if (list.size() == 1 && list.get(0).has("invoice_no") && list.get(0).get("invoice_no") != null && !list.get(0).get("invoice_no").getAsString().equals("")) {
                     Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
-                    intent.putExtra("orderID", list.get(0).getInvoiceNo());
+                    intent.putExtra("orderID", list.get(0).get("invoice_no").getAsString());
                     startActivity(intent);
                 } else {
                     if (getActivity() instanceof MainActivity && navController != null)
