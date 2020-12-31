@@ -22,7 +22,9 @@ public class AddressController extends EpoxyController {
 
     public interface ClickListener {
         void onClick(AddressItem model);
+
         void onDelete(AddressItem model);
+
         void onEdit(AddressItem model, int position);
     }
 
@@ -55,8 +57,8 @@ public class AddressController extends EpoxyController {
         new NoItemModel_()
                 .id("no_item")
                 .text("No address added")
-                .width(70)
-                .image(R.drawable.ic_location_track)
+                .width(50)
+                .image(R.drawable.ic_home)
                 .imageTint("#777777")
                 .addIf(!isLoading && list.size() == 0, this);
     }

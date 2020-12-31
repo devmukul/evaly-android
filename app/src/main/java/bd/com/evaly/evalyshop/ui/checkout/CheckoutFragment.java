@@ -205,6 +205,7 @@ public class CheckoutFragment extends DialogFragment {
         totalDeliveryCharge = 0;
         HashMap<String, Integer> shopAmountMap = new HashMap<>();
         HashMap<String, Boolean> shopExpressMap = new HashMap<>();
+        HashMap<String, String> expressShopSlugs = new HashMap();
 
         List<CartEntity> itemList = viewModel.liveList.getValue();
         if (itemList == null)
@@ -223,7 +224,9 @@ public class CheckoutFragment extends DialogFragment {
                 JsonObject shopObject = JsonParser.parseString(cartItem.getShopJson()).getAsJsonObject();
                 if (shopObject.has("is_express_shop")) {
                     if (shopObject.get("is_express_shop").getAsBoolean() || shopObject.get("is_express_shop").getAsString().equals("1")) {
-                        totalDeliveryCharge += deliveryChargeAmount;
+                        if (!expressShopSlugs.containsKey(cartItem.getShopSlug()))
+                            totalDeliveryCharge += deliveryChargeAmount;
+                        expressShopSlugs.put(cartItem.getShopSlug(), "added");
                         isExpress = true;
                     }
                     if (deliveryChargeApplicable != null) {

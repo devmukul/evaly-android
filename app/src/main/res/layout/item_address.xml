@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:text="User Name"
+            android:textColor="@color/c444"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image"
@@ -38,6 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Address line one"
+            android:textColor="@color/c666"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/fullName"
             app:layout_constraintTop_toBottomOf="@id/fullName" />
@@ -47,6 +49,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Address line two"
+            android:textColor="@color/c666"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/fullName"
             app:layout_constraintTop_toBottomOf="@id/addressLine1" />
