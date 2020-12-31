@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.browseProduct;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,21 +10,30 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.tabs.TabLayout;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentProductBrowseBinding;
+import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.browseProduct.controller.ProductBrowseController;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class ProductBrowseFragment extends Fragment {
+public class ProductBrowseFragment extends Fragment implements ProductBrowseController.ClickListener {
 
     private FragmentProductBrowseBinding binding;
     private BrowseProductViewModel viewModel;
     private ProductBrowseController controller;
+    private LinearLayoutManager layoutManager;
+    private PaginationScrollListener paginationScrollListener;
+    private NavController navController;
 
 
     @Override
@@ -42,7 +52,7 @@ public class ProductBrowseFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        navController = NavHostFragment.findNavController(this);
         setupTabs();
         clickListeners();
         setupRecycler();
@@ -53,9 +63,27 @@ public class ProductBrowseFragment extends Fragment {
         if (controller == null)
             controller = new ProductBrowseController();
         controller.setFilterDuplicates(true);
-        binding.recyclerView.setAdapter(controller.getAdapter());
-    }
 
+        paginationScrollListener = new PaginationScrollListener() {
+            @Override
+            public void loadMoreItem() {
+                viewModel.loadFromApi();
+                controller.setLoadingMore(true);
+            }
+        };
+
+        if (viewModel.getSelectedType().equals("products")) {
+            layoutManager = new LinearLayoutManager(getContext());
+            paginationScrollListener.setLinearLayoutManager(layoutManager);
+        } else {
+            layoutManager = new GridLayoutManager(getContext(), 3);
+            paginationScrollListener.setGridLayoutManager((GridLayoutManager) layoutManager);
+        }
+
+        binding.recyclerView.setLayoutManager(layoutManager);
+        binding.recyclerView.setAdapter(controller.getAdapter());
+
+    }
 
     private void setupTabs() {
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -65,12 +93,14 @@ public class ProductBrowseFragment extends Fragment {
                 viewModel.setSelectedType(type);
                 viewModel.loadFromApi();
                 if (type.toLowerCase().contains("products")) {
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-                    binding.recyclerView.setLayoutManager(layoutManager);
+                    layoutManager = new LinearLayoutManager(getContext());
+                    paginationScrollListener.setLinearLayoutManager(layoutManager);
                 } else {
-                    GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
-                    binding.recyclerView.setLayoutManager(gridLayoutManager);
+                    layoutManager = new GridLayoutManager(getContext(), 3);
+                    paginationScrollListener.setGridLayoutManager((GridLayoutManager) layoutManager);
                 }
+
+                binding.recyclerView.setLayoutManager(layoutManager);
             }
 
             @Override
@@ -96,5 +126,30 @@ public class ProductBrowseFragment extends Fragment {
             controller.setLoadingMore(false);
             controller.requestModelBuild();
         });
+    }
+
+    @Override
+    public void onProductClick(ProductItem model) {
+        Intent intent = new Intent(getContext(), ViewProductActivity.class);
+        intent.putExtra("product_slug", model.getSlug());
+        intent.putExtra("product_name", model.getName());
+        intent.putExtra("product_price", model.getMaxPrice());
+        if (model.getImageUrls().size() > 0)
+            intent.putExtra("product_image", model.getImageUrls().get(0));
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onGridItemClick(String type, String title, String image, String slug) {
+        Bundle bundle = new Bundle();
+        bundle.putString("title", title);
+        bundle.putString("slug", slug);
+
+        if (type.equals("category"))
+            navController.navigate(R.id.productBrowseFragment, bundle);
+        else if (type.equals("shop"))
+            navController.navigate(R.id.shopFragment, bundle);
+        else if (type.equals("brand"))
+            navController.navigate(R.id.brandFragment, bundle);
     }
 }

@@ -1,15 +1,10 @@
 package bd.com.evaly.evalyshop.ui.browseProduct.controller;
 
 
-import android.content.Intent;
-import android.view.View;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.epoxy.AutoModel;
-import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
-import com.airbnb.epoxy.OnModelClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +17,6 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.browseProduct.model.GridItemModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
-import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 
 public class ProductBrowseController extends EpoxyController {
 
@@ -32,6 +26,17 @@ public class ProductBrowseController extends EpoxyController {
     private List<BaseModel> list = new ArrayList<>();
     private String categorySlug;
     private boolean loadingMore = true;
+    private ClickListener clickListener;
+
+    public void setClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
+    public interface ClickListener {
+        void onProductClick(ProductItem item);
+
+        void onGridItemClick(String type, String title, String image, String slug);
+    }
 
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
@@ -51,14 +56,7 @@ public class ProductBrowseController extends EpoxyController {
                         .id(((ProductItem) item).getSlug())
                         .model((ProductItem) item)
                         .clickListener((models, parentView, clickedView, position) -> {
-                            ProductItem model = models.getModel();
-                            Intent intent = new Intent(activity, ViewProductActivity.class);
-                            intent.putExtra("product_slug", model.getSlug());
-                            intent.putExtra("product_name", model.getName());
-                            intent.putExtra("product_price", model.getMaxPrice());
-                            if (model.getImageUrls().size() > 0)
-                                intent.putExtra("product_image", model.getImageUrls().get(0));
-                            activity.startActivity(intent);
+                            clickListener.onProductClick(models.model);
                         })
                         .addTo(this);
             else {
@@ -91,12 +89,7 @@ public class ProductBrowseController extends EpoxyController {
                         .slug(slug)
                         .image(image)
                         .slug(slug)
-                        .clickListener(new OnModelClickListener<GridItemModel_, DataBindingEpoxyModel.DataBindingHolder>() {
-                            @Override
-                            public void onClick(GridItemModel_ model, DataBindingEpoxyModel.DataBindingHolder parentView, View clickedView, int position) {
-
-                            }
-                        })
+                        .clickListener((model, parentView, clickedView, position) -> clickListener.onGridItemClick(model.type(), model.title(), model.image(), model.slug()))
                         .addIf(title != null, this);
 
 

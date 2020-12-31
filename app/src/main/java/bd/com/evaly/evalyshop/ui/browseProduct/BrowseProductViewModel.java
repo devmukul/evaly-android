@@ -47,6 +47,10 @@ public class BrowseProductViewModel extends ViewModel {
         this.selectedType = selectedType;
     }
 
+    public String getSelectedType() {
+        return selectedType;
+    }
+
     public void loadFromApi() {
         currentPage = 1;
         switch (selectedType) {
@@ -72,6 +76,8 @@ public class BrowseProductViewModel extends ViewModel {
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
                 arrayList.addAll(response.getData());
                 liveList.setValue(arrayList);
+                if (response.getData().size() > 10)
+                    currentPage++;
             }
 
             @Override
@@ -95,6 +101,8 @@ public class BrowseProductViewModel extends ViewModel {
             public void onDataFetched(CommonDataResponse<List<ChildCategoryResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
                 liveList.setValue(arrayList);
+                if (response.getData().size() > 10)
+                    currentPage++;
             }
 
             @Override
@@ -116,6 +124,8 @@ public class BrowseProductViewModel extends ViewModel {
             public void onDataFetched(CommonDataResponse<List<BrandResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
                 liveList.setValue(arrayList);
+                if (response.getData().size() > 10)
+                    currentPage++;
             }
 
             @Override
@@ -137,6 +147,8 @@ public class BrowseProductViewModel extends ViewModel {
             public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
                 liveList.setValue(arrayList);
+                if (response.getData().size() > 10)
+                    currentPage++;
             }
 
             @Override

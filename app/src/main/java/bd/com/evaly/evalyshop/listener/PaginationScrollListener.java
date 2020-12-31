@@ -12,6 +12,10 @@ public abstract class PaginationScrollListener extends RecyclerView.OnScrollList
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
 
+    public PaginationScrollListener() {
+
+    }
+
     public PaginationScrollListener(GridLayoutManager gridLayoutManager) {
         this.gridLayoutManager = gridLayoutManager;
     }
@@ -22,6 +26,18 @@ public abstract class PaginationScrollListener extends RecyclerView.OnScrollList
 
     public PaginationScrollListener(StaggeredGridLayoutManager staggeredGridLayoutManager) {
         this.staggeredGridLayoutManager = staggeredGridLayoutManager;
+    }
+
+    public void setLinearLayoutManager(LinearLayoutManager linearLayoutManager) {
+        this.linearLayoutManager = linearLayoutManager;
+        this.gridLayoutManager = null;
+        this.staggeredGridLayoutManager = null;
+    }
+
+    public void setGridLayoutManager(GridLayoutManager gridLayoutManager) {
+        this.gridLayoutManager = gridLayoutManager;
+        this.linearLayoutManager = null;
+        this.staggeredGridLayoutManager = null;
     }
 
     @Override
