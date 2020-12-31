@@ -8,6 +8,9 @@ import java.util.List;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
+import bd.com.evaly.evalyshop.models.catalog.category.ChildCategoryResponse;
+import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
@@ -17,6 +20,17 @@ import retrofit2.Call;
 
 public class ProductApiHelper extends BaseApiHelper {
 
+    public static void getChildCategories(String parentCategorySlug, ResponseListenerAuth<CommonDataResponse<List<ChildCategoryResponse>>, String> listener) {
+        getiApiClient().getChildCategory(parentCategorySlug).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getBrands(String categorySlug, String search, int page, ResponseListenerAuth<CommonDataResponse<List<BrandResponse>>, String> listener) {
+        getiApiClient().getBrands(categorySlug, search, page, 20).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getShops(String categorySlug, String search, int page, ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String> listener) {
+        getiApiClient().getShops(categorySlug, search, page, 20).enqueue(getResponseCallBackDefault(listener));
+    }
 
     public static void getShopProducts(String shopSlug, int page, int limit, String categorySlug, String campaignSlug, String search, ResponseListenerAuth<JsonObject, String> listener) {
 

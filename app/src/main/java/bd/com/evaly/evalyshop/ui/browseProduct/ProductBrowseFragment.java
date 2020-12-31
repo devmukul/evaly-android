@@ -9,10 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.tabs.TabLayout;
 
 import bd.com.evaly.evalyshop.databinding.FragmentProductBrowseBinding;
+import bd.com.evaly.evalyshop.ui.browseProduct.controller.ProductBrowseController;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -20,6 +23,7 @@ public class ProductBrowseFragment extends Fragment {
 
     private FragmentProductBrowseBinding binding;
     private BrowseProductViewModel viewModel;
+    private ProductBrowseController controller;
 
 
     @Override
@@ -41,15 +45,32 @@ public class ProductBrowseFragment extends Fragment {
 
         setupTabs();
         clickListeners();
+        setupRecycler();
         liveEvents();
     }
+
+    private void setupRecycler() {
+        if (controller == null)
+            controller = new ProductBrowseController();
+        controller.setFilterDuplicates(true);
+        binding.recyclerView.setAdapter(controller.getAdapter());
+    }
+
 
     private void setupTabs() {
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewModel.setSelectedType(tab.getText().toString());
+                String type = tab.getText().toString();
+                viewModel.setSelectedType(type);
                 viewModel.loadFromApi();
+                if (type.toLowerCase().contains("products")) {
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                    binding.recyclerView.setLayoutManager(layoutManager);
+                } else {
+                    GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
+                    binding.recyclerView.setLayoutManager(gridLayoutManager);
+                }
             }
 
             @Override
@@ -70,6 +91,10 @@ public class ProductBrowseFragment extends Fragment {
 
     private void liveEvents() {
 
-
+        viewModel.liveList.observe(getViewLifecycleOwner(), baseModels -> {
+            controller.setList(baseModels);
+            controller.setLoadingMore(false);
+            controller.requestModelBuild();
+        });
     }
 }

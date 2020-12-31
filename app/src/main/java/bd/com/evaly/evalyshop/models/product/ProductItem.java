@@ -4,8 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import bd.com.evaly.evalyshop.models.BaseModel;
 
-public class ProductItem {
+
+public class ProductItem extends BaseModel {
 
     @SerializedName("max_price")
     private String maxPrice;

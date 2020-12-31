@@ -6,13 +6,16 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.BaseModel;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
+import bd.com.evaly.evalyshop.models.catalog.category.ChildCategoryResponse;
+import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 
@@ -29,9 +32,8 @@ public class BrowseProductViewModel extends ViewModel {
     }
 
     protected String categorySlug;
-    protected MutableLiveData<JsonObject> responseLiveData = new MutableLiveData<>();
-    protected MutableLiveData<JsonArray> responseArrayLiveData = new MutableLiveData<>();
-    protected MutableLiveData<List<ProductItem>> productListLiveData = new MutableLiveData<>();
+    protected MutableLiveData<List<BaseModel>> liveList = new MutableLiveData<>();
+    protected List<BaseModel> arrayList = new ArrayList<>();
     private String selectedType = "product";
     private int currentPage = 1;
 
@@ -55,21 +57,21 @@ public class BrowseProductViewModel extends ViewModel {
                 getSubCategories();
                 break;
             case "shop":
-                getShopsOfCategory();
+                getShops();
                 break;
             case "brand":
-                getBrandsOfCategory();
+                getBrands();
                 break;
         }
     }
 
     private void getProducts() {
 
-
         ProductApiHelper.getCategoryBrandProducts(currentPage, categorySlug, null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
-                productListLiveData.setValue(response.getData());
+                arrayList.addAll(response.getData());
+                liveList.setValue(arrayList);
             }
 
             @Override
@@ -88,38 +90,15 @@ public class BrowseProductViewModel extends ViewModel {
 
     public void getSubCategories() {
 
-        ProductApiHelper.getSubCategories(categorySlug, new ResponseListenerAuth<JsonArray, String>() {
-
+        ProductApiHelper.getChildCategories(categorySlug, new ResponseListenerAuth<CommonDataResponse<List<ChildCategoryResponse>>, String>() {
             @Override
-            public void onDataFetched(JsonArray res, int statusCode) {
-                responseArrayLiveData.setValue(res);
+            public void onDataFetched(CommonDataResponse<List<ChildCategoryResponse>> response, int statusCode) {
+                arrayList.addAll(response.getData());
+                liveList.setValue(arrayList);
             }
 
             @Override
-            public void onFailed(String body, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
-
-    }
-
-    public void getBrandsOfCategory() {
-        ProductApiHelper.getBrandsOfCategories(categorySlug, currentPage, 20, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject res, int statusCode) {
-                responseLiveData.setValue(res);
-
-            }
-
-            @Override
-            public void onFailed(String body, int errorCode) {
-
+            public void onFailed(String errorBody, int errorCode) {
 
             }
 
@@ -131,16 +110,37 @@ public class BrowseProductViewModel extends ViewModel {
 
     }
 
-
-    public void getShopsOfCategory() {
-        ProductApiHelper.getShopsOfCategories(categorySlug, currentPage, 20, new ResponseListenerAuth<JsonObject, String>() {
+    public void getBrands() {
+        ProductApiHelper.getBrands(categorySlug, null, currentPage, new ResponseListenerAuth<CommonDataResponse<List<BrandResponse>>, String>() {
             @Override
-            public void onDataFetched(JsonObject res, int statusCode) {
-                responseLiveData.setValue(res);
+            public void onDataFetched(CommonDataResponse<List<BrandResponse>> response, int statusCode) {
+                arrayList.addAll(response.getData());
+                liveList.setValue(arrayList);
             }
 
             @Override
-            public void onFailed(String body, int errorCode) {
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
+
+    public void getShops() {
+        ProductApiHelper.getShops(categorySlug, null, currentPage, new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
+                arrayList.addAll(response.getData());
+                liveList.setValue(arrayList);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
 
             }
 

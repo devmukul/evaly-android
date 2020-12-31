@@ -35,7 +35,10 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
+import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
+import bd.com.evaly.evalyshop.models.catalog.category.ChildCategoryResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
+import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
@@ -340,6 +343,15 @@ public interface IApiClient {
 
     // product APIs
 
+    @GET(UrlUtils.BASE_CATALOG + "all-categories")
+    Call<CommonDataResponse<List<ChildCategoryResponse>>> getChildCategory(@Query("parent") String parentCategorySlug);
+
+    @GET(UrlUtils.BASE_CATALOG + "brands")
+    Call<CommonDataResponse<List<BrandResponse>>> getBrands(@Query("category") String categorySlug, @Query("search") String search, @Query("page") int page, @Query("limit") int limit);
+
+    @GET(UrlUtils.BASE_CATALOG + "shops")
+    Call<CommonDataResponse<List<ShopListResponse>>> getShops(@Query("category") String categorySlug, @Query("search") String search, @Query("page") int page, @Query("limit") int limit);
+
     @GET(UrlUtils.BASE_CATALOG + "products")
     Call<CommonResultResponse<List<ProductItem>>> getCategoryBrandProducts(@Query("page") int page, @Query("category") String category, @Query("brand") String brand, @Query("limit") int limit);
 
@@ -536,8 +548,6 @@ public interface IApiClient {
 
     @POST(BuildConfig.WEB_URL + "sebl/payment")
     Call<JsonObject> payViaSEBL(@Header("Authorization") String token, @Query("amount") String amount, @Query("invoice") String invoice, @Query("token") String authToken, @Query("context_reference") String context);
-
-
 
 
     @POST(BuildConfig.NAGAD_URL)

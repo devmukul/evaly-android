@@ -1,19 +1,17 @@
-package bd.com.evaly.evalyshop.models.catalog.category;
+package bd.com.evaly.evalyshop.models.catalog.brands;
 
+import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
 import bd.com.evaly.evalyshop.models.BaseModel;
 
-public class ChildCategoryResponse extends BaseModel {
-
-	@SerializedName("parent")
-	private String parent;
-
-	@SerializedName("score")
-	private double score;
+public class BrandResponse extends BaseModel {
 
 	@SerializedName("approved")
 	private boolean approved;
+
+	@SerializedName("brand_score")
+	private int brandScore;
 
 	@SerializedName("image_url")
 	private String imageUrl;
@@ -27,27 +25,17 @@ public class ChildCategoryResponse extends BaseModel {
 	@SerializedName("id")
 	private int id;
 
+	@SerializedName("categories")
+	private List<String> categories;
+
 	@SerializedName("slug")
 	private String slug;
 
+	@SerializedName("brand_type")
+	private String brandType;
+
 	@SerializedName("status")
 	private String status;
-
-	public void setParent(String parent){
-		this.parent = parent;
-	}
-
-	public String getParent(){
-		return parent;
-	}
-
-	public void setScore(double score){
-		this.score = score;
-	}
-
-	public double getScore(){
-		return score;
-	}
 
 	public void setApproved(boolean approved){
 		this.approved = approved;
@@ -55,6 +43,14 @@ public class ChildCategoryResponse extends BaseModel {
 
 	public boolean isApproved(){
 		return approved;
+	}
+
+	public void setBrandScore(int brandScore){
+		this.brandScore = brandScore;
+	}
+
+	public int getBrandScore(){
+		return brandScore;
 	}
 
 	public void setImageUrl(String imageUrl){
@@ -89,12 +85,28 @@ public class ChildCategoryResponse extends BaseModel {
 		return id;
 	}
 
+	public void setCategories(List<String> categories){
+		this.categories = categories;
+	}
+
+	public List<String> getCategories(){
+		return categories;
+	}
+
 	public void setSlug(String slug){
 		this.slug = slug;
 	}
 
 	public String getSlug(){
 		return slug;
+	}
+
+	public void setBrandType(String brandType){
+		this.brandType = brandType;
+	}
+
+	public String getBrandType(){
+		return brandType;
 	}
 
 	public void setStatus(String status){
@@ -108,15 +120,16 @@ public class ChildCategoryResponse extends BaseModel {
 	@Override
  	public String toString(){
 		return 
-			"ChildCategoryResponse{" + 
-			"parent = '" + parent + '\'' + 
-			",score = '" + score + '\'' + 
-			",approved = '" + approved + '\'' + 
+			"BrandResponse{" + 
+			"approved = '" + approved + '\'' + 
+			",brand_score = '" + brandScore + '\'' + 
 			",image_url = '" + imageUrl + '\'' + 
 			",name = '" + name + '\'' + 
 			",description = '" + description + '\'' + 
 			",id = '" + id + '\'' + 
+			",categories = '" + categories + '\'' + 
 			",slug = '" + slug + '\'' + 
+			",brand_type = '" + brandType + '\'' + 
 			",status = '" + status + '\'' + 
 			"}";
 		}
