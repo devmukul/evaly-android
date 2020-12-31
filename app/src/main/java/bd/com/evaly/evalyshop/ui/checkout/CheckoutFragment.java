@@ -239,10 +239,11 @@ public class CheckoutFragment extends DialogFragment {
                             }
                         }
                     }
-
                 } else {
                     if (cartItem.getShopSlug().contains("evaly-express")) {
-                        totalDeliveryCharge += deliveryChargeAmount;
+                        if (!expressShopSlugs.containsKey(cartItem.getShopSlug()))
+                            totalDeliveryCharge += deliveryChargeAmount;
+                        expressShopSlugs.put(cartItem.getShopSlug(), "added");
                         isExpress = true;
                     }
                 }
