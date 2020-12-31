@@ -10,6 +10,9 @@ public class PaymentMethodModel {
     private boolean isSelected;
     private boolean isEnabled;
 
+    public PaymentMethodModel(){
+
+    }
 
     public PaymentMethodModel(String name, String description, String badgeText, String redText, int image, boolean isSelected, boolean isEnabled) {
         this.name = name;
@@ -45,6 +48,8 @@ public class PaymentMethodModel {
         this.image = image;
         this.isSelected = isSelected;
     }
+
+
 
     public String getRedText() {
         return redText;

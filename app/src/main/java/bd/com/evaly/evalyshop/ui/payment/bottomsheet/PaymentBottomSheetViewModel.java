@@ -99,30 +99,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         payload.put("context", "order_payment");
         payload.put("context_reference", invoice);
 
-//        OrderApiHelper.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
-//            @Override
-//            public void onDataFetched(JsonObject response, int statusCode) {
-//                if ((response != null && response.has("payment_gateway_url")) && !response.get("payment_gateway_url").isJsonNull()) {
-//                    String purl = response.get("payment_gateway_url").getAsString();
-//                    navigator.payViaCard(purl);
-//                } else
-//                    navigator.payViaCard("");
-//            }
-//
-//            @Override
-//            public void onFailed(String errorBody, int errorCode) {
-//                navigator.payViaCard("");
-//            }
-//
-//            @Override
-//            public void onAuthError(boolean logout) {
-//                if (!logout)
-//                    payViaCard(invoice, amount);
-//            }
-//        });
-
-
-        OrderApiHelper.payViaSEBL(CredentialManager.getToken(), amount, invoice, "order_payment", new ResponseListenerAuth<JsonObject, String>() {
+        OrderApiHelper.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("payment_gateway_url")) && !response.get("payment_gateway_url").isJsonNull()) {
