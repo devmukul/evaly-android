@@ -22,7 +22,8 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -39,7 +40,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_marginTop="7dp"
                     android:background="@drawable/brd_payment_methods"
                     android:focusable="true"
@@ -58,7 +59,7 @@
                     <EditText
                         android:id="@+id/amountPay"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:background="@color/transparent"
                         android:drawableRight="@drawable/ic_edit_drawable"
                         android:focusableInTouchMode="true"
@@ -67,14 +68,12 @@
                         android:imeOptions="actionDone"
                         android:inputType="number"
                         android:maxLines="1"
-                        android:minHeight="60dp"
-                        android:paddingTop="15dp"
+                        android:minHeight="50dp"
                         android:paddingRight="15dp"
-                        android:paddingBottom="15dp"
                         android:singleLine="true"
                         android:text=""
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="17sp" />
 
                 </LinearLayout>
 
@@ -145,29 +144,26 @@
                             android:background="@color/fff"
                             android:nestedScrollingEnabled="false"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            tools:itemCount="4"
+                            tools:itemCount="14"
                             tools:listitem="@layout/item_payment_method" />
 
                     </androidx.cardview.widget.CardView>
 
                 </LinearLayout>
 
-
-                <Button
-                    android:id="@+id/confirm"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/btn_payment"
-                    android:elevation="0dp"
-                    android:stateListAnimator="@null"
-                    android:text="Confirm Payment"
-                    android:textColor="@color/fffh" />
-
-
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
+        <Button
+            android:id="@+id/confirm"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/btn_payment"
+            android:elevation="0dp"
+            android:stateListAnimator="@null"
+            android:text="Confirm Payment"
+            android:textColor="@color/fffh" />
 
     </LinearLayout>
 </layout>

@@ -29,6 +29,10 @@ public class PaymentApiHelper extends BaseApiHelper {
         getiApiClient().payViaCard(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void payViaCityBank(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
+        getiApiClient().payViaCityBank(token, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
     public static void payViaBank(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
         getiApiClient().payViaBank(token, body).enqueue(getResponseCallBackDefault(listener));
     }

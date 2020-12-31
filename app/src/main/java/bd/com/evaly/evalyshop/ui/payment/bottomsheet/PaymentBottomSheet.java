@@ -123,6 +123,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         priorityList.add("bkash");
         priorityList.add("nagad");
         priorityList.add("sebl_gateway");
+        priorityList.add("citybank_gateway");
         priorityList.add("balance");
         priorityList.add("cod+balance");
         priorityList.add("cod");
@@ -155,7 +156,6 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         });
         return bottomSheetDialog;
     }
-
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -191,11 +191,9 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         if (applyDeliveryFee) {
             binding.llCashCollect.setVisibility(View.VISIBLE);
             binding.tvDeliveryFee.setText(Html.fromHtml("Please Pay Delivery Fee <b>৳" + deliveryFee + "</b> Cash to Delivery Hero."));
-
         } else {
             binding.llCashCollect.setVisibility(View.GONE);
         }
-
     }
 
 
@@ -228,33 +226,49 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             ToastUtils.show("Please select a payment method");
             return;
         }
-        if (method.getName().equals(Constants.EVALY_ACCOUNT)) {
-            dialog.showDialog();
-            viewModel.makePartialPayment(invoice_no, binding.amountPay.getText().toString());
-        } else if (method.getName().equalsIgnoreCase(Constants.CASH_ON_DELIVERY)) {
-            if (paymentOptionRedirectListener != null && invoice_no != null && !enteredAmount.equals(""))
-                viewModel.makeCashOnDelivery(invoice_no);
-            dismissAllowingStateLoss();
-        } else if (method.getName().equalsIgnoreCase(Constants.BKASH)) {
-            Toast.makeText(getContext(), "Opening bKash payment gateway!", Toast.LENGTH_SHORT).show();
-            if (paymentOptionRedirectListener != null && invoice_no != null && !enteredAmount.equals(""))
-                paymentOptionRedirectListener.onPaymentRedirect(BuildConfig.BKASH_URL, enteredAmount, invoice_no);
-            dismissAllowingStateLoss();
-        } else if (method.getName().equalsIgnoreCase(Constants.BALANCE_WITH_CASH)) {
-            if (paymentOptionRedirectListener != null && invoice_no != null && !enteredAmount.equals(""))
+
+        String paymentMethod = method.getName();
+
+        switch (paymentMethod) {
+            case Constants.EVALY_ACCOUNT:
+                dialog.showDialog();
                 viewModel.makePartialPayment(invoice_no, binding.amountPay.getText().toString());
-            dismissAllowingStateLoss();
-        } else if (method.getName().equalsIgnoreCase(Constants.CARD)) {
-            Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
-            viewModel.payViaSEBL(invoice_no, enteredAmount);
-        } else if (method.getName().equalsIgnoreCase(Constants.OTHERS)) {
-            Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
-            viewModel.payViaCard(invoice_no, enteredAmount);
-        } else if (method.getName().equalsIgnoreCase(Constants.NAGAD)) {
-            Toast.makeText(getContext(), "Opening to Nagad gateway!", Toast.LENGTH_SHORT).show();
-            viewModel.payViaNagad(invoice_no, enteredAmount);
-        } else {
-            ToastUtils.show("Payment is not possible, please try again");
+                break;
+            case Constants.CASH_ON_DELIVERY:
+                if (paymentOptionRedirectListener != null && invoice_no != null && !enteredAmount.equals(""))
+                    viewModel.makeCashOnDelivery(invoice_no);
+                dismissAllowingStateLoss();
+                break;
+            case Constants.BKASH:
+                Toast.makeText(getContext(), "Opening bKash payment gateway!", Toast.LENGTH_SHORT).show();
+                if (paymentOptionRedirectListener != null && invoice_no != null && !enteredAmount.equals(""))
+                    paymentOptionRedirectListener.onPaymentRedirect(BuildConfig.BKASH_URL, enteredAmount, invoice_no);
+                dismissAllowingStateLoss();
+                break;
+            case Constants.BALANCE_WITH_CASH:
+                if (paymentOptionRedirectListener != null && invoice_no != null && !enteredAmount.equals(""))
+                    viewModel.makePartialPayment(invoice_no, binding.amountPay.getText().toString());
+                dismissAllowingStateLoss();
+                break;
+            case Constants.CARD:
+                Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
+                viewModel.payViaSEBL(invoice_no, enteredAmount);
+                break;
+            case Constants.CITYBANK:
+                Toast.makeText(getContext(), "Opening to City Bank payment gateway!", Toast.LENGTH_SHORT).show();
+                viewModel.payViaCityBank(invoice_no, enteredAmount);
+                break;
+            case Constants.OTHERS:
+                Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
+                viewModel.payViaCard(invoice_no, enteredAmount);
+                break;
+            case Constants.NAGAD:
+                Toast.makeText(getContext(), "Opening to Nagad gateway!", Toast.LENGTH_SHORT).show();
+                viewModel.payViaNagad(invoice_no, enteredAmount);
+                break;
+            default:
+                ToastUtils.show("Payment is not possible, please try again");
+                break;
         }
     }
 
@@ -271,66 +285,58 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
 
         for (int i = 0; i < paymentMethods.size(); i++) {
 
-            boolean isEnabled = !disabledPaymentMethods.contains(paymentMethods.get(i));
+            String paymentMethod = paymentMethods.get(i);
 
-            if (paymentMethods.get(i).equalsIgnoreCase("bkash")) {
-                methodList.add(new PaymentMethodModel(
-                        Constants.BKASH,
-                        "Pay from your bKash account using \nbKash payment gateway.",
-                        disabledPaymentMethodText,
-                        R.drawable.payment_bkash_square,
-                        false,
-                        isEnabled));
-            } else if (paymentMethods.get(i).equalsIgnoreCase("nagad")) {
-                methodList.add(new PaymentMethodModel(
-                        Constants.NAGAD,
-                        nagadDescription.equals("") ? "Pay from your Nagad account using \nNagad payment gateway." : nagadDescription,
-                        disabledPaymentMethodText,
-                        nagadBadgeText,
-                        R.drawable.ic_nagad2,
-                        false,
-                        isEnabled));
-            } else if (paymentMethods.get(i).equalsIgnoreCase("sebl_gateway")) {
-                methodList.add(new PaymentMethodModel(
-                        Constants.CARD,
-                        "Pay from your debit/visa/mastercard using \nSEBL payment gateway.",
-                        disabledPaymentMethodText,
-                        R.drawable.payment_cards,
-                        false,
-                        isEnabled));
-            } else if (paymentMethods.get(i).equalsIgnoreCase("balance")) {
-                methodList.add(new PaymentMethodModel(
-                        "Evaly Account",
-                        balanceText,
-                        disabledPaymentMethodText,
-                        R.drawable.payment_icon_evaly,
-                        false,
-                        isEnabled));
-            } else if (paymentMethods.get(i).equalsIgnoreCase("cod+balance")) {
-                methodList.add(new PaymentMethodModel(
-                        Constants.BALANCE_WITH_CASH,
-                        balanceText,
-                        disabledPaymentMethodText,
-                        R.drawable.payment_icon_evaly,
-                        false,
-                        isEnabled));
-            } else if (paymentMethods.get(i).equalsIgnoreCase("cod")) {
-                methodList.add(new PaymentMethodModel(
-                        Constants.CASH_ON_DELIVERY,
-                        "Payment on delivery.",
-                        disabledPaymentMethodText,
-                        R.drawable.ic_cash,
-                        false,
-                        isEnabled));
-            } else if (paymentMethods.get(i).equalsIgnoreCase("sslcommerz_gateway")) {
-                methodList.add(new PaymentMethodModel(
-                        Constants.OTHERS,
-                        "Pay from your amex/other cards using \nSSLCommerz payment gateway.",
-                        disabledPaymentMethodText,
-                        R.drawable.sslcommerz,
-                        false,
-                        isEnabled));
+            boolean isEnabled = !disabledPaymentMethods.contains(paymentMethod);
+            String name = null, description = null, redText = null;
+            int image = 0;
+
+            if (paymentMethod.equalsIgnoreCase("bkash")) {
+                name = Constants.BKASH;
+                description = "Pay from your bKash account using \nbKash payment gateway.";
+                image = R.drawable.payment_bkash_square;
+            } else if (paymentMethod.equalsIgnoreCase("nagad")) {
+                name = Constants.NAGAD;
+                description = nagadDescription.equals("") ? "Pay from your Nagad account using \nNagad payment gateway." : nagadDescription;
+                image = R.drawable.ic_nagad2;
+                redText = nagadBadgeText;
+            } else if (paymentMethod.equalsIgnoreCase("sebl_gateway")) {
+                name = Constants.CARD;
+                description = "Pay from your debit/visa/mastercard using \nSEBL payment gateway.";
+                image = R.drawable.payment_cards;
+            } else if (paymentMethod.equalsIgnoreCase("citybank_gateway")) {
+                name = Constants.CITYBANK;
+                description = "Pay from your City Bank account easily.";
+                image = R.drawable.city_bank;
+            } else if (paymentMethod.equalsIgnoreCase("balance")) {
+                name = "Evaly Account";
+                description = balanceText;
+                image = R.drawable.payment_icon_evaly;
+            } else if (paymentMethod.equalsIgnoreCase("cod+balance")) {
+                name = Constants.BALANCE_WITH_CASH;
+                description = balanceText;
+                image = R.drawable.payment_icon_evaly;
+            } else if (paymentMethod.equalsIgnoreCase("cod")) {
+                name = Constants.CASH_ON_DELIVERY;
+                description = "Payment on delivery.";
+                image = R.drawable.ic_cash;
+            } else if (paymentMethod.equalsIgnoreCase("sslcommerz_gateway")) {
+                name = Constants.OTHERS;
+                description = "Pay from your amex/other cards using \nSSLCommerz payment gateway.";
+                image = R.drawable.sslcommerz;
             }
+
+            PaymentMethodModel model = new PaymentMethodModel();
+            model.setName(name);
+            model.setDescription(description);
+            model.setRedText(redText);
+            model.setEnabled(isEnabled);
+            model.setSelected(false);
+            model.setImage(image);
+            model.setBadgeText(disabledPaymentMethodText);
+
+            if (name != null)
+                methodList.add(model);
         }
 
         controller.loadData(methodList, true);
@@ -364,7 +370,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     @Override
     public void payViaCard(String url) {
         if (paymentOptionRedirectListener == null || url == null || url.equals("")) {
-           // Toast.makeText(getContext(), "Unable to make payment, try again later!", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getContext(), "Unable to make payment, try again later!", Toast.LENGTH_SHORT).show();
         } else {
             if (isVisible() && !isRemoving() && !isDetached())
                 dismissAllowingStateLoss();

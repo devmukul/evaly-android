@@ -205,6 +205,7 @@ public class CheckoutFragment extends DialogFragment {
         totalDeliveryCharge = 0;
         HashMap<String, Integer> shopAmountMap = new HashMap<>();
         HashMap<String, Boolean> shopExpressMap = new HashMap<>();
+        HashMap<String, String> expressShopSlugs = new HashMap();
 
         List<CartEntity> itemList = viewModel.liveList.getValue();
         if (itemList == null)
@@ -223,23 +224,23 @@ public class CheckoutFragment extends DialogFragment {
                 JsonObject shopObject = JsonParser.parseString(cartItem.getShopJson()).getAsJsonObject();
                 if (shopObject.has("is_express_shop")) {
                     if (shopObject.get("is_express_shop").getAsBoolean() || shopObject.get("is_express_shop").getAsString().equals("1")) {
-                        totalDeliveryCharge += deliveryChargeAmount;
                         isExpress = true;
-                    }
-                    if (deliveryChargeApplicable != null) {
-                        String[] array = deliveryChargeApplicable.split(",");
-                        for (String s : array) {
-                            String shopTitle = shopObject.get("shop_name").getAsString();
-                            if (shopTitle.toLowerCase().contains(s.toLowerCase())) {
-                                showDeliveryCharge = true;
-                                break;
+                        if (deliveryChargeApplicable != null) {
+                            String[] array = deliveryChargeApplicable.split(",");
+                            for (String s : array) {
+                                String shopTitle = shopObject.get("shop_name").getAsString();
+                                if (shopTitle.toLowerCase().contains(s.toLowerCase())) {
+                                    if (!expressShopSlugs.containsKey(cartItem.getShopSlug()))
+                                        totalDeliveryCharge += deliveryChargeAmount;
+                                    expressShopSlugs.put(cartItem.getShopSlug(), "added");
+                                    showDeliveryCharge = true;
+                                    break;
+                                }
                             }
                         }
                     }
-
                 } else {
                     if (cartItem.getShopSlug().contains("evaly-express")) {
-                        totalDeliveryCharge += deliveryChargeAmount;
                         isExpress = true;
                     }
                 }
@@ -273,6 +274,7 @@ public class CheckoutFragment extends DialogFragment {
                 binding.deliveryCharge.setText(Utils.formatPriceSymbol(totalDeliveryCharge));
             binding.vatHolder.setVisibility(View.VISIBLE);
         } else {
+            totalDeliveryCharge = 0;
             binding.vatHolder.setVisibility(View.GONE);
         }
     }

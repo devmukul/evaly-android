@@ -24,6 +24,7 @@ public class Constants {
     public static final String BKASH = "bKash";
     public static final String NAGAD = "Nagad";
     public static final String CARD = "Visa/Mastercard";
+    public static final String CITYBANK = "City Bank";
     public static final String OTHERS = "SSLCommerz";
     public static final String BALANCE_WITH_CASH = "Evaly Account + Cash on Delivery";
     // Event specific constants
@@ -96,8 +97,9 @@ public class Constants {
     public static final String EVALY_LOGO = "https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/media/2019-08-04_090235.843922android-icon-200x200.png";
 
     public static final String BKASH_SUCCESS_URL = "success.html";
-    public static final String SSL_SUCCESS_URL = "evaly.com.bd";
+    public static final String SSL_SUCCESS_URL = "evaly.com.bd/order";
     public static final String SEBL_SUCCESS_URL = "evaly.com.bd/order";
+    public static final String CITYBANK_SUCCESS_URL = "evaly.com.bd/order";
 
     public static List<OrderIssueModel> getDelivaryIssueList() {
 
