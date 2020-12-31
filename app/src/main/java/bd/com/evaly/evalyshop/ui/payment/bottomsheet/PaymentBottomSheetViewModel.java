@@ -11,6 +11,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
 
 public class PaymentBottomSheetViewModel extends ViewModel {
 
@@ -86,8 +87,8 @@ public class PaymentBottomSheetViewModel extends ViewModel {
 
     }
 
-    public void payViaSEBL(String invoice, String amount){
-        navigator.payViaCard(BuildConfig.WEB_URL+"sebl/payment?amount="+amount+"&invoice="+invoice+"&token="+CredentialManager.getToken().replace("Bearer ", "")+"&context_reference=order_payment");
+    public void payViaSEBL(String invoice, String amount) {
+        navigator.payViaCard(BuildConfig.WEB_URL + "sebl/payment?amount=" + amount + "&invoice=" + invoice + "&token=" + CredentialManager.getToken().replace("Bearer ", "") + "&context_reference=order_payment");
 //        navigator.payViaCard("http://192.168.68.126:3200/sebl/payment?amount=10&invoice=EVL707799707&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IjAxOTc3NTM3OTg4IiwiZ3JvdXBzIjpbIlNob3BPd25lciIsIlJlc3RhdXJhbnRPd25lciJdLCJmaXJzdF9uYW1lIjoiSXNoIiwibGFzdF9uYW1lIjoiQWsiLCJpc19zdGFmZiI6ZmFsc2UsImlzX2FjdGl2ZSI6dHJ1ZSwiaXNfc3VwZXJ1c2VyIjpmYWxzZSwidmVyaWZpZWQiOnRydWUsInVzZXJfdHlwZSI6ImN1c3RvbWVyIiwidXNlcl9zdGF0dXMiOiJhY3RpdmUiLCJlbWFpbCI6ImlzaGFrLnN3ZUBnbWFpbC5jb20iLCJjb250YWN0IjoiMDE1MjEyMDAwNzkiLCJkYXRlX2pvaW5lZCI6IjIwMTktMDktMDFUMDY6MjE6MDEuNzU4WiIsInRva2VuX3R5cGUiOiJhY2Nlc3MiLCJpc19lYXV0aCI6dHJ1ZSwiZXhwIjoxNjA4NDY4NzU4fQ._JepnYRbDrkCrFX_vkFnkBFXD7SLSwiDs9XQAWw7dlA&context_reference=order_payment");
     }
 
@@ -98,7 +99,30 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         payload.put("context", "order_payment");
         payload.put("context_reference", invoice);
 
-        OrderApiHelper.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+//        OrderApiHelper.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+//            @Override
+//            public void onDataFetched(JsonObject response, int statusCode) {
+//                if ((response != null && response.has("payment_gateway_url")) && !response.get("payment_gateway_url").isJsonNull()) {
+//                    String purl = response.get("payment_gateway_url").getAsString();
+//                    navigator.payViaCard(purl);
+//                } else
+//                    navigator.payViaCard("");
+//            }
+//
+//            @Override
+//            public void onFailed(String errorBody, int errorCode) {
+//                navigator.payViaCard("");
+//            }
+//
+//            @Override
+//            public void onAuthError(boolean logout) {
+//                if (!logout)
+//                    payViaCard(invoice, amount);
+//            }
+//        });
+
+
+        OrderApiHelper.payViaSEBL(CredentialManager.getToken(), amount, invoice, "order_payment", new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("payment_gateway_url")) && !response.get("payment_gateway_url").isJsonNull()) {
@@ -120,12 +144,21 @@ public class PaymentBottomSheetViewModel extends ViewModel {
             }
         });
 
+    }
 
-        OrderApiHelper.payViaSEBL(CredentialManager.getToken(), amount, invoice, "order_payment" , new ResponseListenerAuth<JsonObject, String>() {
+
+    public void payViaCityBank(String invoice, String amount) {
+
+        HashMap<String, String> payload = new HashMap<>();
+        payload.put("amount", amount);
+        payload.put("context", "order_payment");
+        payload.put("context_reference", invoice);
+
+        PaymentApiHelper.payViaCityBank(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-                if ((response != null && response.has("payment_gateway_url")) && !response.get("payment_gateway_url").isJsonNull()) {
-                    String purl = response.get("payment_gateway_url").getAsString();
+                if ((response != null && response.has("url")) && !response.get("url").isJsonNull()) {
+                    String purl = response.get("url").getAsString();
                     navigator.payViaCard(purl);
                 } else
                     navigator.payViaCard("");
@@ -139,10 +172,9 @@ public class PaymentBottomSheetViewModel extends ViewModel {
             @Override
             public void onAuthError(boolean logout) {
                 if (!logout)
-                    payViaCard(invoice, amount);
+                    payViaCityBank(invoice, amount);
             }
         });
-
     }
 
     public void payViaNagad(String invoice, String amount) {

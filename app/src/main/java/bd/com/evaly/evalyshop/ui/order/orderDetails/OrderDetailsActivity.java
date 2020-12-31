@@ -779,6 +779,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 successURL = Constants.SEBL_SUCCESS_URL;
                 purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no, "sebl");
                 paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.visa_master_card));
+            } else if (url.contains("citybank")) {
+                paymentWebBuilder.setToolbarTitle("Pay via City Bank");
             } else
                 paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.pay_via_card));
         }

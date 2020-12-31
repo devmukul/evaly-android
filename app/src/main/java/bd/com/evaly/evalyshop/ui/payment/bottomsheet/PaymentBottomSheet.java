@@ -123,6 +123,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         priorityList.add("bkash");
         priorityList.add("nagad");
         priorityList.add("sebl_gateway");
+        priorityList.add("citybank_gateway");
         priorityList.add("balance");
         priorityList.add("cod+balance");
         priorityList.add("cod");
@@ -247,7 +248,10 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         } else if (method.getName().equalsIgnoreCase(Constants.CARD)) {
             Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
             viewModel.payViaSEBL(invoice_no, enteredAmount);
-        } else if (method.getName().equalsIgnoreCase(Constants.OTHERS)) {
+        } else if (method.getName().equalsIgnoreCase(Constants.CITYBANK)) {
+            Toast.makeText(getContext(), "Opening to City Bank payment gateway!", Toast.LENGTH_SHORT).show();
+            viewModel.payViaCityBank(invoice_no, enteredAmount);
+        }else if (method.getName().equalsIgnoreCase(Constants.OTHERS)) {
             Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
             viewModel.payViaCard(invoice_no, enteredAmount);
         } else if (method.getName().equalsIgnoreCase(Constants.NAGAD)) {
@@ -296,6 +300,14 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                         "Pay from your debit/visa/mastercard using \nSEBL payment gateway.",
                         disabledPaymentMethodText,
                         R.drawable.payment_cards,
+                        false,
+                        isEnabled));
+            } else if (paymentMethods.get(i).equalsIgnoreCase("citybank_gateway")) {
+                methodList.add(new PaymentMethodModel(
+                        Constants.CITYBANK,
+                        "Pay from your City Bank account easily.",
+                        disabledPaymentMethodText,
+                        R.drawable.city_bank,
                         false,
                         isEnabled));
             } else if (paymentMethods.get(i).equalsIgnoreCase("balance")) {
