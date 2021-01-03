@@ -24,7 +24,7 @@ public class GeneralApiHelper extends BaseApiHelper {
         getiApiClient().markNewsfeedNotificationAsRead(token).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getRootCategories(ResponseListenerAuth<List<CategoryEntity>, String> listener) {
+    public static void getRootCategories(ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String> listener) {
         getiApiClient().getRootCategories().enqueue(getResponseCallBackDefault(listener));
     }
 

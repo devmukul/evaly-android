@@ -1,7 +1,10 @@
 package bd.com.evaly.evalyshop.ui.shop.quickView;
 
+import androidx.hilt.Assisted;
+import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.JsonArray;
@@ -39,18 +42,18 @@ public class ShopQuickViewModel extends ViewModel {
     private Integer categoryCount = null;
     private boolean isCategoryLoading = false;
 
-    public ShopQuickViewModel(String categorySlug, String campaignSlug, String shopSlug, String brandSlug) {
-        super();
-        this.categorySlug = categorySlug;
-        this.campaignSlug = campaignSlug;
-        this.shopSlug = shopSlug;
-        this.brandSlug = brandSlug;
+    @ViewModelInject
+    public ShopQuickViewModel(@Assisted SavedStateHandle args) {
+        this.categorySlug = null;
+        this.campaignSlug = args.get("campaign_slug");
+        this.shopSlug = args.get("shop_slug");
+        this.brandSlug = args.get("campaign_slug");
+
         currentPage = 1;
         categoryCurrentPage = 1;
-        if (shopSlug != null) {
-            loadShopProducts();
-            loadShopCategories();
-        }
+
+        loadShopProducts();
+        loadShopCategories();
     }
 
     public void clear() {
@@ -78,16 +81,16 @@ public class ShopQuickViewModel extends ViewModel {
         return categorySlug;
     }
 
+    public void setCategorySlug(String categorySlug) {
+        this.categorySlug = categorySlug;
+    }
+
     public Integer getCategoryCount() {
         return categoryCount;
     }
 
     public void setCategoryCount(Integer categoryCount) {
         this.categoryCount = categoryCount;
-    }
-
-    public void setCategorySlug(String categorySlug) {
-        this.categorySlug = categorySlug;
     }
 
     public String getCampaignSlug() {
@@ -130,12 +133,12 @@ public class ShopQuickViewModel extends ViewModel {
         return selectedCategoryLiveData;
     }
 
-    public LiveData<ShopDetailsModel> getShopDetailsLiveData() {
-        return shopDetailsLiveData;
-    }
-
     public void setSelectedCategoryLiveData(TabsItem selectedCategoryLiveData) {
         this.selectedCategoryLiveData.setValue(selectedCategoryLiveData);
+    }
+
+    public LiveData<ShopDetailsModel> getShopDetailsLiveData() {
+        return shopDetailsLiveData;
     }
 
     public void loadShopProducts() {
@@ -146,8 +149,7 @@ public class ShopQuickViewModel extends ViewModel {
                 shopDetailsLiveData.setValue(response);
                 productArrayList.addAll(response.getData().getItems());
                 productListLiveData.setValue(productArrayList);
-                if (response.getCount() > 0)
-                    currentPage++;
+                currentPage++;
             }
 
             @Override
@@ -179,14 +181,12 @@ public class ShopQuickViewModel extends ViewModel {
                 List<TabsItem> itemList = new ArrayList<>();
                 JsonArray jsonArray = response.getAsJsonArray("data");
 
-                categoryCount = response.get("count").getAsInt();
-
                 for (int i = 0; i < jsonArray.size(); i++) {
                     JsonObject ob = jsonArray.get(i).getAsJsonObject();
                     TabsItem tabsItem = new TabsItem();
                     tabsItem.setTitle(ob.get("category_name").getAsString());
-                    tabsItem.setImage((ob.get("category_image").isJsonNull()) ? "" : ob.get("category_image").getAsString());
-                    tabsItem.setSlug(ob.get("category_slug").getAsString());
+                    tabsItem.setImage((ob.get("category_image").isJsonNull()) ? "" : ob.get("category_image").getAsString().replaceAll("\"", ""));
+                    tabsItem.setSlug(ob.get("category_slug").getAsString().replaceAll("\"", ""));
                     tabsItem.setCategory(shopSlug);
                     itemList.add(tabsItem);
                 }

@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +28,7 @@ import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -36,8 +36,6 @@ public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private Context context;
     private List<ItemsItem> productsList;
     private String shopSlug;
-    private String campaignSlug;
-
     View.OnClickListener itemViewListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -54,6 +52,7 @@ public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             context.startActivity(intent);
         }
     };
+    private String campaignSlug;
     private NetworkState networkState;
     private HashMap<String, String> data;
     private ShopViewModel viewModel;
@@ -93,7 +92,7 @@ public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             holder.textViewAndroid.setText(Html.fromHtml(model.getItemName()));
 
-            if (context != null)
+            if (context != null && model.getItemImages().size() > 0)
                 Glide.with(context)
                         .asBitmap()
                         .skipMemoryCache(true)
@@ -103,24 +102,21 @@ public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         .placeholder(ContextCompat.getDrawable(context, R.drawable.ic_evaly_placeholder))
                         .into(holder.imageViewAndroid);
 
-
             if ((model.getDiscountedPrice() == 0) || (model.getItemPrice() == 0))
                 holder.price.setText("Not Available");
 
             else if (model.getDiscountedPrice() != 0) {
-
                 if (model.getDiscountedPrice() < model.getItemPrice()) {
-                    holder.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getItemPrice()));
+                    holder.priceDiscount.setText(Utils.formatPriceSymbol(model.getItemPrice()));
                     holder.priceDiscount.setVisibility(View.VISIBLE);
                     holder.priceDiscount.setPaintFlags(holder.priceDiscount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getDiscountedPrice()));
+                    holder.price.setText(Utils.formatPriceSymbol(model.getDiscountedPrice()));
                 } else {
                     holder.priceDiscount.setVisibility(View.GONE);
-                    holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getItemPrice()));
+                    holder.price.setText(Utils.formatPriceSymbol(model.getItemPrice()));
                 }
-
             } else
-                holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getItemPrice()));
+                holder.price.setText(Utils.formatPriceSymbol(model.getItemPrice()));
 
             holder.itemView.setTag(position);
             holder.itemView.setOnClickListener(itemViewListener);

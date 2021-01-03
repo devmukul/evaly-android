@@ -31,11 +31,16 @@ public class CategoryViewModel extends ViewModel {
         return rootCategory;
     }
 
+    public void setRootCategory(String rootCategory) {
+        this.rootCategory = rootCategory;
+    }
+
     public void loadRootCategories() {
-        GeneralApiHelper.getRootCategories(new ResponseListenerAuth<List<CategoryEntity>, String>() {
+        GeneralApiHelper.getRootCategories(new ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String>() {
             @Override
-            public void onDataFetched(List<CategoryEntity> response, int statusCode) {
-                rootCategoryLiveData.setValue(response);
+            public void onDataFetched(CommonDataResponse<List<CategoryEntity>> response, int statusCode) {
+
+                rootCategoryLiveData.setValue(response.getData());
             }
 
             @Override
@@ -88,10 +93,6 @@ public class CategoryViewModel extends ViewModel {
         });
     }
 
-    public void setSelectedCategoryLiveData(CategoryEntity entity) {
-        this.selectedCategoryLiveData.setValue(entity);
-    }
-
     public MutableLiveData<List<CategoryEntity>> getRootCategoryLiveData() {
         return rootCategoryLiveData;
     }
@@ -100,11 +101,11 @@ public class CategoryViewModel extends ViewModel {
         return selectedCategoryLiveData;
     }
 
-    public LiveData<List<CategoryEntity>> getSubCategoryLiveData() {
-        return subCategoryLiveData;
+    public void setSelectedCategoryLiveData(CategoryEntity entity) {
+        this.selectedCategoryLiveData.setValue(entity);
     }
 
-    public void setRootCategory(String rootCategory) {
-        this.rootCategory = rootCategory;
+    public LiveData<List<CategoryEntity>> getSubCategoryLiveData() {
+        return subCategoryLiveData;
     }
 }
