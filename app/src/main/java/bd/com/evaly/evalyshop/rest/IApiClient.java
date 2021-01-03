@@ -24,7 +24,6 @@ import bd.com.evaly.evalyshop.models.auth.RegisterResponse;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordBody;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordResponse;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
-import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.campaign.banner.CampaignBannerResponse;
@@ -458,8 +457,8 @@ public interface IApiClient {
 
     // brand
 
-    @GET(UrlUtils.BASE_URL + "public/brands/{brandSlug}/")
-    Call<CommonDataResponse<BrandDetails>> getBrandDetails(@Path("brandSlug") String brandSlug);
+    @GET(UrlUtils.BASE_CATALOG + "brands/{brandSlug}")
+    Call<CommonDataResponse<BrandResponse>> getBrandDetails(@Path("brandSlug") String brandSlug);
 
 
     // Notification

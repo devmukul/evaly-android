@@ -7,11 +7,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.BrandModelHeaderBinding;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.brand.model.BrandHeaderModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
@@ -21,21 +23,17 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 
 public class BrandController extends EpoxyController {
 
+    @AutoModel
+    BrandHeaderModel_ headerModel_;
+    @AutoModel
+    LoadingModel_ loader;
+    @AutoModel
+    NoProductModel_ noProductModel;
     private AppCompatActivity activity;
     private List<ProductItem> items = new ArrayList<>();
     private String brandName;
     private String brandLogo;
     private String categoryName;
-
-    @AutoModel
-    BrandHeaderModel_ headerModel_;
-
-    @AutoModel
-    LoadingModel_ loader;
-
-    @AutoModel
-    NoProductModel_ noProductModel;
-
     private boolean loadingMore = false;
     private boolean emptyPage = false;
 
@@ -51,7 +49,7 @@ public class BrandController extends EpoxyController {
     }
 
 
-    public void setAttr(String brandName, String brandLogo, String categoryName){
+    public void setAttr(String brandName, String brandLogo, String categoryName) {
         this.brandName = brandName;
         this.brandLogo = brandLogo;
         this.categoryName = categoryName;
@@ -64,9 +62,17 @@ public class BrandController extends EpoxyController {
                 .brandName(brandName)
                 .brandLogo(brandLogo)
                 .categoryName(categoryName)
+                .onBind((model, view, position) -> {
+                    BrandModelHeaderBinding binding = (BrandModelHeaderBinding) view.getDataBinding();
+                    binding.name.setText(brandName);
+                    binding.categoryName.setText(categoryName);
+                    Glide.with(binding.getRoot())
+                            .load(brandLogo)
+                            .into(binding.logo);
+                })
                 .addTo(this);
 
-        for (ProductItem productItem: items) {
+        for (ProductItem productItem : items) {
             new HomeProductGridModel_()
                     .id(productItem.getUniqueId())
                     .model(productItem)
@@ -91,16 +97,15 @@ public class BrandController extends EpoxyController {
         loader.addIf(loadingMore, this);
     }
 
-    public void addData(List<ProductItem> productItems){
-        this.items.addAll(productItems);
-        requestModelBuild();
+    public void addData(List<ProductItem> productItems) {
+        this.items = productItems;
     }
 
     public void setActivity(AppCompatActivity activity) {
         this.activity = activity;
     }
 
-    public void clear(){
+    public void clear() {
         items.clear();
     }
 }

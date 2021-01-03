@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,26 +15,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import java.util.Calendar;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentBrandBinding;
-import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.models.CommonResultResponse;
-import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.brand.controller.BrandController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
-import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -48,9 +38,7 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Inject
     RecommenderViewModel recommenderViewModel;
     long startTime = 0;
-    private int pastVisiblesItems, visibleItemCount, totalItemCount;
-    private String slug = "", title = "", categoryString = "", imgUrl = "", categorySlug = "";
-    private int currentPage = 1;
+    private BrandViewModel viewModel;
     private boolean isLoading = false;
     private FragmentBrandBinding binding;
     private BrandController controller;
@@ -63,12 +51,15 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         binding.getRoot().post(() -> NavHostFragment.findNavController(BrandFragment.this).navigate(R.id.brandFragment, getArguments()));
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(BrandViewModel.class);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         binding = FragmentBrandBinding.inflate(inflater, container, false);
-
         return binding.getRoot();
     }
 
@@ -78,20 +69,6 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         startTime = System.currentTimeMillis();
         binding.swipeRefresh.setOnRefreshListener(this);
-
-        if (!Utils.isNetworkAvailable(getContext()))
-            new NetworkErrorDialog(getContext(), new NetworkErrorDialogListener() {
-                @Override
-                public void onRetry() {
-                    refreshFragment();
-                }
-
-                @Override
-                public void onBackPress() {
-                    NavHostFragment.findNavController(BrandFragment.this).navigate(R.id.homeFragment);
-                }
-            });
-
 
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
 
@@ -104,38 +81,34 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             startActivity(intent);
         });
 
-        if (getArguments() != null) {
-            if (getArguments().containsKey("brand_slug"))
-                slug = getArguments().getString("brand_slug");
+        setupRecycler();
+        liveEvents();
+    }
 
-            if (getArguments().containsKey("brand_name"))
-                title = getArguments().getString("brand_name");
+    private void liveEvents() {
+        viewModel.detailsLive.observe(getViewLifecycleOwner(), model -> {
+            controller.setAttr(model.getName(), model.getImageUrl(), "root");
+            controller.requestModelBuild();
+            recommenderViewModel.insert("brand",
+                    model.getSlug(),
+                    model.getName(),
+                    model.getImageUrl());
+        });
 
+        viewModel.liveList.observe(getViewLifecycleOwner(), productItems -> {
+            isLoading = false;
+            hideShimmer();
+            controller.addData(productItems);
+            controller.setLoadingMore(false);
+            controller.requestModelBuild();
+        });
+    }
 
-            if (getArguments().containsKey("category"))
-                categorySlug = getArguments().getString("category");
-            else
-                categorySlug = "root";
-
-            if (categorySlug == null || categorySlug.equals("root")) {
-                categorySlug = "root";
-                categoryString = getString(R.string.all_categories);
-            } else {
-                categoryString = categorySlug.replace('-', ' ');
-                categoryString = Utils.capitalize(categoryString);
-                categoryString = categoryString.replaceAll("\\w+$", "");
-            }
-
-            if (getArguments().containsKey("image_url"))
-                imgUrl = getArguments().getString("image_url");
-
-        } else {
-            Toast.makeText(getContext(), "This page is not available!", Toast.LENGTH_SHORT).show();
-        }
+    private void setupRecycler() {
 
         controller = new BrandController();
+        controller.setFilterDuplicates(true);
         controller.setActivity((AppCompatActivity) getActivity());
-        controller.setAttr(title, imgUrl, categoryString);
 
         binding.recyclerView.setAdapter(controller.getAdapter());
 
@@ -149,94 +122,24 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         controller.requestModelBuild();
 
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {
-                    visibleItemCount = layoutManager.getChildCount();
-                    totalItemCount = layoutManager.getItemCount();
-                    int[] firstVisibleItems = null;
-                    firstVisibleItems = layoutManager.findFirstVisibleItemPositions(null);
-                    if (firstVisibleItems != null && firstVisibleItems.length > 0)
-                        pastVisiblesItems = firstVisibleItems[0];
-
-                    if (!isLoading)
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
-                            getProducts();
+            public void loadMoreItem() {
+                if (!isLoading) {
+                    viewModel.getProducts();
+                    isLoading = true;
                 }
             }
         });
-        getProducts();
-        initRecommender();
-    }
 
-
-    private void initRecommender() {
-        recommenderViewModel.insert("brand",
-                slug,
-                title,
-                imgUrl);
     }
 
     private void updateRecommender() {
-
         long endTime = System.currentTimeMillis();
         long diff = endTime - startTime;
-
         recommenderViewModel.updateSpentTime("brand",
-                slug,
+                viewModel.getSlug(),
                 diff);
-    }
-
-    private void getProducts() {
-
-        isLoading = true;
-
-        if (currentPage > 1)
-            controller.setLoadingMore(true);
-
-        controller.showEmptyPage(false, false);
-
-        if (categorySlug != null && categorySlug.equals(""))
-            categorySlug = null;
-
-        ProductApiHelper.getCategoryBrandProducts(currentPage, categorySlug, slug, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
-            @Override
-            public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
-
-                controller.setLoadingMore(false);
-
-                List<ProductItem> list = response.getData();
-
-                long timeInMill = Calendar.getInstance().getTimeInMillis();
-
-                for (ProductItem item : list)
-                    item.setUniqueId(item.getSlug() + timeInMill);
-
-                controller.addData(list);
-                isLoading = false;
-
-                hideShimmer();
-
-                if (response.getCount() == 0)
-                    controller.showEmptyPage(true, true);
-
-                if (response.getCount() > 10)
-                    currentPage++;
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                hideShimmer();
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
     }
 
     private void hideShimmer() {
