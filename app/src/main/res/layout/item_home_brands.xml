@@ -6,7 +6,6 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="140dp"
-        android:layout_margin="5dp"
         android:background="@drawable/menu_box"
         android:gravity="top|center_horizontal"
         android:orientation="vertical"

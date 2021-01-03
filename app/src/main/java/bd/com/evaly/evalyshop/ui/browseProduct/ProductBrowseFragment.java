@@ -13,7 +13,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -23,6 +24,8 @@ import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.browseProduct.controller.ProductBrowseController;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.RecyclerSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -31,9 +34,11 @@ public class ProductBrowseFragment extends Fragment implements ProductBrowseCont
     private FragmentProductBrowseBinding binding;
     private BrowseProductViewModel viewModel;
     private ProductBrowseController controller;
-    private LinearLayoutManager layoutManager;
+    private RecyclerView.LayoutManager layoutManager;
     private PaginationScrollListener paginationScrollListener;
     private NavController navController;
+    private RecyclerSpacingItemDecoration recyclerSpacingItemDecoration;
+    private boolean isTabSwitched = false;
 
 
     @Override
@@ -63,6 +68,7 @@ public class ProductBrowseFragment extends Fragment implements ProductBrowseCont
         if (controller == null)
             controller = new ProductBrowseController();
         controller.setFilterDuplicates(true);
+        controller.setClickListener(this);
 
         paginationScrollListener = new PaginationScrollListener() {
             @Override
@@ -72,17 +78,28 @@ public class ProductBrowseFragment extends Fragment implements ProductBrowseCont
             }
         };
 
-        if (viewModel.getSelectedType().equals("products")) {
-            layoutManager = new LinearLayoutManager(getContext());
-            paginationScrollListener.setLinearLayoutManager(layoutManager);
+        int spacing = (int) Utils.convertDpToPixel(10, getActivity());
+        recyclerSpacingItemDecoration = new RecyclerSpacingItemDecoration(2, spacing, true);
+        binding.recyclerView.addItemDecoration(recyclerSpacingItemDecoration);
+
+        setLayoutManager(viewModel.getSelectedType());
+        binding.recyclerView.setAdapter(controller.getAdapter());
+    }
+
+    private void setLayoutManager(String type) {
+        if (type == null)
+            return;
+        if (type.toLowerCase().equals("products")) {
+            layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            paginationScrollListener.setStaggeredGridLayoutManager((StaggeredGridLayoutManager) layoutManager);
+            binding.recyclerView.setLayoutManager(layoutManager);
+            recyclerSpacingItemDecoration.setSpanCount(2);
         } else {
             layoutManager = new GridLayoutManager(getContext(), 3);
             paginationScrollListener.setGridLayoutManager((GridLayoutManager) layoutManager);
+            binding.recyclerView.setLayoutManager(layoutManager);
+            recyclerSpacingItemDecoration.setSpanCount(3);
         }
-
-        binding.recyclerView.setLayoutManager(layoutManager);
-        binding.recyclerView.setAdapter(controller.getAdapter());
-
     }
 
     private void setupTabs() {
@@ -90,17 +107,9 @@ public class ProductBrowseFragment extends Fragment implements ProductBrowseCont
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 String type = tab.getText().toString();
+                isTabSwitched = true;
                 viewModel.setSelectedType(type);
                 viewModel.loadFromApi();
-                if (type.toLowerCase().contains("products")) {
-                    layoutManager = new LinearLayoutManager(getContext());
-                    paginationScrollListener.setLinearLayoutManager(layoutManager);
-                } else {
-                    layoutManager = new GridLayoutManager(getContext(), 3);
-                    paginationScrollListener.setGridLayoutManager((GridLayoutManager) layoutManager);
-                }
-
-                binding.recyclerView.setLayoutManager(layoutManager);
             }
 
             @Override
@@ -125,6 +134,8 @@ public class ProductBrowseFragment extends Fragment implements ProductBrowseCont
             controller.setList(baseModels);
             controller.setLoadingMore(false);
             controller.requestModelBuild();
+            if (isTabSwitched)
+                setLayoutManager(viewModel.getSelectedType());
         });
     }
 

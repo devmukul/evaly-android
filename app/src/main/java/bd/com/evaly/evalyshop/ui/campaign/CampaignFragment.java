@@ -47,7 +47,7 @@ import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSliderModel_;
 import bd.com.evaly.evalyshop.util.BindingUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
+import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class CampaignFragment extends Fragment implements CampaignNavigator {
@@ -332,7 +332,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         binding.recyclerView.setLayoutManager(staggeredGridLayoutManager);
         productController.setSpanCount(2);
         int spacing = (int) Utils.convertDpToPixel(10, requireActivity());
-        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, spacing, true));
+        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(2, spacing, true));
         binding.recyclerView.addOnScrollListener(new PaginationScrollListener(staggeredGridLayoutManager) {
             @Override
             public void loadMoreItem() {

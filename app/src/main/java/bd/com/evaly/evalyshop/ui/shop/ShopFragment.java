@@ -50,7 +50,7 @@ import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
+import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -166,7 +166,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         controller.setSpanCount(spanCount);
 
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
+        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(spanCount, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
 
         binding.recyclerView.setAdapter(controller.getAdapter());

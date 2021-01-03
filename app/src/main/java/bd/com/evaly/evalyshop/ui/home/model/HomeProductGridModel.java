@@ -53,8 +53,10 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
         super.bind(holder);
 
         HomeModelProductGridBinding binding = (HomeModelProductGridBinding) holder.getDataBinding();
-        StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
-        params.setFullSpan(false);
+        if (binding.getRoot().getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
+            params.setFullSpan(false);
+        }
 
         binding.title.setText(Html.fromHtml(model.getName()));
 

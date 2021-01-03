@@ -139,6 +139,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:tabGravity="start"
+            app:tabMode="scrollable"
             app:tabPaddingBottom="10dp"
             app:tabSelectedTextColor="@color/black"
             app:tabTextAppearance="@style/TabTextAppearance"
@@ -146,25 +148,21 @@
 
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabProduct"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Products" />
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabCategories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Categories" />
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabShops"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Shops" />
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabBrands"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Brands" />
@@ -186,6 +184,7 @@
             android:layout_height="wrap_content"
             android:background="@color/fafafa"
             android:clipToPadding="false"
+            android:paddingTop="10dp"
             android:paddingBottom="40dp"
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"

@@ -40,6 +40,12 @@ public abstract class PaginationScrollListener extends RecyclerView.OnScrollList
         this.staggeredGridLayoutManager = null;
     }
 
+    public void setStaggeredGridLayoutManager(StaggeredGridLayoutManager staggeredGridLayoutManager) {
+        this.gridLayoutManager = null;
+        this.linearLayoutManager = null;
+        this.staggeredGridLayoutManager = staggeredGridLayoutManager;
+    }
+
     @Override
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);

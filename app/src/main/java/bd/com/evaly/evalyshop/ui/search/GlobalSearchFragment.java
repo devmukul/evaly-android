@@ -16,9 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.google.gson.Gson;
-import com.orhanobut.logger.Logger;
-
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
@@ -27,7 +24,7 @@ import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.ui.search.controller.GlobalSearchController;
 import bd.com.evaly.evalyshop.ui.search.filter.SearchFilterBottomSheet;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
+import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -135,7 +132,7 @@ public class GlobalSearchFragment extends Fragment {
         controller.setSpanCount(spanCount);
 
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
+        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(spanCount, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
 
         binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {

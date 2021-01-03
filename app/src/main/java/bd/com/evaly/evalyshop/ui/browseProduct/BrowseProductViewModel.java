@@ -34,7 +34,7 @@ public class BrowseProductViewModel extends ViewModel {
     protected String categorySlug;
     protected MutableLiveData<List<BaseModel>> liveList = new MutableLiveData<>();
     protected List<BaseModel> arrayList = new ArrayList<>();
-    private String selectedType = "product";
+    private String selectedType = "products";
     private int currentPage = 1;
 
     @ViewModelInject
@@ -53,17 +53,18 @@ public class BrowseProductViewModel extends ViewModel {
 
     public void loadFromApi() {
         currentPage = 1;
-        switch (selectedType) {
-            case "product":
+        arrayList.clear();
+        switch (selectedType.toLowerCase()) {
+            case "products":
                 getProducts();
                 break;
-            case "category":
+            case "categories":
                 getSubCategories();
                 break;
-            case "shop":
+            case "shops":
                 getShops();
                 break;
-            case "brand":
+            case "brands":
                 getBrands();
                 break;
         }

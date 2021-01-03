@@ -439,7 +439,7 @@ public interface IApiClient {
     Call<List<CategoryEntity>> getRootCategories();
 
 
-    @GET(UrlUtils.BASE_URL + "public/top-categories/")
+    @GET(UrlUtils.BASE_CATALOG + "products/top-categories")
     Call<CommonDataResponse<List<CategoryEntity>>> getTopCategories();
 
     @GET(UrlUtils.CATEGORIES)

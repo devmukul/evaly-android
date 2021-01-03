@@ -27,7 +27,7 @@ import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModelFactory;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
+import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -99,7 +99,7 @@ public class ShopSearchActivity extends BaseActivity {
         int spanCount = 2; // 3 columns
         int spacing = (int) Utils.convertDpToPixel(10, Objects.requireNonNull(this));
         boolean includeEdge = true;
-        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
+        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(spanCount, spacing, includeEdge));
 
         getShopProducts(1);
 

@@ -35,7 +35,7 @@ import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
+import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 
 public class BrowseProductFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -110,7 +110,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
+        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(spanCount, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
 
         controller.requestModelBuild();
