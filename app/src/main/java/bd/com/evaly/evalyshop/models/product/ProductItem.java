@@ -31,10 +31,21 @@ public class ProductItem extends BaseModel {
     @SerializedName("min_discounted_price")
     private String minDiscountedPrice;
 
+    @SerializedName("shop_slug")
+    private String shopSlug;
+
     private String uniqueId;
 
     //@SerializedName("in_stock")
     private int inStock;
+
+    public void setShopSlug(String shopSlug) {
+        this.shopSlug = shopSlug;
+    }
+
+    public String getShopSlug() {
+        return shopSlug;
+    }
 
     public int getInStock() {
         return inStock;

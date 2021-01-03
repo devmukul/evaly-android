@@ -32,7 +32,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class ShopSearchActivity extends BaseActivity {
 
-
     private FragmentShopSearchBinding binding;
     private ShopSearchAdapter adapter;
     private List<ItemsItem> itemList;

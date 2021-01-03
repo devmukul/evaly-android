@@ -128,11 +128,10 @@
             </RelativeLayout>
         </LinearLayout>
 
-
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="46dp"
+            android:layout_height="50dp"
             android:layout_weight="0"
             android:background="@color/white"
             android:visibility="visible"
@@ -141,7 +140,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:tabGravity="start"
             app:tabMode="scrollable"
-            app:tabPaddingBottom="10dp"
+            app:tabPaddingBottom="6dp"
             app:tabSelectedTextColor="@color/black"
             app:tabTextAppearance="@style/TabTextAppearance"
             app:tabTextColor="@color/c777">
