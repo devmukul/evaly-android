@@ -26,7 +26,6 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
-import bd.com.evaly.evalyshop.ui.shop.ShopViewModelFactory;
 import bd.com.evaly.evalyshop.ui.shop.quickView.controllers.ShopQuickViewCategoryController;
 import bd.com.evaly.evalyshop.ui.shop.quickView.controllers.ShopQuickViewProductController;
 
@@ -35,7 +34,6 @@ public class ShopQuickViewFragment extends Fragment {
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private int pastVisiblesItems2, visibleItemCount2, totalItemCount2;
     private FragmentShopQuickCategoryBinding binding;
-    private ShopViewModelFactory factory;
     private ShopQuickViewModel viewModel;
     private String shopSlug = "chaldal", shopName = "Chaldal", campaignSlug = null, categorySlug = null;
 
@@ -45,8 +43,13 @@ public class ShopQuickViewFragment extends Fragment {
     private int currentPage = 1, totalCount = 0, totalCountCategory = 0;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(ShopQuickViewModel.class);
+    }
 
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentShopQuickCategoryBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -72,8 +75,6 @@ public class ShopQuickViewFragment extends Fragment {
         String brandSlug = null;
         if (getArguments().containsKey("brand_slug"))
             brandSlug = getArguments().getString("brand_slug");
-        factory = new ShopViewModelFactory(categorySlug, campaignSlug, shopSlug, brandSlug);
-        viewModel = new ViewModelProvider(this, factory).get(ShopQuickViewModel.class);
 
         categoryController = new ShopQuickViewCategoryController();
         categoryController.setActivity((AppCompatActivity) getActivity());

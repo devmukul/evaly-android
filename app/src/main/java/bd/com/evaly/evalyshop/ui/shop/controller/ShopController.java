@@ -52,7 +52,6 @@ public class ShopController extends EpoxyController {
     @AutoModel
     ShopProductTitleModel_ productTitleModel;
 
-
     private AppCompatActivity activity;
     private Fragment fragment;
     private List<ProductItem> items = new ArrayList<>();
@@ -67,16 +66,16 @@ public class ShopController extends EpoxyController {
     private boolean categoriesLoading = false;
     private String categoryTitle = null;
 
+    public ShopController() {
+        setDebugLoggingEnabled(true);
+    }
+
     public boolean isCategoriesLoading() {
         return categoriesLoading;
     }
 
     public void setCategoriesLoading(boolean categoriesLoading) {
         this.categoriesLoading = categoriesLoading;
-    }
-
-    public ShopController() {
-        setDebugLoggingEnabled(true);
     }
 
     public void setLoadingMore(boolean loadingMore) {
@@ -96,6 +95,7 @@ public class ShopController extends EpoxyController {
 
     @Override
     protected void buildModels() {
+
         headerModel
                 .activity(activity)
                 .fragment(fragment)
@@ -103,6 +103,31 @@ public class ShopController extends EpoxyController {
                 .viewModel(viewModel)
                 .addTo(this);
 
+        initCategory();
+        initProducts();
+
+        noProductModel
+                .text("No Products Available")
+                .image(R.drawable.ic_empty_product)
+                .addIf(items.size() == 0 && !loadingMore, this);
+
+        loader
+                .onBind((model, view, position) -> {
+                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) view.itemView.getLayoutParams();
+                    params.setFullSpan(true);
+                    if (categoryTitle != null && items.size() == 0) {
+                        params.height = LinearLayout.LayoutParams.MATCH_PARENT;
+                        params.topMargin = 100;
+                    } else {
+                        params.topMargin = 0;
+                        params.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    }
+                })
+                .addIf(loadingMore, this);
+
+    }
+
+    private void initCategory() {
         categoryTitleModel
                 .clickListener(view -> {
                     Bundle bundle = new Bundle();
@@ -152,6 +177,9 @@ public class ShopController extends EpoxyController {
                 .models(categoryModelList)
                 .addTo(this);
 
+    }
+
+    private void initProducts() {
         productTitleModel
                 .title(categoryTitle)
                 .clickListener((model, parentView, clickedView, position) -> viewModel.setOnResetLiveData(true))
@@ -194,26 +222,6 @@ public class ShopController extends EpoxyController {
                     })
                     .addTo(this);
         }
-
-        noProductModel
-                .text("No Products Available")
-                .image(R.drawable.ic_empty_product)
-                .addIf(emptyPage, this);
-
-        loader
-                .onBind((model, view, position) -> {
-                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) view.itemView.getLayoutParams();
-                    params.setFullSpan(true);
-                    if (categoryTitle != null && items.size() == 0) {
-                        params.height = LinearLayout.LayoutParams.MATCH_PARENT;
-                        params.topMargin = 100;
-                    } else {
-                        params.topMargin = 0;
-                        params.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                    }
-                })
-                .addIf(loadingMore, this);
-
     }
 
     public void addData(List<ProductItem> productItems) {

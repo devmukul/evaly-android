@@ -25,7 +25,6 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
-import bd.com.evaly.evalyshop.ui.shop.ShopViewModelFactory;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -34,7 +33,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class ShopSearchActivity extends BaseActivity {
 
 
-    private ShopViewModelFactory viewModelFactory;
     private FragmentShopSearchBinding binding;
     private ShopSearchAdapter adapter;
     private List<ItemsItem> itemList;
@@ -56,7 +54,6 @@ public class ShopSearchActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         Intent bundle = getIntent();
         shopSlug = bundle.getStringExtra("shop_slug");
         campaignSlug = bundle.getStringExtra("campaign_slug");
@@ -64,9 +61,7 @@ public class ShopSearchActivity extends BaseActivity {
         shopName = bundle.getStringExtra("shop_name");
         binding = DataBindingUtil.setContentView(this, R.layout.fragment_shop_search);
 
-
-        viewModelFactory = new ShopViewModelFactory(null, null, null, null);
-        viewModel = new ViewModelProvider(this, viewModelFactory).get(ShopViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
 
         if (shopName != null && !shopName.equals(""))
             binding.search.setHint("Search in " + shopName + "...");

@@ -65,11 +65,10 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
             if (shopInfo == null)
                 return;
 
-
             binding.name.setText(shopInfo.getShopName());
 
             Glide.with(binding.getRoot())
-                    .load(shopInfo.getShopName())
+                    .load(shopInfo.getShopImage())
                     .skipMemoryCache(true)
                     .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
                     .into(binding.logo);
@@ -82,7 +81,6 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
                 binding.followText.setText(String.format(Locale.ENGLISH, "Follow (%d)", subCount));
 
             binding.followBtn.setOnClickListener(v -> {
-
                 if (CredentialManager.getToken().equals("")) {
                     Toast.makeText(activity, "You need to login first to follow a shop", Toast.LENGTH_LONG).show();
                     return;
@@ -156,22 +154,22 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
             });
 
             binding.llInbox.setOnClickListener(v -> {
-                    viewModel.setOnChatClickLiveData(true);
-                });
+                viewModel.setOnChatClickLiveData(true);
+            });
 
-                viewModel.getRatingSummary().observe(fragment.getViewLifecycleOwner(), response -> {
-                    response = response.getAsJsonObject("data");
-                    ratingJson = response.toString();
-                    double avg = response.get("avg_rating").getAsDouble();
-                    int totalRatings = response.get("total_ratings").getAsInt();
-                    binding.ratingsCount.setText(String.format(Locale.ENGLISH, "(%d)", totalRatings));
-                    binding.ratingBar.setRating((float) avg);
-                });
+            viewModel.getRatingSummary().observe(fragment.getViewLifecycleOwner(), response -> {
+                response = response.getAsJsonObject("data");
+                ratingJson = response.toString();
+                double avg = response.get("avg_rating").getAsDouble();
+                int totalRatings = response.get("total_ratings").getAsInt();
+                binding.ratingsCount.setText(String.format(Locale.ENGLISH, "(%d)", totalRatings));
+                binding.ratingBar.setRating((float) avg);
+            });
 
-                viewModel.loadRatings();
-
-            }
+            viewModel.loadRatings();
 
         }
 
     }
+
+}

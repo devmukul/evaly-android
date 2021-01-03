@@ -20,6 +20,7 @@ import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class BrandController extends EpoxyController {
 
@@ -48,7 +49,6 @@ public class BrandController extends EpoxyController {
             requestModelBuild();
     }
 
-
     public void setAttr(String brandName, String brandLogo, String categoryName) {
         this.brandName = brandName;
         this.brandLogo = brandLogo;
@@ -65,7 +65,7 @@ public class BrandController extends EpoxyController {
                 .onBind((model, view, position) -> {
                     BrandModelHeaderBinding binding = (BrandModelHeaderBinding) view.getDataBinding();
                     binding.name.setText(brandName);
-                    binding.categoryName.setText(categoryName);
+                    binding.categoryName.setText(Utils.capitalize(categoryName));
                     Glide.with(binding.getRoot())
                             .load(brandLogo)
                             .into(binding.logo);

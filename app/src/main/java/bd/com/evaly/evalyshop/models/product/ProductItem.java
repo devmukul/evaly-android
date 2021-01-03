@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.models.product;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.models.BaseModel;
@@ -68,6 +69,8 @@ public class ProductItem extends BaseModel {
     }
 
     public List<String> getImageUrls() {
+        if (imageUrls == null)
+            return new ArrayList<>();
         return imageUrls;
     }
 

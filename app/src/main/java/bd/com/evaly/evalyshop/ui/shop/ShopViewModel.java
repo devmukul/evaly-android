@@ -1,7 +1,10 @@
 package bd.com.evaly.evalyshop.ui.shop;
 
+import androidx.hilt.Assisted;
+import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.JsonArray;
@@ -48,26 +51,34 @@ public class ShopViewModel extends ViewModel {
     private boolean isShop = true;
 
 
-    public ShopViewModel(String categorySlug, String campaignSlug, String shopSlug, String brandSlug) {
-        super();
-        this.categorySlug = categorySlug;
-        this.campaignSlug = campaignSlug;
-        this.shopSlug = shopSlug;
-        this.brandSlug = brandSlug;
+    @ViewModelInject
+    public ShopViewModel(@Assisted SavedStateHandle args) {
+
+        this.categorySlug = null;
+        this.campaignSlug = args.get("campaign_slug");
+        this.shopSlug = args.get("shop_slug");
+        this.brandSlug = args.get("campaign_slug");
 
         currentPage = 1;
         categoryCurrentPage = 1;
 
-        if (shopSlug != null) {
-            loadShopDetails();
-            loadShopProducts();
-            loadShopCategories();
-        }
+        loadShopDetails();
+        loadShopProducts();
+        loadShopCategories();
     }
 
     public void clear() {
         currentPage = 2;
         categoryCurrentPage = 1;
+    }
+
+    public void reload() {
+        currentPage = 1;
+        categoryCurrentPage = 1;
+        productArrayList.clear();
+        loadShopDetails();
+        loadShopProducts();
+        loadShopCategories();
     }
 
     public LiveData<List<ItemsItem>> getProductListLiveData() {
@@ -219,7 +230,7 @@ public class ShopViewModel extends ViewModel {
         });
     }
 
-    public void loadShopDetails(){
+    public void loadShopDetails() {
         ShopApiHelper.getShopDetails(shopSlug, new ResponseListenerAuth<CommonDataResponse<ShopDetailsResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ShopDetailsResponse> response, int statusCode) {
@@ -245,8 +256,7 @@ public class ShopViewModel extends ViewModel {
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 productArrayList.addAll(response.getData().getItems());
                 productListLiveData.setValue(productArrayList);
-                if (response.getCount() > 0)
-                    currentPage++;
+                currentPage++;
             }
 
             @Override
@@ -282,14 +292,12 @@ public class ShopViewModel extends ViewModel {
                 List<TabsItem> itemList = new ArrayList<>();
                 JsonArray jsonArray = response.getAsJsonArray("data");
 
-                categoryCount = response.get("count").getAsInt();
-
                 for (int i = 0; i < jsonArray.size(); i++) {
                     JsonObject ob = jsonArray.get(i).getAsJsonObject();
                     TabsItem tabsItem = new TabsItem();
-                    tabsItem.setTitle(ob.get("category_name").getAsString());
-                    tabsItem.setImage((ob.get("category_image").isJsonNull()) ? "" : ob.get("category_image").getAsString());
-                    tabsItem.setSlug(ob.get("category_slug").getAsString());
+                    tabsItem.setTitle(ob.get("category_name").getAsString().replaceAll("\"", ""));
+                    tabsItem.setImage((ob.get("category_image").isJsonNull()) ? "" : ob.get("category_image").getAsString().replaceAll("\"", ""));
+                    tabsItem.setSlug(ob.get("category_slug").getAsString().replaceAll("\"", ""));
                     tabsItem.setCategory(shopSlug);
                     itemList.add(tabsItem);
                 }

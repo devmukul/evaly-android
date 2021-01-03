@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -33,6 +32,7 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentShopBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
+import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
@@ -59,8 +59,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Inject
     RecommenderViewModel recommenderViewModel;
     long startTime = 0;
-    private ShopViewModelFactory viewModelFactory;
-    private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private String slug = "", campaign_slug = "", title = "";
     private String categorySlug = null;
     private int currentPage;
@@ -82,6 +80,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
     }
 
     @Override
@@ -117,8 +116,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             brandSlug = getArguments().getString("brand_slug");
         }
 
-        viewModelFactory = new ShopViewModelFactory(categorySlug, campaign_slug, slug, brandSlug);
-        viewModel = new ViewModelProvider(this, viewModelFactory).get(ShopViewModel.class);
+
         binding.swipeRefresh.setOnRefreshListener(this);
 
 
@@ -171,24 +169,13 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         binding.recyclerView.setAdapter(controller.getAdapter());
 
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {
-                    visibleItemCount = layoutManager.getChildCount();
-                    totalItemCount = layoutManager.getItemCount();
-                    int[] firstVisibleItems = null;
-                    firstVisibleItems = layoutManager.findFirstVisibleItemPositions(null);
-                    if (firstVisibleItems != null && firstVisibleItems.length > 0)
-                        pastVisiblesItems = firstVisibleItems[0];
-
-                    if (!isLoading && totalItemCount < totalCount)
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            controller.showEmptyPage(false, false);
-                            controller.setLoadingMore(true);
-                            viewModel.loadShopProducts();
-                            isLoading = true;
-                        }
+            public void loadMoreItem() {
+                if (!isLoading) {
+                    controller.setLoadingMore(true);
+                    viewModel.loadShopProducts();
+                    isLoading = true;
                 }
             }
         });
@@ -304,6 +291,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
         viewModel.getProductListLiveData().observe(getViewLifecycleOwner(), shopItems -> {
+            isLoading = false;
             binding.recyclerView.setVisibility(View.VISIBLE);
 
             List<ProductItem> tempList = new ArrayList<>();
@@ -323,6 +311,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 tempList.add(item);
             }
 
+            controller.setLoadingMore(false);
             controller.addData(tempList);
         });
 
@@ -407,10 +396,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.shimmer.startShimmer();
 
         controller.clear();
-        viewModel.clearProductList();
-        viewModel.setCurrentPage(1);
-        viewModel.loadShopProducts();
-
+        viewModel.reload();
     }
 
 
