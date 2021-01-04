@@ -114,6 +114,20 @@ public class ProductBrowseFragment extends Fragment implements ProductBrowseCont
     }
 
     private void setupTabs() {
+
+        String type = viewModel.getSelectedType();
+        if (type != null) {
+            type = type.toLowerCase();
+            if (type.contains("products"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0));
+            else if (type.contains("categories"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
+            else if (type.contains("shops"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(2));
+            else if (type.contains("brands"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(3));
+        }
+
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

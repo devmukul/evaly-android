@@ -369,7 +369,7 @@ public interface IApiClient {
 
     // product APIs
 
-    @GET(UrlUtils.BASE_CATALOG + "categories/all-categories")
+    @GET(UrlUtils.BASE_CATALOG + "categories")
     Call<CommonDataResponse<List<ChildCategoryResponse>>> getChildCategory(@Query("parent") String parentCategorySlug);
 
     @GET(UrlUtils.BASE_CATALOG + "brands")
