@@ -15,6 +15,9 @@ public class ShopItem {
     @SerializedName("attributes")
     private List<AttributesItem> attributes;
 
+    @SerializedName("item_images")
+    private List<String> itemImages;
+
     @SerializedName("shop_name")
     private String shopName;
 
@@ -27,18 +30,32 @@ public class ShopItem {
     @SerializedName("shop_slug")
     private String shopSlug;
 
-    @SerializedName("shop_item_image")
+    @SerializedName(value = "shop_item_image")
     private String shopItemImage;
 
-    @SerializedName("shop_item_price")
+    @SerializedName(value = "shop_item_price", alternate = "item_price")
     private String shopItemPrice;
 
     @SerializedName("shop_item_discounted_price")
     private String shopItemDiscountedPrice = "0";
 
     @SerializedName("is_express_shop")
-    private int isExpressShop;
+    private boolean isExpressShop;
 
+    public List<String> getItemImages() {
+        return itemImages;
+    }
+
+    public String getFirstImage() {
+        if (itemImages == null || itemImages.size() == 0)
+            return "";
+        else
+            return itemImages.get(0);
+    }
+
+    public void setItemImages(List<String> itemImages) {
+        this.itemImages = itemImages;
+    }
 
     public String getShopItemPrice() {
         return shopItemPrice;
@@ -135,13 +152,10 @@ public class ShopItem {
     }
 
     public boolean isExpress() {
-        if (isExpressShop == 0)
-            return false;
-        else
-            return true;
+        return isExpressShop;
     }
 
-    public void setIsExpressShop(int isExpressShop) {
+    public void setIsExpressShop(boolean isExpressShop) {
         this.isExpressShop = isExpressShop;
     }
 }

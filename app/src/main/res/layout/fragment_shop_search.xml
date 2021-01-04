@@ -81,6 +81,5 @@
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:spanCount="2"
             tools:listitem="@layout/item_home_product_grid" />
-
     </FrameLayout>
 </layout>

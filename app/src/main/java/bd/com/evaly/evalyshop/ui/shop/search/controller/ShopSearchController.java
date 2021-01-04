@@ -17,7 +17,7 @@ import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
+import bd.com.evaly.evalyshop.ui.shop.search.ShopSearchViewModel;
 
 public class ShopSearchController extends EpoxyController {
 
@@ -26,7 +26,7 @@ public class ShopSearchController extends EpoxyController {
     @AutoModel
     NoProductModel_ noProductModel;
     private List<ProductItem> list = new ArrayList<>();
-    private ShopViewModel viewModel;
+    private ShopSearchViewModel viewModel;
     private int cashBack = 0;
     private AppCompatActivity activity;
     private boolean loadingMore = false;
@@ -36,7 +36,7 @@ public class ShopSearchController extends EpoxyController {
         this.loadingMore = loadingMore;
     }
 
-    public void setViewModel(ShopViewModel viewModel) {
+    public void setViewModel(ShopSearchViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
@@ -52,9 +52,12 @@ public class ShopSearchController extends EpoxyController {
         this.search = search;
     }
 
+    public void setList(List<ProductItem> list) {
+        this.list = list;
+    }
+
     @Override
     protected void buildModels() {
-
 
         for (ProductItem productItem : list) {
             new HomeProductGridModel_()

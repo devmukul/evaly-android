@@ -358,7 +358,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         if (getContext() != null && this.isVisible() && !requireActivity().isDestroyed())
             Glide.with(getContext())
-                    .load(firstItem.getShopItemImage())
+                    .load(firstItem.getFirstImage())
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .apply(new RequestOptions().override(250, 250))
                     .into(binding.productImage);
@@ -400,6 +400,11 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             bundle.putSerializable("model", cartEntity);
             if (navController != null)
                 navController.navigate(R.id.checkoutFragment, bundle);
+            else {
+                CheckoutFragment checkoutFragment = new CheckoutFragment();
+                checkoutFragment.setArguments(bundle);
+                checkoutFragment.show(getParentFragmentManager(), "checkout");
+            }
         });
 
     }
@@ -417,7 +422,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         CartEntity cartEntity = new CartEntity();
         cartEntity.setName(firstItem.getShopItemName());
-        cartEntity.setImage(firstItem.getShopItemImage());
+        cartEntity.setImage(firstItem.getFirstImage());
         cartEntity.setPriceRound(price);
         cartEntity.setTime(calendar.getTimeInMillis());
         cartEntity.setShopJson(sellerJson);
