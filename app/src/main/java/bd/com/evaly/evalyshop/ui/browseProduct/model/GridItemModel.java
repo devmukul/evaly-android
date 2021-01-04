@@ -14,10 +14,11 @@ import com.bumptech.glide.request.RequestOptions;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemHomeBrandsBinding;
+import bd.com.evaly.evalyshop.databinding.ItemShopBrandBinding;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
-@EpoxyModelClass(layout = R.layout.item_home_brands)
+@EpoxyModelClass(layout = R.layout.item_shop_brand)
 public abstract class GridItemModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
@@ -35,7 +36,7 @@ public abstract class GridItemModel extends DataBindingEpoxyModel {
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
-        ItemHomeBrandsBinding binding = (ItemHomeBrandsBinding) holder.getDataBinding();
+        ItemShopBrandBinding binding = (ItemShopBrandBinding) holder.getDataBinding();
         binding.text.setText(title);
         Glide.with(binding.getRoot())
                 .asBitmap()

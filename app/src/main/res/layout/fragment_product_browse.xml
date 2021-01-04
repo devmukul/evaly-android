@@ -1,197 +1,200 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root_coordinator"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+<layout>
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:fitsSystemWindows="true"
-        app:elevation="0dp">
-
-
-        <LinearLayout
-            android:id="@+id/header_logo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="10dp"
-            app:layout_collapseMode="pin">
-
-            <RelativeLayout
-                android:layout_width="50dp"
-                android:layout_height="fill_parent"
-                android:layout_marginRight="4dp"
-                android:layout_weight="0"
-                android:clickable="true"
-                android:gravity="left"
-                android:orientation="vertical"
-                android:paddingLeft="8dp">
-
-                <ImageView
-                    android:id="@+id/menuBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_centerVertical="true"
-                    android:adjustViewBounds="true"
-                    android:background="?attr/actionBarItemBackground"
-                    android:clickable="true"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:tag="menu"
-                    app:srcCompat="@drawable/ic_menu"
-                    app:tint="@color/black" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:id="@+id/home_search"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_weight="1"
-                android:background="@drawable/btn_search_light"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="40dp"
-                    android:layout_height="20dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="0"
-                    android:padding="1dp"
-                    app:srcCompat="@drawable/ic_search_new" />
-
-                <TextView
-                    android:id="@+id/searchTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/what_would_you_like_to_buy"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/notification_holder"
-                style="@android:style/Widget.ActionButton"
-                android:layout_width="50dp"
-                android:layout_height="fill_parent"
-                android:layout_marginRight="4dp"
-                android:layout_weight="0"
-                android:clickable="true"
-                android:gravity="right"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/hotlist_bell"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginBottom="0dp"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="bell"
-                    android:gravity="center"
-                    android:paddingLeft="1dp"
-                    android:paddingRight="2dp"
-                    app:srcCompat="@drawable/ic_messages"
-                    app:tint="@color/black" />
-
-                <TextView
-                    android:id="@+id/hotlist_hot"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@id/hotlist_bell"
-                    android:layout_alignRight="@id/hotlist_bell"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginRight="0dp"
-                    android:background="@drawable/rounded_square"
-                    android:gravity="center"
-                    android:minWidth="15sp"
-                    android:paddingLeft="4dp"
-                    android:paddingRight="4dp"
-                    android:paddingBottom="1dp"
-                    android:text="@null"
-                    android:textColor="@color/fffh"
-                    android:textSize="10sp"
-                    android:visibility="gone" />
-            </RelativeLayout>
-        </LinearLayout>
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_weight="0"
-            android:background="@color/white"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tabGravity="start"
-            app:tabMode="scrollable"
-            app:tabPaddingBottom="6dp"
-            app:tabSelectedTextColor="@color/black"
-            app:tabTextAppearance="@style/TabTextAppearance"
-            app:tabTextColor="@color/c777">
-
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Products" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Categories" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Shops" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Brands" />
-        </com.google.android.material.tabs.TabLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/root_coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/fafafa"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:fitsSystemWindows="true">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:fitsSystemWindows="true"
+            app:elevation="0dp">
+
+
+            <LinearLayout
+                android:id="@+id/header_logo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp"
+                app:layout_collapseMode="pin">
+
+                <RelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="fill_parent"
+                    android:layout_marginRight="4dp"
+                    android:layout_weight="0"
+                    android:clickable="true"
+                    android:gravity="left"
+                    android:orientation="vertical"
+                    android:paddingLeft="8dp">
+
+                    <ImageView
+                        android:id="@+id/menuBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_centerVertical="true"
+                        android:adjustViewBounds="true"
+                        android:background="?attr/actionBarItemBackground"
+                        android:clickable="true"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:tag="menu"
+                        app:srcCompat="@drawable/ic_arrow_back"
+                        app:tint="@color/black" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/home_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_search_light"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="40dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="0"
+                        android:padding="1dp"
+                        app:srcCompat="@drawable/ic_search_new" />
+
+                    <TextView
+                        android:id="@+id/searchTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/what_would_you_like_to_buy"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/notification_holder"
+                    style="@android:style/Widget.ActionButton"
+                    android:layout_width="50dp"
+                    android:layout_height="fill_parent"
+                    android:layout_marginRight="4dp"
+                    android:layout_weight="0"
+                    android:clickable="true"
+                    android:gravity="right"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/hotlist_bell"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="bell"
+                        android:gravity="center"
+                        android:paddingLeft="1dp"
+                        android:paddingRight="2dp"
+                        app:srcCompat="@drawable/ic_messages"
+                        app:tint="@color/black" />
+
+                    <TextView
+                        android:id="@+id/hotlist_hot"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@id/hotlist_bell"
+                        android:layout_alignRight="@id/hotlist_bell"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginRight="0dp"
+                        android:background="@drawable/rounded_square"
+                        android:gravity="center"
+                        android:minWidth="15sp"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:paddingBottom="1dp"
+                        android:text="@null"
+                        android:textColor="@color/fffh"
+                        android:textSize="10sp"
+                        android:visibility="gone" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="0"
+                android:background="@color/white"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tabGravity="start"
+                app:tabMode="scrollable"
+                app:tabPaddingBottom="6dp"
+                app:tabSelectedTextColor="@color/black"
+                app:tabTextAppearance="@style/TabTextAppearance"
+                app:tabTextColor="@color/c777">
+
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Products" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categories" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Shops" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Brands" />
+            </com.google.android.material.tabs.TabLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@color/fafafa"
-            android:clipToPadding="false"
-            android:paddingTop="10dp"
-            android:paddingBottom="40dp"
-            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:spanCount="2" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/fafafa"
+                android:clipToPadding="false"
+                android:paddingTop="10dp"
+                android:paddingBottom="40dp"
+                app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:spanCount="2" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

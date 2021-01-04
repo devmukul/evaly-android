@@ -31,7 +31,7 @@ public class InitializeActionBar {
     public InitializeActionBar(LinearLayout root, Activity context, String type, MainViewModel mainViewModel) {
 
         this.context = context;
-        root.bringToFront();
+        // root.bringToFront();
         ImageView menuBtn = root.findViewById(R.id.menuBtn);
 
         if (type.equals("home"))

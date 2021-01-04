@@ -92,7 +92,7 @@ public class BrandController extends EpoxyController {
         noProductModel
                 .text("No Products Available")
                 .image(R.drawable.ic_empty_product)
-                .addIf(emptyPage, this);
+                .addIf(items.size() == 0 && !loadingMore, this);
 
         loader.addIf(loadingMore, this);
     }

@@ -23,7 +23,10 @@ import bd.com.evaly.evalyshop.databinding.FragmentProductBrowseBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.browseProduct.controller.ProductBrowseController;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
+import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.RecyclerSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -39,12 +42,14 @@ public class ProductBrowseFragment extends Fragment implements ProductBrowseCont
     private NavController navController;
     private RecyclerSpacingItemDecoration recyclerSpacingItemDecoration;
     private boolean isTabSwitched = false;
+    private MainViewModel mainViewModel;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(BrowseProductViewModel.class);
+        mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
     }
 
     @Nullable
@@ -58,10 +63,16 @@ public class ProductBrowseFragment extends Fragment implements ProductBrowseCont
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = NavHostFragment.findNavController(this);
+        initHeader();
         setupTabs();
         clickListeners();
         setupRecycler();
         liveEvents();
+    }
+
+    private void initHeader() {
+        new InitializeActionBar(binding.headerLogo, getActivity(), "browse", mainViewModel);
+        binding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
     }
 
     private void setupRecycler() {
@@ -106,6 +117,10 @@ public class ProductBrowseFragment extends Fragment implements ProductBrowseCont
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                setLayoutManager(viewModel.getSelectedType());
+                controller.clearList();
+                controller.requestModelBuild();
+
                 String type = tab.getText().toString();
                 isTabSwitched = true;
                 viewModel.setSelectedType(type);

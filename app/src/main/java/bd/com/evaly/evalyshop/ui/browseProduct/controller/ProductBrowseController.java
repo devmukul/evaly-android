@@ -15,6 +15,7 @@ import bd.com.evaly.evalyshop.models.catalog.category.ChildCategoryResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.browseProduct.model.GridItemModel_;
+import bd.com.evaly.evalyshop.ui.browseProduct.model.GridItemSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 
@@ -47,8 +48,19 @@ public class ProductBrowseController extends EpoxyController {
         this.list = list;
     }
 
+    public void clearList(){
+        list.clear();
+        loadingMore = true;
+    }
+
     @Override
     protected void buildModels() {
+
+        for (int i = 0; i < 6; i++) {
+            new GridItemSkeletonModel_()
+                    .id("grid_skeleton", i)
+                    .addIf(list.size() == 0 && loadingMore, this);
+        }
 
         for (BaseModel item : list) {
             if (item instanceof ProductItem)
