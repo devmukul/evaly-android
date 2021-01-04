@@ -42,6 +42,7 @@ public class ShopViewModel extends ViewModel {
     private String campaignSlug;
     private String brandSlug;
     private String shopSlug;
+    private String search = null;
     private int currentPage = 1;
     private int categoryCurrentPage = 1;
     private Integer categoryCount = null;
@@ -79,6 +80,10 @@ public class ShopViewModel extends ViewModel {
         loadShopDetails();
         loadShopProducts();
         loadShopCategories();
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
     }
 
     public LiveData<List<ItemsItem>> getProductListLiveData() {
@@ -297,7 +302,7 @@ public class ShopViewModel extends ViewModel {
                     TabsItem tabsItem = new TabsItem();
                     tabsItem.setTitle(ob.get("category_name").getAsString().replaceAll("\"", ""));
                     tabsItem.setImage((ob.get("category_image").isJsonNull()) ? "" : ob.get("category_image").getAsString().replaceAll("\"", ""));
-                    tabsItem.setSlug(ob.get("category_slug").getAsString().replaceAll("\"", ""));
+                    tabsItem.setSlug(ob.get("category_slug").getAsString());
                     tabsItem.setCategory(shopSlug);
                     itemList.add(tabsItem);
                 }

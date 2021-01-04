@@ -4,27 +4,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentShopSearchBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
-import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
+import bd.com.evaly.evalyshop.ui.shop.search.controller.ShopSearchController;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -33,7 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class ShopSearchActivity extends BaseActivity {
 
     private FragmentShopSearchBinding binding;
-    private ShopSearchAdapter adapter;
+    private ShopSearchController controller;
     private List<ItemsItem> itemList;
     private int currentPage = 1;
     private int cashbackRate;
@@ -59,7 +54,6 @@ public class ShopSearchActivity extends BaseActivity {
         brandSlug = bundle.getStringExtra("brand_slug");
         shopName = bundle.getStringExtra("shop_name");
         binding = DataBindingUtil.setContentView(this, R.layout.fragment_shop_search);
-
         viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
 
         if (shopName != null && !shopName.equals(""))
@@ -67,36 +61,20 @@ public class ShopSearchActivity extends BaseActivity {
         else
             binding.search.setHint("Search in store...");
 
-        itemList = new ArrayList<>();
-        adapter = new ShopSearchAdapter(this, itemList, null, viewModel);
-        adapter.setCampaignSlug(campaignSlug);
-        adapter.setShopSlug(shopSlug);
-        binding.recyclerView.setAdapter(adapter);
-
         binding.back.setOnClickListener(v -> finish());
 
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+        setupRecycler();
+        searchActions();
 
-                    if (!isLoading && totalCount > itemList.size()) {
-                        if (currentPage > 1)
-                            binding.progressContainer.setVisibility(View.VISIBLE);
-                        getShopProducts(currentPage);
-                    }
-                }
-            }
+        viewModel.getBuyNowLiveData().observe(this, s -> {
+            BuyNowFragment addPhotoBottomDialogFragment =
+                    BuyNowFragment.newInstance(shopSlug, s);
+            addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
+                    "BuyNow");
         });
+    }
 
-        int spanCount = 2; // 3 columns
-        int spacing = (int) Utils.convertDpToPixel(10, Objects.requireNonNull(this));
-        boolean includeEdge = true;
-        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(spanCount, spacing, includeEdge));
-
-        getShopProducts(1);
-
+    private void searchActions() {
         binding.search.requestFocus();
 
         binding.search.addTextChangedListener(new TextWatcher() {
@@ -117,11 +95,11 @@ public class ShopSearchActivity extends BaseActivity {
                     binding.searchAction.setImageDrawable(getDrawable(R.drawable.ic_close_small));
                 } else {
                     binding.searchAction.setImageDrawable(getDrawable(R.drawable.ic_search));
-                    binding.noItem.setVisibility(View.VISIBLE);
+                    //  bindingo.noItem.setVisibility(View.VISIBLE);
                     itemList.clear();
-                    adapter.notifyDataSetChanged();
-                    binding.searchTitle.setVisibility(View.GONE);
-                    binding.noText.setText("Search products here");
+                    controller.requestModelBuild();
+//                    binding.searchTitle.setVisibility(View.GONE);
+//                    binding.noText.setText("Search products here");
                 }
 
             }
@@ -134,14 +112,27 @@ public class ShopSearchActivity extends BaseActivity {
             }
 
         });
+    }
 
-        viewModel.getBuyNowLiveData().observe(this, s -> {
-
-            BuyNowFragment addPhotoBottomDialogFragment =
-                    BuyNowFragment.newInstance(shopSlug, s);
-            addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
-                    "BuyNow");
+    private void setupRecycler() {
+        if (controller == null)
+            controller = new ShopSearchController();
+        controller.setFilterDuplicates(true);
+        binding.recyclerView.setAdapter(controller.getAdapter());
+        binding.recyclerView.addOnScrollListener(new PaginationScrollListener() {
+            @Override
+            public void loadMoreItem() {
+                if (!isLoading) {
+                    viewModel.loadShopProducts();
+                }
+            }
         });
+
+
+        int spanCount = 2; // 3 columns
+        int spacing = (int) Utils.convertDpToPixel(10, Objects.requireNonNull(this));
+        boolean includeEdge = true;
+        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(spanCount, spacing, includeEdge));
 
 
     }
@@ -153,73 +144,11 @@ public class ShopSearchActivity extends BaseActivity {
 
     public void performSearch(String query) {
 
-        binding.searchTitle.setText("Search result for \"" + query + "\"");
-        binding.progressContainer.setVisibility(View.VISIBLE);
-        binding.noItem.setVisibility(View.GONE);
-        itemList.clear();
-        adapter.notifyDataSetChanged();
-        binding.searchTitle.setVisibility(View.GONE);
-        binding.noItem.setVisibility(View.GONE);
+        controller.setSearch("Search result for \"" + query + "\"");
+        viewModel.setSearch(query);
         isLoading = true;
         this.query = query;
         currentPage = 1;
-        getShopProducts(currentPage);
-    }
-
-    public void getShopProducts(int page) {
-        binding.noItem.setVisibility(View.GONE);
-        isLoading = true;
-        binding.progressContainer.setVisibility(View.VISIBLE);
-
-        if (currentPage > 1)
-            binding.bottomProgressBar.setVisibility(View.VISIBLE);
-
-        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, page, 21, null, campaignSlug, query, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
-            @Override
-            public void onDataFetched(ShopDetailsModel response, int statusCode) {
-                if (binding.search.getText().toString().length() > 0)
-                    binding.searchTitle.setVisibility(View.VISIBLE);
-
-                binding.progressContainer.setVisibility(View.GONE);
-                binding.bottomProgressBar.setVisibility(View.GONE);
-
-                isLoading = false;
-                totalCount = response.getCount();
-                itemList.addAll(response.getData().getItems());
-                adapter.notifyItemRangeInserted(itemList.size() - response.getData().getItems().size(), response.getData().getItems().size());
-
-                if (response.getCount() > 0)
-                    currentPage++;
-
-                if (response.getCount() == 0) {
-                    binding.noItem.setVisibility(View.VISIBLE);
-                    binding.noText.setText("No products found");
-                } else {
-                    binding.noItem.setVisibility(View.GONE);
-                    binding.noText.setText("Search products here");
-                }
-
-                if (binding.search.getText().toString().length() == 0 && !firstLoad) {
-                    firstLoad = false;
-                    itemList.clear();
-                    adapter.notifyDataSetChanged();
-                    binding.noItem.setVisibility(View.VISIBLE);
-                    binding.noText.setText("Search products here");
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    getShopProducts(page);
-
-            }
-        });
-
+        viewModel.loadShopProducts();
     }
 }

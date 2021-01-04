@@ -30,6 +30,7 @@ public class ShopSearchController extends EpoxyController {
     private int cashBack = 0;
     private AppCompatActivity activity;
     private boolean loadingMore = false;
+    private String search = null;
 
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
@@ -47,8 +48,14 @@ public class ShopSearchController extends EpoxyController {
         this.activity = activity;
     }
 
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
     @Override
     protected void buildModels() {
+
+
         for (ProductItem productItem : list) {
             new HomeProductGridModel_()
                     .id(productItem.getUniqueId())
