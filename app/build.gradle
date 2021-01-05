@@ -13,8 +13,8 @@ android {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 270
-        versionName "2.7.0"
+        versionCode 267
+        versionName "2.6.7"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -141,7 +141,7 @@ dependencies {
     implementation "androidx.transition:transition:$rootProject.transition_version"
     implementation "androidx.paging:paging-runtime:$rootProject.paging_version"
     implementation 'jp.wasabeef:glide-transformations:4.2.0'
-    implementation project(":evalyPaymentLibrary")
+    implementation project(path: ':evalyPaymentLibrary')
     implementation project(path: ':richlinkpreview')
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 
@@ -156,6 +156,5 @@ dependencies {
     annotationProcessor 'com.google.dagger:hilt-android-compiler:2.29.1-alpha'
     annotationProcessor 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-beta01'
-
 
 }
