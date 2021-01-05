@@ -53,16 +53,21 @@ import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
+import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.search.SearchFilterItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.BrandApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.search.adapter.AutoCompleteAdapter;
 import bd.com.evaly.evalyshop.ui.search.adapter.SearchFilterAdapter;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 
@@ -802,125 +807,90 @@ public class GlobalSearchActivity extends BaseActivity {
         if (isLoading)
             return;
         isLoading = true;
-
-        String query = "root";
+        String query = null;
         if (!searchText.getText().toString().equals(""))
             query = searchText.getText().toString();
 
-        String url = UrlUtils.BASE_URL + "custom/shops/?page=" + p + "&limit=15";
-        if (!query.equals("root"))
-            url = UrlUtils.BASE_URL + "custom/shops/?page=" + p + "&limit=15&search=" + query;
 
+        ShopApiHelper.getShops(null, query, p, new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
+                for (ShopListResponse item : response.getData()) {
+                    TabsItem tabsItem = new TabsItem();
+                    tabsItem.setTitle(item.getShopName());
+                    tabsItem.setImage(item.getShopImage());
+                    tabsItem.setSlug(item.getSlug());
+                    tabsItem.setCategory("root");
+                    itemList.add(tabsItem);
+                    adapter.notifyItemInserted(itemList.size());
+                }
 
-        Log.d("json", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
-                response -> {
+                progressBar.setVisibility(View.INVISIBLE);
 
-                    if (nestedSV != null)
-                        nestedSV.fling(0);
+                if (itemList.size() > 0)
+                    setNotFound(false);
+                else
+                    setNotFound(true);
 
-                    isLoading = false;
-                    try {
-                        JSONArray jsonArray = response.getJSONArray("data");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject ob = jsonArray.getJSONObject(i);
+                isLoading = false;
+            }
 
-                            TabsItem tabsItem = new TabsItem();
-                            tabsItem.setTitle(ob.getString("shop_name"));
-                            tabsItem.setImage(ob.getString("shop_image"));
-                            tabsItem.setSlug(ob.getString("slug"));
-                            tabsItem.setCategory("root");
-                            itemList.add(tabsItem);
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                progressBar.setVisibility(View.INVISIBLE);
+            }
 
-                            adapter.notifyItemInserted(itemList.size());
+            @Override
+            public void onAuthError(boolean logout) {
 
-                        }
-                        if (page == 1)
-                            loadNextShops();
-                        else
-                            progressBar.setVisibility(View.INVISIBLE);
-
-
-                        if (itemList.size() > 0)
-                            setNotFound(false);
-                        else
-                            setNotFound(true);
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }, error -> error.printStackTrace());
-        request.setShouldCache(false);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(request);
+            }
+        });
     }
-
 
     public void getBrands(int p) {
         if (isLoading)
             return;
         isLoading = true;
 
-
-        String query = "root";
+        String query = null;
         if (!searchText.getText().toString().equals(""))
             query = searchText.getText().toString();
 
+        BrandApiHelper.getBrands(null, query, p, new ResponseListenerAuth<CommonDataResponse<List<BrandResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<BrandResponse>> response, int statusCode) {
+                for (BrandResponse item : response.getData()) {
+                    TabsItem tabsItem = new TabsItem();
+                    tabsItem.setTitle(item.getName());
+                    tabsItem.setImage(item.getImageUrl());
+                    tabsItem.setSlug(item.getSlug());
+                    tabsItem.setCategory("root");
+                    itemList.add(tabsItem);
+                    adapter.notifyItemInserted(itemList.size());
+                }
 
-        String url = UrlUtils.BASE_URL + "public/brands/?page=" + p + "&limit=15";
-        if (!query.equals("root"))
-            url = UrlUtils.BASE_URL + "public/brands/?page=" + p + "&limit=15&search=" + query;
-
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
-                response -> {
-
-
-                    if (nestedSV != null)
-                        nestedSV.fling(0);
-
-                    try {
-                        isLoading = false;
-                        JSONArray jsonArray = response.getJSONArray("results");
-                        // Log.d("category_brands",jsonArray.toString());
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject ob = jsonArray.getJSONObject(i);
-                            TabsItem tabsItem = new TabsItem();
-                            tabsItem.setTitle(ob.getString("name"));
-                            tabsItem.setImage(ob.getString("image_url"));
-                            tabsItem.setSlug(ob.getString("slug"));
-                            tabsItem.setCategory("root");
-                            itemList.add(tabsItem);
-                            adapter.notifyItemInserted(itemList.size());
-
-                        }
-                        if (page == 1)
-                            loadNextBrands();
-                        else
-                            progressBar.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
 
 
-                        if (itemList.size() > 0)
-                            setNotFound(false);
-                        else
-                            setNotFound(true);
+                if (itemList.size() > 0)
+                    setNotFound(false);
+                else
+                    setNotFound(true);
 
+                isLoading = false;
+            }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }, error -> error.printStackTrace());
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
 
-        request.setShouldCache(false);
+                progressBar.setVisibility(View.INVISIBLE);
+            }
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            @Override
+            public void onAuthError(boolean logout) {
 
-        rq.add(request);
+            }
+        });
     }
 
 
@@ -929,7 +899,6 @@ public class GlobalSearchActivity extends BaseActivity {
         if (notFound && !GlobalSearchActivity.this.isFinishing()) {
             nestedSV.setBackgroundColor(ContextCompat.getColor(this, R.color.fff));
             noResult.setVisibility(View.VISIBLE);
-
             try {
                 Glide.with(GlobalSearchActivity.this)
                         .load(R.drawable.ic_search_not_found)
@@ -938,20 +907,13 @@ public class GlobalSearchActivity extends BaseActivity {
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "Search result not found", Toast.LENGTH_SHORT).show();
             }
-
-
         } else {
-
             nestedSV.setBackgroundColor(ContextCompat.getColor(this, R.color.fafafa));
             noResult.setVisibility(View.GONE);
         }
-
-
     }
 
-
     public void noFilterText() {
-
         TextView valueTV = new TextView(this);
         valueTV.setText("No filter attribute available for the searched item");
         valueTV.setTextColor(Color.BLACK);

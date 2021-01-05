@@ -8,6 +8,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
+import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.rest.IApiClient;
@@ -34,6 +35,11 @@ public class ShopApiHelper extends BaseApiHelper {
         call.enqueue(getResponseCallBackDefault(listener));
 
     }
+
+    public static void getShops(String categorySlug, String search, int page, ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String> listener) {
+        getiApiClient().getShops(categorySlug, search, page, 20).enqueue(getResponseCallBackDefault(listener));
+    }
+
 
 
     public  static void getShopDetails(String slug, ResponseListenerAuth<CommonDataResponse<ShopDetailsResponse>, String> listener){

@@ -503,15 +503,15 @@ public interface IApiClient {
 
     // Root Category
 
-    @GET(UrlUtils.BASE_CATALOG + "products/categories")
+    @GET(UrlUtils.BASE_CATALOG + "categories")
     Call<CommonDataResponse<List<CategoryEntity>>> getRootCategories();
 
 
     @GET(UrlUtils.BASE_CATALOG + "products/top-categories")
     Call<CommonDataResponse<List<CategoryEntity>>> getTopCategories();
 
-    @GET(UrlUtils.BASE_CATALOG + "products/all-categories")
-    Call<List<CategoryEntity>> getSubCategories(@Query("parent") String parent);
+    @GET(UrlUtils.BASE_CATALOG + "categories")
+    Call<CommonDataResponse<List<CategoryEntity>>> getSubCategories(@Query("parent") String parent);
 
     // Order APIs
     @GET(UrlUtils.ORDERS)
