@@ -5,18 +5,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.airbnb.epoxy.EpoxyModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.BaseModel;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
 import bd.com.evaly.evalyshop.models.catalog.category.ChildCategoryResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.ui.browseProduct.BrowseProductViewModel;
 import bd.com.evaly.evalyshop.ui.browseProduct.model.GridItemModel_;
 import bd.com.evaly.evalyshop.ui.browseProduct.model.GridItemSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
+import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 
 public class ProductBrowseController extends EpoxyController {
@@ -28,6 +32,11 @@ public class ProductBrowseController extends EpoxyController {
     private String categorySlug;
     private boolean loadingMore = true;
     private ClickListener clickListener;
+    private BrowseProductViewModel viewModel;
+
+    public void setViewModel(BrowseProductViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
 
     public void setClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
@@ -48,7 +57,7 @@ public class ProductBrowseController extends EpoxyController {
         this.list = list;
     }
 
-    public void clearList(){
+    public void clearList() {
         list.clear();
         loadingMore = true;
     }
@@ -103,12 +112,17 @@ public class ProductBrowseController extends EpoxyController {
                         .slug(slug)
                         .clickListener((model, parentView, clickedView, position) -> clickListener.onGridItemClick(model.type(), model.title(), model.image(), model.slug()))
                         .addIf(title != null, this);
-
-
             }
         }
 
-        loader.addIf(loadingMore, this);
+        new NoItemModel_()
+                .id("empty no item")
+                .image(R.drawable.ic_empty_product)
+                .text("No items here")
+                .spanSizeOverride((totalSpanCount, position, itemCount) -> 3)
+                .addIf(!loadingMore && list.size() == 0, this);
+
+        loader.addIf(loadingMore && viewModel.getCurrentPage() > 1, this);
     }
 
     public String getCategorySlug() {

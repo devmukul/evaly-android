@@ -41,6 +41,11 @@ public class ShopQuickViewProductController extends EpoxyController {
     private ShopQuickViewModel viewModel;
     private boolean loadingMore = true;
     private boolean emptyPage = false;
+    private String categoryTitle = null;
+
+    public ShopQuickViewProductController() {
+        setDebugLoggingEnabled(true);
+    }
 
     public String getShopSlug() {
         return shopSlug;
@@ -48,12 +53,6 @@ public class ShopQuickViewProductController extends EpoxyController {
 
     public void setShopSlug(String shopSlug) {
         this.shopSlug = shopSlug;
-    }
-
-    private String categoryTitle = null;
-
-    public ShopQuickViewProductController() {
-        setDebugLoggingEnabled(true);
     }
 
     public void setLoadingMore(boolean loadingMore) {

@@ -100,21 +100,14 @@ public class GlobalSearchActivity extends BaseActivity {
     String highestSlug = "";
     boolean isLoading = false;
     Button clearFilters;
-
     String userAgent;
-
     String sortIndexName = "products"; //"products_price_asc";
     String filterJSON = "[]";
     String priceFilterJSON = "[\"price>=10\"]";
-
-
     ArrayList<SearchFilterItem> filterItemlist;
     SearchFilterAdapter filterAdapter;
-
     LinearLayout sortingBtn;
-
     boolean fromFilter = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,15 +119,12 @@ public class GlobalSearchActivity extends BaseActivity {
             userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
         }
 
-
         sortingBtn = findViewById(R.id.sortBtn);
         searchClear = findViewById(R.id.searchClear);
         progressBar = findViewById(R.id.progressBar);
         searchType = findViewById(R.id.search_type);
         searchText = findViewById(R.id.search_text);
-
         searchText.requestFocus();
-
         filter = findViewById(R.id.filter);
         applyFilterBtn = findViewById(R.id.header);
         noResult = findViewById(R.id.noResult);
@@ -142,38 +132,26 @@ public class GlobalSearchActivity extends BaseActivity {
         maximum = findViewById(R.id.maximum);
         clearFilters = findViewById(R.id.clear);
         // clearFilters.setVisibility(View.GONE);
-
         categoryList = new ArrayList<>();
         allCategories = new ArrayList<>();
         categoryMapping = new HashMap<>();
         arrayAdapter = new ArrayAdapter<>(this, R.layout.category_filter_item, categoryList);
-
         rq = Volley.newRequestQueue(GlobalSearchActivity.this);
         map = new HashMap<>();
         mDrawerLayout = findViewById(R.id.layout_drawer);
         drawerRel = findViewById(R.id.drawer_rel);
 
-
         filterRecyclerView = findViewById(R.id.filterRecycler);
-
         LinearLayoutManager managerFilter = new LinearLayoutManager(this);
         filterRecyclerView.setLayoutManager(managerFilter);
-
         filterItemlist = new ArrayList<>();
         filterAdapter = new SearchFilterAdapter(this, filterItemlist);
-
         filterRecyclerView.setAdapter(filterAdapter);
-
-
         filter.setOnClickListener(v -> {
-
-
             if (searchType.getSelectedItemPosition() == 1 || searchType.getSelectedItemPosition() == 2) {
                 Toast.makeText(GlobalSearchActivity.this, "You can use filters while searching for products", Toast.LENGTH_LONG).show();
                 return;
             }
-
-
             if (mDrawerLayout.isDrawerOpen(drawerRel)) {
                 mDrawerLayout.closeDrawer(drawerRel);
             } else {
@@ -256,27 +234,19 @@ public class GlobalSearchActivity extends BaseActivity {
         });
 
         clearFilters.setOnClickListener(v -> {
-
             page = 1;
-
             filterJSON = "[]";
             priceFilterJSON = "[\"price>=10\"]";
             minimum.setText("");
             maximum.setText("");
-
             itemListProduct.clear();
             page = 1;
             getSearchedItems(page);
-
             for (int i = 0; i < filterItemlist.size(); i++) {
-
                 SearchFilterItem item = filterItemlist.get(i);
                 item.setSelected(false);
                 filterAdapter.notifyItemChanged(i);
-
             }
-
-
             if (mDrawerLayout.isDrawerOpen(drawerRel)) {
                 mDrawerLayout.closeDrawer(drawerRel);
             } else {
@@ -297,7 +267,6 @@ public class GlobalSearchActivity extends BaseActivity {
         adapterProduct = new ProductGridAdapter(GlobalSearchActivity.this, itemListProduct);
 
         recyclerView.setLayoutManager(manager);
-
         searchType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -311,7 +280,6 @@ public class GlobalSearchActivity extends BaseActivity {
                 } else if (parent.getItemAtPosition(position).equals("Shops")) {
                     filterURL = "";
                     noFilterText();
-
                     searchSlug = "shop";
                     page = 1;
                     searched = false;
@@ -324,7 +292,6 @@ public class GlobalSearchActivity extends BaseActivity {
                 } else if (parent.getItemAtPosition(position).equals("Brands")) {
                     filterURL = "";
                     noFilterText();
-
                     searchSlug = "brands";
                     page = 1;
                     searched = false;
@@ -373,9 +340,7 @@ public class GlobalSearchActivity extends BaseActivity {
         searchText.setOnItemClickListener((arg0, arg1, arg2, arg3) -> {
             nestedSV.setBackgroundColor(ContextCompat.getColor(this, R.color.fafafa));
             noResult.setVisibility(View.GONE);
-
             fromFilter = false;
-
             page = 1;
             filterURL = "";
             itemList.clear();
@@ -390,7 +355,6 @@ public class GlobalSearchActivity extends BaseActivity {
             RecyclerView.LayoutManager mLayoutManager;
             mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
             recyclerView.setAdapter(adapterProduct);
-
             categoryList.clear();
             allCategories.clear();
             getSearchedItems(page);
@@ -424,15 +388,11 @@ public class GlobalSearchActivity extends BaseActivity {
 
         searchText.setOnEditorActionListener((v, actionId, event) -> {
             if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
-
                 nestedSV.setBackgroundColor(ContextCompat.getColor(this, R.color.fafafa));
                 noResult.setVisibility(View.GONE);
-
                 minimum.setText("");
                 maximum.setText("");
-
                 fromFilter = false;
-
                 sortIndexName = "products";
                 filterJSON = "[]";
                 priceFilterJSON = "[\"price>=10\"]";
@@ -541,7 +501,6 @@ public class GlobalSearchActivity extends BaseActivity {
         });
     }
 
-
     public void loadNextSearchPage() {
         getSearchedItems(++page);
     }
@@ -601,19 +560,14 @@ public class GlobalSearchActivity extends BaseActivity {
         if (!priceFilterJSON.equals("[\"price>=10\"]"))
             paramsMap.put("numericFilters", priceFilterJSON);
 
-
         JSONObject payload = new JSONObject();
-
         JSONObject paramsJson = new JSONObject();
 
         try {
-
             paramsJson.put("indexName", sortIndexName);
             paramsJson.put("params", Utils.urlEncodeUTF8(paramsMap));
-
             payload.putOpt("requests", new JSONArray());
             payload.getJSONArray("requests").put(paramsJson);
-
         } catch (Exception e) {
         }
 
@@ -623,32 +577,22 @@ public class GlobalSearchActivity extends BaseActivity {
             RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
             recyclerView.setAdapter(adapterProduct);
             recyclerView.setLayoutManager(mLayoutManager);
-
         }
 
         String url = "https://eza2j926q5-dsn.algolia.net/1/indexes/*/queries?x-algolia-application-id=EZA2J926Q5&x-algolia-api-key=ca9abeea06c16b7d531694d6783a8f04";
-        Log.d("json", url);
-
 
         if (isLoading)
             return;
         isLoading = true;
-
-
-        Log.d("json params", payload.toString());
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload,
                 response -> {
                     if (nestedSV != null)
                         nestedSV.fling(0);
 
-                    Log.d("json search_result", response.toString());
                     try {
-
                         noResult.setVisibility(View.GONE);
-
                         progressBar.setVisibility(View.INVISIBLE);
-
                         isLoading = false;
                         JSONArray jsonArray = response.getJSONArray("results");
                         JSONObject jsonObject = jsonArray.getJSONObject(0);
@@ -712,7 +656,6 @@ public class GlobalSearchActivity extends BaseActivity {
                             }
 
                             if (facets.has("brand_name")) {
-
                                 JSONObject brand_name = facets.getJSONObject("brand_name");
                                 iter = brand_name.keys();
                                 while (iter.hasNext()) {
@@ -724,9 +667,7 @@ public class GlobalSearchActivity extends BaseActivity {
                                         filterItem.setName(name);
                                         filterItem.setCount(count);
                                         filterItemlist.add(filterItem);
-
                                         //filterAdapter.notifyItemInserted(filterItemlist.size());
-
                                     } catch (JSONException e) {
                                     }
                                 }
@@ -744,9 +685,7 @@ public class GlobalSearchActivity extends BaseActivity {
                                         filterItem.setName(name);
                                         filterItem.setCount(count);
                                         filterItemlist.add(filterItem);
-
                                         //filterAdapter.notifyItemInserted(filterItemlist.size());
-
                                     } catch (JSONException e) {
                                     }
                                 }
@@ -759,7 +698,6 @@ public class GlobalSearchActivity extends BaseActivity {
 
                         progressBar.setVisibility(View.INVISIBLE);
                         try {
-
                             if ((productList.length() < 1 && page == 1) || jsonObject.getInt("nbHits") < 1) {
                                 nestedSV.setBackgroundColor(ContextCompat.getColor(this, R.color.fff));
                                 noResult.setVisibility(View.VISIBLE);
@@ -810,7 +748,6 @@ public class GlobalSearchActivity extends BaseActivity {
         String query = null;
         if (!searchText.getText().toString().equals(""))
             query = searchText.getText().toString();
-
 
         ShopApiHelper.getShops(null, query, p, new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
             @Override
@@ -882,7 +819,6 @@ public class GlobalSearchActivity extends BaseActivity {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
                 progressBar.setVisibility(View.INVISIBLE);
             }
 
@@ -892,7 +828,6 @@ public class GlobalSearchActivity extends BaseActivity {
             }
         });
     }
-
 
     public void setNotFound(boolean notFound) {
 
@@ -948,7 +883,6 @@ public class GlobalSearchActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-
         // Glide.with(getApplicationContext()).pauseRequests();
         super.onDestroy();
     }

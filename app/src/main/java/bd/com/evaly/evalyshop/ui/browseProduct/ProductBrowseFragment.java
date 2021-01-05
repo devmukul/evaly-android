@@ -80,6 +80,7 @@ public class ProductBrowseFragment extends Fragment implements ProductBrowseCont
             controller = new ProductBrowseController();
         controller.setFilterDuplicates(true);
         controller.setClickListener(this);
+        controller.setViewModel(viewModel);
 
         paginationScrollListener = new PaginationScrollListener() {
             @Override
@@ -95,6 +96,7 @@ public class ProductBrowseFragment extends Fragment implements ProductBrowseCont
 
         setLayoutManager(viewModel.getSelectedType());
         binding.recyclerView.setAdapter(controller.getAdapter());
+        controller.requestModelBuild();
     }
 
     private void setLayoutManager(String type) {
@@ -107,6 +109,7 @@ public class ProductBrowseFragment extends Fragment implements ProductBrowseCont
             recyclerSpacingItemDecoration.setSpanCount(2);
         } else {
             layoutManager = new GridLayoutManager(getContext(), 3);
+            ((GridLayoutManager) layoutManager).setSpanSizeLookup(controller.getSpanSizeLookup());
             paginationScrollListener.setGridLayoutManager((GridLayoutManager) layoutManager);
             binding.recyclerView.setLayoutManager(layoutManager);
             recyclerSpacingItemDecoration.setSpanCount(3);
