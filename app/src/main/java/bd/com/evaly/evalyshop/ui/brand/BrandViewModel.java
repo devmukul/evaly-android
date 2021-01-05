@@ -12,8 +12,11 @@ import java.util.List;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.catalog.brands.BrandCatResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
+import bd.com.evaly.evalyshop.models.catalog.brands.CategoriesItem;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.BrandApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 
@@ -25,12 +28,17 @@ public class BrandViewModel extends ViewModel {
     private String slug;
     private String categorySlug = null;
     private int currentPage = 1;
+    private boolean isCategoryLoading;
+    private List<TabsItem> categoryArrayList = new ArrayList<>();
+    protected MutableLiveData<List<TabsItem>> categoryListLiveData = new MutableLiveData<>();
+    private int categoryCurrentPage = 1;
 
     @ViewModelInject
     public BrandViewModel(@Assisted SavedStateHandle savedStateHandle) {
         this.slug = savedStateHandle.get("brand_slug");
         getBrandDetails();
         getProducts();
+        loadCategories();
     }
 
     public String getSlug() {
@@ -82,5 +90,36 @@ public class BrandViewModel extends ViewModel {
         });
 
     }
+
+    public void loadCategories() {
+        isCategoryLoading = true;
+        BrandApiHelper.getCategories(slug, new ResponseListenerAuth<CommonDataResponse<BrandCatResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<BrandCatResponse> response, int statusCode) {
+                isCategoryLoading = false;
+                for (CategoriesItem item : response.getData().getCategories()) {
+                    TabsItem tabsItem = new TabsItem();
+                    tabsItem.setTitle(item.getName());
+                    tabsItem.setImage(item.getImageUrl());
+                    tabsItem.setSlug(item.getSlug());
+                    categoryArrayList.add(tabsItem);
+                }
+
+                categoryListLiveData.setValue(categoryArrayList);
+                categoryCurrentPage++;
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
 
 }

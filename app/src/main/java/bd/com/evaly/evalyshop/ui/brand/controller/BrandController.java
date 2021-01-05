@@ -2,10 +2,17 @@ package bd.com.evaly.evalyshop.ui.brand.controller;
 
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
+import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.EpoxyController;
 import com.bumptech.glide.Glide;
 
@@ -14,12 +21,19 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BrandModelHeaderBinding;
+import bd.com.evaly.evalyshop.databinding.ShopModelTitleCategoryBinding;
+import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.models.tabs.TabsItem;
+import bd.com.evaly.evalyshop.ui.brand.BrandViewModel;
 import bd.com.evaly.evalyshop.ui.brand.model.BrandHeaderModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryCarouselModel_;
+import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryItemModel_;
+import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryTitleModel_;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class BrandController extends EpoxyController {
@@ -30,13 +44,34 @@ public class BrandController extends EpoxyController {
     LoadingModel_ loader;
     @AutoModel
     NoProductModel_ noProductModel;
+    @AutoModel
+    ShopCategoryCarouselModel_ categoryCarouselModel;
+    @AutoModel
+    ShopCategoryTitleModel_ categoryTitleModel;
     private AppCompatActivity activity;
+    private Fragment fragment;
     private List<ProductItem> items = new ArrayList<>();
+    private List<TabsItem> categoryItems = new ArrayList<>();
+    private boolean categoriesLoading;
     private String brandName;
     private String brandLogo;
     private String categoryName;
     private boolean loadingMore = false;
     private boolean emptyPage = false;
+    private BrandResponse brandInfo;
+    private BrandViewModel viewModel;
+
+    public void setViewModel(BrandViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
+
+    public void setFragment(Fragment fragment) {
+        this.fragment = fragment;
+    }
+
+    public void setBrandInfo(BrandResponse brandInfo) {
+        this.brandInfo = brandInfo;
+    }
 
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
@@ -72,6 +107,8 @@ public class BrandController extends EpoxyController {
                 })
                 .addTo(this);
 
+        initCategory();
+
         for (ProductItem productItem : items) {
             new HomeProductGridModel_()
                     .id(productItem.getUniqueId())
@@ -95,6 +132,65 @@ public class BrandController extends EpoxyController {
                 .addIf(items.size() == 0 && !loadingMore, this);
 
         loader.addIf(loadingMore, this);
+    }
+
+    private void initCategory() {
+        categoryTitleModel
+                .clickListener(view -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("brand_name", brandInfo.getName());
+                    bundle.putString("brand_slug", brandInfo.getSlug());
+                    NavHostFragment.findNavController(fragment).navigate(R.id.shopQuickViewFragment, bundle);
+                })
+                .onBind((model, view, position) -> {
+                    if (categoriesLoading && categoryItems.size() == 1) {
+                        ShopModelTitleCategoryBinding binding = (ShopModelTitleCategoryBinding) view.getDataBinding();
+                        binding.quickView.setVisibility(View.GONE);
+                    }
+                })
+                .addIf(!categoriesLoading && categoryItems.size() > 0, this);
+
+        List<ShopCategoryItemModel_> categoryModelList = new ArrayList<>();
+        for (int i = 0; i < categoryItems.size(); i++) {
+            categoryModelList.add(new ShopCategoryItemModel_()
+                    .id("category_" + categoryItems.get(i))
+                    .model(categoryItems.get(i))
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        // viewModel.setSelectedCategoryLiveData(model.getModel());
+                    })
+                    .onBind((model, view, position) -> {
+                        if (position >= categoryItems.size() - 4)
+                            viewModel.loadCategories();
+                    })
+            );
+        }
+
+        categoryCarouselModel
+                .onBind((model, view, position) -> {
+                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    params.setFullSpan(true);
+                    view.setLayoutParams(params);
+                })
+                .padding(new Carousel.Padding(
+                        (int) Utils.convertDpToPixel(10, activity),
+                        (int) Utils.convertDpToPixel(5, activity),
+                        50,
+                        (int) Utils.convertDpToPixel(5, activity),
+                        0))
+                .models(categoryModelList)
+                .addTo(this);
+
+    }
+
+    public void setCategoriesLoading(boolean categoriesLoading) {
+        this.categoriesLoading = categoriesLoading;
+    }
+
+    public void setCategoryItems(List<TabsItem> categoryItems) {
+        this.categoryItems = categoryItems;
     }
 
     public void addData(List<ProductItem> productItems) {

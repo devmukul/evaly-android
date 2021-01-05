@@ -86,6 +86,13 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void liveEvents() {
+
+        viewModel.categoryListLiveData.observe(getViewLifecycleOwner(), tabsItems -> {
+            controller.setCategoriesLoading(false);
+            controller.setCategoryItems(tabsItems);
+            controller.requestModelBuild();
+        });
+
         viewModel.detailsLive.observe(getViewLifecycleOwner(), model -> {
             controller.setAttr(model.getName(), model.getImageUrl(), "root");
             controller.requestModelBuild();

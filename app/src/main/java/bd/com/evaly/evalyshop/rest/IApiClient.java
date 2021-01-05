@@ -34,6 +34,7 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
+import bd.com.evaly.evalyshop.models.catalog.brands.BrandCatResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
 import bd.com.evaly.evalyshop.models.catalog.category.ChildCategoryResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
@@ -473,6 +474,9 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_CATALOG + "/shop-items/{shopSlug}/categories")
     Call<JsonObject> getCategoriesofShop(@Path("shopSlug") String shopSlug,
                                          @Query("page") int page);
+
+    @GET(UrlUtils.BASE_CATALOG + "/brands/{slug}/categories")
+    Call<CommonDataResponse<BrandCatResponse>> getCategoriesOfBrand(@Path("slug") String slug);
 
 
     @GET(UrlUtils.CAMPAIGNS + "/{campaignSlug}/shops/{shopSlug}/categories")
