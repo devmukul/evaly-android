@@ -24,6 +24,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentBrandBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
+import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.ui.brand.controller.BrandController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
@@ -42,6 +43,7 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private boolean isLoading = false;
     private FragmentBrandBinding binding;
     private BrandController controller;
+    private boolean clickFromCategory = false;
 
     public BrandFragment() {
 
@@ -86,6 +88,35 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void liveEvents() {
+
+        viewModel.getSelectedCategoryLiveData().observe(getViewLifecycleOwner(), tabsItem -> {
+            ApiClient.getUnsafeOkHttpClient().dispatcher().cancelAll();
+            viewModel.clearProductList();
+            clickFromCategory = true;
+            String categorySlug = tabsItem.getSlug();
+            viewModel.setCategorySlug(categorySlug);
+            viewModel.setCurrentPage(1);
+            controller.setCategoryTitle(tabsItem.getTitle());
+            controller.clear();
+            controller.setLoadingMore(true);
+            viewModel.getProducts();
+            // binding.appBarLayout.appBarLayout.setExpanded(false, true);
+        });
+
+        viewModel.getOnResetLiveData().observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean) {
+                ApiClient.getUnsafeOkHttpClient().dispatcher().cancelAll();
+                viewModel.clearProductList();
+                viewModel.setCategorySlug(null);
+                viewModel.setCurrentPage(1);
+                controller.setCategoryTitle(null);
+                controller.clear();
+                controller.setLoadingMore(true);
+                clickFromCategory = true;
+                viewModel.getProducts();
+            }
+        });
+
 
         viewModel.categoryListLiveData.observe(getViewLifecycleOwner(), tabsItems -> {
             controller.setCategoriesLoading(false);

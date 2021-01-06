@@ -2,13 +2,11 @@ package bd.com.evaly.evalyshop.ui.brand.controller;
 
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
@@ -22,6 +20,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BrandModelHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.ShopModelTitleCategoryBinding;
+import bd.com.evaly.evalyshop.databinding.ShopModelTitleProductBinding;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
@@ -34,6 +33,7 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryCarouselModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryItemModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryTitleModel_;
+import bd.com.evaly.evalyshop.ui.shop.models.ShopProductTitleModel_;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class BrandController extends EpoxyController {
@@ -48,6 +48,8 @@ public class BrandController extends EpoxyController {
     ShopCategoryCarouselModel_ categoryCarouselModel;
     @AutoModel
     ShopCategoryTitleModel_ categoryTitleModel;
+    @AutoModel
+    ShopProductTitleModel_ productTitleModel;
     private AppCompatActivity activity;
     private Fragment fragment;
     private List<ProductItem> items = new ArrayList<>();
@@ -60,6 +62,11 @@ public class BrandController extends EpoxyController {
     private boolean emptyPage = false;
     private BrandResponse brandInfo;
     private BrandViewModel viewModel;
+    private String categoryTitle = null;
+
+    public void setCategoryTitle(String categoryTitle) {
+        this.categoryTitle = categoryTitle;
+    }
 
     public void setViewModel(BrandViewModel viewModel) {
         this.viewModel = viewModel;
@@ -109,6 +116,21 @@ public class BrandController extends EpoxyController {
 
         initCategory();
 
+        productTitleModel
+                .title(categoryTitle)
+                .clickListener((model, parentView, clickedView, position) -> viewModel.setOnResetLiveData(true))
+                .onBind((model, view, position) -> {
+                    ShopModelTitleProductBinding binding = (ShopModelTitleProductBinding) view.getDataBinding();
+                    if (categoryTitle == null) {
+                        binding.categoryTitle.setText(R.string.all_products);
+                        binding.resetBtn.setVisibility(View.GONE);
+                    } else {
+                        binding.categoryTitle.setText(categoryTitle);
+                        binding.resetBtn.setVisibility(View.VISIBLE);
+                    }
+                })
+                .addTo(this);
+
         for (ProductItem productItem : items) {
             new HomeProductGridModel_()
                     .id(productItem.getUniqueId())
@@ -136,17 +158,9 @@ public class BrandController extends EpoxyController {
 
     private void initCategory() {
         categoryTitleModel
-                .clickListener(view -> {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("brand_name", brandInfo.getName());
-                    bundle.putString("brand_slug", brandInfo.getSlug());
-                    NavHostFragment.findNavController(fragment).navigate(R.id.shopQuickViewFragment, bundle);
-                })
                 .onBind((model, view, position) -> {
-                    if (categoriesLoading && categoryItems.size() == 1) {
-                        ShopModelTitleCategoryBinding binding = (ShopModelTitleCategoryBinding) view.getDataBinding();
-                        binding.quickView.setVisibility(View.GONE);
-                    }
+                    ShopModelTitleCategoryBinding binding = (ShopModelTitleCategoryBinding) view.getDataBinding();
+                    binding.quickView.setVisibility(View.GONE);
                 })
                 .addIf(!categoriesLoading && categoryItems.size() > 0, this);
 

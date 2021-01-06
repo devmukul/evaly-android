@@ -61,22 +61,5 @@
                 app:layout_constraintTop_toBottomOf="@+id/name" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <TextView
-            android:id="@+id/categoryTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="15dp"
-            android:paddingTop="13dp"
-            android:paddingRight="15dp"
-            android:paddingBottom="15dp"
-            android:text="Products"
-            android:textColor="@color/c555"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/header" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

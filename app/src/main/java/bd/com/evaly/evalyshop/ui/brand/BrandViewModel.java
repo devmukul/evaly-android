@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.ui.brand;
 
 import androidx.hilt.Assisted;
 import androidx.hilt.lifecycle.ViewModelInject;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
@@ -24,6 +25,7 @@ public class BrandViewModel extends ViewModel {
 
     protected MutableLiveData<List<ProductItem>> liveList = new MutableLiveData<>();
     protected MutableLiveData<BrandResponse> detailsLive = new MutableLiveData<>();
+    private MutableLiveData<Boolean> onResetLiveData = new MutableLiveData<>();
     private List<ProductItem> arrayList = new ArrayList<>();
     private String slug;
     private String categorySlug = null;
@@ -31,7 +33,9 @@ public class BrandViewModel extends ViewModel {
     private boolean isCategoryLoading;
     private List<TabsItem> categoryArrayList = new ArrayList<>();
     protected MutableLiveData<List<TabsItem>> categoryListLiveData = new MutableLiveData<>();
+    private MutableLiveData<TabsItem> selectedCategoryLiveData = new MutableLiveData<>();
     private int categoryCurrentPage = 1;
+
 
     @ViewModelInject
     public BrandViewModel(@Assisted SavedStateHandle savedStateHandle) {
@@ -41,8 +45,36 @@ public class BrandViewModel extends ViewModel {
         loadCategories();
     }
 
+    public void clearProductList(){
+        arrayList.clear();
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public void setCategorySlug(String categorySlug) {
+        this.categorySlug = categorySlug;
+    }
+
     public String getSlug() {
         return slug;
+    }
+
+    public LiveData<TabsItem> getSelectedCategoryLiveData() {
+        return selectedCategoryLiveData;
+    }
+
+    public void setSelectedCategoryLiveData(TabsItem selectedCategoryLiveData) {
+        this.selectedCategoryLiveData.setValue(selectedCategoryLiveData);
+    }
+
+    public MutableLiveData<Boolean> getOnResetLiveData() {
+        return onResetLiveData;
+    }
+
+    public void setOnResetLiveData(boolean onResetLiveData) {
+        this.onResetLiveData.setValue(onResetLiveData);
     }
 
     public void getBrandDetails() {
