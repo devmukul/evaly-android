@@ -32,12 +32,9 @@ public class ShopSearchActivity extends BaseActivity {
 
     private FragmentShopSearchBinding binding;
     private ShopSearchController controller;
-    private List<ItemsItem> itemList;
-    private int currentPage = 1;
     private int cashbackRate;
     private String campaignSlug = "", shopSlug = "sumash-tech", shopName;
     private boolean isLoading = false;
-    private int totalCount = 0;
     private String query;
     private ShopSearchViewModel viewModel;
     private boolean firstLoad = true;
@@ -75,8 +72,6 @@ public class ShopSearchActivity extends BaseActivity {
             binding.recyclerView.setVisibility(View.VISIBLE);
             List<ProductItem> tempList = new ArrayList<>();
             for (int i = 0; i < shopItems.size(); i++) {
-                if (i == 0)
-                    currentPage++;
                 ItemsItem shopItem = shopItems.get(i);
                 ProductItem item = new ProductItem();
                 item.setImageUrls(shopItem.getItemImages());
@@ -92,6 +87,9 @@ public class ShopSearchActivity extends BaseActivity {
             controller.setLoadingMore(false);
             controller.setList(tempList);
             controller.requestModelBuild();
+            if (tempList.size() > 0 && firstLoad)
+                binding.recyclerView.scrollToPosition(0);
+            firstLoad = false;
         });
 
         viewModel.getBuyNowLiveData().observe(this, s -> {
@@ -103,8 +101,8 @@ public class ShopSearchActivity extends BaseActivity {
     }
 
     private void searchActions() {
-        binding.search.requestFocus();
 
+        binding.search.requestFocus();
         binding.search.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
@@ -125,6 +123,7 @@ public class ShopSearchActivity extends BaseActivity {
                 } else {
                     binding.searchAction.setImageDrawable(getDrawable(R.drawable.ic_search));
                     controller.clearList();
+                    controller.setSearch(null);
                     controller.setShowSearchText(true);
                     controller.requestModelBuild();
                 }
@@ -152,8 +151,11 @@ public class ShopSearchActivity extends BaseActivity {
         binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
             public void loadMoreItem() {
-                if (!isLoading)
+                if (!isLoading) {
+                    controller.setLoadingMore(true);
+                    controller.requestModelBuild();
                     viewModel.loadShopProducts();
+                }
             }
         });
 
@@ -174,7 +176,7 @@ public class ShopSearchActivity extends BaseActivity {
         viewModel.setCurrentPage(1);
         isLoading = true;
         this.query = query;
-        currentPage = 1;
+        firstLoad = true;
         viewModel.loadShopProducts();
     }
 }

@@ -16,12 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ItemShopProductSearchTitleBinding;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.shop.search.ShopSearchViewModel;
+import bd.com.evaly.evalyshop.ui.shop.search.model.ShopSearchProductTitleModel_;
 
 public class ShopSearchController extends EpoxyController {
 
@@ -71,6 +73,16 @@ public class ShopSearchController extends EpoxyController {
 
     @Override
     protected void buildModels() {
+
+        new ShopSearchProductTitleModel_()
+                .id("search title")
+                .search(search)
+                .onBind((model, view, position) -> {
+                    ItemShopProductSearchTitleBinding binding = (ItemShopProductSearchTitleBinding) view.getDataBinding();
+                    if (model.search() != null)
+                        binding.searchTitle.setText(model.search());
+                })
+                .addIf(search != null && !search.equals(""), this);
 
         for (ProductItem productItem : list) {
             new HomeProductGridModel_()
