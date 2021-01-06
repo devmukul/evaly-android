@@ -109,6 +109,8 @@ public class AvailableShopModel implements Serializable {
     }
 
     public String getShopAddress() {
+        if(shopAddress == null)
+            return "";
         return shopAddress;
     }
 

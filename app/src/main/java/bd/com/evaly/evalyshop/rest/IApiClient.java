@@ -410,14 +410,13 @@ public interface IApiClient {
     Call<CommonDataResponse<List<ShopItem>>> getProductVariants(@Path("shopSlug") String shopSlug,
                                                                 @Path("shopItem") String shopItem);
 
-    @GET(UrlUtils.BASE_URL + "public/product/shops/{variantId}/")
+    @GET(UrlUtils.BASE_CATALOG + "shop-items/shops/{variantId}")
     Call<CommonDataResponse<List<AvailableShopModel>>> getAvailableShop(@Path("variantId") int variantId);
 
-    @GET(UrlUtils.BASE_URL + "public/product/shops/{variantId}/nearest/")
+    @GET(UrlUtils.BASE_URL + "shop-items/shops/{variantId}/nearest")
     Call<CommonDataResponse<List<AvailableShopModel>>> getNearestAvailableShop(@Path("variantId") int variantId,
                                                                                @Query("long") double longitude,
                                                                                @Query("lat") double latitude);
-
     // with token
 
     @GET(UrlUtils.BASE_CATALOG + "shop-items/{shopSlug}/items")

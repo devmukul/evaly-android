@@ -18,7 +18,7 @@ public class ShopListResponse extends BaseModel {
     @SerializedName("shop_name")
     private String shopName;
 
-    @SerializedName("shop_image")
+    @SerializedName("logo_image")
     private String shopImage;
 
     @SerializedName("slug")

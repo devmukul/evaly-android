@@ -19,7 +19,7 @@ public class ShopDetailsResponse{
 	@SerializedName("shop_name")
 	private String shopName;
 
-	@SerializedName("shop_image")
+	@SerializedName("logo_image")
 	private String shopImage;
 
 	@SerializedName("contact_number")

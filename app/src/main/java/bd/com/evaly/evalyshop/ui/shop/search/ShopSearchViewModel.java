@@ -45,7 +45,8 @@ public class ShopSearchViewModel extends ViewModel {
     }
 
     public void clear() {
-        currentPage = 2;
+        productArrayList.clear();
+        currentPage = 1;
         categoryCurrentPage = 1;
     }
 

@@ -64,7 +64,6 @@ public class ShopSearchActivity extends BaseActivity {
             binding.search.setHint("Search in store...");
 
         binding.back.setOnClickListener(v -> finish());
-
         setupRecycler();
         searchActions();
         liveEvents();
@@ -109,6 +108,7 @@ public class ShopSearchActivity extends BaseActivity {
         binding.search.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
+
             }
 
             public void beforeTextChanged(CharSequence s, int start,
@@ -118,27 +118,25 @@ public class ShopSearchActivity extends BaseActivity {
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
                 if (!binding.search.getText().toString().trim().equals("")) {
+                    controller.setShowSearchText(false);
                     performSearch(binding.search.getText().toString().trim());
                     query = binding.search.getText().toString().trim();
                     binding.searchAction.setImageDrawable(getDrawable(R.drawable.ic_close_small));
                 } else {
                     binding.searchAction.setImageDrawable(getDrawable(R.drawable.ic_search));
-                    //  bindingo.noItem.setVisibility(View.VISIBLE);
-                    itemList.clear();
+                    controller.clearList();
+                    controller.setShowSearchText(true);
                     controller.requestModelBuild();
-//                    binding.searchTitle.setVisibility(View.GONE);
-//                    binding.noText.setText("Search products here");
                 }
-
             }
         });
 
         binding.searchAction.setOnClickListener(view -> {
             if (!binding.search.getText().toString().trim().equals("")) {
+                controller.setShowSearchText(true);
                 binding.search.setText("");
                 binding.searchAction.setImageDrawable(getDrawable(R.drawable.ic_search));
             }
-
         });
     }
 
@@ -159,7 +157,7 @@ public class ShopSearchActivity extends BaseActivity {
             }
         });
 
-        int spanCount = 2; // 3 columns
+        int spanCount = 2;
         int spacing = (int) Utils.convertDpToPixel(10, Objects.requireNonNull(this));
         boolean includeEdge = true;
         binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(spanCount, spacing, includeEdge));
@@ -169,10 +167,11 @@ public class ShopSearchActivity extends BaseActivity {
         return query;
     }
 
-
     public void performSearch(String query) {
         controller.setSearch("Search result for \"" + query + "\"");
+        viewModel.clear();
         viewModel.setSearch(query);
+        viewModel.setCurrentPage(1);
         isLoading = true;
         this.query = query;
         currentPage = 1;

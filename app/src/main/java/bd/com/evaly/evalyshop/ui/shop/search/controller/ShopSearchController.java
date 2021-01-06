@@ -1,12 +1,16 @@
 package bd.com.evaly.evalyshop.ui.shop.search.controller;
 
 import android.content.Intent;
+import android.text.Html;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,7 @@ public class ShopSearchController extends EpoxyController {
     private AppCompatActivity activity;
     private boolean loadingMore = false;
     private String search = null;
+    private boolean showSearchText = false;
 
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
@@ -54,6 +59,14 @@ public class ShopSearchController extends EpoxyController {
 
     public void setList(List<ProductItem> list) {
         this.list = list;
+    }
+
+    public void clearList() {
+        list.clear();
+    }
+
+    public void setShowSearchText(boolean showSearchText) {
+        this.showSearchText = showSearchText;
     }
 
     @Override
@@ -84,8 +97,17 @@ public class ShopSearchController extends EpoxyController {
         }
 
         noProductModel
-                .text("No Products Available")
-                .image(R.drawable.ic_empty_product)
+                .text(showSearchText ? "Search products here" : "No Products Available")
+                .image(showSearchText ? R.drawable.ic_category_search : R.drawable.ic_empty_product)
+                .onBind((model, view, position) -> {
+                    TextView textView = view.findViewById(R.id.text);
+                    ImageView imageView = view.findViewById(R.id.image);
+                    Glide.with(view)
+                            .asDrawable()
+                            .load(model.image())
+                            .into(imageView);
+                    textView.setText(Html.fromHtml(model.text()));
+                })
                 .addIf(list.size() == 0 && !loadingMore, this);
 
         loader
