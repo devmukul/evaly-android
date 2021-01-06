@@ -34,13 +34,12 @@ public class ExpressApiHelper extends BaseApiHelper {
     }
 
     public static void getProductList(String serviceSug,
-                                   int page,
-                                   int limit,
-                                   String search,
-                                   ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String> listener) {
+                                      int page,
+                                      int limit,
+                                      String search,
+                                      ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String> listener) {
         getiApiClient().getExpressProductList(serviceSug, page, limit, search).enqueue(getResponseCallBackDefault(listener));
     }
-
 
 
 }

@@ -21,6 +21,7 @@ public class CampaignApiHelper extends BaseApiHelper {
     public static void getSubCampaignDetails(String campaignSlug, ResponseListenerAuth<CommonDataResponse<SubCampaignDetailsResponse>, String> listener) {
         getiApiClient().getSubCampaignDetails(campaignSlug).enqueue(getResponseCallBackDefault(listener));
     }
+
     public static void getCampaignCarousel(String context, ResponseListenerAuth<CommonDataResponse<List<CampaignCarouselResponse>>, String> listener) {
         getiApiClient().getCampaignCarousel(context).enqueue(getResponseCallBackDefault(listener));
     }

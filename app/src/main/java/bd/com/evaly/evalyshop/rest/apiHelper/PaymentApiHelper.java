@@ -21,19 +21,19 @@ public class PaymentApiHelper extends BaseApiHelper {
         getiApiClient().getBalance(token, username).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void makePartialPayment(String token, ParitalPaymentModel body, ResponseListenerAuth<JsonObject, String> listener){
-        getiApiClient().makePartialPayment(token,body).enqueue(getResponseCallBackDefault(listener));
+    public static void makePartialPayment(String token, ParitalPaymentModel body, ResponseListenerAuth<JsonObject, String> listener) {
+        getiApiClient().makePartialPayment(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void payViaCard(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
+    public static void payViaCard(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
         getiApiClient().payViaCard(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void payViaCityBank(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
+    public static void payViaCityBank(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
         getiApiClient().payViaCityBank(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void payViaBank(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
+    public static void payViaBank(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
         getiApiClient().payViaBank(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
-import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 
 public class SearchApiHelper extends BaseApiHelper {

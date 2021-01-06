@@ -432,6 +432,10 @@ public interface IApiClient {
     Call<CommonDataResponse<ShopDetailsResponse>> getShopDetails(@Header("Authorization") String token,
                                                                  @Path("shopSlug") String shopSlug);
 
+    @GET(UrlUtils.BASE_CATALOG + "campaign/shops/{shopSlug}")
+    Call<CommonDataResponse<ShopDetailsResponse>> getCampaignShopDetails(@Header("Authorization") String token,
+                                                                         @Path("shopSlug") String shopSlug);
+
 
     @GET(UrlUtils.CAMPAIGNS + "/{campaignSlug}/shops/{shopSlug}/items")
     Call<ShopDetailsModel> getCampaignShopDetails(@Header("Authorization") String token,
@@ -844,8 +848,8 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL + "public/express-services/{slug}/")
     Call<ExpressServiceDetailsModel> getExpressServiceDetails(@Path("slug") String slug);
 
-    @GET(UrlUtils.BASE_URL + "public/express-services/shops")
-    Call<CommonResultResponse<List<GroupShopModel>>> getExpressShopList(@Query("express_service") String serviceSlug,
+    @GET(UrlUtils.BASE_CATALOG + "shops/express")
+    Call<CommonResultResponse<List<GroupShopModel>>> getExpressShopList(@Query("express_slug") String serviceSlug,
                                                                         @Query("page") int page,
                                                                         @Query("limit") int limit,
                                                                         @Query("address") String address,

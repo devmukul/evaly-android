@@ -28,7 +28,7 @@ public class TokenInterceptor implements Interceptor {
 
         if (CredentialManager.getToken() != null && !originalRequest.url().toString().contains("core")) {
             Request.Builder builder = originalRequest.newBuilder();
-            builder.addHeader("Authorization", "Bearer "+ CredentialManager.getToken());
+            builder.addHeader("Authorization", "Bearer " + CredentialManager.getToken());
             Request request = builder.build();
             return chain.proceed(request);
         }
