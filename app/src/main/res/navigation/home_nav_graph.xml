@@ -78,12 +78,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/productBrowseFragment"
-        android:name="bd.com.evaly.evalyshop.ui.browseProduct.ProductBrowseFragment"
-        android:label="fragment_product_browse"
-        tools:layout="@layout/fragment_product_browse" />
-
-    <fragment
         android:id="@+id/wishListFragment"
         android:name="bd.com.evaly.evalyshop.ui.wishlist.WishListFragment"
         android:label="fragment_wish_list"
