@@ -46,106 +46,106 @@ public class AvailableShopModel implements Serializable {
     @SerializedName("is_express_shop")
     private boolean expressShop;
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public Double getPrice() {
         if (price == null)
             return 0.0;
         return price;
     }
 
-    public void setDiscountValue(double discountValue) {
-        this.discountValue = discountValue;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public double getDiscountValue() {
         return discountValue;
     }
 
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
+    public void setDiscountValue(double discountValue) {
+        this.discountValue = discountValue;
     }
 
     public String getShopName() {
         return shopName;
     }
 
-    public void setShopImage(String shopImage) {
-        this.shopImage = shopImage;
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 
     public String getShopImage() {
         return shopImage;
     }
 
-    public void setDiscountType(String discountType) {
-        this.discountType = discountType;
+    public void setShopImage(String shopImage) {
+        this.shopImage = shopImage;
     }
 
     public String getDiscountType() {
         return discountType;
     }
 
-    public void setInStock(int inStock) {
-        this.inStock = inStock;
+    public void setDiscountType(String discountType) {
+        this.discountType = discountType;
     }
 
     public int getInStock() {
         return inStock;
     }
 
-    public void setShopOwner(String shopOwner) {
-        this.shopOwner = shopOwner;
+    public void setInStock(int inStock) {
+        this.inStock = inStock;
     }
 
     public String getShopOwner() {
         return shopOwner;
     }
 
-    public void setShopAddress(String shopAddress) {
-        this.shopAddress = shopAddress;
+    public void setShopOwner(String shopOwner) {
+        this.shopOwner = shopOwner;
     }
 
     public String getShopAddress() {
-        if(shopAddress == null)
+        if (shopAddress == null)
             return "";
         return shopAddress;
     }
 
-    public void setShopItemId(int shopItemId) {
-        this.shopItemId = shopItemId;
+    public void setShopAddress(String shopAddress) {
+        this.shopAddress = shopAddress;
     }
 
     public int getShopItemId() {
         return shopItemId;
     }
 
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
+    public void setShopItemId(int shopItemId) {
+        this.shopItemId = shopItemId;
     }
 
     public String getContactNumber() {
         return contactNumber;
     }
 
-    public void setShopSlug(String shopSlug) {
-        this.shopSlug = shopSlug;
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
     }
 
     public String getShopSlug() {
         return shopSlug;
     }
 
-    public void setDiscountedPrice(double discountedPrice) {
-        this.discountedPrice = discountedPrice;
+    public void setShopSlug(String shopSlug) {
+        this.shopSlug = shopSlug;
     }
 
     public Double getDiscountedPrice() {
         if (discountedPrice == null)
             return 0.0;
         return discountedPrice;
+    }
+
+    public void setDiscountedPrice(double discountedPrice) {
+        this.discountedPrice = discountedPrice;
     }
 
     public boolean isExpressShop() {
@@ -156,22 +156,22 @@ public class AvailableShopModel implements Serializable {
         this.expressShop = expressShop;
     }
 
-	@Override
-	public String toString() {
-		return
-				"AvailableShopModel{" +
-						"price = '" + price + '\'' +
-						",discount_value = '" + discountValue + '\'' +
-						",shop_name = '" + shopName + '\'' +
-						",shop_image = '" + shopImage + '\'' +
-						",discount_type = '" + discountType + '\'' +
-						",in_stock = '" + inStock + '\'' +
-						",shop_owner = '" + shopOwner + '\'' +
-						",shop_address = '" + shopAddress + '\'' +
-						",shop_item_id = '" + shopItemId + '\'' +
-						",contact_number = '" + contactNumber + '\'' +
-						",shop_slug = '" + shopSlug + '\'' +
-						",discounted_price = '" + discountedPrice + '\'' +
-						"}";
-	}
+    @Override
+    public String toString() {
+        return
+                "AvailableShopModel{" +
+                        "price = '" + price + '\'' +
+                        ",discount_value = '" + discountValue + '\'' +
+                        ",shop_name = '" + shopName + '\'' +
+                        ",shop_image = '" + shopImage + '\'' +
+                        ",discount_type = '" + discountType + '\'' +
+                        ",in_stock = '" + inStock + '\'' +
+                        ",shop_owner = '" + shopOwner + '\'' +
+                        ",shop_address = '" + shopAddress + '\'' +
+                        ",shop_item_id = '" + shopItemId + '\'' +
+                        ",contact_number = '" + contactNumber + '\'' +
+                        ",shop_slug = '" + shopSlug + '\'' +
+                        ",discounted_price = '" + discountedPrice + '\'' +
+                        "}";
+    }
 }

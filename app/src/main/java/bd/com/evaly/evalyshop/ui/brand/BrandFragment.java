@@ -125,7 +125,7 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         });
 
         viewModel.detailsLive.observe(getViewLifecycleOwner(), model -> {
-            controller.setAttr(model.getName(), model.getImageUrl(), "root");
+            controller.setAttr(model.getName(), model.getImageUrl(), Utils.capitalize(model.getBrandType()));
             controller.requestModelBuild();
             recommenderViewModel.insert("brand",
                     model.getSlug(),
@@ -146,6 +146,7 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         controller = new BrandController();
         controller.setFilterDuplicates(true);
+        controller.setViewModel(viewModel);
         controller.setActivity((AppCompatActivity) getActivity());
 
         binding.recyclerView.setAdapter(controller.getAdapter());

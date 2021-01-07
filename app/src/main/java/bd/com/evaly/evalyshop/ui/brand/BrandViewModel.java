@@ -24,7 +24,7 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 public class BrandViewModel extends ViewModel {
 
     protected MutableLiveData<List<ProductItem>> liveList = new MutableLiveData<>();
-    protected MutableLiveData<BrandResponse> detailsLive = new MutableLiveData<>();
+    protected MutableLiveData<BrandCatResponse> detailsLive = new MutableLiveData<>();
     private MutableLiveData<Boolean> onResetLiveData = new MutableLiveData<>();
     private List<ProductItem> arrayList = new ArrayList<>();
     private String slug;
@@ -36,11 +36,9 @@ public class BrandViewModel extends ViewModel {
     private MutableLiveData<TabsItem> selectedCategoryLiveData = new MutableLiveData<>();
     private int categoryCurrentPage = 1;
 
-
     @ViewModelInject
     public BrandViewModel(@Assisted SavedStateHandle savedStateHandle) {
         this.slug = savedStateHandle.get("brand_slug");
-        getBrandDetails();
         getProducts();
         loadCategories();
     }
@@ -77,25 +75,6 @@ public class BrandViewModel extends ViewModel {
         this.onResetLiveData.setValue(onResetLiveData);
     }
 
-    public void getBrandDetails() {
-        BrandApiHelper.getBrandsDetails(slug, new ResponseListenerAuth<CommonDataResponse<BrandResponse>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<BrandResponse> response, int statusCode) {
-                detailsLive.setValue(response.getData());
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-    }
-
 
     public void getProducts() {
 
@@ -128,6 +107,7 @@ public class BrandViewModel extends ViewModel {
         BrandApiHelper.getCategories(slug, new ResponseListenerAuth<CommonDataResponse<BrandCatResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BrandCatResponse> response, int statusCode) {
+                detailsLive.setValue(response.getData());
                 isCategoryLoading = false;
                 for (CategoriesItem item : response.getData().getCategories()) {
                     TabsItem tabsItem = new TabsItem();

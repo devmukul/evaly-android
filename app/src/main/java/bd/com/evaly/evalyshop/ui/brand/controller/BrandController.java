@@ -170,7 +170,7 @@ public class BrandController extends EpoxyController {
                     .id("category_" + categoryItems.get(i))
                     .model(categoryItems.get(i))
                     .clickListener((model, parentView, clickedView, position) -> {
-                        // viewModel.setSelectedCategoryLiveData(model.getModel());
+                        viewModel.setSelectedCategoryLiveData(model.getModel());
                     })
                     .onBind((model, view, position) -> {
                         if (position >= categoryItems.size() - 4)
