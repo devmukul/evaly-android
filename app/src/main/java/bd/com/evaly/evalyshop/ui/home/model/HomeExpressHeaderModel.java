@@ -4,9 +4,7 @@ import android.graphics.Color;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.ViewDataBinding;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.DataBindingEpoxyModel;
@@ -21,10 +19,6 @@ import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 @EpoxyModelClass(layout = R.layout.home_model_flashsale_header)
 public abstract class HomeExpressHeaderModel extends DataBindingEpoxyModel {
 
-    @EpoxyAttribute
-    public AppCompatActivity activity;
-    @EpoxyAttribute
-    public Fragment fragment;
     @EpoxyAttribute
     String title;
     @EpoxyAttribute

@@ -24,11 +24,16 @@ import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
+import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -36,7 +41,7 @@ import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, HomeController.ClickListener {
 
     @Inject
     RecommenderViewModel recommenderViewModel;
@@ -191,5 +196,104 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             homeController.requestModelBuild();
         });
 
+    }
+
+    @Override
+    public void onProductClick(ProductItem item) {
+        Intent intent = new Intent(activity, ViewProductActivity.class);
+        intent.putExtra("product_slug", item.getSlug());
+        intent.putExtra("product_name", item.getName());
+        intent.putExtra("product_price", item.getMaxPrice());
+        if (item.getImageUrls().size() > 0)
+            intent.putExtra("product_image", item.getImageUrls().get(0));
+        getContext().startActivity(intent);
+    }
+
+    @Override
+    public void onCategoryClick(String slug, String category) {
+        Bundle bundle = new Bundle();
+        bundle.putString("slug", slug);
+        bundle.putString("category", category);
+        navController.navigate(R.id.browseProductFragment, bundle);
+    }
+
+    @Override
+    public void onBrandClick(String brand_slug, String brand_name, String image_url) {
+        Bundle bundle = new Bundle();
+        bundle.putString("brand_slug", brand_slug);
+        bundle.putString("brand_name", brand_name);
+        bundle.putString("image_url", image_url);
+        navController.navigate(R.id.brandFragment, bundle);
+    }
+
+    @Override
+    public void onShopClick(String shop_slug, String shop_name) {
+        Bundle bundle = new Bundle();
+        bundle.putString("shop_slug", shop_slug);
+        bundle.putString("shop_name", shop_name);
+        navController.navigate(R.id.shopFragment, bundle);
+    }
+
+    @Override
+    public void onCampaignCategoryClick(CampaignCategoryResponse model) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("model", model);
+        navController.navigate(R.id.campaignDetails, bundle);
+    }
+
+    @Override
+    public void onCampaignProductClick(CampaignProductResponse item1) {
+        Intent intent = new Intent(activity, ViewProductActivity.class);
+        intent.putExtra("product_slug", item1.getSlug());
+        intent.putExtra("product_name", item1.getName());
+        intent.putExtra("product_price", item1.getPrice());
+        if (item1.getShopSlug() != null)
+            intent.putExtra("shop_slug", item1.getShopSlug());
+        intent.putExtra("product_image", item1.getImage());
+        intent.putExtra("cashback_text", item1.getCashbackText());
+        activity.startActivity(intent);
+    }
+
+    @Override
+    public void onFlashSaleClick(String slug) {
+        Bundle bundle = new Bundle();
+        bundle.putString("category_slug", slug);
+        navController.navigate(R.id.campaignDetails);
+    }
+
+    @Override
+    public void onExpressClick(ExpressServiceModel model) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("model", model);
+        navController.navigate(R.id.evalyExpressFragment, bundle);
+    }
+
+    @Override
+    public void onShowMoreCategoryClick() {
+        navController.navigate(R.id.categoryFragment);
+    }
+
+    @Override
+    public void onShowMoreShopClick() {
+        Intent intent = new Intent(getContext(), GlobalSearchActivity.class);
+        intent.putExtra("type", 3);
+        getContext().startActivity(intent);
+    }
+
+    @Override
+    public void onShowMoreBrandClick() {
+        Intent intent = new Intent(getContext(), GlobalSearchActivity.class);
+        intent.putExtra("type", 2);
+        getContext().startActivity(intent);
+    }
+
+    @Override
+    public void onShowMoreExpressClick() {
+        navController.navigate(R.id.expressProductSearchFragment);
+    }
+
+    @Override
+    public void onShowMoreCampaignClick() {
+        navController.navigate(R.id.campaignFragment);
     }
 }
