@@ -563,9 +563,9 @@ public interface IApiClient {
     Call<JsonObject> unsubscribeShop(@Header("Authorization") String token,
                                      @Path("shop_slug") String shopSlug);
 
-    @GET(UrlUtils.BASE_URL + "reviews/summary/shops/{sku}/")
+    @GET(UrlUtils.DOMAIN + "ratings/api/v1/public/overview")
     Call<JsonObject> getShopReviews(@Header("Authorization") String token,
-                                    @Path("sku") String sku);
+                                    @Query("slug") String slug);
 
     @GET(UrlUtils.BASE_URL + "shop-subscriptions")
     Call<JsonObject> getFollowedShops(@Header("Authorization") String token);
@@ -662,11 +662,10 @@ public interface IApiClient {
     Call<JsonObject> payViaBank(@Header("Authorization") String token,
                                 @Body HashMap<String, String> body);
 
-
     // reviews
-    @GET(UrlUtils.BASE_URL + "reviews/shops/{slug}/")
-    Call<CommonDataResponse<List<ReviewItem>>> getShopReviews(@Header("Authorization") String token,
-                                                              @Path("slug") String shopSlug,
+    @GET(UrlUtils.DOMAIN + "ratings/api/v1/public/all-reviews")
+    Call<CommonDataResponse<JsonObject>> getShopReviews(@Header("Authorization") String token,
+                                                              @Query("slug") String shopSlug,
                                                               @Query("page") int page,
                                                               @Query("limit") int limit);
 

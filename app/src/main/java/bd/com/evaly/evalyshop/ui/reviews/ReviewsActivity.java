@@ -27,7 +27,9 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +44,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
 import bd.com.evaly.evalyshop.ui.reviews.adapter.ReviewsAdapter;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
@@ -228,11 +231,15 @@ public class ReviewsActivity extends AppCompatActivity {
     public void getReviews(String slug) {
 
         progressBar.setVisibility(View.VISIBLE);
-        ReviewsApiHelper.getReviews(CredentialManager.getToken(), slug, currentPage, 20, isShop, new ResponseListenerAuth<CommonDataResponse<List<ReviewItem>>, String>() {
+        ReviewsApiHelper.getReviews(CredentialManager.getToken(), slug, currentPage, 20, isShop, new ResponseListenerAuth<CommonDataResponse<JsonObject>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<List<ReviewItem>> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<JsonObject> response, int statusCode) {
                 progressBar.setVisibility(View.INVISIBLE);
-                List<ReviewItem> list = response.getData();
+                List<ReviewItem> list = new ArrayList<>();
+                if (response.getData() != null && response.getData().has("feedback_list")) {
+                    list = new Gson().fromJson(response.getData().get("feedback_list").getAsJsonArray(), new TypeToken<List<ReviewItem>>() {
+                    }.getType());
+                }
 
                 if (list.size() == 0 && currentPage == 1) {
                     not.setVisibility(View.VISIBLE);

@@ -123,6 +123,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         homeController.setFilterDuplicates(true);
         homeController.setActivity((AppCompatActivity) getActivity());
+        homeController.setClickListener(this);
         homeController.setFragment(this);
         homeController.setHomeViewModel(viewModel);
         binding.recyclerView.setAdapter(homeController.getAdapter());

@@ -13,10 +13,10 @@ public class ReviewItem {
     @SerializedName("user_name")
     private String user_name;
 
-    @SerializedName("rating_value")
+    @SerializedName(value = "rating_value", alternate = "rating")
     private int rating_value;
 
-    @SerializedName("rating_text")
+    @SerializedName(value = "rating_text", alternate = "review")
     private String rating_text;
 
     @SerializedName("time")

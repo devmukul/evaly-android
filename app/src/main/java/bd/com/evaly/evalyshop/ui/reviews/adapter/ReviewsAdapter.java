@@ -21,10 +21,10 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
-public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHolder>{
+public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHolder> {
 
-    ArrayList<ReviewItem> itemList;
-    Context context;
+    private ArrayList<ReviewItem> itemList;
+    private Context context;
 
     public ReviewsAdapter(ArrayList<ReviewItem> itemList, Context context) {
         this.itemList = itemList;
@@ -34,7 +34,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHo
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_review,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_review, viewGroup, false);
         return new MyViewHolder(view);
     }
 
@@ -43,17 +43,17 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHo
         myViewHolder.name.setText(itemList.get(i).getUser_name());
 
         try {
-            myViewHolder.time.setText(Utils.formattedDateFromString("","hh:mm aa - d',' MMMM", itemList.get(i).getTime()));
+            myViewHolder.time.setText(Utils.formattedDateFromString("", "hh:mm aa - d',' MMMM", itemList.get(i).getTime()));
         } catch (Exception e) {
             myViewHolder.time.setText(Utils.getTimeAgo(Integer.parseInt(itemList.get(i).getTime()) * 1000));
         }
 
         myViewHolder.reviewText.setText(itemList.get(i).getRating_text());
 
-        if (itemList.get(i).getRating_text().equals("null"))
+        if (itemList.get(i).getRating_text() == null)
             myViewHolder.reviewText.setVisibility(View.GONE);
 
-        if (itemList.get(i).getProfileImage() != null){
+        if (itemList.get(i).getProfileImage() != null) {
             Glide.with(context)
                     .load(itemList.get(i).getProfileImage())
                     .apply(new RequestOptions().override(200, 200))
@@ -70,19 +70,19 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHo
         return itemList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, time, reviewText;
         RatingBar ratingBar;
         ImageView profilePicture;
         View view;
+
         public MyViewHolder(final View itemView) {
             super(itemView);
-            name=itemView.findViewById(R.id.name);
-            time=itemView.findViewById(R.id.time);
+            name = itemView.findViewById(R.id.name);
+            time = itemView.findViewById(R.id.time);
             reviewText = itemView.findViewById(R.id.review_text);
             ratingBar = itemView.findViewById(R.id.ratingBar);
             profilePicture = itemView.findViewById(R.id.profilePicNav);
-
             view = itemView;
         }
     }
