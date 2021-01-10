@@ -56,7 +56,7 @@ public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyVi
 
         if (context != null)
             Glide.with(context.getApplicationContext())
-                    .load(itemsList.get(i).getShopItemImage())
+                    .load(itemsList.get(i).getFirstImage())
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .placeholder(R.drawable.ic_image_placeholder)
                     .apply(new RequestOptions().override(200, 200))

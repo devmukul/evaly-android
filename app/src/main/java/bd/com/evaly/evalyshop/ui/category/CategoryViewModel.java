@@ -57,10 +57,10 @@ public class CategoryViewModel extends ViewModel {
 
     public void loadSubCategories() {
 
-        GeneralApiHelper.getSubCategories(rootCategory, new ResponseListenerAuth<List<CategoryEntity>, String>() {
+        GeneralApiHelper.getSubCategories(rootCategory, new ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String>() {
             @Override
-            public void onDataFetched(List<CategoryEntity> response, int statusCode) {
-                subCategoryLiveData.setValue(response);
+            public void onDataFetched(CommonDataResponse<List<CategoryEntity>> response, int statusCode) {
+                subCategoryLiveData.setValue(response.getData());
             }
 
             @Override

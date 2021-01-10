@@ -2,12 +2,12 @@ package bd.com.evaly.evalyshop.models.product;
 
 public class ProductListItem {
 
-    String thumbnailSM,name,slug,categoryName,categorySlug,brandName,brandSlug, sku;
-    int priceMax,priceMin, discountedPrice = 0;
+    String thumbnailSM, name, slug, categoryName, categorySlug, brandName, brandSlug, sku;
+    int priceMax, priceMin, discountedPrice = 0;
     boolean approved;
 
 
-    public ProductListItem(){
+    public ProductListItem() {
 
     }
 

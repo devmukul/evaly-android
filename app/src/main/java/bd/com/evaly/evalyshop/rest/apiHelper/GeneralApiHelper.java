@@ -32,7 +32,7 @@ public class GeneralApiHelper extends BaseApiHelper {
         getiApiClient().getTopCategories().enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getSubCategories(String rootCategory, ResponseListenerAuth<List<CategoryEntity>, String> listener) {
+    public static void getSubCategories(String rootCategory, ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String> listener) {
         getiApiClient().getSubCategories(rootCategory).enqueue(getResponseCallBackDefault(listener));
     }
 

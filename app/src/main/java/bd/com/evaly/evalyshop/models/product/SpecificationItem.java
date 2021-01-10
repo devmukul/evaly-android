@@ -9,7 +9,7 @@ public class SpecificationItem {
     private String optionValue;
     private String optionSlug;
 
-    public SpecificationItem(){
+    public SpecificationItem() {
 
     }
 

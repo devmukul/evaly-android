@@ -42,6 +42,7 @@ public class ShopViewModel extends ViewModel {
     private String campaignSlug;
     private String brandSlug;
     private String shopSlug;
+    private String search = null;
     private int currentPage = 1;
     private int categoryCurrentPage = 1;
     private Integer categoryCount = null;
@@ -79,6 +80,10 @@ public class ShopViewModel extends ViewModel {
         loadShopDetails();
         loadShopProducts();
         loadShopCategories();
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
     }
 
     public LiveData<List<ItemsItem>> getProductListLiveData() {
@@ -231,7 +236,7 @@ public class ShopViewModel extends ViewModel {
     }
 
     public void loadShopDetails() {
-        ShopApiHelper.getShopDetails(shopSlug, new ResponseListenerAuth<CommonDataResponse<ShopDetailsResponse>, String>() {
+        ShopApiHelper.getShopDetails(shopSlug, campaignSlug, new ResponseListenerAuth<CommonDataResponse<ShopDetailsResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ShopDetailsResponse> response, int statusCode) {
                 shopDetailsLive.setValue(response.getData());
@@ -295,9 +300,9 @@ public class ShopViewModel extends ViewModel {
                 for (int i = 0; i < jsonArray.size(); i++) {
                     JsonObject ob = jsonArray.get(i).getAsJsonObject();
                     TabsItem tabsItem = new TabsItem();
-                    tabsItem.setTitle(ob.get("category_name").getAsString().replaceAll("\"", ""));
+                    tabsItem.setTitle(ob.get("category_name").getAsString());
                     tabsItem.setImage((ob.get("category_image").isJsonNull()) ? "" : ob.get("category_image").getAsString().replaceAll("\"", ""));
-                    tabsItem.setSlug(ob.get("category_slug").getAsString().replaceAll("\"", ""));
+                    tabsItem.setSlug(ob.get("category_slug").getAsString());
                     tabsItem.setCategory(shopSlug);
                     itemList.add(tabsItem);
                 }

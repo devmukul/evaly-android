@@ -1,14 +1,13 @@
 package bd.com.evaly.evalyshop.models.product;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Products {
 
-   String sku,thumbnailSM,name,slug,description,categoryName,categorySlug,brandName,brandSlug,brandThumbnail;
-   ArrayList<String> thumbnail;
-   int priceMax,priceMin;
-   boolean approved;
+    String sku, thumbnailSM, name, slug, description, categoryName, categorySlug, brandName, brandSlug, brandThumbnail;
+    ArrayList<String> thumbnail;
+    int priceMax, priceMin;
+    boolean approved;
 
     public Products(String sku, ArrayList<String> thumbnail, String thumbnailSM, String name, String slug, String description, String categoryName, String categorySlug, String brandName, String brandSlug, String brandThumbnail, int priceMax, int priceMin, boolean approved) {
         this.sku = sku;

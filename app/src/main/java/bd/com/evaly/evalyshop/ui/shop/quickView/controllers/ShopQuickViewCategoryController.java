@@ -32,16 +32,16 @@ public class ShopQuickViewCategoryController extends EpoxyController {
     private boolean categoriesLoading = false;
     private String categoryTitle = null;
 
+    public ShopQuickViewCategoryController() {
+        setDebugLoggingEnabled(true);
+    }
+
     public boolean isCategoriesLoading() {
         return categoriesLoading;
     }
 
     public void setCategoriesLoading(boolean categoriesLoading) {
         this.categoriesLoading = categoriesLoading;
-    }
-
-    public ShopQuickViewCategoryController() {
-        setDebugLoggingEnabled(true);
     }
 
     public void setLoadingMore(boolean loadingMore, boolean build) {
@@ -122,7 +122,7 @@ public class ShopQuickViewCategoryController extends EpoxyController {
 
     public void deselectCategory() {
         for (int j = 0; j < categoryItems.size(); j++) {
-                categoryItems.get(j).setSelected(false);
+            categoryItems.get(j).setSelected(false);
         }
         requestModelBuild();
     }

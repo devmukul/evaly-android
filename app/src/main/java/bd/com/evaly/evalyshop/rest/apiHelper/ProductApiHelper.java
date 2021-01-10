@@ -109,15 +109,16 @@ public class ProductApiHelper extends BaseApiHelper {
 
     public static void getCategoriesOfShop(String shopSlug, String campaign, int page, ResponseListenerAuth<JsonObject, String> listener) {
 
-        IApiClient iApiClient = getiApiClient();
-        Call<JsonObject> call;
-
-        if (campaign == null || campaign.equals(""))
-            call = iApiClient.getCategoriesofShop(shopSlug, page);
-        else
-            call = iApiClient.getCategoriesOfCampaignShop(campaign, shopSlug, page);
-
-        call.enqueue(getResponseCallBackDefault(listener));
+//        IApiClient iApiClient = getiApiClient();
+//        Call<JsonObject> call;
+//
+//        if (campaign == null || campaign.equals(""))
+//            call = ;
+//        else
+//            call = iApiClient.getCategoriesOfCampaignShop(campaign, shopSlug, page);
+//
+//        call.enqueue(getResponseCallBackDefault(listener));
+        getiApiClient().getCategoriesofShop(shopSlug, page).enqueue(getResponseCallBackDefault(listener));
     }
 
 

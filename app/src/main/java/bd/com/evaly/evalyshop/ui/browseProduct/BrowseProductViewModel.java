@@ -43,6 +43,10 @@ public class BrowseProductViewModel extends ViewModel {
         loadFromApi();
     }
 
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
     public void setSelectedType(String selectedType) {
         this.selectedType = selectedType;
     }

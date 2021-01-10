@@ -34,6 +34,7 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
+import bd.com.evaly.evalyshop.models.catalog.brands.BrandCatResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
 import bd.com.evaly.evalyshop.models.catalog.category.ChildCategoryResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
@@ -369,7 +370,7 @@ public interface IApiClient {
 
     // product APIs
 
-    @GET(UrlUtils.BASE_CATALOG + "all-categories")
+    @GET(UrlUtils.BASE_CATALOG + "categories")
     Call<CommonDataResponse<List<ChildCategoryResponse>>> getChildCategory(@Query("parent") String parentCategorySlug);
 
     @GET(UrlUtils.BASE_CATALOG + "brands")
@@ -409,14 +410,13 @@ public interface IApiClient {
     Call<CommonDataResponse<List<ShopItem>>> getProductVariants(@Path("shopSlug") String shopSlug,
                                                                 @Path("shopItem") String shopItem);
 
-    @GET(UrlUtils.BASE_URL + "public/product/shops/{variantId}/")
+    @GET(UrlUtils.BASE_CATALOG + "shop-items/shops/{variantId}")
     Call<CommonDataResponse<List<AvailableShopModel>>> getAvailableShop(@Path("variantId") int variantId);
 
-    @GET(UrlUtils.BASE_URL + "public/product/shops/{variantId}/nearest/")
+    @GET(UrlUtils.BASE_URL + "shop-items/shops/{variantId}/nearest")
     Call<CommonDataResponse<List<AvailableShopModel>>> getNearestAvailableShop(@Path("variantId") int variantId,
                                                                                @Query("long") double longitude,
                                                                                @Query("lat") double latitude);
-
     // with token
 
     @GET(UrlUtils.BASE_CATALOG + "shop-items/{shopSlug}/items")
@@ -430,6 +430,10 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_CATALOG + "shops/{shopSlug}")
     Call<CommonDataResponse<ShopDetailsResponse>> getShopDetails(@Header("Authorization") String token,
                                                                  @Path("shopSlug") String shopSlug);
+
+    @GET(UrlUtils.BASE_CATALOG + "campaign/shops/{shopSlug}")
+    Call<CommonDataResponse<ShopDetailsResponse>> getCampaignShopDetails(@Header("Authorization") String token,
+                                                                         @Path("shopSlug") String shopSlug);
 
 
     @GET(UrlUtils.CAMPAIGNS + "/{campaignSlug}/shops/{shopSlug}/items")
@@ -474,6 +478,9 @@ public interface IApiClient {
     Call<JsonObject> getCategoriesofShop(@Path("shopSlug") String shopSlug,
                                          @Query("page") int page);
 
+    @GET(UrlUtils.BASE_CATALOG + "/brands/{slug}/categories")
+    Call<CommonDataResponse<BrandCatResponse>> getCategoriesOfBrand(@Path("slug") String slug);
+
 
     @GET(UrlUtils.CAMPAIGNS + "/{campaignSlug}/shops/{shopSlug}/categories")
     Call<JsonObject> getCategoriesOfCampaignShop(@Path("campaignSlug") String campaignSlug,
@@ -503,15 +510,15 @@ public interface IApiClient {
 
     // Root Category
 
-    @GET(UrlUtils.BASE_CATALOG + "products/categories")
+    @GET(UrlUtils.BASE_CATALOG + "categories")
     Call<CommonDataResponse<List<CategoryEntity>>> getRootCategories();
 
 
     @GET(UrlUtils.BASE_CATALOG + "products/top-categories")
     Call<CommonDataResponse<List<CategoryEntity>>> getTopCategories();
 
-    @GET(UrlUtils.BASE_CATALOG + "products/all-categories")
-    Call<List<CategoryEntity>> getSubCategories(@Query("parent") String parent);
+    @GET(UrlUtils.BASE_CATALOG + "categories")
+    Call<CommonDataResponse<List<CategoryEntity>>> getSubCategories(@Query("parent") String parent);
 
     // Order APIs
     @GET(UrlUtils.ORDERS)
@@ -840,8 +847,8 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL + "public/express-services/{slug}/")
     Call<ExpressServiceDetailsModel> getExpressServiceDetails(@Path("slug") String slug);
 
-    @GET(UrlUtils.BASE_URL + "public/express-services/shops")
-    Call<CommonResultResponse<List<GroupShopModel>>> getExpressShopList(@Query("express_service") String serviceSlug,
+    @GET(UrlUtils.BASE_CATALOG + "shops/express")
+    Call<CommonResultResponse<List<GroupShopModel>>> getExpressShopList(@Query("express_slug") String serviceSlug,
                                                                         @Query("page") int page,
                                                                         @Query("limit") int limit,
                                                                         @Query("address") String address,

@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.rest;
 
 import androidx.annotation.Nullable;
 
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +43,7 @@ public class ApiClient {
     }
 
     public static Retrofit getXmppClient() {
-        retrofit = new Retrofit.Builder().baseUrl("https://"+ Constants.XMPP_DOMAIN)
+        retrofit = new Retrofit.Builder().baseUrl("https://" + Constants.XMPP_DOMAIN)
                 .addConverterFactory(StringConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .addConverterFactory(ScalarsConverterFactory.create())
@@ -118,6 +117,7 @@ public class ApiClient {
         }
 
     }
+
     public static class StringConverterFactory extends Converter.Factory {
         private final MediaType MEDIA_TYPE = MediaType.parse("text/plain");
 
@@ -128,7 +128,7 @@ public class ApiClient {
         @Nullable
         @Override
         public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
-            if(String.class.equals(type)) {
+            if (String.class.equals(type)) {
                 return (Converter<String, RequestBody>) value -> RequestBody.create(MEDIA_TYPE, value);
             }
 

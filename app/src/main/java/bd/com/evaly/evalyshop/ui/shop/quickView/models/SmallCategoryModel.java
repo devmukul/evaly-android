@@ -37,17 +37,13 @@ import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 public abstract class SmallCategoryModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
+    public TabsItem model;
+    @EpoxyAttribute
     String title;
-
     @EpoxyAttribute
     String image;
-
     @EpoxyAttribute
     boolean isSelected;
-
-    @EpoxyAttribute
-    public TabsItem model;
-
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
 

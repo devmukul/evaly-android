@@ -28,13 +28,16 @@ public class CategoryFragment extends Fragment {
     private SubCategoryController subCategoryController;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentCategoryBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view,
+                              @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         binding.toolbar.setTitle("Categories");
@@ -74,7 +77,6 @@ public class CategoryFragment extends Fragment {
             binding.selectedBrd.setVisibility(View.VISIBLE);
         else
             binding.selectedBrd.setVisibility(View.GONE);
-
     }
 
     private void inflateSearchMenu() {

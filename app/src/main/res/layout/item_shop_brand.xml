@@ -10,7 +10,6 @@
         android:gravity="top|center_horizontal"
         android:orientation="vertical"
         app:cardCornerRadius="10dp"
-        android:layout_margin="5dp"
         app:cardElevation="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout

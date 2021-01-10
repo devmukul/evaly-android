@@ -39,12 +39,12 @@ public class ProductItem extends BaseModel {
     //@SerializedName("in_stock")
     private int inStock;
 
-    public void setShopSlug(String shopSlug) {
-        this.shopSlug = shopSlug;
-    }
-
     public String getShopSlug() {
         return shopSlug;
+    }
+
+    public void setShopSlug(String shopSlug) {
+        this.shopSlug = shopSlug;
     }
 
     public int getInStock() {
@@ -87,6 +87,13 @@ public class ProductItem extends BaseModel {
 
     public void setImageUrls(List<String> imageUrls) {
         this.imageUrls = imageUrls;
+    }
+
+    public String getFirstImage() {
+        if (imageUrls == null || imageUrls.size() == 0)
+            return "";
+        else
+            return imageUrls.get(0);
     }
 
     public String getPriceType() {

@@ -71,7 +71,7 @@ public class SubCategoryController extends EpoxyController {
                         bundle.putString("category", model.model().getSlug());
                         bundle.putString("category_slug", model.model().getSlug());
                         // navController.navigate(R.id.browseProductFragment, bundle);
-                        navController.navigate(R.id.productBrowseFragment, bundle);
+                        navController.navigate(R.id.browseProductFragment, bundle);
                     })
                     .addTo(this);
         }

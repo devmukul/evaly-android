@@ -3,8 +3,8 @@ package bd.com.evaly.evalyshop.models.product;
 import java.util.ArrayList;
 
 public class ProductVariants {
-    int variantID,minPrice,maxPrice,attribute;
-    String productName,description,brandName,colorImage;
+    int variantID, minPrice, maxPrice, attribute;
+    String productName, description, brandName, colorImage;
     ArrayList<String> images;
 
     public ProductVariants() {

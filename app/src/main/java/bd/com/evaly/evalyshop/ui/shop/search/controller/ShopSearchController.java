@@ -1,23 +1,29 @@
 package bd.com.evaly.evalyshop.ui.shop.search.controller;
 
 import android.content.Intent;
+import android.text.Html;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ItemShopProductSearchTitleBinding;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
+import bd.com.evaly.evalyshop.ui.shop.search.ShopSearchViewModel;
+import bd.com.evaly.evalyshop.ui.shop.search.model.ShopSearchProductTitleModel_;
 
 public class ShopSearchController extends EpoxyController {
 
@@ -26,16 +32,18 @@ public class ShopSearchController extends EpoxyController {
     @AutoModel
     NoProductModel_ noProductModel;
     private List<ProductItem> list = new ArrayList<>();
-    private ShopViewModel viewModel;
+    private ShopSearchViewModel viewModel;
     private int cashBack = 0;
     private AppCompatActivity activity;
     private boolean loadingMore = false;
+    private String search = null;
+    private boolean showSearchText = false;
 
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
     }
 
-    public void setViewModel(ShopViewModel viewModel) {
+    public void setViewModel(ShopSearchViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
@@ -47,8 +55,35 @@ public class ShopSearchController extends EpoxyController {
         this.activity = activity;
     }
 
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
+    public void setList(List<ProductItem> list) {
+        this.list = list;
+    }
+
+    public void clearList() {
+        list.clear();
+    }
+
+    public void setShowSearchText(boolean showSearchText) {
+        this.showSearchText = showSearchText;
+    }
+
     @Override
     protected void buildModels() {
+
+        new ShopSearchProductTitleModel_()
+                .id("search title")
+                .search(search)
+                .onBind((model, view, position) -> {
+                    ItemShopProductSearchTitleBinding binding = (ItemShopProductSearchTitleBinding) view.getDataBinding();
+                    if (model.search() != null)
+                        binding.searchTitle.setText(model.search());
+                })
+                .addIf(search != null && !search.equals(""), this);
+
         for (ProductItem productItem : list) {
             new HomeProductGridModel_()
                     .id(productItem.getUniqueId())
@@ -74,8 +109,17 @@ public class ShopSearchController extends EpoxyController {
         }
 
         noProductModel
-                .text("No Products Available")
-                .image(R.drawable.ic_empty_product)
+                .text(showSearchText ? "Search products here" : "No Products Available")
+                .image(showSearchText ? R.drawable.ic_category_search : R.drawable.ic_empty_product)
+                .onBind((model, view, position) -> {
+                    TextView textView = view.findViewById(R.id.text);
+                    ImageView imageView = view.findViewById(R.id.image);
+                    Glide.with(view)
+                            .asDrawable()
+                            .load(model.image())
+                            .into(imageView);
+                    textView.setText(Html.fromHtml(model.text()));
+                })
                 .addIf(list.size() == 0 && !loadingMore, this);
 
         loader
