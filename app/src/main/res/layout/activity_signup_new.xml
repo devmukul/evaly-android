@@ -114,11 +114,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/transparent"
-                android:hint="Type of the word"
+                android:hint="@string/type_of_the_word"
                 android:inputType="text"
                 android:paddingLeft="20dp"
                 android:paddingTop="15dp"
-                android:paddingRight="20dp"
+                android:paddingRight="10dp"
                 android:paddingBottom="15dp"
                 android:textColorHint="@color/c666"
                 android:textSize="16sp"
@@ -126,7 +126,7 @@
 
             <ImageView
                 android:id="@+id/captchaImage"
-                android:layout_width="120dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true" />
 

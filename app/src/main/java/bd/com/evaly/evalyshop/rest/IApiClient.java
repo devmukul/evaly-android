@@ -234,7 +234,7 @@ public interface IApiClient {
     @POST(UrlUtils.DOMAIN_EAUTH + "set-password")
     Call<JsonObject> setPassword(@Body HashMap<String, String> setPasswordModel);
 
-    @POST(UrlUtils.DOMAIN_EAUTH + "forgot-password")
+    @POST(UrlUtils.DOMAIN + "ecaptcha/auth/forgot-password")
     Call<JsonObject> forgetPassword(@Body HashMap<String, String> body);
 
     @POST(UrlUtils.DOMAIN + "ecaptcha/auth/create-customer")
@@ -536,8 +536,6 @@ public interface IApiClient {
 
     @POST(BuildConfig.WEB_URL + "sebl/payment")
     Call<JsonObject> payViaSEBL(@Header("Authorization") String token, @Query("amount") String amount, @Query("invoice") String invoice, @Query("token") String authToken, @Query("context_reference") String context);
-
-
 
 
     @POST(BuildConfig.NAGAD_URL)

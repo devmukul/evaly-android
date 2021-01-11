@@ -366,10 +366,7 @@ public class AuthApiHelper extends BaseApiHelper {
 
     // forget password
 
-    public static void forgetPassword(String phone, ResponseListenerAuth<JsonObject, String> listener) {
-
-        HashMap<String, String> body = new HashMap<>();
-        body.put("phone_number", phone);
+    public static void forgetPassword(HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
         getiApiClient().forgetPassword(body).enqueue(getResponseCallBackDefault(listener));
     }
 
