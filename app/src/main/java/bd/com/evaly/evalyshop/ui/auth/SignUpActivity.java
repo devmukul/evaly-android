@@ -98,7 +98,10 @@ public class SignUpActivity extends BaseActivity {
     }
 
     public void signUpUser() {
-
+        if (captchaModel == null){
+            ToastUtils.show("Please reload the page");
+            return;
+        }
 
         final ViewDialog alert = new ViewDialog(this);
 
@@ -140,6 +143,7 @@ public class SignUpActivity extends BaseActivity {
             public void onAuthError(boolean logout) {
                 alert.hideDialog();
                 ToastUtils.show("Invalid captcha");
+                getCaptcha();
             }
         });
     }

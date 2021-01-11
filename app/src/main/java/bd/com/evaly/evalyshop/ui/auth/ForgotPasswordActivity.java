@@ -56,7 +56,10 @@ public class ForgotPasswordActivity extends BaseActivity {
     }
 
     private void resetPassword() {
-
+        if (captchaModel == null){
+            ToastUtils.show("Please reload the page");
+            return;
+        }
         HashMap<String, String> body = new HashMap<>();
         body.put("phone_number", binding.phone.getText().toString());
         body.put("captcha_id", captchaModel.getCaptchaId());
@@ -89,6 +92,7 @@ public class ForgotPasswordActivity extends BaseActivity {
             public void onAuthError(boolean logout) {
                 ToastUtils.show("Invalid captcha");
                 dialog.hideDialog();
+                getCaptcha();
             }
         });
     }
