@@ -190,10 +190,10 @@ public class HomeViewModel extends ViewModel {
     }
 
     private void loadExpressServices() {
-        ExpressApiHelper.getServicesList(new ResponseListenerAuth<List<ExpressServiceModel>, String>() {
+        ExpressApiHelper.getServicesList(new ResponseListenerAuth<CommonDataResponse<List<ExpressServiceModel>>, String>() {
             @Override
-            public void onDataFetched(List<ExpressServiceModel> response, int statusCode) {
-                expressListLive.setValue(response);
+            public void onDataFetched(CommonDataResponse<List<ExpressServiceModel>> response, int statusCode) {
+                expressListLive.setValue(response.getData());
             }
 
             @Override

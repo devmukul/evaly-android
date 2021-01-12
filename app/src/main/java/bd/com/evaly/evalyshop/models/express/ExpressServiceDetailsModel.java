@@ -2,6 +2,8 @@ package bd.com.evaly.evalyshop.models.express;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class ExpressServiceDetailsModel {
 
     @SerializedName("end_date")
@@ -23,7 +25,7 @@ public class ExpressServiceDetailsModel {
     private String bannerImage;
 
     @SerializedName("allowed_payment_methods")
-    private String allowedPaymentMethods;
+    private List<String> allowedPaymentMethods;
 
     @SerializedName("slug")
     private String slug;
@@ -88,11 +90,11 @@ public class ExpressServiceDetailsModel {
         this.bannerImage = bannerImage;
     }
 
-    public String getAllowedPaymentMethods() {
+    public List<String> getAllowedPaymentMethods() {
         return allowedPaymentMethods;
     }
 
-    public void setAllowedPaymentMethods(String allowedPaymentMethods) {
+    public void setAllowedPaymentMethods(List<String> allowedPaymentMethods) {
         this.allowedPaymentMethods = allowedPaymentMethods;
     }
 

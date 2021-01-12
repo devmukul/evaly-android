@@ -825,8 +825,6 @@ public interface IApiClient {
 
 
     // auth 2.0
-
-
     @POST(UrlUtils.BASE_AUTH + "users/register")
     Call<LoginResponse> authLogin(@Body LoginBody body);
 
@@ -838,13 +836,11 @@ public interface IApiClient {
 
 
     // evaly express services
+    @GET(UrlUtils.BASE_CATALOG + "express")
+    Call<CommonDataResponse<List<ExpressServiceModel>>> getExpressServicesList();
 
-    @GET(UrlUtils.BASE_URL + "/public/express-services/")
-    Call<List<ExpressServiceModel>> getExpressServicesList();
-
-
-    @GET(UrlUtils.BASE_URL + "public/express-services/{slug}/")
-    Call<ExpressServiceDetailsModel> getExpressServiceDetails(@Path("slug") String slug);
+    @GET(UrlUtils.BASE_CATALOG + "express/{slug}")
+    Call<CommonDataResponse<ExpressServiceDetailsModel>> getExpressServiceDetails(@Path("slug") String slug);
 
     @GET(UrlUtils.BASE_CATALOG + "shops/express")
     Call<CommonResultResponse<List<GroupShopModel>>> getExpressShopList(@Query("express_slug") String serviceSlug,

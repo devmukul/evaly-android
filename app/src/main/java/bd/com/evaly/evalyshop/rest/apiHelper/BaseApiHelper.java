@@ -119,7 +119,7 @@ public class BaseApiHelper {
 
             @Override
             public void onFailure(Call<T> call, Throwable t) {
-                Logger.e(t.toString());
+                Logger.d(t.getMessage());
                 if (t instanceof IOException)
                     dataFetchingListener.onFailed(AppController.getmContext().getString(R.string.networkError), 0);
                 else

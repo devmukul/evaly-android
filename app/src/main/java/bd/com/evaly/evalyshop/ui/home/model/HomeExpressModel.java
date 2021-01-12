@@ -23,6 +23,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
 import bd.com.evaly.evalyshop.databinding.HomeModelExpressBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 import bd.com.evaly.evalyshop.ui.basic.ImageDialog;
@@ -88,15 +89,14 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
                 }
             });
 
-            ExpressApiHelper.getServicesList(new ResponseListenerAuth<List<ExpressServiceModel>, String>() {
+            ExpressApiHelper.getServicesList(new ResponseListenerAuth<CommonDataResponse<List<ExpressServiceModel>>, String>() {
                 @Override
-                public void onDataFetched(List<ExpressServiceModel> response, int statusCode) {
+                public void onDataFetched(CommonDataResponse<List<ExpressServiceModel>> response, int statusCode) {
                     Executors.newFixedThreadPool(4).execute(() -> {
-                        expressServiceDao.insertList(response);
+                        expressServiceDao.insertList(response.getData());
                         List<String> slugs = new ArrayList<>();
-                        for (ExpressServiceModel item : response)
+                        for (ExpressServiceModel item : response.getData())
                             slugs.add(item.getSlug());
-
                         if (slugs.size() > 0)
                             expressServiceDao.deleteOld(slugs);
                     });

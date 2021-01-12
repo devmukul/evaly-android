@@ -28,6 +28,7 @@ import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
 import bd.com.evaly.evalyshop.databinding.ActivityExpressProductSearchBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
@@ -146,14 +147,14 @@ public class ExpressProductSearchFragment extends Fragment {
     }
 
     private void getExpressServices() {
-        ExpressApiHelper.getServicesList(new ResponseListenerAuth<List<ExpressServiceModel>, String>() {
+        ExpressApiHelper.getServicesList(new ResponseListenerAuth<CommonDataResponse<List<ExpressServiceModel>>, String>() {
             @Override
-            public void onDataFetched(List<ExpressServiceModel> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<List<ExpressServiceModel>> response, int statusCode) {
                 Executors.newFixedThreadPool(4).execute(() -> {
-                    expressServiceDao.insertList(response);
+                    expressServiceDao.insertList(response.getData());
 
                     List<String> slugs = new ArrayList<>();
-                    for (ExpressServiceModel item : response)
+                    for (ExpressServiceModel item : response.getData())
                         slugs.add(item.getSlug());
 
                     if (slugs.size() > 0)

@@ -10,6 +10,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
@@ -116,10 +117,10 @@ public class EvalyExpressViewModel extends ViewModel {
 
     public void loadServiceDetails() {
 
-        ExpressApiHelper.getServiceDetails(serviceSlug, new ResponseListenerAuth<ExpressServiceDetailsModel, String>() {
+        ExpressApiHelper.getServiceDetails(serviceSlug, new ResponseListenerAuth<CommonDataResponse<ExpressServiceDetailsModel>, String>() {
             @Override
-            public void onDataFetched(ExpressServiceDetailsModel response, int statusCode) {
-                expressDetails.setValue(response);
+            public void onDataFetched(CommonDataResponse<ExpressServiceDetailsModel> response, int statusCode) {
+                expressDetails.setValue(response.getData());
             }
 
             @Override
