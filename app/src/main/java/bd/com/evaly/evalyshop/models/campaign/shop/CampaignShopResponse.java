@@ -6,13 +6,13 @@ import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 
 public class CampaignShopResponse extends CampaignParentModel {
 
-	@SerializedName("cashback_text")
+	@SerializedName(value = "cashback_text", alternate = "badge_text_2")
 	private String cashbackText;
 
 	@SerializedName("image")
 	private String image;
 
-	@SerializedName("badge_text")
+	@SerializedName(value = "badge_text", alternate = "badge_text_1")
 	private String badgeText;
 
 	@SerializedName("campaign_slug")
@@ -29,6 +29,8 @@ public class CampaignShopResponse extends CampaignParentModel {
 	}
 
 	public String getCashbackText(){
+		if (cashbackText == null)
+			return "";
 		return cashbackText;
 	}
 

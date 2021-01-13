@@ -6,16 +6,16 @@ import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 
 public class CampaignProductResponse extends CampaignParentModel {
 
-    @SerializedName("cashback_text")
+    @SerializedName(value = "cashback_text", alternate = "badge_text_2")
     private String cashbackText;
 
     @SerializedName("image")
     private String image;
 
-    @SerializedName("badge_text")
+    @SerializedName(value = "badge_text", alternate = "badge_text_1")
     private String badgeText;
 
-    @SerializedName("bottom_text")
+    @SerializedName(value = "bottom_text", alternate = "shop_name")
     private String bottomText;
 
     @SerializedName("price")

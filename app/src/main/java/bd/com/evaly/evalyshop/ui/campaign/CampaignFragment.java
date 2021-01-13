@@ -288,11 +288,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                     "BuyNow");
         });
 
-        viewModel.getCarouselLiveList().observe(getViewLifecycleOwner(), campaignCarouselResponses -> {
-            productController.setCarouselList(campaignCarouselResponses);
-            productController.requestModelBuild();
-        });
-
         viewModel.getCategoryLiveList().observe(getViewLifecycleOwner(), campaignCategoryResponses -> {
             sliderController.addData(campaignCategoryResponses);
             sliderController.requestModelBuild();
@@ -302,6 +297,8 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                 CampaignSliderModel_ model = (CampaignSliderModel_) sliderController.getAdapter().getModelAtPosition(0);
                 initHeader(model.model().getBannerImage());
             }
+            productController.requestModelBuild();
+
         });
 
         viewModel.getProductsLiveList().observe(getViewLifecycleOwner(), campaignProductResponses -> {

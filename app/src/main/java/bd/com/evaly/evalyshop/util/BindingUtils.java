@@ -80,6 +80,9 @@ public class BindingUtils {
 
         String[] split = url.split("/media.evaly.com.bd/");
 
+        if (split.length < 2)
+            return null;
+
         CloudFrontRequest requestBody = new CloudFrontRequest();
         requestBody.setBucket("media.evaly.com.bd");
         requestBody.setKey(split[1]);

@@ -39,7 +39,6 @@ public class CampaignController extends EpoxyController {
     CategoryCarouselModel_ buttonCarousel;
     private List<CampaignCategoryResponse> categoryList = new ArrayList<>();
     private List<CampaignProductResponse> productList = new ArrayList<>();
-    private List<CampaignCarouselResponse> carouselList = new ArrayList<>();
     private NavController navController;
     private boolean isLoading = true;
     private AppCompatActivity activity;
@@ -80,7 +79,7 @@ public class CampaignController extends EpoxyController {
                 .addTo(this);
 
 
-        for (CampaignCarouselResponse rootItem : carouselList) {
+        for (CampaignCategoryResponse rootItem : categoryList) {
 
             new CampaignHeaderModel_()
                     .id("cam_header", rootItem.getSlug())
@@ -90,7 +89,7 @@ public class CampaignController extends EpoxyController {
                     .primaryColor(rootItem.getBannerPrimaryBgColor())
                     .clickListener((model, parentView, clickedView, position) -> {
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable("model", rootItem.getCategoryResponse());
+                        bundle.putSerializable("model", rootItem);
                         bundle.putBoolean("open_filter", true);
                         navController.navigate(R.id.campaignDetails, bundle);
                     })
@@ -103,7 +102,7 @@ public class CampaignController extends EpoxyController {
                         .isStaggered(false)
                         .clickListener((model, parentView, clickedView, position) -> {
                             Bundle bundle = new Bundle();
-                            bundle.putSerializable("model", rootItem.getCategoryResponse());
+                            bundle.putSerializable("model", rootItem);
                             bundle.putSerializable("sub_model", model.model());
                             navController.navigate(R.id.campaignDetails, bundle);
                         })
@@ -171,13 +170,6 @@ public class CampaignController extends EpoxyController {
 
     }
 
-    public List<CampaignCarouselResponse> getCarouselList() {
-        return carouselList;
-    }
-
-    public void setCarouselList(List<CampaignCarouselResponse> carouselList) {
-        this.carouselList = carouselList;
-    }
 
     public void setActivity(AppCompatActivity activity) {
         this.activity = activity;

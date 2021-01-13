@@ -158,7 +158,7 @@ public interface IApiClient {
 
 
     // new campaign
-    @GET(UrlUtils.BASE_URL + "campaigns/public/{campaignSlug}")
+    @GET(UrlUtils.BASE_CATALOG + "campaign/category/{campaignSlug}")
     Call<CommonDataResponse<SubCampaignDetailsResponse>> getSubCampaignDetails(@Path("campaignSlug") String campaignSlug);
 
     @GET(UrlUtils.BASE_URL + "campaigns/web/home")
@@ -167,39 +167,39 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL + "campaigns/mobile/products/banners/latest")
     Call<CommonDataResponse<List<CampaignBannerResponse>>> getCampaignBanners();
 
-    @GET(UrlUtils.BASE_URL + "campaigns/mobile/categories/products")
+    @GET(UrlUtils.BASE_CATALOG + "campaign/category/products")
     Call<CommonDataResponse<List<CampaignProductResponse>>> getCampaignCategoryProducts(@Query("page") int page,
                                                                                         @Query("limit") int limit,
                                                                                         @Query("search") String search,
                                                                                         @Query("category") String category,
                                                                                         @Query("campaign") String campaign);
 
-    @GET(UrlUtils.BASE_URL + "campaigns/mobile/categories/campaigns")
+    @GET(UrlUtils.BASE_CATALOG + "campaign")
     Call<CommonDataResponse<List<SubCampaignResponse>>> getCampaignCategoryCampaigns(@Query("page") int page,
                                                                                      @Query("limit") int limit,
                                                                                      @Query("search") String search,
                                                                                      @Query("category") String category);
 
-    @GET(UrlUtils.BASE_URL + "campaigns/mobile/categories/brands")
+    @GET(UrlUtils.BASE_CATALOG + "campaign/category/brands")
     Call<CommonDataResponse<List<CampaignBrandResponse>>> getCampaignCategoryBrands(@Query("page") int page,
                                                                                     @Query("limit") int limit,
                                                                                     @Query("search") String search,
                                                                                     @Query("category") String category,
                                                                                     @Query("campaign") String campaign);
 
-    @GET(UrlUtils.BASE_URL + "campaigns/mobile/categories/shops")
+    @GET(UrlUtils.BASE_CATALOG + "campaign/category/shops")
     Call<CommonDataResponse<List<CampaignShopResponse>>> getCampaignCategoryShops(@Query("page") int page,
                                                                                   @Query("limit") int limit,
                                                                                   @Query("search") String search,
                                                                                   @Query("category") String category,
                                                                                   @Query("campaign") String campaign);
 
-    @GET(UrlUtils.BASE_URL + "campaigns/mobile/products/latest")
+    @GET(UrlUtils.BASE_CATALOG + "campaign/category/products")
     Call<CommonDataResponse<List<CampaignProductResponse>>> getCampaignAllProducts(@Query("page") int page,
                                                                                    @Query("limit") int limit,
                                                                                    @Query("search") String search);
 
-    @GET(UrlUtils.BASE_URL + "campaigns/mobile/categories")
+    @GET(UrlUtils.BASE_CATALOG + "campaign/category/campaigns")
     Call<CommonDataResponse<List<CampaignCategoryResponse>>> getCampaignCategory();
 
     // chat
