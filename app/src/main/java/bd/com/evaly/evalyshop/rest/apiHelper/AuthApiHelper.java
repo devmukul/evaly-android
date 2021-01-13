@@ -21,6 +21,7 @@ import bd.com.evaly.evalyshop.models.auth.RegisterBody;
 import bd.com.evaly.evalyshop.models.auth.RegisterResponse;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordBody;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordResponse;
+import bd.com.evaly.evalyshop.models.auth.captcha.CaptchaResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
@@ -35,6 +36,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AuthApiHelper extends BaseApiHelper {
+
+    public static void getCaptcha(ResponseListenerAuth<CommonDataResponse<CaptchaResponse>, String> listener) {
+        getiApiClient().getCaptcha().enqueue(getResponseCallBackDefault(listener));
+    }
 
 
     public static void checkUpdate(DataFetchingListener<Response<JsonObject>> listener) {
@@ -361,10 +366,7 @@ public class AuthApiHelper extends BaseApiHelper {
 
     // forget password
 
-    public static void forgetPassword(String phone, ResponseListenerAuth<JsonObject, String> listener) {
-
-        HashMap<String, String> body = new HashMap<>();
-        body.put("phone_number", phone);
+    public static void forgetPassword(HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
         getiApiClient().forgetPassword(body).enqueue(getResponseCallBackDefault(listener));
     }
 

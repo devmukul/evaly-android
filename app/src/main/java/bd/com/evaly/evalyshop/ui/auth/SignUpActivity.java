@@ -5,24 +5,23 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.pref.ReferPref;
-import bd.com.evaly.evalyshop.listener.ResponseListener;
+import bd.com.evaly.evalyshop.databinding.ActivitySignupNewBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.auth.captcha.CaptchaResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
@@ -31,72 +30,89 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class SignUpActivity extends BaseActivity {
 
-    private EditText firstName, lastName, phoneNumber;
-    private Button signUp;
-    private LinearLayout signIn;
-    private ImageView close;
+
+    private ActivitySignupNewBinding binding;
     private ReferPref referPref;
+    private CaptchaResponse captchaModel;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup_new);
-
-
-        firstName = findViewById(R.id.f_name);
-        lastName = findViewById(R.id.l_name);
-        phoneNumber = findViewById(R.id.number);
-        signUp = findViewById(R.id.sign_up);
-        signIn = findViewById(R.id.signinHolder);
-        close = findViewById(R.id.close);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_signup_new);
         referPref = new ReferPref(this);
-        TextView privacyText = findViewById(R.id.privacyText);
+        binding.privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/privacy-policy\">Privacy Policy</a> and <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> of Evaly."));
+        binding.privacyText.setMovementMethod(LinkMovementMethod.getInstance());
 
-        privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/privacy-policy\">Privacy Policy</a> and <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> of Evaly."));
-        privacyText.setMovementMethod(LinkMovementMethod.getInstance());
-
-        CheckBox checkBox = findViewById(R.id.checkBox);
-
-        signUp.setOnClickListener(v -> {
-            if (TextUtils.isEmpty(firstName.getText().toString())) {
+        binding.signUp.setOnClickListener(v -> {
+            if (TextUtils.isEmpty(binding.fName.getText().toString())) {
                 Toast.makeText(SignUpActivity.this, "Please enter your first name", Toast.LENGTH_SHORT).show();
-            } else if (TextUtils.isEmpty(lastName.getText().toString())) {
+            } else if (TextUtils.isEmpty(binding.lName.getText().toString())) {
                 Toast.makeText(SignUpActivity.this, "Please enter your last name", Toast.LENGTH_SHORT).show();
-            } else if (TextUtils.isEmpty(phoneNumber.getText().toString())) {
+            } else if (TextUtils.isEmpty(binding.number.getText().toString())) {
                 Toast.makeText(SignUpActivity.this, "Please enter your phone number", Toast.LENGTH_SHORT).show();
-            } else if (phoneNumber.getText().toString().length() != 11) {
+            } else if (binding.number.getText().toString().length() != 11) {
                 Toast.makeText(SignUpActivity.this, "Please enter your phone number correctly", Toast.LENGTH_SHORT).show();
-            } else if (!checkBox.isChecked()) {
+            } else if (!binding.checkBox.isChecked()) {
                 Toast.makeText(SignUpActivity.this, "You must accept privacy policy and terms & conditions in order to sign up for Evaly", Toast.LENGTH_LONG).show();
+            } else if (TextUtils.isEmpty(binding.captchaInput.getText().toString())) {
+                Toast.makeText(SignUpActivity.this, "Please enter captcha verification code", Toast.LENGTH_SHORT).show();
             } else {
                 signUpUser();
             }
         });
 
-        signIn.setOnClickListener(v -> {
+        binding.signinHolder.setOnClickListener(v -> {
             startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
             finish();
         });
 
-        close.setOnClickListener(v -> onBackPressed());
+        binding.close.setOnClickListener(v -> onBackPressed());
+
+        binding.reloadCaptcha.setOnClickListener(view -> getCaptcha());
+
+        getCaptcha();
+    }
+
+    private void getCaptcha() {
+        AuthApiHelper.getCaptcha(new ResponseListenerAuth<CommonDataResponse<CaptchaResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<CaptchaResponse> response, int statusCode) {
+                captchaModel = response.getData();
+                Glide.with(binding.captchaImage)
+                        .asBitmap()
+                        .load(captchaModel.getCaptcha())
+                        .into(binding.captchaImage);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void signUpUser() {
-
+        if (captchaModel == null){
+            ToastUtils.show("Please reload the page");
+            return;
+        }
 
         final ViewDialog alert = new ViewDialog(this);
 
         alert.showDialog();
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("first_name", firstName.getText().toString());
-        hashMap.put("last_name", lastName.getText().toString());
-        hashMap.put("phone_number", phoneNumber.getText().toString());
+        hashMap.put("first_name", binding.fName.getText().toString());
+        hashMap.put("last_name", binding.lName.getText().toString());
+        hashMap.put("phone_number", binding.number.getText().toString());
 
-        TextView ref = findViewById(R.id.referral);
-        String refText = ref.getText().toString();
-        if (!refText.equals(""))
-            referPref.setRef(refText);
+        hashMap.put("captcha_id", captchaModel.getCaptchaId());
+        hashMap.put("captcha_value", binding.captchaInput.getText().toString().trim());
 
         AuthApiHelper.register(hashMap, new ResponseListenerAuth<JsonObject, String>() {
             @Override
@@ -106,8 +122,8 @@ public class SignUpActivity extends BaseActivity {
                     Toast.makeText(getApplicationContext(), "This mobile number has already been used", Toast.LENGTH_LONG).show();
                 } else if (statusCode == 201) {
                     Intent il = new Intent(SignUpActivity.this, PasswordActivity.class);
-                    il.putExtra("phone", phoneNumber.getText().toString());
-                    il.putExtra("name", firstName.getText().toString() + " " + lastName.getText().toString());
+                    il.putExtra("phone", binding.number.getText().toString());
+                    il.putExtra("name", binding.fName.getText().toString() + " " + binding.lName.getText().toString());
                     il.putExtra("request_id", response.get("data").getAsJsonObject().get("request_id").getAsString());
                     il.putExtra("type", "signup");
                     finish();
@@ -125,7 +141,9 @@ public class SignUpActivity extends BaseActivity {
 
             @Override
             public void onAuthError(boolean logout) {
-
+                alert.hideDialog();
+                ToastUtils.show("Invalid captcha");
+                getCaptcha();
             }
         });
     }

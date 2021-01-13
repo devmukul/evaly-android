@@ -23,6 +23,7 @@ import bd.com.evaly.evalyshop.models.auth.RegisterBody;
 import bd.com.evaly.evalyshop.models.auth.RegisterResponse;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordBody;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordResponse;
+import bd.com.evaly.evalyshop.models.auth.captcha.CaptchaResponse;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
@@ -94,6 +95,10 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface IApiClient {
+
+
+    @GET(UrlUtils.DOMAIN + "ecaptcha/auth/init")
+    Call<CommonDataResponse<CaptchaResponse>> getCaptcha();
 
     @GET(UrlUtils.DOMAIN + "order-request-go/api/v1/order-requests/get-orders")
     Call<CommonDataResponse<List<OrderRequestResponse>>> getOrderRequests(@Header("Authorization") String token,
@@ -233,10 +238,10 @@ public interface IApiClient {
     @POST(UrlUtils.DOMAIN_EAUTH + "set-password")
     Call<JsonObject> setPassword(@Body HashMap<String, String> setPasswordModel);
 
-    @POST(UrlUtils.DOMAIN_EAUTH + "forgot-password")
+    @POST(UrlUtils.DOMAIN + "ecaptcha/auth/forgot-password")
     Call<JsonObject> forgetPassword(@Body HashMap<String, String> body);
 
-    @POST(UrlUtils.DOMAIN_EAUTH + "customers")
+    @POST(UrlUtils.DOMAIN + "ecaptcha/auth/create-customer")
     Call<JsonObject> register(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.DOMAIN_EAUTH + "login")
@@ -652,7 +657,6 @@ public interface IApiClient {
                                 @Query("invoice") String invoice,
                                 @Query("token") String authToken,
                                 @Query("context_reference") String context);
-
 
     @POST(BuildConfig.NAGAD_URL)
     Call<JsonObject> payViaNagad(@Header("Authorization") String token,

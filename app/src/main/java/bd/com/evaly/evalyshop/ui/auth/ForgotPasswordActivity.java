@@ -2,15 +2,21 @@ package bd.com.evaly.evalyshop.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
+
+import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ActivityForgotPasswordBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.auth.captcha.CaptchaResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
@@ -22,6 +28,7 @@ public class ForgotPasswordActivity extends BaseActivity {
 
     private ViewDialog dialog;
     private ActivityForgotPasswordBinding binding;
+    private CaptchaResponse captchaModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,17 +41,31 @@ public class ForgotPasswordActivity extends BaseActivity {
                 Toast.makeText(ForgotPasswordActivity.this, "Please enter number", Toast.LENGTH_SHORT).show();
             } else if (binding.phone.getText().toString().length() != 11) {
                 Toast.makeText(ForgotPasswordActivity.this, "The length of number must be 11", Toast.LENGTH_SHORT).show();
+            } else if (TextUtils.isEmpty(binding.captchaInput.getText().toString())) {
+                Toast.makeText(ForgotPasswordActivity.this, "Please enter captcha verification code", Toast.LENGTH_SHORT).show();
             } else {
                 dialog.showDialog();
                 resetPassword();
             }
         });
+
         binding.closeBtn.setOnClickListener(v -> onBackPressed());
+        binding.reloadCaptcha.setOnClickListener(view -> getCaptcha());
+
+        getCaptcha();
     }
 
     private void resetPassword() {
+        if (captchaModel == null){
+            ToastUtils.show("Please reload the page");
+            return;
+        }
+        HashMap<String, String> body = new HashMap<>();
+        body.put("phone_number", binding.phone.getText().toString());
+        body.put("captcha_id", captchaModel.getCaptchaId());
+        body.put("captcha_value", binding.captchaInput.getText().toString().trim());
 
-        AuthApiHelper.forgetPassword(binding.phone.getText().toString(), new ResponseListenerAuth<JsonObject, String>() {
+        AuthApiHelper.forgetPassword(body, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.hideDialog();
@@ -69,7 +90,32 @@ public class ForgotPasswordActivity extends BaseActivity {
 
             @Override
             public void onAuthError(boolean logout) {
+                ToastUtils.show("Invalid captcha");
                 dialog.hideDialog();
+                getCaptcha();
+            }
+        });
+    }
+
+    private void getCaptcha() {
+        AuthApiHelper.getCaptcha(new ResponseListenerAuth<CommonDataResponse<CaptchaResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<CaptchaResponse> response, int statusCode) {
+                captchaModel = response.getData();
+                Glide.with(binding.captchaImage)
+                        .asBitmap()
+                        .load(captchaModel.getCaptcha())
+                        .into(binding.captchaImage);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
             }
         });
     }
