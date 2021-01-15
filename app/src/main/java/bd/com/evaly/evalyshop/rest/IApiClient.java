@@ -56,6 +56,7 @@ import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.models.notification.NotificationItem;
+import bd.com.evaly.evalyshop.models.order.AttachmentCheckResponse;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
@@ -96,6 +97,9 @@ import retrofit2.http.Url;
 
 public interface IApiClient {
 
+    @POST(UrlUtils.BASE_URL + "orders/checkout/buckets")
+    Call<CommonDataResponse<List<AttachmentCheckResponse>>> isAttachmentRequired(@Header("Authorization") String token,
+                                                                                 @Body List<Integer> list);
 
     @GET(UrlUtils.DOMAIN + "ecaptcha/auth/init")
     Call<CommonDataResponse<CaptchaResponse>> getCaptcha();
@@ -669,9 +673,9 @@ public interface IApiClient {
     // reviews
     @GET(UrlUtils.DOMAIN + "ratings/api/v1/public/all-reviews")
     Call<CommonDataResponse<JsonObject>> getShopReviews(@Header("Authorization") String token,
-                                                              @Query("slug") String shopSlug,
-                                                              @Query("page") int page,
-                                                              @Query("limit") int limit);
+                                                        @Query("slug") String shopSlug,
+                                                        @Query("page") int page,
+                                                        @Query("limit") int limit);
 
     @POST(UrlUtils.BASE_URL + "add-review/{shopSlug}/")
     Call<JsonObject> postShopReview(@Header("Authorization") String token,

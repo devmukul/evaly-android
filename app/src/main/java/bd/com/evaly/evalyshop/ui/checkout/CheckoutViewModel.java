@@ -16,6 +16,7 @@ import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.order.AttachmentCheckResponse;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
@@ -27,6 +28,7 @@ public class CheckoutViewModel extends ViewModel {
 
     protected LiveData<List<CartEntity>> liveList = new MutableLiveData<>();
     protected SingleLiveEvent<Boolean> errorOrder = new SingleLiveEvent<>();
+    protected MutableLiveData<List<AttachmentCheckResponse>> attachmentCheckLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse<List<JsonObject>>> orderPlacedLiveData = new MutableLiveData<>();
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
@@ -41,10 +43,29 @@ public class CheckoutViewModel extends ViewModel {
             MutableLiveData<List<CartEntity>> tempList = new MutableLiveData<>();
             tempList.setValue(list);
             liveList = tempList;
-        }else
+        } else
             liveList = cartDao.getAllSelectedLive();
 
         compositeDisposable = new CompositeDisposable();
+    }
+
+    public void checkAttachmentRequirements(List<Integer> list) {
+        OrderApiHelper.isAttachmentRequired(list, new ResponseListenerAuth<CommonDataResponse<List<AttachmentCheckResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<AttachmentCheckResponse>> response, int statusCode) {
+                attachmentCheckLiveData.setValue(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
 

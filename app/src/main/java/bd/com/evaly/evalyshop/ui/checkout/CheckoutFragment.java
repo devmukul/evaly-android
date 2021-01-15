@@ -208,10 +208,15 @@ public class CheckoutFragment extends DialogFragment {
         HashMap<String, String> expressShopSlugs = new HashMap();
 
         List<CartEntity> itemList = viewModel.liveList.getValue();
+
+        List<Integer> productIdList = new ArrayList<>();
+
         if (itemList == null)
             itemList = new ArrayList<>();
         for (int i = 0; i < itemList.size(); i++) {
             CartEntity cartItem = itemList.get(i);
+            if (Utils.isNumeric(cartItem.getProductID()))
+                productIdList.add(Integer.parseInt(cartItem.getProductID()));
             if (cartItem.isSelected()) {
                 String ss = cartItem.getShopSlug();
                 Integer am = shopAmountMap.get(ss);
@@ -247,6 +252,8 @@ public class CheckoutFragment extends DialogFragment {
                 shopExpressMap.put(ss, isExpress);
             }
         }
+
+        viewModel.checkAttachmentRequirements(productIdList);
 
         for (String key : shopAmountMap.keySet()) {
             Integer am = shopAmountMap.get(key);
