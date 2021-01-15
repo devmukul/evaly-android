@@ -157,4 +157,7 @@ dependencies {
     annotationProcessor 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-beta01'
 
+    // matisse image picker
+    implementation 'com.zhihu.android:matisse:0.5.3-beta3'
+
 }

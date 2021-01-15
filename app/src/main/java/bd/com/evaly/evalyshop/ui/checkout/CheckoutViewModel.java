@@ -39,6 +39,14 @@ public class CheckoutViewModel extends ViewModel {
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
     private HashMap<String, List<String>> attachmentMap = new HashMap<>();
+    protected SingleLiveEvent<Integer> imagePicker = new SingleLiveEvent<>();
+
+    public List<String> getAttachmentList(String shopSlug){
+        List<String> attachmentList = new ArrayList<>();
+        if (attachmentMap.containsKey(shopSlug) && attachmentMap.get(shopSlug) != null)
+            attachmentList = attachmentMap.get(shopSlug);
+        return attachmentList;
+    }
 
     @ViewModelInject
     public CheckoutViewModel(CartDao cartDao, @Assisted SavedStateHandle savedStateHandle) {
