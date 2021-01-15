@@ -2,9 +2,12 @@ package bd.com.evaly.evalyshop.ui.checkout.controller;
 
 import androidx.core.content.ContextCompat;
 
+import com.airbnb.epoxy.CarouselModel_;
+import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
@@ -17,6 +20,7 @@ import bd.com.evaly.evalyshop.ui.checkout.model.CheckoutProductModel_;
 public class CheckoutProductController extends EpoxyController {
 
     private List<CartEntity> list = new ArrayList<>();
+    private HashMap<String, List<String>> attachmentMap = new HashMap<>();
 
     public CheckoutProductController() {
         setFilterDuplicates(true);
@@ -72,7 +76,46 @@ public class CheckoutProductController extends EpoxyController {
                     })
                     .addTo(this);
 
+            List<String> attachmentList = new ArrayList<>();
+
+            if (attachmentMap.containsKey(thisShopSlug) && attachmentMap.get(thisShopSlug) != null)
+                attachmentList = attachmentMap.get(thisShopSlug);
+
+            List<DataBindingEpoxyModel> attachmentModels = new ArrayList<>();
+
+            if (attachmentList.size() < 3)
+                attachmentModels.add(new ImagePickerItemModel_()
+                        .id("image_picker_base", thisShopSlug)
+                        .isAdd(true)
+                        .clickListener((model, parentView, clickedView, position) -> {
+
+                        }));
+
+            for (String url : attachmentList) {
+                attachmentModels.add(new ImagePickerItemModel_()
+                        .id("image_picker", addShopHeader, url)
+                        .isAdd(false)
+                        .url(url)
+                        .clickListener((model, parentView, clickedView, position) -> {
+
+                        })
+                        .deleteClickListener((model, parentView, clickedView, position) -> {
+//                            if (viewModel.getImageUrls().size() == 5)
+//                                viewModel.delete(position);
+//                            else
+//                                viewModel.delete(position - 1);
+                        }));
+            }
+
+            new CarouselModel_()
+                    .id("carousel_attachment", thisShopSlug)
+                    .addIf(!addShopHeader, this);
+
             index++;
         }
+    }
+
+    public void setAttachmentMap(HashMap<String, List<String>> attachmentMap) {
+        this.attachmentMap = attachmentMap;
     }
 }

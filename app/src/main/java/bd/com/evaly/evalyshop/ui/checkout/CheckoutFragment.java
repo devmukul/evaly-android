@@ -318,6 +318,11 @@ public class CheckoutFragment extends DialogFragment {
 
     private void liveEvents() {
 
+        viewModel.attachmentMapLiveData.observe(getViewLifecycleOwner(), map -> {
+            controller.setAttachmentMap(map);
+            controller.requestModelBuild();
+        });
+
         sharedObservers.onAddressChanged.observe(getViewLifecycleOwner(), addressItem -> {
             addressModel = addressItem;
             binding.address.setText(addressItem.getFullAddressLine());

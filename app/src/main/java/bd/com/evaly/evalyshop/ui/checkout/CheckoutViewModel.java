@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.ui.checkout;
 
+import android.graphics.Bitmap;
+
 import androidx.hilt.Assisted;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
@@ -10,14 +12,17 @@ import androidx.lifecycle.ViewModel;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.order.AttachmentCheckResponse;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -30,8 +35,10 @@ public class CheckoutViewModel extends ViewModel {
     protected SingleLiveEvent<Boolean> errorOrder = new SingleLiveEvent<>();
     protected MutableLiveData<List<AttachmentCheckResponse>> attachmentCheckLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse<List<JsonObject>>> orderPlacedLiveData = new MutableLiveData<>();
+    protected MutableLiveData<HashMap<String, List<String>>> attachmentMapLiveData = new HashMap<>();
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
+    private HashMap<String, List<String>> attachmentMap = new HashMap<>();
 
     @ViewModelInject
     public CheckoutViewModel(CartDao cartDao, @Assisted SavedStateHandle savedStateHandle) {
@@ -93,6 +100,31 @@ public class CheckoutViewModel extends ViewModel {
             public void onAuthError(boolean logout) {
                 if (!logout)
                     placeOrder(payload);
+            }
+        });
+    }
+
+    public void uploadImage(String shopSlug, Bitmap bitmap) {
+        ImageApiHelper.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
+                List<String> attachmentList = new ArrayList<>();
+                if (attachmentMap.containsKey(shopSlug) && attachmentMap.get(shopSlug) != null)
+                    attachmentList = attachmentMap.get(shopSlug);
+                attachmentList.add(response.getData().getUrl());
+
+                attachmentMap.put(shopSlug, attachmentList);
+                attachmentMapLiveData.setValue(attachmentMap);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
             }
         });
     }
