@@ -199,11 +199,11 @@ public class BrowseProductFragment extends Fragment implements BrowseProductCont
     public void onGridItemClick(String type, String title, String image, String slug) {
         Bundle bundle = new Bundle();
         bundle.putString("title", title);
-        bundle.putString("slug", slug);
 
-        if (type.equals("category"))
+        if (type.equals("category")) {
+            bundle.putString("category_slug", slug);
             navController.navigate(R.id.browseProductFragment, bundle);
-        else if (type.equals("shop")) {
+        } else if (type.equals("shop")) {
             bundle.putString("shop_slug", slug);
             navController.navigate(R.id.shopFragment, bundle);
         } else if (type.equals("brand")) {
