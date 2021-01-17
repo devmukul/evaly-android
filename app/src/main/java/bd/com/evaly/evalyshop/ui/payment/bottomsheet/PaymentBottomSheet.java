@@ -307,7 +307,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             } else if (paymentMethod.equalsIgnoreCase("citybank_gateway")) {
                 name = Constants.CITYBANK;
                 description = "Pay from your City Bank account easily.";
-                image = R.drawable.city_bank;
+                image = R.drawable.city_amex;
             } else if (paymentMethod.equalsIgnoreCase("balance")) {
                 name = "Evaly Account";
                 description = balanceText;
