@@ -122,11 +122,6 @@ public class CampaignDetailsViewModel extends ViewModel {
         if (campaignCategoryLiveData.getValue() == null)
             return;
 
-        if (currentPage > 1 && totalCount <= arrayList.size()) {
-            hideLoadingBar.setValue(true);
-            return;
-        }
-
         if (type.equals("product"))
             loadProductList();
         else if (type.equals("shop"))
@@ -172,7 +167,7 @@ public class CampaignDetailsViewModel extends ViewModel {
 
                     @Override
                     public void onFailed(String errorBody, int errorCode) {
-
+                        hideLoadingBar.setValue(true);
                     }
 
                     @Override
@@ -195,7 +190,7 @@ public class CampaignDetailsViewModel extends ViewModel {
 
                     @Override
                     public void onFailed(String errorBody, int errorCode) {
-
+                        hideLoadingBar.setValue(true);
                     }
 
                     @Override
@@ -218,7 +213,7 @@ public class CampaignDetailsViewModel extends ViewModel {
 
                     @Override
                     public void onFailed(String errorBody, int errorCode) {
-
+                        hideLoadingBar.setValue(true);
                     }
 
                     @Override

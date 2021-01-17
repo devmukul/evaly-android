@@ -8,14 +8,14 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 public class ReviewsApiHelper extends BaseApiHelper {
 
     public static void getReviewSummary(String token, String slug, boolean isShop, ResponseListenerAuth<JsonObject, String> listener) {
-        if (isShop)
-            getiApiClient().getShopReviews(token, slug).enqueue(getResponseCallBackDefault(listener));
-        else
-            getiApiClient().getProductReviewSummary(token, slug).enqueue(getResponseCallBackDefault(listener));
+//        if (isShop)
+        getiApiClient().getShopReviews(token, slug).enqueue(getResponseCallBackDefault(listener));
+//        else
+//            getiApiClient().getProductReviewSummary(token, slug).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void getReviews(String token, String shopSlug, int page, int limit, boolean isShop, ResponseListenerAuth<CommonDataResponse<JsonObject>, String> listener) {
-        if (isShop)
+//        if (isShop)
             getiApiClient().getShopReviews(token, shopSlug, page, limit).enqueue(getResponseCallBackDefault(listener));
 //        else
 //            getiApiClient().getProductReviews(token, shopSlug, page, limit).enqueue(getResponseCallBackDefault(listener));

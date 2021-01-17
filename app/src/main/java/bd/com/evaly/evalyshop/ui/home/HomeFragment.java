@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,7 @@ import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -262,8 +264,38 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         navController.navigate(R.id.campaignDetails);
     }
 
+    private void openEfoodApp() {
+        try {
+            Intent launchIntent = getActivity().getPackageManager().getLaunchIntentForPackage("bd.com.evaly.efood");
+            if (launchIntent != null) {
+                startActivity(launchIntent);
+            } else
+                openPlaystore();
+        } catch (android.content.ActivityNotFoundException e) {
+            openPlaystore();
+        } catch (Exception ee) {
+            ToastUtils.show("Couldn't open eFood, please install from Google Playstore");
+        }
+    }
+
+    private void openPlaystore() {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.efood")));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.efood")));
+            } catch (Exception e3) {
+                ToastUtils.show("Couldn't open eFood App, please install from Google Playstore");
+            }
+        }
+    }
+
     @Override
     public void onExpressClick(ExpressServiceModel model) {
+        if (model.getSlug().equals("express-bullet-food")) {
+            openEfoodApp();
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putSerializable("model", model);
         navController.navigate(R.id.evalyExpressFragment, bundle);

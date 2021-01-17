@@ -260,8 +260,6 @@
                             tools:visibility="visible" />
 
                     </FrameLayout>
-
-
                 </LinearLayout>
 
 
@@ -275,7 +273,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical"
                 android:paddingTop="10dp"
-                android:paddingBottom="70dp"
+                android:paddingBottom="50dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 

@@ -573,7 +573,8 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
         // for cart order
         cartItem.setName(name);
-        cartItem.setImage(item.getColorImage());
+        if (item.getProductImages().size() > 0)
+            cartItem.setImage(item.getProductImages().get(0));
         cartItem.setSlug(slug);
 
         // for wishlist

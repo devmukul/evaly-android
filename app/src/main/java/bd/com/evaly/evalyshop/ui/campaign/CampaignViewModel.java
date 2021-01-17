@@ -65,10 +65,6 @@ public class CampaignViewModel extends ViewModel {
 
 
     public void loadCampaignProducts() {
-        if (currentPage > 1 && totalCount <= productsArrayList.size()) {
-            hideLoadingBar.setValue(true);
-            return;
-        }
 
         CampaignApiHelper.getCampaignAllProducts(currentPage, 20, search, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
             @Override
@@ -80,7 +76,7 @@ public class CampaignViewModel extends ViewModel {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
+                hideLoadingBar.setValue(true);
             }
 
             @Override
