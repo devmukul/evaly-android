@@ -20,6 +20,7 @@ import bd.com.evaly.evalyshop.ui.cart.model.CartShopModel_;
 import bd.com.evaly.evalyshop.ui.checkout.CheckoutViewModel;
 import bd.com.evaly.evalyshop.ui.checkout.model.AttachmentCarouselModel_;
 import bd.com.evaly.evalyshop.ui.checkout.model.CheckoutAttachmentModel_;
+import bd.com.evaly.evalyshop.ui.checkout.model.CheckoutAttachmentUploadModel_;
 import bd.com.evaly.evalyshop.ui.checkout.model.CheckoutProductModel_;
 import bd.com.evaly.evalyshop.ui.checkout.model.ImagePickerItemModel_;
 
@@ -132,11 +133,19 @@ public class CheckoutProductController extends EpoxyController {
                     .id("attachment_title", thisShopSlug)
                     .addIf(endOfGroup && attachmentRequired, this);
 
+            new CheckoutAttachmentUploadModel_()
+                    .id("attachment_btn", thisShopSlug)
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        viewModel.setSelectedShopSlug(thisShopSlug);
+                        viewModel.imagePicker.call();
+                    })
+                    .addIf(endOfGroup && attachmentRequired && attachmentList.size() == 0, this);
+
             new AttachmentCarouselModel_()
                     .id("carousel_attachment", thisShopSlug)
                     .models(attachmentModels)
                     .padding(Carousel.Padding.dp(0, 10, 0, 5, 12))
-                    .addIf(endOfGroup && attachmentRequired, this);
+                    .addIf(endOfGroup && attachmentRequired && attachmentList.size() > 0, this);
 
             index++;
         }

@@ -13,7 +13,8 @@
             android:fontFamily="sans-serif-medium"
             android:paddingTop="10dp"
             android:text="Attachments (up to 3)"
-            android:textColor="@color/c555"
+            android:textColor="@color/c444"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
