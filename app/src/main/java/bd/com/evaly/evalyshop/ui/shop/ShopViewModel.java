@@ -310,7 +310,6 @@ public class ShopViewModel extends ViewModel {
 
                 categoryArrayList.addAll(itemList);
                 shopCategoryListLiveData.setValue(categoryArrayList);
-                // shopCategoryListLiveData.setValue(itemList);
                 categoryCurrentPage++;
             }
 

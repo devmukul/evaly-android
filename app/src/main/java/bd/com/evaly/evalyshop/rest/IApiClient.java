@@ -382,13 +382,13 @@ public interface IApiClient {
     Call<CommonDataResponse<List<ChildCategoryResponse>>> getChildCategory(@Query("parent") String parentCategorySlug);
 
     @GET(UrlUtils.BASE_CATALOG + "brands")
-    Call<CommonDataResponse<List<BrandResponse>>> getBrands(@Query("category") String categorySlug,
+    Call<CommonDataResponse<List<BrandResponse>>> getBrands(@Query("category_slug") String categorySlug,
                                                             @Query("search") String search,
                                                             @Query("page") int page,
                                                             @Query("limit") int limit);
 
     @GET(UrlUtils.BASE_CATALOG + "shops")
-    Call<CommonDataResponse<List<ShopListResponse>>> getShops(@Query("category") String categorySlug,
+    Call<CommonDataResponse<List<ShopListResponse>>> getShops(@Query("category_slug") String categorySlug,
                                                               @Query("search") String search,
                                                               @Query("page") int page,
                                                               @Query("limit") int limit);
@@ -487,7 +487,8 @@ public interface IApiClient {
                                          @Query("page") int page);
 
     @GET(UrlUtils.BASE_CATALOG + "/brands/{slug}/categories")
-    Call<CommonDataResponse<BrandCatResponse>> getCategoriesOfBrand(@Path("slug") String slug);
+    Call<CommonDataResponse<BrandCatResponse>> getCategoriesOfBrand(@Path("slug") String slug,
+                                                                    @Query("page") int page);
 
 
     @GET(UrlUtils.CAMPAIGNS + "/{campaignSlug}/shops/{shopSlug}/categories")

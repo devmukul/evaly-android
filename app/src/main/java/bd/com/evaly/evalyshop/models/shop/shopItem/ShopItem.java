@@ -30,13 +30,13 @@ public class ShopItem {
     @SerializedName("shop_slug")
     private String shopSlug;
 
-    @SerializedName(value = "shop_item_image")
+    @SerializedName(value = "shop_item_image", alternate = "product_image")
     private String shopItemImage;
 
     @SerializedName(value = "shop_item_price", alternate = "item_price")
     private String shopItemPrice;
 
-    @SerializedName("shop_item_discounted_price")
+    @SerializedName(value = "shop_item_discounted_price", alternate = "discounted_price")
     private String shopItemDiscountedPrice = "0";
 
     @SerializedName("is_express_shop")
@@ -46,15 +46,15 @@ public class ShopItem {
         return itemImages;
     }
 
+    public void setItemImages(List<String> itemImages) {
+        this.itemImages = itemImages;
+    }
+
     public String getFirstImage() {
         if (itemImages == null || itemImages.size() == 0)
             return "";
         else
             return itemImages.get(0);
-    }
-
-    public void setItemImages(List<String> itemImages) {
-        this.itemImages = itemImages;
     }
 
     public String getShopItemPrice() {

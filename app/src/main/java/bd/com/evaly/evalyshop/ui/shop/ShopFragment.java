@@ -213,15 +213,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             controller.setLoadingMore(false);
 
-
-            if (totalCount == 0)
-                controller.showEmptyPage(true, true);
-
-            if (clickFromCategory) {
-                binding.recyclerView.postDelayed(() -> binding.recyclerView.smoothScrollToPosition(4), 200);
-                clickFromCategory = false;
-            }
-
             binding.shimmerHolder.animate().alpha(0.0f)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
@@ -239,7 +230,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         viewModel.getShopCategoryListLiveData().observe(getViewLifecycleOwner(), categoryList -> {
             controller.setCategoriesLoading(false);
-            if (fullShopDetailsModel == null)
+            if (shopDetailsModel == null)
                 controller.addCategoryData(categoryList, false);
             else
                 controller.addCategoryData(categoryList, true);
@@ -291,6 +282,16 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
         viewModel.getProductListLiveData().observe(getViewLifecycleOwner(), shopItems -> {
+
+            if (viewModel.getCurrentPage() < 3 && shopItems.size() == 0) {
+                controller.showEmptyPage(true, true);
+            }
+
+            if (clickFromCategory) {
+                binding.recyclerView.postDelayed(() -> binding.recyclerView.smoothScrollToPosition(4), 200);
+                clickFromCategory = false;
+            }
+
             isLoading = false;
             binding.recyclerView.setVisibility(View.VISIBLE);
 

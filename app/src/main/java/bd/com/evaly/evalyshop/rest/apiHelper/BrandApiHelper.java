@@ -18,8 +18,8 @@ public class BrandApiHelper extends BaseApiHelper {
         getiApiClient().getBrands(categorySlug, search, page, 20).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getCategories(String slug, ResponseListenerAuth<CommonDataResponse<BrandCatResponse>, String> listener) {
-        getiApiClient().getCategoriesOfBrand(slug).enqueue(getResponseCallBackDefault(listener));
+    public static void getCategories(String slug, int page, ResponseListenerAuth<CommonDataResponse<BrandCatResponse>, String> listener) {
+        getiApiClient().getCategoriesOfBrand(slug, page).enqueue(getResponseCallBackDefault(listener));
     }
 
 }

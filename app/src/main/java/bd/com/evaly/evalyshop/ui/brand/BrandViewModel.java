@@ -103,8 +103,7 @@ public class BrandViewModel extends ViewModel {
 
     public void loadCategories() {
         isCategoryLoading = true;
-        categoryArrayList.clear();
-        BrandApiHelper.getCategories(slug, new ResponseListenerAuth<CommonDataResponse<BrandCatResponse>, String>() {
+        BrandApiHelper.getCategories(slug, categoryCurrentPage, new ResponseListenerAuth<CommonDataResponse<BrandCatResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BrandCatResponse> response, int statusCode) {
                 detailsLive.setValue(response.getData());
@@ -116,7 +115,6 @@ public class BrandViewModel extends ViewModel {
                     tabsItem.setSlug(item.getSlug());
                     categoryArrayList.add(tabsItem);
                 }
-
                 categoryListLiveData.setValue(categoryArrayList);
                 categoryCurrentPage++;
             }

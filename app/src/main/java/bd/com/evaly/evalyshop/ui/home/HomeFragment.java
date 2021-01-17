@@ -214,7 +214,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onCategoryClick(String slug, String category) {
         Bundle bundle = new Bundle();
         bundle.putString("slug", slug);
-        bundle.putString("category", category);
+        bundle.putString("category_slug", category);
         navController.navigate(R.id.browseProductFragment, bundle);
     }
 

@@ -22,6 +22,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentShopQuickCategoryBinding;
+import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.rest.ApiClient;
@@ -122,19 +123,13 @@ public class ShopQuickViewFragment extends Fragment {
         LinearLayoutManager layoutManagerCategory = new LinearLayoutManager(getContext());
         binding.rvCategory.setLayoutManager(layoutManagerCategory);
 
-        binding.rvCategory.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.rvCategory.addOnScrollListener(new PaginationScrollListener(layoutManagerCategory) {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {
-                    visibleItemCount2 = layoutManagerCategory.getChildCount();
-                    totalItemCount2 = layoutManagerCategory.getItemCount();
-                    pastVisiblesItems2 = layoutManagerCategory.findFirstVisibleItemPosition();
-                    if (!isLoadingCategory && totalItemCount2 < totalCountCategory)
-                        if ((visibleItemCount2 + pastVisiblesItems2) >= totalItemCount2) {
-                            categoryController.setLoadingMore(true, true);
-                            viewModel.loadShopCategories();
-                            isLoadingCategory = true;
-                        }
+            public void loadMoreItem() {
+                if (!isLoadingCategory) {
+                    isLoadingCategory = true;
+                    categoryController.setLoadingMore(true, true);
+                    viewModel.loadShopCategories();
                 }
             }
         });
