@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.models.order.placeOrder;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -26,6 +27,17 @@ public class PlaceOrderItem {
 
     @SerializedName("order_items")
     private List<OrderItemsItem> orderItems;
+
+    @SerializedName("attachments")
+    private JsonObject attachments;
+
+    public JsonObject getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(JsonObject attachments) {
+        this.attachments = attachments;
+    }
 
     public String getCustomerAddress() {
         return customerAddress;
@@ -67,23 +79,23 @@ public class PlaceOrderItem {
         this.orderOrigin = orderOrigin;
     }
 
-	public String getDeliveryLatitude() {
-		return deliveryLatitude;
-	}
+    public String getDeliveryLatitude() {
+        return deliveryLatitude;
+    }
 
-	public void setDeliveryLatitude(String deliveryLatitude) {
-		this.deliveryLatitude = deliveryLatitude;
-	}
+    public void setDeliveryLatitude(String deliveryLatitude) {
+        this.deliveryLatitude = deliveryLatitude;
+    }
 
-	public String getDeliveryLongitude() {
-		return deliveryLongitude;
-	}
+    public String getDeliveryLongitude() {
+        return deliveryLongitude;
+    }
 
-	public void setDeliveryLongitude(String deliveryLongitude) {
-		this.deliveryLongitude = deliveryLongitude;
-	}
+    public void setDeliveryLongitude(String deliveryLongitude) {
+        this.deliveryLongitude = deliveryLongitude;
+    }
 
-	@Override
+    @Override
     public String toString() {
         return
                 "PlaceOrderItem{" +

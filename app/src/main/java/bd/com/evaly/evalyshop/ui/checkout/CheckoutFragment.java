@@ -58,6 +58,7 @@ import bd.com.evaly.evalyshop.databinding.BottomSheetCheckoutContactBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentCheckoutBinding;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.order.AttachmentCheckResponse;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.user.AddressItem;
@@ -94,8 +95,8 @@ public class CheckoutFragment extends DialogFragment {
     private int minPrice = 0;
     private ViewDialog dialog;
     private double totalDeliveryCharge;
-    private String selectedShopSlug;
     private ProgressDialog progressDialog;
+    private List<Uri> selectedImagesList;
 
     public CheckoutFragment() {
         //setCancelable(false);
@@ -155,6 +156,7 @@ public class CheckoutFragment extends DialogFragment {
         if (controller == null)
             controller = new CheckoutProductController();
         binding.recyclerView.setAdapter(controller.getAdapter());
+        controller.setViewModel(viewModel);
     }
 
     private void clickListeners() {
@@ -332,12 +334,11 @@ public class CheckoutFragment extends DialogFragment {
         });
     }
 
-    private void openImagePicker(String shopSlug) {
-        selectedShopSlug = shopSlug;
+    private void openImagePicker() {
         Matisse.from(this)
                 .choose(MimeType.ofImage(), true)
                 .countable(true)
-                .maxSelectable(5 - viewModel.getAttachmentList(shopSlug).size())
+                .maxSelectable(3 - viewModel.getAttachmentList().size())
                 .theme(R.style.Matisse_Dracula)
                 .thumbnailScale(0.85f)
                 .capture(true)
@@ -353,7 +354,7 @@ public class CheckoutFragment extends DialogFragment {
         if (resultCode == RESULT_OK) {
             if (getActivity() != null && data != null) {
                 if (requestCode == 2020) {
-                    List<Uri>  selectedImagesList = Matisse.obtainResult(data);
+                    selectedImagesList = Matisse.obtainResult(data);
                     uploadImage(selectedImagesList.get(0));
                     selectedImagesList.remove(0);
                 } else if (requestCode == 2040) {
@@ -374,7 +375,7 @@ public class CheckoutFragment extends DialogFragment {
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        viewModel.uploadImage(selectedShopSlug, resource);
+                        viewModel.uploadImage(resource);
                         progressDialog.setMessage("Uploading...");
                         progressDialog.show();
                     }
@@ -387,17 +388,31 @@ public class CheckoutFragment extends DialogFragment {
 
     private void liveEvents() {
 
+        viewModel.attachmentCheckLiveData.observe(getViewLifecycleOwner(), list -> {
+            HashMap<String, Boolean> map = new HashMap<>();
+            for (AttachmentCheckResponse item : list) {
+                map.put(item.getShopSlug(), item.isAttachmentRequired());
+            }
+            controller.setShowAttachmentMap(map);
+            controller.requestModelBuild();
+        });
+
         viewModel.imagePicker.observe(getViewLifecycleOwner(), integer -> {
             if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4040);
             else
-                openImagePicker(selectedShopSlug);
+                openImagePicker();
         });
 
         viewModel.attachmentMapLiveData.observe(getViewLifecycleOwner(), map -> {
+            progressDialog.dismiss();
             controller.setAttachmentMap(map);
             controller.requestModelBuild();
+            if (selectedImagesList.size() > 0) {
+                uploadImage(selectedImagesList.get(0));
+                selectedImagesList.remove(0);
+            }
         });
 
         sharedObservers.onAddressChanged.observe(getViewLifecycleOwner(), addressItem -> {

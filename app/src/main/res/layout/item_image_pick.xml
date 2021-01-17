@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.cardview.widget.CardView
-        android:layout_margin="5dp"
-        android:layout_width="110dp"
-        android:layout_height="match_parent"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="1dp"
         app:cardMaxElevation="1dp">
@@ -22,8 +21,8 @@
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="#fafafa"
                 android:scaleType="centerCrop"
+                android:src="#fafafa"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -31,8 +30,8 @@
 
             <ImageView
                 android:id="@+id/remove"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/btn_circle_light"

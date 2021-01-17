@@ -2,9 +2,11 @@ package bd.com.evaly.evalyshop.ui.checkout.controller;
 
 import androidx.core.content.ContextCompat;
 
-import com.airbnb.epoxy.CarouselModel_;
+import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,19 +17,34 @@ import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.ItemCartShopBinding;
 import bd.com.evaly.evalyshop.databinding.ItemCheckoutProductBinding;
 import bd.com.evaly.evalyshop.ui.cart.model.CartShopModel_;
+import bd.com.evaly.evalyshop.ui.checkout.CheckoutViewModel;
+import bd.com.evaly.evalyshop.ui.checkout.model.AttachmentCarouselModel_;
+import bd.com.evaly.evalyshop.ui.checkout.model.CheckoutAttachmentModel_;
 import bd.com.evaly.evalyshop.ui.checkout.model.CheckoutProductModel_;
+import bd.com.evaly.evalyshop.ui.checkout.model.ImagePickerItemModel_;
 
 public class CheckoutProductController extends EpoxyController {
 
     private List<CartEntity> list = new ArrayList<>();
+    private HashMap<String, Boolean> showAttachmentMap = new HashMap<>();
     private HashMap<String, List<String>> attachmentMap = new HashMap<>();
+    private CheckoutViewModel viewModel;
+    private String selectedShopSlug = "";
 
     public CheckoutProductController() {
         setFilterDuplicates(true);
     }
 
+    public void setViewModel(CheckoutViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
+
     public void setList(List<CartEntity> list) {
         this.list = list;
+    }
+
+    public void setShowAttachmentMap(HashMap<String, Boolean> showAttachmentMap) {
+        this.showAttachmentMap = showAttachmentMap;
     }
 
     @Override
@@ -82,40 +99,49 @@ public class CheckoutProductController extends EpoxyController {
                 attachmentList = attachmentMap.get(thisShopSlug);
 
             List<DataBindingEpoxyModel> attachmentModels = new ArrayList<>();
+            boolean attachmentRequired = (showAttachmentMap.get(thisShopSlug) != null && showAttachmentMap.get(thisShopSlug));
 
-            if (attachmentList.size() < 3)
+            if (attachmentList.size() < 3 && attachmentRequired)
                 attachmentModels.add(new ImagePickerItemModel_()
                         .id("image_picker_base", thisShopSlug)
                         .isAdd(true)
                         .clickListener((model, parentView, clickedView, position) -> {
-
+                            viewModel.setSelectedShopSlug(thisShopSlug);
+                            viewModel.imagePicker.call();
                         }));
 
             for (String url : attachmentList) {
                 attachmentModels.add(new ImagePickerItemModel_()
-                        .id("image_picker", addShopHeader, url)
+                        .id("image_picker", addShopHeader + url)
                         .isAdd(false)
                         .url(url)
                         .clickListener((model, parentView, clickedView, position) -> {
 
                         })
                         .deleteClickListener((model, parentView, clickedView, position) -> {
-//                            if (viewModel.getImageUrls().size() == 5)
-//                                viewModel.delete(position);
-//                            else
-//                                viewModel.delete(position - 1);
+                            if (viewModel.getAttachmentList(thisShopSlug).size() == 3)
+                                viewModel.deleteAttachment(thisShopSlug, position);
+                            else
+                                viewModel.deleteAttachment(thisShopSlug, position - 1);
                         }));
             }
 
-            new CarouselModel_()
+            new CheckoutAttachmentModel_()
+                    .id("attachment_title", thisShopSlug)
+                    .addIf(endOfGroup && attachmentRequired, this);
+
+            new AttachmentCarouselModel_()
                     .id("carousel_attachment", thisShopSlug)
-                    .addIf(!addShopHeader, this);
+                    .models(attachmentModels)
+                    .padding(Carousel.Padding.dp(0, 10, 0, 5, 12))
+                    .addIf(endOfGroup && attachmentRequired, this);
 
             index++;
         }
     }
 
     public void setAttachmentMap(HashMap<String, List<String>> attachmentMap) {
+        Logger.e(new Gson().toJson(attachmentMap));
         this.attachmentMap = attachmentMap;
     }
 }
