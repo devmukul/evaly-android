@@ -21,7 +21,18 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 
 public class BrowseProductViewModel extends ViewModel {
 
+    protected String categorySlug;
+    protected MutableLiveData<List<BaseModel>> liveList = new MutableLiveData<>();
+    protected List<BaseModel> arrayList = new ArrayList<>();
     private int tabPosition = -1;
+    private String selectedType = "products";
+    private int currentPage = 1;
+    @ViewModelInject
+    public BrowseProductViewModel(@Assisted SavedStateHandle stateHandle) {
+        this.categorySlug = stateHandle.get("category_slug");
+        currentPage = 1;
+        loadFromApi();
+    }
 
     public int getTabPosition() {
         return tabPosition;
@@ -31,33 +42,30 @@ public class BrowseProductViewModel extends ViewModel {
         this.tabPosition = tabPosition;
     }
 
-    protected String categorySlug;
-    protected MutableLiveData<List<BaseModel>> liveList = new MutableLiveData<>();
-    protected List<BaseModel> arrayList = new ArrayList<>();
-    private String selectedType = "products";
-    private int currentPage = 1;
-
-    @ViewModelInject
-    public BrowseProductViewModel(@Assisted SavedStateHandle stateHandle) {
-        this.categorySlug = stateHandle.get("category_slug");
+    public void reload() {
+        arrayList.clear();
+        currentPage = 1;
         loadFromApi();
+    }
+
+    public void clear(){
+        currentPage = 1;
+        arrayList.clear();
     }
 
     public int getCurrentPage() {
         return currentPage;
     }
 
-    public void setSelectedType(String selectedType) {
-        this.selectedType = selectedType;
-    }
-
     public String getSelectedType() {
         return selectedType;
     }
 
+    public void setSelectedType(String selectedType) {
+        this.selectedType = selectedType;
+    }
+
     public void loadFromApi() {
-        currentPage = 1;
-        arrayList.clear();
         switch (selectedType.toLowerCase()) {
             case "products":
                 getProducts();

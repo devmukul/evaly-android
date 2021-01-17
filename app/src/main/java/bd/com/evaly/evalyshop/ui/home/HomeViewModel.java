@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.material.tabs.TabItem;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,10 +130,14 @@ public class HomeViewModel extends ViewModel {
 
     public void loadBanners() {
 
-        GeneralApiHelper.getBanners(new ResponseListenerAuth<CommonResultResponse<List<BannerItem>>, String>() {
+        GeneralApiHelper.getBanners(new ResponseListenerAuth<CommonResultResponse<JsonObject>, String>() {
             @Override
-            public void onDataFetched(CommonResultResponse<List<BannerItem>> response, int statusCode) {
-                bannerDao.insertListRx(response.getData())
+            public void onDataFetched(CommonResultResponse<JsonObject> response, int statusCode) {
+                if (response.getData() == null || !response.getData().has("advertisement_list"))
+                    return;
+                List<BannerItem> bannerItems = new Gson().fromJson(response.getData().get("advertisement_list"), new TypeToken<List<BannerItem>>() {
+                }.getType());
+                bannerDao.insertListRx(bannerItems)
                         .subscribeOn(Schedulers.io())
                         .subscribe(new CompletableObserver() {
                             @Override
@@ -141,7 +148,7 @@ public class HomeViewModel extends ViewModel {
                             @Override
                             public void onComplete() {
                                 List<String> slugs = new ArrayList<>();
-                                for (BannerItem item : response.getData())
+                                for (BannerItem item : bannerItems)
                                     slugs.add(item.slug);
 
                                 if (slugs.size() > 0)

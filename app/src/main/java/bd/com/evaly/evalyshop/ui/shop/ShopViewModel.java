@@ -77,6 +77,7 @@ public class ShopViewModel extends ViewModel {
         currentPage = 1;
         categoryCurrentPage = 1;
         productArrayList.clear();
+        categoryArrayList.clear();
         loadShopDetails();
         loadShopProducts();
         loadShopCategories();

@@ -168,6 +168,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         viewHolder.shopName.setTag(i);
 
         viewHolder.shop.setOnClickListener(storeClick);
+        viewHolder.shopImage.setOnClickListener(storeClick);
         viewHolder.shopName.setOnClickListener(storeClick);
 
         viewHolder.call.setOnClickListener(v -> {

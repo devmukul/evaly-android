@@ -9,7 +9,6 @@ import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
-import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.models.notification.NotificationItem;
 
@@ -36,7 +35,7 @@ public class GeneralApiHelper extends BaseApiHelper {
         getiApiClient().getSubCategories(rootCategory).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getBanners(ResponseListenerAuth<CommonResultResponse<List<BannerItem>>, String> listener) {
+    public static void getBanners(ResponseListenerAuth<CommonResultResponse<JsonObject>, String> listener) {
         getiApiClient().getBanners().enqueue(getResponseCallBackDefault(listener));
     }
 

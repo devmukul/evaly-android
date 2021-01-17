@@ -15,6 +15,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -32,7 +33,7 @@ import bd.com.evaly.evalyshop.views.RecyclerSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class BrowseProductFragment extends Fragment implements BrowseProductController.ClickListener {
+public class BrowseProductFragment extends Fragment implements BrowseProductController.ClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private FragmentProductBrowseBinding binding;
     private BrowseProductViewModel viewModel;
@@ -43,6 +44,7 @@ public class BrowseProductFragment extends Fragment implements BrowseProductCont
     private RecyclerSpacingItemDecoration recyclerSpacingItemDecoration;
     private boolean isTabSwitched = false;
     private MainViewModel mainViewModel;
+    private boolean isLoading = true;
 
 
     @Override
@@ -63,11 +65,16 @@ public class BrowseProductFragment extends Fragment implements BrowseProductCont
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = NavHostFragment.findNavController(this);
+        updateViews();
         initHeader();
         setupTabs();
         clickListeners();
         setupRecycler();
         liveEvents();
+    }
+
+    private void updateViews() {
+        binding.swipeRefresh.setOnRefreshListener(this);
     }
 
     private void initHeader() {
@@ -85,15 +92,20 @@ public class BrowseProductFragment extends Fragment implements BrowseProductCont
         paginationScrollListener = new PaginationScrollListener() {
             @Override
             public void loadMoreItem() {
-                viewModel.loadFromApi();
-                controller.setLoadingMore(true);
-                controller.requestModelBuild();
+                if (!isLoading) {
+                    isLoading = true;
+                    isTabSwitched = false;
+                    viewModel.loadFromApi();
+                    controller.setLoadingMore(true);
+                    controller.requestModelBuild();
+                }
             }
         };
 
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
         recyclerSpacingItemDecoration = new RecyclerSpacingItemDecoration(2, spacing, true);
         binding.recyclerView.addItemDecoration(recyclerSpacingItemDecoration);
+        binding.recyclerView.addOnScrollListener(paginationScrollListener);
 
         setLayoutManager(viewModel.getSelectedType());
         binding.recyclerView.setAdapter(controller.getAdapter());
@@ -141,6 +153,7 @@ public class BrowseProductFragment extends Fragment implements BrowseProductCont
                 controller.clearList();
                 controller.setLoadingMore(true);
                 controller.requestModelBuild();
+                viewModel.clear();
                 viewModel.loadFromApi();
             }
 
@@ -167,6 +180,7 @@ public class BrowseProductFragment extends Fragment implements BrowseProductCont
             controller.setList(baseModels);
             controller.setLoadingMore(false);
             controller.requestModelBuild();
+            isLoading = false;
         });
     }
 
@@ -196,5 +210,11 @@ public class BrowseProductFragment extends Fragment implements BrowseProductCont
             bundle.putString("brand_slug", slug);
             navController.navigate(R.id.brandFragment, bundle);
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        binding.swipeRefresh.setRefreshing(false);
+        viewModel.reload();
     }
 }

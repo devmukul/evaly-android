@@ -43,9 +43,9 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHo
         myViewHolder.name.setText(itemList.get(i).getUser_name());
 
         try {
-            myViewHolder.time.setText(Utils.formattedDateFromString("", "hh:mm aa - d',' MMMM", itemList.get(i).getTime()));
+            myViewHolder.time.setText(Utils.formattedDateFromString("", "hh:mm aa - d',' MMMM", itemList.get(i).getCreatedAt()));
         } catch (Exception e) {
-            myViewHolder.time.setText(Utils.getTimeAgo(Integer.parseInt(itemList.get(i).getTime()) * 1000));
+            myViewHolder.time.setText(Utils.getTimeAgo(Integer.parseInt(itemList.get(i).getCreatedAt()) * 1000));
         }
 
         myViewHolder.reviewText.setText(itemList.get(i).getRating_text());
@@ -53,16 +53,14 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHo
         if (itemList.get(i).getRating_text() == null)
             myViewHolder.reviewText.setVisibility(View.GONE);
 
-        if (itemList.get(i).getProfileImage() != null) {
-            Glide.with(context)
-                    .load(itemList.get(i).getProfileImage())
-                    .apply(new RequestOptions().override(200, 200))
-                    .error(R.drawable.ic_avatar_person)
-                    .into(myViewHolder.profilePicture);
-        }
+        Glide.with(context)
+                .load(itemList.get(i).getProfileImage())
+                .apply(new RequestOptions().override(200, 200))
+                .error(R.drawable.ic_avatar_person)
+                .placeholder(R.drawable.ic_avatar_person)
+                .into(myViewHolder.profilePicture);
 
         myViewHolder.ratingBar.setRating((float) itemList.get(i).getRating_value());
-
     }
 
     @Override

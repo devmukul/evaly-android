@@ -18,7 +18,6 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
-import bd.com.evaly.evalyshop.models.campaign.carousel.CampaignCarouselResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignViewModel;
@@ -44,12 +43,12 @@ public class CampaignController extends EpoxyController {
     private AppCompatActivity activity;
     private CampaignViewModel viewModel;
 
-    public void setViewModel(CampaignViewModel viewModel) {
-        this.viewModel = viewModel;
-    }
-
     public CampaignController() {
         setFilterDuplicates(true);
+    }
+
+    public void setViewModel(CampaignViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 
     @Override
@@ -76,11 +75,10 @@ public class CampaignController extends EpoxyController {
                     params.setFullSpan(true);
                     view.setLayoutParams(params);
                 })
-                .addTo(this);
+                .addIf(viewModel.getSearch() == null, this);
 
 
         for (CampaignCategoryResponse rootItem : categoryList) {
-
             new CampaignHeaderModel_()
                     .id("cam_header", rootItem.getSlug())
                     .isStaggered(true)
@@ -93,7 +91,7 @@ public class CampaignController extends EpoxyController {
                         bundle.putBoolean("open_filter", true);
                         navController.navigate(R.id.campaignDetails, bundle);
                     })
-                    .addIf(rootItem.getCampaigns().size() > 0, this);
+                    .addIf(rootItem.getCampaigns().size() > 0 && viewModel.getSearch() == null, this);
 
             List<DataBindingEpoxyModel> modelList = new ArrayList<>();
             for (SubCampaignResponse item : rootItem.getCampaigns())
@@ -125,9 +123,8 @@ public class CampaignController extends EpoxyController {
                             Utils.convertDpToPixel(15),
                             Utils.convertDpToPixel(20),
                             Utils.convertDpToPixel(10)))
-                    .addIf(rootItem.getCampaigns().size() > 0, this);
+                    .addIf(rootItem.getCampaigns().size() > 0 && viewModel.getSearch() == null, this);
         }
-
 
 
         new CampaignTitleModel_()

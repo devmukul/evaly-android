@@ -24,7 +24,6 @@ import bd.com.evaly.evalyshop.models.auth.RegisterResponse;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordBody;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordResponse;
 import bd.com.evaly.evalyshop.models.auth.captcha.CaptchaResponse;
-import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.campaign.banner.CampaignBannerResponse;
@@ -358,8 +357,8 @@ public interface IApiClient {
     Call<JsonObject> getIssueList(@Header("Authorization") String header,
                                   @Path("invoice") String invoice);
 
-    @GET(UrlUtils.GET_BANNERS)
-    Call<CommonResultResponse<List<BannerItem>>> getBanners();
+    @GET(UrlUtils.DOMAIN + "ratings/api/v1/public/ads")
+    Call<CommonResultResponse<JsonObject>> getBanners();
 
     // balance, transaction
 

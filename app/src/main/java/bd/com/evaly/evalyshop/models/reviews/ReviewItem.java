@@ -10,7 +10,7 @@ public class ReviewItem {
 
     private String sku;
 
-    @SerializedName("user_name")
+    @SerializedName(value = "user_name", alternate = "full_name")
     private String user_name;
 
     @SerializedName(value = "rating_value", alternate = "rating")
@@ -25,7 +25,7 @@ public class ReviewItem {
     @SerializedName("is_approved")
     private int is_approved;
 
-    @SerializedName("profile_image")
+    @SerializedName(value = "profile_image", alternate = "profile_pic_url")
     private String profileImage;
 
     @SerializedName("phone")

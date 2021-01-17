@@ -35,15 +35,13 @@ public class CampaignViewModel extends ViewModel {
         loadCampaignProducts();
     }
 
-
-    public void setBuyNowClick(CampaignProductResponse model) {
-        this.buyNowClick.setValue(model);
-    }
-
     public SingleLiveEvent<CampaignProductResponse> getBuyNowClick() {
         return buyNowClick;
     }
 
+    public void setBuyNowClick(CampaignProductResponse model) {
+        this.buyNowClick.setValue(model);
+    }
 
     public void loadCampaignCategory() {
         CampaignApiHelper.getCampaignCategory(new ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.EpoxyController;
-import com.airbnb.epoxy.EpoxyModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +39,6 @@ public class BrowseProductController extends EpoxyController {
 
     public void setClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
-    }
-
-    public interface ClickListener {
-        void onProductClick(ProductItem item);
-
-        void onGridItemClick(String type, String title, String image, String slug);
     }
 
     public void setLoadingMore(boolean loadingMore) {
@@ -120,7 +113,9 @@ public class BrowseProductController extends EpoxyController {
                 .spanSizeOverride((totalSpanCount, position, itemCount) -> 3)
                 .addIf(!loadingMore && list.size() == 0, this);
 
-        loader.addIf(loadingMore && viewModel.getCurrentPage() > 1, this);
+        loader
+                .spanSizeOverride((totalSpanCount, position, itemCount) -> 3)
+                .addIf(loadingMore && viewModel.getCurrentPage() > 1, this);
     }
 
     public String getCategorySlug() {
@@ -129,6 +124,12 @@ public class BrowseProductController extends EpoxyController {
 
     public void setCategorySlug(String categorySlug) {
         this.categorySlug = categorySlug;
+    }
+
+    public interface ClickListener {
+        void onProductClick(ProductItem item);
+
+        void onGridItemClick(String type, String title, String image, String slug);
     }
 
 }
