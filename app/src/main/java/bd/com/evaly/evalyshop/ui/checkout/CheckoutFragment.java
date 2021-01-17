@@ -123,6 +123,7 @@ public class CheckoutFragment extends DialogFragment {
             navController = NavHostFragment.findNavController(CheckoutFragment.this);
         dialog = new ViewDialog(getActivity());
         progressDialog = new ProgressDialog(getActivity());
+        selectedImagesList = new ArrayList<>();
         startAnimation();
         checkRemoteConfig();
         setupRecycler();

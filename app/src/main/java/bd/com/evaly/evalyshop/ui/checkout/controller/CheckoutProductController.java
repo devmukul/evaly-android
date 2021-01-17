@@ -105,6 +105,7 @@ public class CheckoutProductController extends EpoxyController {
                 attachmentModels.add(new ImagePickerItemModel_()
                         .id("image_picker_base", thisShopSlug)
                         .isAdd(true)
+                        .showRemove(false)
                         .clickListener((model, parentView, clickedView, position) -> {
                             viewModel.setSelectedShopSlug(thisShopSlug);
                             viewModel.imagePicker.call();
@@ -114,6 +115,7 @@ public class CheckoutProductController extends EpoxyController {
                 attachmentModels.add(new ImagePickerItemModel_()
                         .id("image_picker", addShopHeader + url)
                         .isAdd(false)
+                        .showRemove(true)
                         .url(url)
                         .clickListener((model, parentView, clickedView, position) -> {
 

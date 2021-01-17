@@ -77,8 +77,19 @@ public class OrderDetailsModel {
     @SerializedName("allowed_payment_methods")
     private ArrayList<String> allowed_payment_methods;
 
+    @SerializedName("attachments")
+    private List<String> attachments;
+
     public ArrayList<String> getAllowed_payment_methods() {
         return allowed_payment_methods;
+    }
+
+    public List<String> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<String> attachments) {
+        this.attachments = attachments;
     }
 
     public boolean isApplyDeliveryCharge() {

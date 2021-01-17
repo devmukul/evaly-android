@@ -57,11 +57,13 @@ import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.image.ImageSliderActivity;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.issue.create.CreateIssueBottomSheet;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
+import bd.com.evaly.evalyshop.ui.order.orderDetails.controller.OrderAttachmentController;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.refund.RefundBottomSheet;
 import bd.com.evaly.evalyshop.ui.payment.bottomsheet.PaymentBottomSheet;
 import bd.com.evaly.evalyshop.ui.payment.giftcard.GiftCardPaymentBottomSheet;
@@ -532,6 +534,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
         inflateMenu();
         updateProducts();
+        initAttachments();
     }
 
     private void updateProducts() {
@@ -566,6 +569,24 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                             productVariation));
             orderDetailsProductAdapter.notifyItemInserted(orderDetailsProducts.size());
         }
+    }
+
+    private void initAttachments() {
+        List<String> list = orderDetailsModel.getAttachments();
+        if (list == null && list.size() == 0) {
+            binding.attachmentsHolder.setVisibility(View.GONE);
+            return;
+        }
+        binding.attachmentsHolder.setVisibility(View.VISIBLE);
+        OrderAttachmentController controller = new OrderAttachmentController();
+        binding.rvAttachments.setAdapter(controller.getAdapter());
+        controller.setClickListener(position -> {
+            Intent intent = new Intent(this, ImageSliderActivity.class);
+            intent.putStringArrayListExtra("image_list", new ArrayList<>(list));
+            intent.putExtra("selected", position);
+            startActivity(intent);
+        });
+        controller.setData(list);
     }
 
     private void hidePaymentButtons() {

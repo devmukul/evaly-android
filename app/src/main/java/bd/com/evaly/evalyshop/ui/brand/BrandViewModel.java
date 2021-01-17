@@ -14,7 +14,6 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandCatResponse;
-import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.CategoriesItem;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
@@ -25,6 +24,7 @@ public class BrandViewModel extends ViewModel {
 
     protected MutableLiveData<List<ProductItem>> liveList = new MutableLiveData<>();
     protected MutableLiveData<BrandCatResponse> detailsLive = new MutableLiveData<>();
+    protected MutableLiveData<List<TabsItem>> categoryListLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> onResetLiveData = new MutableLiveData<>();
     private List<ProductItem> arrayList = new ArrayList<>();
     private String slug;
@@ -32,7 +32,6 @@ public class BrandViewModel extends ViewModel {
     private int currentPage = 1;
     private boolean isCategoryLoading;
     private List<TabsItem> categoryArrayList = new ArrayList<>();
-    protected MutableLiveData<List<TabsItem>> categoryListLiveData = new MutableLiveData<>();
     private MutableLiveData<TabsItem> selectedCategoryLiveData = new MutableLiveData<>();
     private int categoryCurrentPage = 1;
 
@@ -43,7 +42,7 @@ public class BrandViewModel extends ViewModel {
         loadCategories();
     }
 
-    public void clearProductList(){
+    public void clearProductList() {
         arrayList.clear();
     }
 
@@ -104,6 +103,7 @@ public class BrandViewModel extends ViewModel {
 
     public void loadCategories() {
         isCategoryLoading = true;
+        categoryArrayList.clear();
         BrandApiHelper.getCategories(slug, new ResponseListenerAuth<CommonDataResponse<BrandCatResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BrandCatResponse> response, int statusCode) {

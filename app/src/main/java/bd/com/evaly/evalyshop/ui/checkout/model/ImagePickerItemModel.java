@@ -25,6 +25,9 @@ public abstract class ImagePickerItemModel extends DataBindingEpoxyModel {
     @EpoxyAttribute
     boolean isAdd;
 
+    @EpoxyAttribute
+    boolean showRemove;
+
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
 
@@ -37,7 +40,6 @@ public abstract class ImagePickerItemModel extends DataBindingEpoxyModel {
         ItemImagePickBinding binding = (ItemImagePickBinding) holder.getDataBinding();
 
         if (isAdd) {
-            binding.remove.setVisibility(View.GONE);
             Glide.with(binding.getRoot())
                     .asBitmap()
                     .load(R.drawable.ic_upload_image_large)
@@ -51,16 +53,14 @@ public abstract class ImagePickerItemModel extends DataBindingEpoxyModel {
                     .placeholder(R.drawable.ic_image_placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(binding.image);
-
-            binding.remove.setVisibility(View.VISIBLE);
             binding.image.setPadding(0, 0, 0, 0);
         }
 
+        binding.remove.setVisibility(showRemove ? View.VISIBLE : View.GONE);
         binding.image.setOnClickListener(clickListener);
         binding.remove.setOnClickListener(deleteClickListener);
 
     }
-
 
     @Override
     protected void setDataBindingVariables(ViewDataBinding binding) {
