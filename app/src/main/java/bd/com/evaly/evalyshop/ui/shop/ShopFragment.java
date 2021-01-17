@@ -204,15 +204,14 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         viewModel.shopDetailsLive.observe(getViewLifecycleOwner(), response -> {
             shopDetailsModel = response;
+            controller.setCashbackRate(response.getCashbackPercentage());
 
             if (controller.getShopInfo() == null) {
                 controller.setAttr(response);
             }
 
             binding.appBarLayout.homeSearch.setEnabled(true);
-
             controller.setLoadingMore(false);
-
             binding.shimmerHolder.animate().alpha(0.0f)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
@@ -223,8 +222,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             binding.shimmerHolder.setVisibility(View.GONE);
                         }
                     });
-
-
             initRecommender();
         });
 

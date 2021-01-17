@@ -158,12 +158,12 @@
             android:background="@drawable/circle_bg_shop"
             android:clickable="false"
             android:padding="16dp"
-            android:tint="#35c335"
             app:layout_constraintEnd_toStartOf="@+id/btn2Image"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/follow_btn"
-            app:srcCompat="@drawable/ic_call" />
+            app:srcCompat="@drawable/ic_call"
+            app:tint="#35c335" />
 
         <TextView
             android:id="@+id/btn1Title"
@@ -185,12 +185,12 @@
             android:background="@drawable/circle_bg_shop"
             android:clickable="false"
             android:padding="15dp"
-            android:tint="@color/colorAccent"
             app:layout_constraintEnd_toStartOf="@+id/btn3Image"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btn1Image"
             app:layout_constraintTop_toTopOf="@+id/btn1Image"
-            app:srcCompat="@drawable/ic_marker" />
+            app:srcCompat="@drawable/ic_marker"
+            app:tint="@color/colorAccentRed" />
 
 
         <TextView
@@ -214,12 +214,12 @@
             android:background="@drawable/circle_bg_shop"
             android:clickable="false"
             android:padding="15dp"
-            android:tint="#0EAD75"
             app:layout_constraintEnd_toStartOf="@+id/btn4Image"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btn2Image"
             app:layout_constraintTop_toTopOf="@+id/btn1Image"
-            app:srcCompat="@drawable/ic_delivery" />
+            app:srcCompat="@drawable/ic_delivery"
+            app:tint="#0EAD75" />
 
         <TextView
             android:id="@+id/btn3Title"
@@ -242,12 +242,12 @@
             android:background="@drawable/circle_bg_shop"
             android:clickable="false"
             android:padding="15dp"
-            android:tint="#f8be01"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btn3Image"
             app:layout_constraintTop_toTopOf="@+id/btn1Image"
-            app:srcCompat="@drawable/ic_menu_star" />
+            app:srcCompat="@drawable/ic_menu_star"
+            app:tint="#f8be01" />
 
         <TextView
             android:id="@+id/btn4Title"

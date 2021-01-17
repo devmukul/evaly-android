@@ -2,201 +2,212 @@ package bd.com.evaly.evalyshop.models.catalog.shop;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ShopDetailsResponse{
+public class ShopDetailsResponse {
 
-	@SerializedName("owner_name")
-	private String ownerName;
+    @SerializedName("owner_name")
+    private String ownerName;
 
-	@SerializedName("campaign_ends_at")
-	private String campaignEndsAt;
+    @SerializedName("campaign_ends_at")
+    private String campaignEndsAt;
 
-	@SerializedName("approval")
-	private boolean approval;
+    @SerializedName("approval")
+    private boolean approval;
 
-	@SerializedName("owner_number")
-	private String ownerNumber;
+    @SerializedName("owner_number")
+    private String ownerNumber;
 
-	@SerializedName("shop_name")
-	private String shopName;
+    @SerializedName("shop_name")
+    private String shopName;
 
-	@SerializedName("logo_image")
-	private String shopImage;
+    @SerializedName("logo_image")
+    private String shopImage;
 
-	@SerializedName("contact_number")
-	private String contactNumber;
+    @SerializedName("contact_number")
+    private String contactNumber;
 
-	@SerializedName("campaign_name")
-	private String campaignName;
+    @SerializedName("campaign_name")
+    private String campaignName;
 
-	@SerializedName("campaign_category_slug")
-	private String campaignCategorySlug;
+    @SerializedName("campaign_category_slug")
+    private String campaignCategorySlug;
 
-	@SerializedName("campaign_slug")
-	private String campaignSlug;
+    @SerializedName("campaign_slug")
+    private String campaignSlug;
 
-	@SerializedName("campaign_category_name")
-	private String campaignCategoryName;
+    @SerializedName("campaign_category_name")
+    private String campaignCategoryName;
 
-	@SerializedName("slug")
-	private String slug;
+    @SerializedName("cashback_percentage")
+    private int cashbackPercentage;
 
-	@SerializedName("campaign_start_at")
-	private String campaignStartAt;
+    @SerializedName("slug")
+    private String slug;
 
-	@SerializedName("subscribed")
-	private boolean subscribed;
+    @SerializedName("campaign_start_at")
+    private String campaignStartAt;
 
-	@SerializedName("subscriber_count")
-	private int subscriberCount;
+    @SerializedName("subscribed")
+    private boolean subscribed;
 
-	@SerializedName("shop_address")
-	private String shopAddress;
+    @SerializedName("subscriber_count")
+    private int subscriberCount;
 
-	public String getShopAddress() {
-		return shopAddress;
-	}
+    @SerializedName("shop_address")
+    private String shopAddress;
 
-	public void setShopAddress(String shopAddress) {
-		this.shopAddress = shopAddress;
-	}
+    public int getCashbackPercentage() {
+        return cashbackPercentage;
+    }
 
-	public boolean isSubscribed() {
-		return subscribed;
-	}
+    public void setCashbackPercentage(int cashbackPercentage) {
+        this.cashbackPercentage = cashbackPercentage;
+    }
 
-	public void setSubscribed(boolean subscribed) {
-		this.subscribed = subscribed;
-	}
+    public String getShopAddress() {
+        return shopAddress;
+    }
 
-	public int getSubscriberCount() {
-		return subscriberCount;
-	}
+    public void setShopAddress(String shopAddress) {
+        this.shopAddress = shopAddress;
+    }
 
-	public void setSubscriberCount(int subscriberCount) {
-		this.subscriberCount = subscriberCount;
-	}
+    public boolean isSubscribed() {
+        return subscribed;
+    }
 
-	public void setOwnerName(String ownerName){
-		this.ownerName = ownerName;
-	}
+    public void setSubscribed(boolean subscribed) {
+        this.subscribed = subscribed;
+    }
 
-	public String getOwnerName(){
-		return ownerName;
-	}
+    public int getSubscriberCount() {
+        return subscriberCount;
+    }
 
-	public void setCampaignEndsAt(String campaignEndsAt){
-		this.campaignEndsAt = campaignEndsAt;
-	}
+    public void setSubscriberCount(int subscriberCount) {
+        this.subscriberCount = subscriberCount;
+    }
 
-	public String getCampaignEndsAt(){
-		return campaignEndsAt;
-	}
+    public String getOwnerName() {
+        return ownerName;
+    }
 
-	public void setApproval(boolean approval){
-		this.approval = approval;
-	}
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
 
-	public boolean isApproval(){
-		return approval;
-	}
+    public String getCampaignEndsAt() {
+        return campaignEndsAt;
+    }
 
-	public void setOwnerNumber(String ownerNumber){
-		this.ownerNumber = ownerNumber;
-	}
+    public void setCampaignEndsAt(String campaignEndsAt) {
+        this.campaignEndsAt = campaignEndsAt;
+    }
 
-	public String getOwnerNumber(){
-		return ownerNumber;
-	}
+    public boolean isApproval() {
+        return approval;
+    }
 
-	public void setShopName(String shopName){
-		this.shopName = shopName;
-	}
+    public void setApproval(boolean approval) {
+        this.approval = approval;
+    }
 
-	public String getShopName(){
-		return shopName;
-	}
+    public String getOwnerNumber() {
+        return ownerNumber;
+    }
 
-	public void setShopImage(String shopImage){
-		this.shopImage = shopImage;
-	}
+    public void setOwnerNumber(String ownerNumber) {
+        this.ownerNumber = ownerNumber;
+    }
 
-	public String getShopImage(){
-		return shopImage;
-	}
+    public String getShopName() {
+        return shopName;
+    }
 
-	public void setContactNumber(String contactNumber){
-		this.contactNumber = contactNumber;
-	}
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
 
-	public String getContactNumber(){
-		return contactNumber;
-	}
+    public String getShopImage() {
+        return shopImage;
+    }
 
-	public void setCampaignName(String campaignName){
-		this.campaignName = campaignName;
-	}
+    public void setShopImage(String shopImage) {
+        this.shopImage = shopImage;
+    }
 
-	public String getCampaignName(){
-		return campaignName;
-	}
+    public String getContactNumber() {
+        return contactNumber;
+    }
 
-	public void setCampaignCategorySlug(String campaignCategorySlug){
-		this.campaignCategorySlug = campaignCategorySlug;
-	}
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
 
-	public String getCampaignCategorySlug(){
-		return campaignCategorySlug;
-	}
+    public String getCampaignName() {
+        return campaignName;
+    }
 
-	public void setCampaignSlug(String campaignSlug){
-		this.campaignSlug = campaignSlug;
-	}
+    public void setCampaignName(String campaignName) {
+        this.campaignName = campaignName;
+    }
 
-	public String getCampaignSlug(){
-		return campaignSlug;
-	}
+    public String getCampaignCategorySlug() {
+        return campaignCategorySlug;
+    }
 
-	public void setCampaignCategoryName(String campaignCategoryName){
-		this.campaignCategoryName = campaignCategoryName;
-	}
+    public void setCampaignCategorySlug(String campaignCategorySlug) {
+        this.campaignCategorySlug = campaignCategorySlug;
+    }
 
-	public String getCampaignCategoryName(){
-		return campaignCategoryName;
-	}
+    public String getCampaignSlug() {
+        return campaignSlug;
+    }
 
-	public void setSlug(String slug){
-		this.slug = slug;
-	}
+    public void setCampaignSlug(String campaignSlug) {
+        this.campaignSlug = campaignSlug;
+    }
 
-	public String getSlug(){
-		return slug;
-	}
+    public String getCampaignCategoryName() {
+        return campaignCategoryName;
+    }
 
-	public void setCampaignStartAt(String campaignStartAt){
-		this.campaignStartAt = campaignStartAt;
-	}
+    public void setCampaignCategoryName(String campaignCategoryName) {
+        this.campaignCategoryName = campaignCategoryName;
+    }
 
-	public String getCampaignStartAt(){
-		return campaignStartAt;
-	}
+    public String getSlug() {
+        return slug;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"ShopDetailsResponse{" + 
-			"owner_name = '" + ownerName + '\'' + 
-			",campaign_ends_at = '" + campaignEndsAt + '\'' + 
-			",approval = '" + approval + '\'' + 
-			",owner_number = '" + ownerNumber + '\'' + 
-			",shop_name = '" + shopName + '\'' + 
-			",shop_image = '" + shopImage + '\'' + 
-			",contact_number = '" + contactNumber + '\'' + 
-			",campaign_name = '" + campaignName + '\'' + 
-			",campaign_category_slug = '" + campaignCategorySlug + '\'' + 
-			",campaign_slug = '" + campaignSlug + '\'' + 
-			",campaign_category_name = '" + campaignCategoryName + '\'' + 
-			",slug = '" + slug + '\'' + 
-			",campaign_start_at = '" + campaignStartAt + '\'' + 
-			"}";
-		}
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public String getCampaignStartAt() {
+        return campaignStartAt;
+    }
+
+    public void setCampaignStartAt(String campaignStartAt) {
+        this.campaignStartAt = campaignStartAt;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "ShopDetailsResponse{" +
+                        "owner_name = '" + ownerName + '\'' +
+                        ",campaign_ends_at = '" + campaignEndsAt + '\'' +
+                        ",approval = '" + approval + '\'' +
+                        ",owner_number = '" + ownerNumber + '\'' +
+                        ",shop_name = '" + shopName + '\'' +
+                        ",shop_image = '" + shopImage + '\'' +
+                        ",contact_number = '" + contactNumber + '\'' +
+                        ",campaign_name = '" + campaignName + '\'' +
+                        ",campaign_category_slug = '" + campaignCategorySlug + '\'' +
+                        ",campaign_slug = '" + campaignSlug + '\'' +
+                        ",campaign_category_name = '" + campaignCategoryName + '\'' +
+                        ",slug = '" + slug + '\'' +
+                        ",campaign_start_at = '" + campaignStartAt + '\'' +
+                        "}";
+    }
 }

@@ -520,7 +520,7 @@ public interface IApiClient {
     // Root Category
 
     @GET(UrlUtils.BASE_CATALOG + "categories")
-    Call<CommonDataResponse<List<CategoryEntity>>> getRootCategories();
+    Call<CommonDataResponse<List<CategoryEntity>>> getRootCategories(@Query("limit") int limit);
 
 
     @GET(UrlUtils.BASE_CATALOG + "products/top-categories")

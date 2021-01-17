@@ -24,7 +24,7 @@ public class GeneralApiHelper extends BaseApiHelper {
     }
 
     public static void getRootCategories(ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String> listener) {
-        getiApiClient().getRootCategories().enqueue(getResponseCallBackDefault(listener));
+        getiApiClient().getRootCategories(200).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void getTopCategories(ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String> listener) {
