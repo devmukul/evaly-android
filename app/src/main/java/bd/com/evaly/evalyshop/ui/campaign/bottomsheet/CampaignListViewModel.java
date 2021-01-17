@@ -41,12 +41,12 @@ public class CampaignListViewModel extends ViewModel {
         this.search = search;
     }
 
-    public void setCategory(CampaignCategoryResponse category) {
-        this.category = category;
-    }
-
     public CampaignCategoryResponse getCategory() {
         return category;
+    }
+
+    public void setCategory(CampaignCategoryResponse category) {
+        this.category = category;
     }
 
     public void loadFromApi() {
@@ -55,9 +55,7 @@ public class CampaignListViewModel extends ViewModel {
             public void onDataFetched(CommonDataResponse<List<SubCampaignResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
                 liveData.setValue(arrayList);
-                totalCount = response.getCount();
-                if (totalCount > arrayList.size())
-                    currentPage++;
+                currentPage++;
             }
 
             @Override
@@ -72,7 +70,7 @@ public class CampaignListViewModel extends ViewModel {
         });
     }
 
-    public void clear(){
+    public void clear() {
         currentPage = 1;
         arrayList.clear();
     }

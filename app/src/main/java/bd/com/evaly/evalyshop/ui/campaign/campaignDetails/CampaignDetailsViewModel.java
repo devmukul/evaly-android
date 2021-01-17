@@ -21,11 +21,12 @@ import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class CampaignDetailsViewModel extends ViewModel {
+    protected SingleLiveEvent<Boolean> hideProgressDialog = new SingleLiveEvent<>();
+    protected MutableLiveData<SubCampaignResponse> subCampaignLiveData = new MutableLiveData<>();
+    protected SingleLiveEvent<String> switchTab = new SingleLiveEvent<>();
     private MutableLiveData<CampaignCategoryResponse> campaignCategoryLiveData = new MutableLiveData<>();
     private MutableLiveData<List<CampaignParentModel>> liveList = new MutableLiveData<>();
     private SingleLiveEvent<Boolean> hideLoadingBar = new SingleLiveEvent<>();
-    protected SingleLiveEvent<Boolean> hideProgressDialog = new SingleLiveEvent<>();
-    protected MutableLiveData<SubCampaignResponse> subCampaignLiveData = new MutableLiveData<>();
     private List<CampaignParentModel> arrayList = new ArrayList<>();
     private int currentPage = 1;
     private int totalCount = 0;
@@ -33,24 +34,22 @@ public class CampaignDetailsViewModel extends ViewModel {
     private String type = "shop";
     private String campaign = null;
     private String selectTypeAfterLoading = null;
-    protected SingleLiveEvent<String> switchTab = new SingleLiveEvent<>();
+    private SingleLiveEvent<CampaignProductResponse> buyNowClick = new SingleLiveEvent<>();
+
+    public CampaignDetailsViewModel() {
+        loadListFromApi();
+    }
 
     public void setSelectTypeAfterLoading(String selectTypeAfterLoading) {
         this.selectTypeAfterLoading = selectTypeAfterLoading;
-    }
-
-    private SingleLiveEvent<CampaignProductResponse> buyNowClick = new SingleLiveEvent<>();
-
-    public void setBuyNowClick(CampaignProductResponse model) {
-        this.buyNowClick.setValue(model);
     }
 
     public SingleLiveEvent<CampaignProductResponse> getBuyNowClick() {
         return buyNowClick;
     }
 
-    public CampaignDetailsViewModel() {
-        loadListFromApi();
+    public void setBuyNowClick(CampaignProductResponse model) {
+        this.buyNowClick.setValue(model);
     }
 
     public void loadSubCampaignDetails(String campaign_slug) {
@@ -145,9 +144,7 @@ public class CampaignDetailsViewModel extends ViewModel {
                     public void onDataFetched(CommonDataResponse<List<SubCampaignResponse>> response, int statusCode) {
                         arrayList.addAll(response.getData());
                         liveList.setValue(arrayList);
-                        totalCount = response.getCount();
-                        if (totalCount > arrayList.size())
-                            currentPage++;
+                        currentPage++;
                     }
 
                     @Override
@@ -170,9 +167,7 @@ public class CampaignDetailsViewModel extends ViewModel {
                     public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
                         arrayList.addAll(response.getData());
                         liveList.setValue(arrayList);
-                        totalCount = response.getCount();
-                        if (totalCount > arrayList.size())
-                            currentPage++;
+                        currentPage++;
                     }
 
                     @Override
@@ -195,9 +190,7 @@ public class CampaignDetailsViewModel extends ViewModel {
                     public void onDataFetched(CommonDataResponse<List<CampaignBrandResponse>> response, int statusCode) {
                         arrayList.addAll(response.getData());
                         liveList.setValue(arrayList);
-                        totalCount = response.getCount();
-                        if (totalCount > arrayList.size())
-                            currentPage++;
+                        currentPage++;
                     }
 
                     @Override
@@ -220,9 +213,7 @@ public class CampaignDetailsViewModel extends ViewModel {
                     public void onDataFetched(CommonDataResponse<List<CampaignShopResponse>> response, int statusCode) {
                         arrayList.addAll(response.getData());
                         liveList.setValue(arrayList);
-                        totalCount = response.getCount();
-                        if (totalCount > arrayList.size())
-                            currentPage++;
+                        currentPage++;
                     }
 
                     @Override
@@ -257,24 +248,12 @@ public class CampaignDetailsViewModel extends ViewModel {
         this.search = search;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public MutableLiveData<List<CampaignParentModel>> getLiveList() {
         return liveList;
     }
 
     public LiveData<CampaignCategoryResponse> getCampaignCategoryLiveData() {
         return campaignCategoryLiveData;
-    }
-
-    public String getCampaign() {
-        return campaign;
-    }
-
-    public int getCurrentPage() {
-        return currentPage;
     }
 
     public void setCampaignCategoryLiveData(CampaignCategoryResponse model) {
@@ -289,12 +268,24 @@ public class CampaignDetailsViewModel extends ViewModel {
         }
     }
 
+    public String getCampaign() {
+        return campaign;
+    }
+
     public void setCampaign(String slug) {
         this.campaign = slug;
     }
 
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void createLiveDataAndLoad() {

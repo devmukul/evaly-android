@@ -75,9 +75,7 @@ public class CampaignViewModel extends ViewModel {
             public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
                 productsArrayList.addAll(response.getData());
                 productsLiveList.setValue(productsArrayList);
-                totalCount = response.getCount();
-                if (totalCount > productsArrayList.size())
-                    currentPage++;
+                currentPage++;
             }
 
             @Override

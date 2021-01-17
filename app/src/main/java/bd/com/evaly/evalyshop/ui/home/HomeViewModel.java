@@ -223,9 +223,7 @@ public class HomeViewModel extends ViewModel {
 
                 productArrayList.addAll(response.getData());
                 productListLive.setValue(productArrayList);
-
-                if (response.getCount() > productArrayList.size())
-                    currentPageProducts++;
+                currentPageProducts++;
             }
 
             @Override
