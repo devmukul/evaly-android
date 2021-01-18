@@ -63,10 +63,9 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="20dp"
                 android:layout_weight="0"
-                android:textColor="@color/c333"
-                android:textSize="13sp"
+                android:textColor="@color/c555"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:visibility="gone"
                 tools:text="Size: 20" />
 
             <View

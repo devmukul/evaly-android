@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.ui.checkout.model;
 
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.ViewDataBinding;
 
@@ -31,7 +33,12 @@ public abstract class CheckoutProductModel extends DataBindingEpoxyModel {
         binding.price.setText(Utils.formatPriceSymbol(model.getPriceDouble() * model.getQuantity()));
         binding.priceQuan.setText(String.format(Locale.ENGLISH, "%s x %s",
                 Utils.formatPriceSymbol(model.getPriceDouble()), model.getQuantity()));
-
+        if (model.getVariantDetails() == null) {
+            binding.variation.setVisibility(View.GONE);
+        } else {
+            binding.variation.setVisibility(View.VISIBLE);
+            binding.variation.setText(model.getVariantDetails());
+        }
         Glide.with(binding.productImage).
                 load(model.getImage())
                 .apply(new RequestOptions().override(300, 300))

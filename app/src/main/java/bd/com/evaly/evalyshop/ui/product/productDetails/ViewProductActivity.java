@@ -91,7 +91,7 @@ import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
 @AndroidEntryPoint
-public class ViewProductActivity extends BaseActivity implements VariantsController.SelectListener {
+public class ViewProductActivity extends BaseActivity implements VariantsController.SelectListener, AvailableShopAdapter.AvailableShopClickListener {
 
     @Inject
     RecommenderViewModel recommenderViewModel;
@@ -158,9 +158,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         setLightStatusBar(this);
 
         binding.selectedShopHolder.setVisibility(View.GONE);
-
         viewModel = new ViewModelProvider(this).get(ViewProductViewModel.class);
-
         context = this;
 
         setSupportActionBar(binding.zToolbar);
@@ -195,9 +193,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         sliderAdapter = new ViewProductSliderAdapter(context, this, sliderImages);
         binding.sliderPager.setAdapter(sliderAdapter);
         binding.sliderIndicator.setupWithViewPager(binding.sliderPager, true);
-
         viewModel.productDetailsModel.observe(this, this::populateShopDetails);
-
         viewModel.ratingSummary.observe(this, this::populateRatingsSummary);
 
         Bundle extras = getIntent().getExtras();
@@ -361,7 +357,6 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         if (variantsController == null)
             variantsController = new VariantsController();
         variantsController.setSelectListener(this);
-
         binding.rvVariant.setAdapter(variantsController.getAdapter());
     }
 
@@ -495,11 +490,26 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
         List<ProductSpecificationsItem> productSpecificationsItemList = data.getProductSpecifications();
 
+
         if (productAttributesItemList.size() > 0) {
             binding.variantHolder.setVisibility(View.VISIBLE);
             variantsController.setList(productAttributesItemList);
             variantsController.setSelectedVariants(new ArrayList<>(productVariantsItemList.get(0).getAttributeValues()));
             variantsController.requestModelBuild();
+
+            StringBuilder variantDetails = new StringBuilder();
+
+            for (HashMap.Entry<String, String> entry : variantsController.getSelectedVariantsMap().entrySet()) {
+                String val = entry.getKey() + ": " + entry.getValue();
+                variantDetails.append(val).append(", ");
+            }
+
+            if (variantDetails != null && variantDetails.length() > 0) {
+                String val = variantDetails.toString();
+                val = val.replaceAll(", $", "");
+                cartItem.setVariantDetails(val);
+            }
+
         } else {
             binding.variantHolder.setVisibility(View.GONE);
         }
@@ -526,6 +536,8 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         populateProductByVariant(firstProductVariantsItem);
         getRelatedProducts(firstProductVariantsItem.getCategorySlug());
         initRecommender();
+
+
     }
 
     private void populateProductByVariant(ProductVariantsItem item) {
@@ -595,7 +607,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         updateVariantDetails();
     }
 
-    private void updateVariantDetails(){
+    private void updateVariantDetails() {
         StringBuilder variantDetails = new StringBuilder();
         for (HashMap.Entry<String, String> entry : variantsController.getSelectedVariantsMap().entrySet()) {
             String val = entry.getKey() + ": " + entry.getValue();
@@ -784,6 +796,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         }
 
         AvailableShopAdapter adapter = new AvailableShopAdapter(this, binding.rootView, list, cartDao, cartItem);
+        adapter.setClickListener(this);
         binding.availableShops.setAdapter(adapter);
         binding.progressBarShop.setVisibility(View.GONE);
 
@@ -927,5 +940,46 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
                 break;
             }
         }
+    }
+
+    @Override
+    public void onAddToCartClick(AvailableShopModel shop) {
+        updateVariantDetails();
+        Calendar calendar = Calendar.getInstance();
+        String price = Utils.formatPrice(shop.getPrice());
+
+        if (shop.getDiscountedPrice() != null)
+            if (shop.getDiscountedPrice() > 0)
+                price = Utils.formatPrice(shop.getDiscountedPrice());
+
+        String sellerJson = new Gson().toJson(shop);
+
+        CartEntity cartEntity = new CartEntity();
+        cartEntity.setName(cartItem.getName());
+        cartEntity.setImage(cartItem.getImage());
+        cartEntity.setPriceRound(price);
+        cartEntity.setTime(calendar.getTimeInMillis());
+        cartEntity.setShopJson(sellerJson);
+        cartEntity.setQuantity(1);
+        cartEntity.setShopSlug(shop.getShopSlug());
+        cartEntity.setShopName(shop.getShopName());
+        cartEntity.setSlug(cartItem.getSlug());
+        cartEntity.setVariantDetails(cartItem.getVariantDetails());
+        cartEntity.setProductID(String.valueOf(shop.getShopItemId()));
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
+            if (dbItem.size() == 0)
+                cartDao.insert(cartEntity);
+            else
+                cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
+        });
+        Snackbar snackBar = Snackbar.make(binding.getRoot(), "Added to cart", 1500);
+        snackBar.setAction("Go to Cart", v1 -> {
+            Intent intent = new Intent(context, CartActivity.class);
+            context.startActivity(intent);
+            snackBar.dismiss();
+        });
+        snackBar.show();
     }
 }

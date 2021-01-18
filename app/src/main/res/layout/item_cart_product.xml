@@ -107,7 +107,7 @@
                 android:clickable="true"
                 android:fontFamily="sans-serif-medium"
                 android:maxLines="2"
-                android:textColor="@color/c333"
+                android:textColor="@color/c555"
                 android:textIsSelectable="false"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"

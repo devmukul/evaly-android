@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.models.shop.shopItem;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShopItem {
@@ -90,6 +91,8 @@ public class ShopItem {
     }
 
     public List<AttributesItem> getAttributes() {
+        if (attributes == null)
+            return new ArrayList<>();
         return attributes;
     }
 

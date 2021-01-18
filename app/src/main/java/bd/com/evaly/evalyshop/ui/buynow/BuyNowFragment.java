@@ -230,6 +230,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         cartEntity.setShopSlug(shopItem.getShopSlug());
         cartEntity.setShopName(shopItem.getShopName());
         cartEntity.setSlug(cartItem.getImage());
+        cartEntity.setVariantDetails(cartItem.getVariantDetails());
         cartEntity.setProductID(String.valueOf(shopItem.getShopItemId()));
 
         return cartEntity;
@@ -422,7 +423,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         CartEntity cartEntity = new CartEntity();
         cartEntity.setName(firstItem.getShopItemName());
-        cartEntity.setImage(firstItem.getFirstImage());
+        cartEntity.setImage(firstItem.getShopItemImage());
         cartEntity.setPriceRound(price);
         cartEntity.setTime(calendar.getTimeInMillis());
         cartEntity.setShopJson(sellerJson);
@@ -431,6 +432,18 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         cartEntity.setShopName(firstItem.getShopName());
         cartEntity.setSlug(shop_item_slug);
         cartEntity.setProductID(String.valueOf(firstItem.getShopItemId()));
+
+        StringBuilder variantDetails = new StringBuilder();
+        for (AttributesItem entry : firstItem.getAttributes()) {
+            String val = entry.getName() + ": " + entry.getValue();
+            variantDetails.append(val).append(", ");
+        }
+
+        if (variantDetails != null && variantDetails.length() > 0) {
+            String val = variantDetails.toString();
+            val = val.replaceAll(", $", "");
+            cartEntity.setVariantDetails(val);
+        }
 
         return cartEntity;
     }

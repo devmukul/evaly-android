@@ -3,8 +3,6 @@ package bd.com.evaly.evalyshop.ui.product.productDetails.controller;
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
-import com.google.gson.Gson;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +18,6 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.models.VariantImageItemM
 import bd.com.evaly.evalyshop.ui.product.productDetails.models.VariantItemModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.models.VariantTitleModel_;
 import bd.com.evaly.evalyshop.util.BindingUtils;
-import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class VariantsController extends EpoxyController {
@@ -66,12 +63,11 @@ public class VariantsController extends EpoxyController {
                             .onBind((model, view, position) -> {
                                 ItemVariationImageBinding binding = (ItemVariationImageBinding) view.getDataBinding();
                                 BindingUtils.markImageVariation(binding.holder, model.isSelected());
-                                if (item.isSelected())
+                                if (model.isSelected())
                                     selectedVariantsMap.put(rootItem.getAttributeName(), model.model().getValue());
                             })
                             .clickListener((model, parentView, clickedView, position) -> {
                                 ItemVariationImageBinding binding = (ItemVariationImageBinding) parentView.getDataBinding();
-                                selectedVariantsMap.put(rootItem.getAttributeName(), model.model().getValue());
                                 updateSelection(model.model(), variantItems);
                                 BindingUtils.markImageVariation(binding.holder, model.model().isSelected());
                             })
@@ -84,13 +80,11 @@ public class VariantsController extends EpoxyController {
                             .onBind((model, view, position) -> {
                                 ItemVariationSizeBinding binding = (ItemVariationSizeBinding) view.getDataBinding();
                                 BindingUtils.markVariation(binding.cardSize, model.isSelected());
-                                Logger.d(model.isSelected() + "");
-                                if (item.isSelected())
+                                if (model.isSelected())
                                     selectedVariantsMap.put(rootItem.getAttributeName(), model.model().getValue());
                             })
                             .clickListener((model, parentView, clickedView, position) -> {
                                 ItemVariationSizeBinding binding = (ItemVariationSizeBinding) parentView.getDataBinding();
-                                selectedVariantsMap.put(rootItem.getAttributeName(), model.model().getValue());
                                 updateSelection(model.model(), variantItems);
                                 BindingUtils.markVariation(binding.cardSize, model.model().isSelected());
                             }));

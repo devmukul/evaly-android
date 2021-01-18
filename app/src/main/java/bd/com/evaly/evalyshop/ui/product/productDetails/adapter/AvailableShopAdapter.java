@@ -42,6 +42,15 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
     private Context context;
     private CartEntity cartItem;
     private View view;
+    private AvailableShopClickListener clickListener;
+
+    public void setClickListener(AvailableShopClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
+    public interface AvailableShopClickListener{
+        void onAddToCartClick(AvailableShopModel model);
+    }
 
     View.OnClickListener storeClick = new View.OnClickListener() {
         @Override
@@ -124,43 +133,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
             viewHolder.buyBtn.setEnabled(false);
 
         viewHolder.buyBtn.setOnClickListener(v -> {
-
-            Calendar calendar = Calendar.getInstance();
-            String price = Utils.formatPrice(shop.getPrice());
-
-            if (shop.getDiscountedPrice() != null)
-                if (shop.getDiscountedPrice() > 0)
-                    price = Utils.formatPrice(shop.getDiscountedPrice());
-
-            String sellerJson = new Gson().toJson(shop);
-
-            CartEntity cartEntity = new CartEntity();
-            cartEntity.setName(cartItem.getName());
-            cartEntity.setImage(cartItem.getImage());
-            cartEntity.setPriceRound(price);
-            cartEntity.setTime(calendar.getTimeInMillis());
-            cartEntity.setShopJson(sellerJson);
-            cartEntity.setQuantity(1);
-            cartEntity.setShopSlug(shop.getShopSlug());
-            cartEntity.setShopName(shop.getShopName());
-            cartEntity.setSlug(cartItem.getSlug());
-            cartEntity.setVariantDetails(cartItem.getVariantDetails());
-            cartEntity.setProductID(String.valueOf(shop.getShopItemId()));
-
-            Executors.newSingleThreadExecutor().execute(() -> {
-                List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
-                if (dbItem.size() == 0)
-                    cartDao.insert(cartEntity);
-                else
-                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
-            });
-            Snackbar snackBar = Snackbar.make(view, "Added to cart", 1500);
-            snackBar.setAction("Go to Cart", v1 -> {
-                Intent intent = new Intent(context, CartActivity.class);
-                context.startActivity(intent);
-                snackBar.dismiss();
-            });
-            snackBar.show();
+            clickListener.onAddToCartClick(shop);
         });
 
         // circle buttons clicks
