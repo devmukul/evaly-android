@@ -136,8 +136,8 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         viewModel.liveList.observe(getViewLifecycleOwner(), productItems -> {
             isLoading = false;
             hideShimmer();
-            controller.addData(productItems);
             controller.setLoadingMore(false);
+            controller.addData(productItems);
             controller.requestModelBuild();
         });
     }
@@ -148,7 +148,6 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         controller.setFilterDuplicates(true);
         controller.setViewModel(viewModel);
         controller.setActivity((AppCompatActivity) getActivity());
-
         binding.recyclerView.setAdapter(controller.getAdapter());
 
         int spanCount = 2;
@@ -158,13 +157,14 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
         binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(spanCount, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
-
         controller.requestModelBuild();
 
         binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
             public void loadMoreItem() {
                 if (!isLoading) {
+                    controller.setLoadingMore(true);
+                    controller.requestModelBuild();
                     viewModel.getProducts();
                     isLoading = true;
                 }

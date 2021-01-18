@@ -82,9 +82,7 @@ public class BrandViewModel extends ViewModel {
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
                 arrayList.addAll(response.getData());
                 liveList.setValue(arrayList);
-
-                if (response.getCount() > 10)
-                    currentPage++;
+                currentPage++;
             }
 
             @Override

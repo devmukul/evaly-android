@@ -72,40 +72,29 @@ public class EvalyExpressViewModel extends ViewModel {
             public void onDataFetched(CommonResultResponse<List<GroupShopModel>> response, int statusCode) {
 
                 if (response == null) return;
-
                 loading = false;
-                totalCount = response.getCount();
-
-                if (totalCount - (24 * currentPage) > 0)
-                    hasNext = true;
-                else
-                    hasNext = false;
+                hasNext = true;
 
                 if (liveData.getValue() != null && !shouldClear) {
                     List<GroupShopModel> oldList = liveData.getValue();
                     List<GroupShopModel> newList = response.getData();
-
                     for (GroupShopModel model : newList) {
                         if (!oldList.contains(model))
                             oldList.add(model);
                     }
-
                     liveData.setValue(oldList);
 
-                    currentPage++;
-                    shouldClear = false;
                 } else {
                     liveData.setValue(response.getData());
-                    currentPage++;
-                    shouldClear = false;
                 }
+
+                currentPage++;
+                shouldClear = false;
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 loading = false;
-
-                Log.d("hmt", errorBody);
             }
 
             @Override

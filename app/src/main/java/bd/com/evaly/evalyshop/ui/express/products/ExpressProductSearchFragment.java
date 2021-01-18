@@ -213,7 +213,6 @@ public class ExpressProductSearchFragment extends Fragment {
                 binding.progressContainer.setVisibility(View.GONE);
 
                 isLoading = false;
-                totalCount = response.getCount();
 
                 List<ProductItem> list = response.getData();
 
@@ -224,11 +223,10 @@ public class ExpressProductSearchFragment extends Fragment {
 
                 expressProductController.addData(list);
 
-                if (response.getCount() > 0)
-                    currentPage++;
-
-                if (response.getCount() == 0)
+                if (response.getData().size() == 0 && currentPage == 1)
                     expressProductController.showEmptyPage(true, true);
+
+                currentPage++;
 
                 if (binding.search.getText().toString().length() == 0 && !firstLoad) {
                     firstLoad = false;

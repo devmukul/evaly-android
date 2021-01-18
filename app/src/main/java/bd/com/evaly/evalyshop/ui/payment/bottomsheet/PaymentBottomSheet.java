@@ -306,7 +306,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 image = R.drawable.payment_cards;
             } else if (paymentMethod.equalsIgnoreCase("citybank_gateway")) {
                 name = Constants.CITYBANK;
-                description = "Pay from your City Bank account easily.";
+                description = "Pay from your Amex card using City bank payment gateway.";
                 image = R.drawable.city_amex;
             } else if (paymentMethod.equalsIgnoreCase("balance")) {
                 name = "Evaly Account";
@@ -322,7 +322,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 image = R.drawable.ic_cash;
             } else if (paymentMethod.equalsIgnoreCase("sslcommerz_gateway")) {
                 name = Constants.OTHERS;
-                description = "Pay from your amex/other cards using \nSSLCommerz payment gateway.";
+                description = "Pay using SSLCommerz gateway\nfrom your card.";
                 image = R.drawable.sslcommerz;
             }
 

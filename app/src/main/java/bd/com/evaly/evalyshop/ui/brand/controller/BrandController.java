@@ -82,7 +82,6 @@ public class BrandController extends EpoxyController {
 
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
-        requestModelBuild();
     }
 
     public void showEmptyPage(boolean emptyPage, boolean build) {
@@ -133,7 +132,7 @@ public class BrandController extends EpoxyController {
 
         for (ProductItem productItem : items) {
             new HomeProductGridModel_()
-                    .id(productItem.getUniqueId())
+                    .id(productItem.getSlug())
                     .model(productItem)
                     .clickListener((model, parentView, clickedView, position) -> {
                         ProductItem item = model.getModel();
@@ -196,7 +195,6 @@ public class BrandController extends EpoxyController {
                         0))
                 .models(categoryModelList)
                 .addTo(this);
-
     }
 
     public void setCategoriesLoading(boolean categoriesLoading) {
