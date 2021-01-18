@@ -4,7 +4,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: "androidx.navigation.safeargs"
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-//apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
 android {
 
@@ -45,12 +45,9 @@ android {
             buildConfigField "String", "APPOINTMENT_URL", "\"https://api.evaly.com.bd/eappointment/api/v1/\""
         }
         debug {
-//            buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
-//            buildConfigField "String", 'WEB_URL', "\"https://beta.evaly.com.bd/\""
-//            buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
-            buildConfigField "String", 'BASE_URL', "\"https://api.evaly.com.bd/\""
-            buildConfigField "String", 'WEB_URL', "\"https://evaly.com.bd/\""
-            buildConfigField "String", 'CHAT_BASE', "\"chat.evaly.com.bd\""
+            buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
+            buildConfigField "String", 'WEB_URL', "\"https://beta.evaly.com.bd/\""
+            buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111667\""
             buildConfigField "String", 'BUILD', "\"dev\""
             buildConfigField "String", 'BKASH_URL', "\"https://beta.evaly.com.bd/bkash_payment\""
@@ -72,9 +69,9 @@ android {
 dependencies {
 
 
-    implementation "com.airbnb.android:epoxy:3.11.0"
-    implementation "com.airbnb.android:epoxy-databinding:3.11.0"
-    annotationProcessor "com.airbnb.android:epoxy-processor:$rootProject.epoxyVersion"
+    implementation "com.airbnb.android:epoxy:4.3.1"
+    implementation "com.airbnb.android:epoxy-databinding:4.3.1"
+    annotationProcessor "com.airbnb.android:epoxy-processor:4.3.1"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"

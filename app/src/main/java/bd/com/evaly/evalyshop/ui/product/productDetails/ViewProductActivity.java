@@ -525,9 +525,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         shareURL = "https://evaly.com.bd/products/" + slug;
         populateProductByVariant(firstProductVariantsItem);
         getRelatedProducts(firstProductVariantsItem.getCategorySlug());
-
         initRecommender();
-
     }
 
     private void populateProductByVariant(ProductVariantsItem item) {
@@ -576,6 +574,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         if (item.getProductImages().size() > 0)
             cartItem.setImage(item.getProductImages().get(0));
         cartItem.setSlug(slug);
+        // cartItem.setVariantDetails(item.get);
 
         // for wishlist
 
@@ -585,12 +584,29 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         } catch (Exception ignored) {
 
         }
+
         wishListItem.setId("0");
         wishListItem.setName(name);
-        wishListItem.setImage(item.getColorImage());
+        if (item.getProductImages().size() > 0)
+            wishListItem.setImage(item.getProductImages().get(0));
         wishListItem.setProductSlug(slug);
         wishListItem.setPrice(String.valueOf(price));
 
+        updateVariantDetails();
+    }
+
+    private void updateVariantDetails(){
+        StringBuilder variantDetails = new StringBuilder();
+        for (HashMap.Entry<String, String> entry : variantsController.getSelectedVariantsMap().entrySet()) {
+            String val = entry.getKey() + ": " + entry.getValue();
+            variantDetails.append(val).append(", ");
+        }
+
+        if (variantDetails != null && variantDetails.length() > 0) {
+            String val = variantDetails.toString();
+            val = val.replaceAll(", $", "");
+            cartItem.setVariantDetails(val);
+        }
     }
 
     private void getRelatedProducts(String categorySlug) {

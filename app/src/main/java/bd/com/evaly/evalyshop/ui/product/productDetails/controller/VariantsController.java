@@ -3,8 +3,11 @@ package bd.com.evaly.evalyshop.ui.product.productDetails.controller;
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.controller.AppController;
@@ -17,11 +20,13 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.models.VariantImageItemM
 import bd.com.evaly.evalyshop.ui.product.productDetails.models.VariantItemModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.models.VariantTitleModel_;
 import bd.com.evaly.evalyshop.util.BindingUtils;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class VariantsController extends EpoxyController {
 
     private List<Integer> selectedVariants = new ArrayList<>();
+    private HashMap<String, String> selectedVariantsMap = new HashMap<>();
     private List<AttributesItem> list = new ArrayList<>();
     private SelectListener selectListener;
 
@@ -42,7 +47,7 @@ public class VariantsController extends EpoxyController {
 
         for (AttributesItem rootItem : list) {
             new VariantTitleModel_()
-                    .id("var_title", rootItem.getAttributeSlug())
+                    .id("var_title", rootItem.getAttributeName())
                     .title(rootItem.getAttributeName())
                     .addTo(this);
 
@@ -61,9 +66,12 @@ public class VariantsController extends EpoxyController {
                             .onBind((model, view, position) -> {
                                 ItemVariationImageBinding binding = (ItemVariationImageBinding) view.getDataBinding();
                                 BindingUtils.markImageVariation(binding.holder, model.isSelected());
+                                if (item.isSelected())
+                                    selectedVariantsMap.put(rootItem.getAttributeName(), model.model().getValue());
                             })
                             .clickListener((model, parentView, clickedView, position) -> {
                                 ItemVariationImageBinding binding = (ItemVariationImageBinding) parentView.getDataBinding();
+                                selectedVariantsMap.put(rootItem.getAttributeName(), model.model().getValue());
                                 updateSelection(model.model(), variantItems);
                                 BindingUtils.markImageVariation(binding.holder, model.model().isSelected());
                             })
@@ -76,16 +84,20 @@ public class VariantsController extends EpoxyController {
                             .onBind((model, view, position) -> {
                                 ItemVariationSizeBinding binding = (ItemVariationSizeBinding) view.getDataBinding();
                                 BindingUtils.markVariation(binding.cardSize, model.isSelected());
+                                Logger.d(model.isSelected() + "");
+                                if (item.isSelected())
+                                    selectedVariantsMap.put(rootItem.getAttributeName(), model.model().getValue());
                             })
                             .clickListener((model, parentView, clickedView, position) -> {
                                 ItemVariationSizeBinding binding = (ItemVariationSizeBinding) parentView.getDataBinding();
+                                selectedVariantsMap.put(rootItem.getAttributeName(), model.model().getValue());
                                 updateSelection(model.model(), variantItems);
                                 BindingUtils.markVariation(binding.cardSize, model.model().isSelected());
                             }));
             }
 
             new VariantCarouselModel_()
-                    .id("var_carousel", rootItem.getAttributeSlug())
+                    .id("var_carousel", rootItem.getAttributeName())
                     .models(models)
                     .padding(new Carousel.Padding((int) Utils.convertDpToPixel(20, AppController.getmContext()), 0, 0, 0, 0))
                     .addTo(this);
@@ -94,9 +106,11 @@ public class VariantsController extends EpoxyController {
 
 
     private void updateSelection(AttributeValuesItem model, List<AttributeValuesItem> variantItems) {
+
         model.setSelected(true);
         selectedVariants.remove((Integer) model.getKey());
         selectedVariants.add(model.getKey());
+
         for (AttributeValuesItem subItem : variantItems)
             if (subItem.getKey() != model.getKey()) {
                 subItem.setSelected(false);
@@ -117,5 +131,9 @@ public class VariantsController extends EpoxyController {
 
     public void setSelectedVariants(List<Integer> selectedVariants) {
         this.selectedVariants = selectedVariants;
+    }
+
+    public HashMap<String, String> getSelectedVariantsMap() {
+        return selectedVariantsMap;
     }
 }

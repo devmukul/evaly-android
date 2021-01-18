@@ -45,8 +45,18 @@ public class CartEntity implements Serializable {
     @ColumnInfo(name = "is_selected")
     private boolean selected = true;
 
+    @ColumnInfo(name = "variant_details")
+    private String variantDetails;
+
     private boolean showShopTitle;
 
+    public void setVariantDetails(String variantDetails) {
+        this.variantDetails = variantDetails;
+    }
+
+    public String getVariantDetails() {
+        return variantDetails;
+    }
 
     public boolean isShowShopTitle() {
         return showShopTitle;
@@ -103,7 +113,7 @@ public class CartEntity implements Serializable {
     public int getPriceInt() {
         try {
             return Integer.parseInt(price);
-        } catch (Exception e){
+        } catch (Exception e) {
             return 0;
         }
     }
@@ -111,7 +121,7 @@ public class CartEntity implements Serializable {
     public double getPriceDouble() {
         try {
             return Double.parseDouble(price);
-        } catch (Exception e){
+        } catch (Exception e) {
             return 0;
         }
     }
@@ -121,7 +131,7 @@ public class CartEntity implements Serializable {
         this.price = price;
     }
 
-    public void setPriceRound(String p){
+    public void setPriceRound(String p) {
         p = String.valueOf((int) Math.round(Double.parseDouble(p)));
         this.price = p;
     }

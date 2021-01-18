@@ -60,7 +60,7 @@ public class CartController extends EpoxyController {
                 endOfGroup = !list.get(index + 1).getShopSlug().equals(thisShopSlug);
 
             new CartShopModel_()
-                    .id("cart_shop_item", item.getSlug() + " " + item.getShopSlug())
+                    .id("cart_shop_item", item.getProductID() + " " + item.getShopSlug())
                     .model(item)
                     .onBind((model, view, position) -> {
                         ItemCartShopBinding binding = (ItemCartShopBinding) view.getDataBinding();
@@ -73,7 +73,7 @@ public class CartController extends EpoxyController {
                     .addIf(addShopHeader, this);
 
             new CartProductModel_()
-                    .id("cart_item", item.getSlug() + " " + item.getShopSlug())
+                    .id("cart_item", item.getProductID() + " " + item.getShopSlug())
                     .model(item)
                     .onBind((model, view, position) -> {
                         ItemCartProductBinding binding = (ItemCartProductBinding) view.getDataBinding();
