@@ -82,6 +82,10 @@ public class BrowseProductViewModel extends ViewModel {
         }
     }
 
+    public String getCategorySlug() {
+        return categorySlug;
+    }
+
     private void getProducts() {
 
         ProductApiHelper.getCategoryBrandProducts(currentPage, categorySlug, null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {

@@ -38,6 +38,8 @@ public class BrandViewModel extends ViewModel {
     @ViewModelInject
     public BrandViewModel(@Assisted SavedStateHandle savedStateHandle) {
         this.slug = savedStateHandle.get("brand_slug");
+        if (savedStateHandle.contains("category_slug"))
+            this.categorySlug = savedStateHandle.get("category_slug");
         getProducts();
         loadCategories();
     }
@@ -73,7 +75,6 @@ public class BrandViewModel extends ViewModel {
     public void setOnResetLiveData(boolean onResetLiveData) {
         this.onResetLiveData.setValue(onResetLiveData);
     }
-
 
     public void getProducts() {
 

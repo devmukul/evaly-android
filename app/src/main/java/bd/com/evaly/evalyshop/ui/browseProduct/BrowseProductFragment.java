@@ -208,6 +208,7 @@ public class BrowseProductFragment extends Fragment implements BrowseProductCont
             navController.navigate(R.id.shopFragment, bundle);
         } else if (type.equals("brand")) {
             bundle.putString("brand_slug", slug);
+            bundle.putString("category_slug", viewModel.getCategorySlug());
             navController.navigate(R.id.brandFragment, bundle);
         }
     }

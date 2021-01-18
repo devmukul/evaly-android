@@ -382,7 +382,7 @@ public interface IApiClient {
     Call<CommonDataResponse<List<ChildCategoryResponse>>> getChildCategory(@Query("parent") String parentCategorySlug);
 
     @GET(UrlUtils.BASE_CATALOG + "brands")
-    Call<CommonDataResponse<List<BrandResponse>>> getBrands(@Query("category_slug") String categorySlug,
+    Call<CommonDataResponse<List<BrandResponse>>> getBrands(@Query("category") String categorySlug,
                                                             @Query("search") String search,
                                                             @Query("page") int page,
                                                             @Query("limit") int limit);
