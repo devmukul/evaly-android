@@ -36,7 +36,7 @@
         <EditText
             android:id="@+id/f_name"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="14dp"
             android:layout_marginBottom="15dp"
@@ -56,7 +56,7 @@
         <EditText
             android:id="@+id/l_name"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginEnd="29dp"
             android:layout_marginBottom="15dp"
             android:background="@drawable/input_bg"
@@ -76,7 +76,7 @@
         <EditText
             android:id="@+id/number"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="15dp"
@@ -99,7 +99,7 @@
         <LinearLayout
             android:id="@+id/captchaHolder"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="15dp"
@@ -194,20 +194,19 @@
 
         <Button
             android:id="@+id/sign_up"
-            style="@android:style/Widget.Holo.Button.Borderless"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="40dp"
             android:background="@drawable/input_btn_bg"
             android:elevation="0dp"
-            android:padding="15dp"
             android:stateListAnimator="@null"
             android:text="@string/sign_up"
             android:textAllCaps="false"
             android:textColor="#fff"
             android:textSize="16sp"
+            app:backgroundTint="@null"
             app:layout_constraintBottom_toTopOf="@+id/signinHolder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

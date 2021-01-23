@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="60dp"
+        app:backgroundTint="@null"
         android:background="@drawable/retry_btn"
         android:paddingLeft="100dp"
         android:paddingRight="100dp"

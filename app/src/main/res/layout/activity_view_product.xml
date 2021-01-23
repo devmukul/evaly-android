@@ -605,6 +605,7 @@
                             <Button
                                 android:id="@+id/add_cart"
                                 android:layout_width="0dp"
+                                app:backgroundTint="@null"
                                 android:layout_height="40dp"
                                 android:layout_marginTop="20dp"
                                 android:layout_marginRight="7dp"
@@ -627,6 +628,7 @@
                                 android:layout_marginTop="20dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/btn_red"
+                                app:backgroundTint="@null"
                                 android:fontFamily="sans-serif"
                                 android:paddingBottom="1dp"
                                 android:stateListAnimator="@null"

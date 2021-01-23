@@ -12,7 +12,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
         <TextView
@@ -22,7 +22,7 @@
             android:layout_weight="1"
             android:text="@string/use_gift_card"
             android:textColor="@color/c333"
-            android:textSize="19sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -47,7 +47,7 @@
     <EditText
         android:id="@+id/code"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="15dp"
         android:background="@drawable/input_bg"
@@ -71,7 +71,7 @@
     <EditText
         android:id="@+id/amount"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/input_bg"
         android:fontFamily="sans-serif"
@@ -87,17 +87,17 @@
     <Button
         android:id="@+id/submit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="15dp"
         android:background="@drawable/input_btn_bg"
         android:fontFamily="sans-serif"
-        android:padding="15dp"
         android:stateListAnimator="@null"
         android:text="@string/make_payment"
         android:textAllCaps="false"
         android:textColor="@color/fffh"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:backgroundTint="@null" />
 
 
 </LinearLayout>

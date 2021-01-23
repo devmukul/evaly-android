@@ -20,6 +20,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
@@ -123,7 +124,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             homeControllerInitialized = true;
         }
 
-        homeController.setFilterDuplicates(true);
+        if (!BuildConfig.DEBUG)
+            homeController.setFilterDuplicates(true);
         homeController.setActivity((AppCompatActivity) getActivity());
         homeController.setClickListener(this);
         homeController.setFragment(this);

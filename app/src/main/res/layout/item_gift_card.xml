@@ -72,6 +72,7 @@
                 android:layout_height="35dp"
                 android:layout_weight="0"
                 android:background="@drawable/gift_buy_btn"
+                app:backgroundTint="@null"
                 android:clickable="false"
                 android:stateListAnimator="@null"
                 android:text="@string/buy"

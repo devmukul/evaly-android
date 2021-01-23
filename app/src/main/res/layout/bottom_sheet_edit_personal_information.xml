@@ -193,6 +193,7 @@
             android:layout_marginTop="15dp"
             android:background="@drawable/input_btn_bg_small"
             android:elevation="0dp"
+            app:backgroundTint="@null"
             android:stateListAnimator="@null"
             android:text="@string/save_personal_information"
             android:textColor="@color/fffh" />

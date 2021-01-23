@@ -103,7 +103,8 @@
                 android:text="@string/check_out"
                 android:textAllCaps="true"
                 android:textColor="@color/fffh"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                app:backgroundTint="@null" />
         </LinearLayout>
 
 

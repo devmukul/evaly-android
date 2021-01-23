@@ -137,7 +137,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui:2.3.2"
     implementation "net.opacapp:multiline-collapsingtoolbar:$rootProject.collapsing_toolbar_version"
     implementation "androidx.viewpager2:viewpager2:$rootProject.viewpager2_version"
-    implementation "com.google.android.material:material:$rootProject.material_version"
+    implementation "com.google.android.material:material:1.2.1"
     implementation "androidx.transition:transition:$rootProject.transition_version"
     implementation "androidx.paging:paging-runtime:$rootProject.paging_version"
     implementation 'jp.wasabeef:glide-transformations:4.2.0'

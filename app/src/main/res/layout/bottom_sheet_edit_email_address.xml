@@ -74,6 +74,7 @@
             android:id="@+id/save"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            app:backgroundTint="@null"
             android:layout_marginTop="15dp"
             android:background="@drawable/input_btn_bg_small"
             android:elevation="0dp"

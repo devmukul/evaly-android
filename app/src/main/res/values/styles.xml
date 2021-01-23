@@ -8,10 +8,33 @@
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
         <item name="android:textViewStyle">@style/Base.Widget.TextView</item>
         <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="materialButtonStyle">@style/DefaultButtonStyle</item>
+        <item name="android:buttonStyle">@style/DefaultButtonStyle</item>
+        <item name="tabStyle">@style/AppTheme.TabLayout</item>
     </style>
+
+    <style name="AppTheme.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabTextAppearance">@style/TextAppearance.MyApp.Button</item>
+        <item name="tabTextColor">@color/c555</item>
+        <item name="tabSelectedTextColor">@color/black</item>
+        <item name="tabIndicatorColor">@color/colorAccent</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
 
     <style name="Base.Widget.TextView" parent="android:Widget.TextView">
         <item name="android:hyphenationFrequency" tools:targetApi="m">normal</item>
+    </style>
+
+    <style name="DefaultButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@null</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:letterSpacing">0</item>
     </style>
 
     <style name="AppTheme.WhiteAccent">
@@ -197,7 +220,7 @@
         <item name="android:windowCloseOnTouchOutside">false</item>
     </style>
 
-    <style name="ToolBarStyle" parent="Theme.AppCompat">
+    <style name="ToolBarStyle" parent="Theme.MaterialComponents">
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:textColorSecondary">@color/black</item>
         <item name="actionMenuTextColor">@color/black</item>

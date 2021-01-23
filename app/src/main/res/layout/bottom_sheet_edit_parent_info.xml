@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -125,6 +125,7 @@
             android:background="@drawable/input_btn_bg_small"
             android:elevation="0dp"
             android:stateListAnimator="@null"
+            app:backgroundTint="@null"
             android:text="@string/save_parent_information"
             android:textColor="@color/fffh" />
 

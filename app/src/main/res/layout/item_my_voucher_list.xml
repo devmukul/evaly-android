@@ -254,6 +254,7 @@
                 <Button
                     android:id="@+id/pay"
                     android:layout_width="wrap_content"
+                    app:backgroundTint="@null"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
                     android:backgroundTint="@color/colorAccent"

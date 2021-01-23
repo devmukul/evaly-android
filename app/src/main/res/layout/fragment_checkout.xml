@@ -444,6 +444,7 @@
                 android:background="@drawable/black_btn"
                 android:stateListAnimator="@null"
                 android:text="@string/place_order"
+                app:backgroundTint="@null"
                 android:textColor="@color/fffh" />
 
         </LinearLayout>

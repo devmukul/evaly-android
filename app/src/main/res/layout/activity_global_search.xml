@@ -357,6 +357,7 @@
             <Button
                 android:id="@+id/clear"
                 android:layout_width="0dp"
+                app:backgroundTint="@null"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#f45550"
@@ -370,6 +371,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                app:backgroundTint="@null"
                 android:background="#00c3aa"
                 android:padding="15dp"
                 android:text="Apply"

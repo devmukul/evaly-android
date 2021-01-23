@@ -98,6 +98,7 @@
             android:layout_height="40dp"
             android:layout_gravity="right"
             android:background="@drawable/input_btn_small"
+            app:backgroundTint="@null"
             android:fontFamily="sans-serif"
             android:padding="5dp"
             android:stateListAnimator="@null"
