@@ -602,25 +602,26 @@
                             android:paddingStart="20dp"
                             android:paddingEnd="20dp">
 
-                            <Button
+                            <TextView
                                 android:id="@+id/add_cart"
                                 android:layout_width="0dp"
-                                app:backgroundTint="@null"
                                 android:layout_height="40dp"
                                 android:layout_marginTop="20dp"
                                 android:layout_marginRight="7dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/btn_f1f3f4"
                                 android:fontFamily="sans-serif"
+                                android:gravity="center"
                                 android:paddingBottom="1dp"
                                 android:stateListAnimator="@null"
                                 android:text="@string/add_to_cart"
                                 android:textAllCaps="false"
                                 android:textColor="@color/c333"
                                 android:textSize="14sp"
-                                android:textStyle="normal" />
+                                android:textStyle="normal"
+                                app:backgroundTint="@null" />
 
-                            <Button
+                            <TextView
                                 android:id="@+id/buy_now"
                                 android:layout_width="0dp"
                                 android:layout_height="40dp"
@@ -628,15 +629,16 @@
                                 android:layout_marginTop="20dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/btn_red"
-                                app:backgroundTint="@null"
                                 android:fontFamily="sans-serif"
+                                android:gravity="center"
                                 android:paddingBottom="1dp"
                                 android:stateListAnimator="@null"
                                 android:text="@string/buy_now"
                                 android:textAllCaps="false"
                                 android:textColor="@color/fffh"
                                 android:textSize="14sp"
-                                android:textStyle="normal" />
+                                android:textStyle="normal"
+                                app:backgroundTint="@null" />
 
                         </LinearLayout>
 
@@ -882,8 +884,7 @@
             android:elevation="8dp"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:translationZ="12dp"
-            app:layout_behavior="bd.com.evaly.evalyshop.util.MoveUpwardBehavior">
+            android:translationZ="12dp">
 
             <LinearLayout
                 android:id="@+id/buttonsHolder"
@@ -927,7 +928,7 @@
                         android:text="MY CART"
                         android:textAlignment="center"
                         android:textColor="@color/c444"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -964,7 +965,7 @@
                     android:text="AVAILABLE AT SHOPS"
                     android:textAlignment="center"
                     android:textColor="#fff"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
             </LinearLayout>
 

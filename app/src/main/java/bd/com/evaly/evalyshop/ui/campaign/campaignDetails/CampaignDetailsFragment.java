@@ -105,20 +105,19 @@ public class CampaignDetailsFragment extends Fragment {
             viewModel.setSelectTypeAfterLoading("product");
             viewModel.findCampaignCategoryDetails(requireArguments()
                     .getString("category_slug_products"));
-        } else if (checkArg("category_slug") &&
-                requireArguments().containsKey("campaign_slug"))
+        } else if (checkArg("category_slug") && requireArguments().containsKey("campaign_slug"))
             viewModel.loadSubCampaignDetails(requireArguments()
                     .getString("campaign_slug"));
         if (checkArg("type") && requireArguments().getString("type") != null) {
             String type = requireArguments().getString("type");
-            if (!type.contains("shop") && !type.contains("suppliers"))
+            if (!type.contains("shop") && !type.contains("supplier"))
                 viewModel.setSelectTypeAfterLoading(requireArguments().getString("type"));
         }
     }
 
 
     private boolean checkArg(String key) {
-        if(getArguments() == null)
+        if (getArguments() == null)
             return false;
         return requireArguments().containsKey(key);
     }

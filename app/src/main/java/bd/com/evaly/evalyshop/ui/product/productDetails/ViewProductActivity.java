@@ -40,9 +40,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
@@ -58,7 +56,6 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.Post;
-import bd.com.evaly.evalyshop.models.product.Products;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributesItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.Data;
@@ -104,11 +101,9 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
     ProductVariantsItem firstProductVariantsItem;
     private String slug = "", category = "", name = "", productImage = "";
     private double productPrice;
-    private ArrayList<Products> products;
     private ArrayList<AvailableShop> availableShops;
     private ArrayList<String> sliderImages;
     private ViewProductSliderAdapter sliderAdapter;
-    private Map<String, String> map, shopMap;
     private CartEntity cartItem;
     private Context context;
     private WishList wishListItem;
@@ -121,7 +116,6 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
     private List<ProductSpecificationsItem> specificationsItemList = new ArrayList<>();
     private List<AttributesItem> productAttributesItemList;
     private List<ProductVariantsItem> productVariantsItemList;
-    private int variantKey1 = 0, variantKey2 = 0;
     private int shopItemId = 0;
     private boolean gps_enabled = false;
     private boolean network_enabled = false;
@@ -165,6 +159,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         getSupportActionBar().setTitle("View Product");
 
+
         productPrice = getIntent().getDoubleExtra("product_price", -1);
         productImage = getIntent().getStringExtra("product_image");
         slug = getIntent().getStringExtra("slug");
@@ -179,16 +174,12 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
         wishListItem = new WishList();
         cartItem = new CartEntity();
-        shopMap = new HashMap<>();
 
         binding.specList.setLayoutManager(new LinearLayoutManager(this));
         specificationAdapter = new SpecificationAdapter(this, specificationsItemList);
         binding.specList.setAdapter(specificationAdapter);
-
-        products = new ArrayList<>();
         availableShops = new ArrayList<>();
         sliderImages = new ArrayList<>();
-        map = new TreeMap<>();
 
         sliderAdapter = new ViewProductSliderAdapter(context, this, sliderImages);
         binding.sliderPager.setAdapter(sliderAdapter);
@@ -198,7 +189,6 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-
             if (extras.containsKey("product_slug"))
                 slug = extras.getString("product_slug");
 
@@ -310,7 +300,6 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
                                         Manifest.permission.ACCESS_COARSE_LOCATION},
                                 1212);
                 }
-
             });
             builder.show();
 
@@ -441,7 +430,6 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
                 });
             }
         });
-
     }
 
     @Override
@@ -489,7 +477,6 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         }
 
         List<ProductSpecificationsItem> productSpecificationsItemList = data.getProductSpecifications();
-
 
         if (productAttributesItemList.size() > 0) {
             binding.variantHolder.setVisibility(View.VISIBLE);
@@ -711,9 +698,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
             String sellerJson = new Gson().toJson(shop);
 
-            CartEntity cartEntity = new CartEntity();
-            cartEntity.setName(name);
-            cartEntity.setImage(productImage);
+            CartEntity cartEntity = cartItem;
             cartEntity.setPriceRound(price);
             cartEntity.setTime(calendar.getTimeInMillis());
             cartEntity.setShopJson(sellerJson);
@@ -731,7 +716,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
                     cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
             });
 
-            Snackbar snackBar = Snackbar.make(binding.rootView, "Added to cart", 1500);
+            Snackbar snackBar = Snackbar.make(getWindow().getDecorView(), "Added to cart", 1500);
             snackBar.setAction("Go to Cart", view -> {
                 Intent intent = new Intent(this, CartActivity.class);
                 startActivity(intent);
@@ -741,6 +726,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         });
 
         binding.buyNow.setOnClickListener(view -> {
+            updateVariantDetails();
             BuyNowFragment buyNowFragment = BuyNowFragment.createInstance(cartItem, toRemoveModel);
             buyNowFragment.show(getSupportFragmentManager(), "Buy Now");
         });
@@ -748,16 +734,13 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
 
     public void getAvailableShops(int variationID) {
-
         binding.progressBarShop.setVisibility(View.VISIBLE);
         availableShops.clear();
         binding.availableShops.setAdapter(null);
         binding.empty.setVisibility(View.GONE);
         binding.tvShopType.setText(R.string.all);
-
         viewModel.availableShops.observe(this, response -> inflateAvailableShops(response, false));
         viewModel.getAvailableShops(variationID);
-
     }
 
     public void getNearestAvailableShops(int variationID, double longitude, double latitude) {
@@ -765,7 +748,6 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         binding.empty.setVisibility(View.GONE);
         availableShops.clear();
         binding.availableShops.setAdapter(null);
-
         viewModel.availableNearestShops.observe(this, response -> inflateAvailableShops(response, true));
         viewModel.getNearestAvailableShops(variationID, longitude, latitude);
     }
@@ -838,9 +820,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-
                     bottomSheet.post(() -> bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED));
-
                 } else if (newState == BottomSheetBehavior.STATE_HIDDEN || newState == BottomSheetBehavior.STATE_HALF_EXPANDED)
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
@@ -975,7 +955,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             else
                 cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
         });
-        Snackbar snackBar = Snackbar.make(binding.getRoot(), "Added to cart", 1500);
+        Snackbar snackBar = Snackbar.make(getWindow().getDecorView(), "Added to cart", 1500);
         snackBar.setAction("Go to Cart", v1 -> {
             Intent intent = new Intent(context, CartActivity.class);
             context.startActivity(intent);

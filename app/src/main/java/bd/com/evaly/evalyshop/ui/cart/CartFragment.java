@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.cart;
 
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +15,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import java.util.List;
@@ -159,7 +159,7 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
                     if (viewModel.liveList.getValue().size() == 0) {
                         ToastUtils.show("No item is available in cart to delete");
                     } else {
-                        new AlertDialog.Builder(getContext())
+                        new MaterialAlertDialogBuilder(getContext())
                                 .setMessage("Are you sure you want to delete the selected products from the cart?")
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
@@ -177,6 +177,7 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
     public void onClick(String productName, String productSlug) {
         Intent intent = new Intent(getContext(), ViewProductActivity.class);
         intent.putExtra("product_name", productName);
+        intent.putExtra("slug", productSlug);
         intent.putExtra("product_slug", productSlug);
         getContext().startActivity(intent);
     }
