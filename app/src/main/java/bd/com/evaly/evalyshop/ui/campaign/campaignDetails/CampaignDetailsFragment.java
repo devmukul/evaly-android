@@ -338,6 +338,8 @@ public class CampaignDetailsFragment extends Fragment {
     }
 
     private void loadCampaignDetails(CampaignCategoryResponse model) {
+        if (model == null)
+            return;
 
         if (Utils.isValidColor(model.getBannerPrimaryBgColor())) {
             ViewCompat.setBackgroundTintList(

@@ -161,7 +161,7 @@ public interface IApiClient {
 
 
     // new campaign
-    @GET(UrlUtils.BASE_CATALOG + "campaign/category/{campaignSlug}")
+    @GET(UrlUtils.BASE_CATALOG + "campaign/{campaignSlug}")
     Call<CommonDataResponse<SubCampaignDetailsResponse>> getSubCampaignDetails(@Path("campaignSlug") String campaignSlug);
 
     @GET(UrlUtils.BASE_URL + "campaigns/web/home")

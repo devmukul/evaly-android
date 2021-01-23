@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.orhanobut.logger.Logger;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +71,6 @@ public class CampaignDetailsViewModel extends ViewModel {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-                Logger.d(errorBody);
                 subCampaignLiveData.setValue(null);
             }
 

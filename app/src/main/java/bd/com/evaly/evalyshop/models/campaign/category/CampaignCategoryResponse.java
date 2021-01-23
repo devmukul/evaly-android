@@ -43,94 +43,94 @@ public class CampaignCategoryResponse implements Serializable {
     @SerializedName("campaigns")
     private List<SubCampaignResponse> campaigns;
 
-    public void setCampaigns(List<SubCampaignResponse> campaigns) {
-        this.campaigns = campaigns;
-    }
-
     public List<SubCampaignResponse> getCampaigns() {
         if (campaigns == null)
             return new ArrayList<>();
         return campaigns;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setCampaigns(List<SubCampaignResponse> campaigns) {
+        this.campaigns = campaigns;
     }
 
     public String getImage() {
         return image;
     }
 
-    public void setBannerSubText(String bannerSubText) {
-        this.bannerSubText = bannerSubText;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getBannerSubText() {
         return bannerSubText;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBannerSubText(String bannerSubText) {
+        this.bannerSubText = bannerSubText;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setBannerSecondaryBgColor(String bannerSecondaryBgColor) {
-        this.bannerSecondaryBgColor = bannerSecondaryBgColor;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getBannerSecondaryBgColor() {
         return bannerSecondaryBgColor;
     }
 
-    public void setBannerHeaderText(String bannerHeaderText) {
-        this.bannerHeaderText = bannerHeaderText;
+    public void setBannerSecondaryBgColor(String bannerSecondaryBgColor) {
+        this.bannerSecondaryBgColor = bannerSecondaryBgColor;
     }
 
     public String getBannerHeaderText() {
         return bannerHeaderText;
     }
 
-    public void setBannerHeaderTextColor(String bannerHeaderTextColor) {
-        this.bannerHeaderTextColor = bannerHeaderTextColor;
+    public void setBannerHeaderText(String bannerHeaderText) {
+        this.bannerHeaderText = bannerHeaderText;
     }
 
     public String getBannerHeaderTextColor() {
         return bannerHeaderTextColor;
     }
 
-    public void setBannerImage(String bannerImage) {
-        this.bannerImage = bannerImage;
+    public void setBannerHeaderTextColor(String bannerHeaderTextColor) {
+        this.bannerHeaderTextColor = bannerHeaderTextColor;
     }
 
     public String getBannerImage() {
         return bannerImage;
     }
 
-    public void setBannerSubTextColor(String bannerSubTextColor) {
-        this.bannerSubTextColor = bannerSubTextColor;
+    public void setBannerImage(String bannerImage) {
+        this.bannerImage = bannerImage;
     }
 
     public String getBannerSubTextColor() {
         return bannerSubTextColor;
     }
 
-    public void setSlug(String slug) {
-        this.slug = slug;
+    public void setBannerSubTextColor(String bannerSubTextColor) {
+        this.bannerSubTextColor = bannerSubTextColor;
     }
 
     public String getSlug() {
         return slug;
     }
 
-    public void setBannerPrimaryBgColor(String bannerPrimaryBgColor) {
-        this.bannerPrimaryBgColor = bannerPrimaryBgColor;
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public String getBannerPrimaryBgColor() {
         return bannerPrimaryBgColor;
+    }
+
+    public void setBannerPrimaryBgColor(String bannerPrimaryBgColor) {
+        this.bannerPrimaryBgColor = bannerPrimaryBgColor;
     }
 
     @Override
