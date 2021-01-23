@@ -165,7 +165,7 @@ public class HomeController extends EpoxyController {
         // product listing
         for (ProductItem productItem : items) {
             new HomeProductGridModel_()
-                    .id("product", productItem.getSlug())
+                    .id("product_listing", productItem.getSlug())
                     .model(productItem)
                     .clickListener((model, parentView, clickedView, position) -> {
                         clickListener.onProductClick(model.getModel());
@@ -189,7 +189,7 @@ public class HomeController extends EpoxyController {
 
         for (RsEntity item : rsCategoryList) {
             models.add(new HomeRsGridModel_()
-                    .id("rs_Category", item.getSlug())
+                    .id("rs_Category", item.getSlug() + item.getType())
                     .title(item.getName())
                     .image(item.getImageUrl())
                     .slug(item.getSlug())
@@ -221,7 +221,7 @@ public class HomeController extends EpoxyController {
 
         for (RsEntity item : rsBrandList) {
             models.add(new HomeRsGridModel_()
-                    .id("rs_brand", item.getSlug())
+                    .id("rs_brand", item.getSlug() + item.getType())
                     .title(item.getName())
                     .image(item.getImageUrl())
                     .slug(item.getSlug())
@@ -253,7 +253,7 @@ public class HomeController extends EpoxyController {
 
         for (RsEntity item : rsShopList) {
             models.add(new HomeRsGridModel_()
-                    .id("rs_brand", item.getSlug())
+                    .id("rs_brand", item.getSlug() + item.getType())
                     .title(item.getName())
                     .image(item.getImageUrl())
                     .slug(item.getSlug())
@@ -284,12 +284,12 @@ public class HomeController extends EpoxyController {
 
         List<DataBindingEpoxyModel> campaignSkeletonItemModels = new ArrayList<>();
         for (int i = 0; i < 3; i++)
-            campaignSkeletonItemModels.add(new CampaignBannerSkeletonModel_().id("cam_ske", i));
+            campaignSkeletonItemModels.add(new CampaignBannerSkeletonModel_().id("cam_cat_skel", i));
 
         List<DataBindingEpoxyModel> campaignModels = new ArrayList<>();
         for (CampaignCategoryResponse item : campaignCategoryList) {
             campaignModels.add(new CampaignBannerModel_()
-                    .id("camp", item.getSlug())
+                    .id("campaign_categories", item.getSlug())
                     .model(item)
                     .clickListener((model, parentView, clickedView, position) -> {
                         clickListener.onCampaignCategoryClick(model.model());
@@ -326,7 +326,7 @@ public class HomeController extends EpoxyController {
                     .clickListener((model1, parentView, clickedView, position) -> {
                         clickListener.onExpressClick(model1.model());
                     })
-                    .id(model.getSlug())
+                    .id("express_shop", model.getSlug())
                     .model(model));
             count++;
         }

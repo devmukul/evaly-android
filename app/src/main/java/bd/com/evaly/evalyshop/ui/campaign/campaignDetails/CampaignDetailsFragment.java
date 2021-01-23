@@ -118,6 +118,8 @@ public class CampaignDetailsFragment extends Fragment {
 
 
     private boolean checkArg(String key) {
+        if(getArguments() == null)
+            return false;
         return requireArguments().containsKey(key);
     }
 

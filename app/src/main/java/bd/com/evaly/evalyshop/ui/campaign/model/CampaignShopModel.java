@@ -39,6 +39,12 @@ public abstract class CampaignShopModel extends DataBindingEpoxyModel {
                 R.drawable.ic_evaly_placeholder, 300, 300, true);
         binding.campaignName.setText(model.getBadgeText());
         binding.campaignCashback.setText(model.getCashbackText().replace(".00", ""));
+
+        if (model.getCashbackText().equals(""))
+            binding.campaignCashback.setVisibility(View.GONE);
+        else
+            binding.campaignCashback.setVisibility(View.VISIBLE);
+
         binding.getRoot().setOnClickListener(clickListener);
     }
 

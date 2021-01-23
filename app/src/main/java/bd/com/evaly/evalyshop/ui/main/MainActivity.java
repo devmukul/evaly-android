@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +21,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -32,7 +31,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
@@ -127,6 +126,7 @@ public class MainActivity extends BaseActivity {
         handleNotificationNavigation(intent);
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (CredentialManager.isDarkMode())
@@ -140,8 +140,7 @@ public class MainActivity extends BaseActivity {
         if (CredentialManager.getLanguage().equalsIgnoreCase("bn"))
             changeLanguage("BN");
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         if (!CredentialManager.getToken().equals("") && CredentialManager.getUserData() == null) {
             AppController.logout(this);
@@ -153,7 +152,6 @@ public class MainActivity extends BaseActivity {
 
         navController.createDeepLink();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
 
         });
@@ -182,39 +180,40 @@ public class MainActivity extends BaseActivity {
                 });
 
         binding.fabCreate.setOnClickListener(view -> {
-            navController.navigate(R.id.action_expressFragment_Pop);
-            // navController.navigate(Uri.parse("http://beta.evaly.com.bd/campaign/campaigns/hot-deal-1487c3f9/instant-cashback-100-95ce60?type=products"));
+            // navController.navigate(R.id.action_expressFragment_Pop);
+            navController.navigate(Uri.parse("http://beta.evaly.com.bd/campaign/campaigns/hot-deal-1487c3f9/instant-cashback-100-95ce60?type=products"));
         });
 
-
-        BottomNavigationItemView itemView = binding.bottomNavigationView.findViewById(R.id.wishListFragment);
-        View wishListBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, binding.bottomNavigationView, false);
-        TextView wishListCount = wishListBadge.findViewById(R.id.notification);
-        itemView.addView(wishListBadge);
+        BadgeDrawable wishListBadge = binding.bottomNavigationView.getOrCreateBadge(R.id.wishListFragment);
 
         wishListDao.getLiveCount().observe(this, integer -> {
-            wishListCount.setText(String.format(Locale.ENGLISH, "%d", integer));
-            if (integer == 0)
-                wishListBadge.setVisibility(View.GONE);
-            else
-                wishListBadge.setVisibility(View.VISIBLE);
+            if (wishListBadge != null) {
+                if (integer == 0) {
+                    wishListBadge.clearNumber();
+                    wishListBadge.setVisible(false);
+                } else {
+                    wishListBadge.setVisible(true);
+                    wishListBadge.setNumber(integer);
+                }
+            }
         });
 
-        BottomNavigationItemView itemView2 = binding.bottomNavigationView.findViewById(R.id.cartFragment);
-        View cartBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, binding.bottomNavigationView, false);
-        TextView cartCount = cartBadge.findViewById(R.id.notification);
-        itemView2.addView(cartBadge);
+        BadgeDrawable cartBadge = binding.bottomNavigationView.getOrCreateBadge(R.id.cartFragment);
 
         cartDao.getLiveCount().observe(this, integer -> {
-            cartCount.setText(String.format(Locale.ENGLISH, "%d", integer));
-            if (integer == 0)
-                cartBadge.setVisibility(View.GONE);
-            else
-                cartBadge.setVisibility(View.VISIBLE);
+            if (cartBadge != null) {
+                if (integer == 0) {
+                    cartBadge.clearNumber();
+                    cartBadge.setVisible(false);
+                } else {
+                    cartBadge.setVisible(true);
+                    cartBadge.setNumber(integer);
+                }
+            }
         });
 
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 

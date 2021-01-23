@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -79,7 +78,7 @@ public class SignUpActivity extends BaseActivity {
             @Override
             public void onDataFetched(CommonDataResponse<CaptchaResponse> response, int statusCode) {
                 captchaModel = response.getData();
-                Glide.with(binding.captchaImage)
+                Glide.with(getApplicationContext())
                         .asBitmap()
                         .load(captchaModel.getCaptcha())
                         .into(binding.captchaImage);

@@ -44,6 +44,11 @@ public abstract class CampaignBrandModel extends DataBindingEpoxyModel {
 
         binding.campaignName.setText(model.getBadgeText1());
         binding.campaignCashback.setText(model.getBadgeText2().replace(".00", ""));
+
+        if (model.getBadgeText2().equals(""))
+            binding.campaignCashback.setVisibility(View.GONE);
+        else
+            binding.campaignCashback.setVisibility(View.VISIBLE);
     }
 
 
