@@ -82,6 +82,8 @@ public class HomeController extends EpoxyController {
     HomeExpressHeaderModel_ shopsHeaderModel_;
     @AutoModel
     HomeExpressHeaderModel_ brandsHeaderModel_;
+    @AutoModel
+    EmptySpaceModel_ emptySpaceModel_;
 
     private AppCompatActivity activity;
     private Fragment fragment;
@@ -156,11 +158,9 @@ public class HomeController extends EpoxyController {
                 .transparentBackground(true)
                 .addTo(this);
 
-        new EmptySpaceModel_()
-                .id("empty_space_10")
+        emptySpaceModel_
                 .height(15)
                 .addTo(this);
-
 
         // product listing
         for (ProductItem productItem : items) {
@@ -323,10 +323,10 @@ public class HomeController extends EpoxyController {
             if (count > 7)
                 break;
             expressItemModels.add(new HomeExpressServiceModel_()
+                    .id("express_shop", model.getSlug())
                     .clickListener((model1, parentView, clickedView, position) -> {
                         clickListener.onExpressClick(model1.model());
                     })
-                    .id("express_shop", model.getSlug())
                     .model(model));
             count++;
         }

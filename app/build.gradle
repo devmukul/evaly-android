@@ -84,7 +84,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
     implementation "se.emilsjolander:StickyScrollViewItems:$rootProject.StickyScrollViewItemsVersion"
-    implementation "androidx.constraintlayout:constraintlayout:$rootProject.constrainlayout_version"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.4"
     implementation "com.google.firebase:firebase-analytics:$rootProject.firebase_core_version"
     implementation "com.google.firebase:firebase-messaging:$rootProject.firebase_messaging_version"
     implementation 'com.google.firebase:firebase-crashlytics:17.3.0'

@@ -701,6 +701,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         });
 
         binding.addCart.setOnClickListener(v -> {
+            updateVariantDetails();
             Calendar calendar = Calendar.getInstance();
             String price = Utils.formatPrice(shop.getPrice());
 
