@@ -94,6 +94,7 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
+                dialog.hideDialog();
                 ToastUtils.show(errorBody);
             }
 

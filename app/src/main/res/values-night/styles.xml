@@ -10,6 +10,7 @@
         <item name="materialButtonStyle">@style/DefaultButtonStyle</item>
         <item name="android:buttonStyle">@style/DefaultButtonStyle</item>
         <item name="tabStyle">@style/AppTheme.TabLayout</item>
+        <item name="actionBarTheme">@style/MyActionBar</item>
     </style>
 
 </resources>

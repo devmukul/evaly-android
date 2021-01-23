@@ -53,7 +53,8 @@
                 android:layout_weight="0"
                 android:textSize="16sp"
                 app:color_checked="@color/colorAccentRed"
-                app:color_tick="@color/fffh"
+                app:color_tick="@color/fff"
+                app:color_unchecked="@color/fff"
                 app:color_unchecked_stroke="@color/ddd" />
 
             <TextView
