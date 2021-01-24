@@ -40,6 +40,7 @@ import bd.com.evaly.evalyshop.ui.home.model.HomeRsCarouselModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeRsGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
+import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneBannerModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneBottomBarModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneBrandModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneCarouselModel_;
@@ -73,6 +74,9 @@ public class HomeController extends EpoxyController {
     @AutoModel
     HomeDefaultCarouselModel_ campaignCategoryCarousel;
 
+
+    @AutoModel
+    CycloneBannerModel_ cycloneBannerModel;
     @AutoModel
     CycloneSectionTitleModel_ flashSaleProductTitle;
     @AutoModel
@@ -368,6 +372,11 @@ public class HomeController extends EpoxyController {
     }
 
     private void initFlashSaleCarousel() {
+
+        cycloneBannerModel
+                .image("https://files.slack.com/files-pri/TK02M8VNC-F01JERJG6MQ/cyclone1.gif")
+                .addIf(flashSaleShops.size() > 0 || flashSaleProducts.size() > 0 || flashSaleBrands.size() > 0, this);
+
 
         //flash sale carousel
         flashSaleProductTitle

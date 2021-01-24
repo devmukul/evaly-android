@@ -4,6 +4,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ViewDataBinding;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
@@ -30,10 +31,12 @@ public abstract class CycloneBannerModel extends DataBindingEpoxyModel {
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
         ItemCycloneBannerBinding binding = (ItemCycloneBannerBinding) holder.getDataBinding();
+        StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
+        params.setFullSpan(true);
 
         Glide.with(binding.getRoot())
                 .asGif()
-                .load(image)
+                .load(R.drawable.cyclone1)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(1450, 460))
                 .into(binding.sliderImage);
