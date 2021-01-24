@@ -33,7 +33,6 @@ import io.reactivex.schedulers.Schedulers;
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
 @EpoxyModelClass(layout = R.layout.home_model_carousel_grid)
-
 public abstract class HomeRsGridModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute

@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.campaign.model;
+package bd.com.evaly.evalyshop.ui.home.model.cyclone;
 
 import android.graphics.Paint;
 import android.text.Html;
@@ -12,15 +12,15 @@ import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.ItemCampaignSmallProductBinding;
+import bd.com.evaly.evalyshop.databinding.ItemCycloneProductBinding;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.util.BindingUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
-@EpoxyModelClass(layout = R.layout.item_campaign_small_product)
-public abstract class CampaignSmallProductModel extends DataBindingEpoxyModel {
+@EpoxyModelClass(layout = R.layout.item_cyclone_product)
+public abstract class CycloneProductModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
     public CampaignProductResponse model;
@@ -35,7 +35,7 @@ public abstract class CampaignSmallProductModel extends DataBindingEpoxyModel {
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
 
-        ItemCampaignSmallProductBinding binding = (ItemCampaignSmallProductBinding) holder.getDataBinding();
+        ItemCycloneProductBinding binding = (ItemCycloneProductBinding) holder.getDataBinding();
 
         binding.title.setText(Html.fromHtml(model.getName()));
         BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300, false);
@@ -75,5 +75,12 @@ public abstract class CampaignSmallProductModel extends DataBindingEpoxyModel {
     @Override
     protected void setDataBindingVariables(ViewDataBinding binding) {
     }
+
+    @Override
+    public void unbind(@NonNull DataBindingHolder holder) {
+        super.unbind(holder);
+        holder.getDataBinding().unbind();
+    }
+
 }
 
