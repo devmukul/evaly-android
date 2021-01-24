@@ -36,7 +36,7 @@ public abstract class CycloneBannerModel extends DataBindingEpoxyModel {
 
         Glide.with(binding.getRoot())
                 .asGif()
-                .load(R.drawable.cyclone1)
+                .load(image)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(1450, 460))
                 .into(binding.sliderImage);
