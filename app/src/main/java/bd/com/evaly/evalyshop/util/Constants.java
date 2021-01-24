@@ -8,7 +8,8 @@ import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 
 public class Constants {
 
-    public static final String FLASH_SALE_SLUG = "flash-sale-2509b8bb";
+    // flash-sale-2509b8bb
+    public static final String FLASH_SALE_SLUG = "quick-deal-1a805c5c"; // payment-on-delivery-pod-180c4287;
 
     public static final String XMPP_DOMAIN = BuildConfig.CHAT_BASE;
     public static final String XMPP_HOST = BuildConfig.CHAT_BASE;

@@ -112,6 +112,7 @@ public class SignUpActivity extends BaseActivity {
 
         hashMap.put("captcha_id", captchaModel.getCaptchaId());
         hashMap.put("captcha_value", binding.captchaInput.getText().toString().trim());
+        hashMap.put("service_name", "evaly");
 
         AuthApiHelper.register(hashMap, new ResponseListenerAuth<JsonObject, String>() {
             @Override

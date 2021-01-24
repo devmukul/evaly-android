@@ -15,14 +15,15 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
+import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
+import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.database.table.RsEntity;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerSkeletonModel_;
-import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSmallProductModel_;
 import bd.com.evaly.evalyshop.ui.epoxy.EpoxyDividerModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
@@ -39,6 +40,12 @@ import bd.com.evaly.evalyshop.ui.home.model.HomeRsCarouselModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeRsGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
+import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneBottomBarModel_;
+import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneBrandModel_;
+import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneCarouselModel_;
+import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneProductModel_;
+import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneSectionTitleModel_;
+import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneShopModel_;
 import bd.com.evaly.evalyshop.util.Constants;
 
 public class HomeController extends EpoxyController {
@@ -49,7 +56,6 @@ public class HomeController extends EpoxyController {
     HomeWidgetModel_ widgetModel;
     @AutoModel
     HomeExpressModel_ expressModel;
-
     @AutoModel
     LoadingModel_ loader;
     @AutoModel
@@ -66,8 +72,24 @@ public class HomeController extends EpoxyController {
     HomeExpressSkeletonModel_ expressSkeletonBindingModel_;
     @AutoModel
     HomeDefaultCarouselModel_ campaignCategoryCarousel;
+
     @AutoModel
-    HomeRsCarouselModel_ flashSaleCarousel;
+    CycloneSectionTitleModel_ flashSaleProductTitle;
+    @AutoModel
+    CycloneSectionTitleModel_ flashSaleBrandTitle;
+    @AutoModel
+    CycloneSectionTitleModel_ flashSaleShopTitle;
+
+    @AutoModel
+    CycloneCarouselModel_ flashSaleProductsCarousel;
+    @AutoModel
+    CycloneCarouselModel_ flashSaleBrandsCarousel;
+    @AutoModel
+    CycloneCarouselModel_ flashSaleShopCarousel;
+    @AutoModel
+    CycloneBottomBarModel_ cycloneBottomBarModel;
+
+
     @AutoModel
     HomeRsCarouselModel_ categoryCarousel;
     @AutoModel
@@ -90,6 +112,8 @@ public class HomeController extends EpoxyController {
     private HomeViewModel homeViewModel;
     private List<ProductItem> items = new ArrayList<>();
     private List<CampaignProductResponse> flashSaleProducts = new ArrayList<>();
+    private List<CampaignBrandResponse> flashSaleBrands = new ArrayList<>();
+    private List<CampaignShopResponse> flashSaleShops = new ArrayList<>();
     private List<ExpressServiceModel> itemsExpress = new ArrayList<>();
     private List<BannerItem> bannerList = new ArrayList<>();
     private List<CampaignCategoryResponse> campaignCategoryList = new ArrayList<>();
@@ -202,7 +226,7 @@ public class HomeController extends EpoxyController {
 
         categoryCarousel
                 .models(models)
-                .padding(Carousel.Padding.dp(15, 12, 10, 10, 10))
+                .padding(Carousel.Padding.dp(12, 12, 10, 10, 10))
                 .addIf(rsCategoryList.size() > 0, this);
     }
 
@@ -234,7 +258,7 @@ public class HomeController extends EpoxyController {
 
         brandCarousel
                 .models(models)
-                .padding(Carousel.Padding.dp(15, 12, 10, 10, 10))
+                .padding(Carousel.Padding.dp(12, 12, 10, 10, 10))
                 .addIf(rsBrandList.size() > 0, this);
     }
 
@@ -266,7 +290,7 @@ public class HomeController extends EpoxyController {
 
         shopCarousel
                 .models(models)
-                .padding(Carousel.Padding.dp(15, 12, 10, 10, 10))
+                .padding(Carousel.Padding.dp(12, 12, 10, 10, 10))
                 .addIf(rsShopList.size() > 0, this);
     }
 
@@ -301,7 +325,7 @@ public class HomeController extends EpoxyController {
                 .onBind((model, view, position) -> {
                     view.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.white_to_grey_gradient));
                 })
-                .padding(Carousel.Padding.dp(5, 12, 15, 10, 0))
+                .padding(Carousel.Padding.dp(2, 12, 12, 10, 0))
                 .addTo(this);
 
     }
@@ -339,17 +363,16 @@ public class HomeController extends EpoxyController {
 
         expressCarouselModel_
                 .models(isExpressLoading ? expressDummyItemModels : expressItemModels)
-                .padding(Carousel.Padding.dp(10, 12, 10, 0, 0))
+                .padding(Carousel.Padding.dp(7, 12, 7, 0, 0))
                 .addTo(this);
     }
 
     private void initFlashSaleCarousel() {
 
         //flash sale carousel
-        flashSaleHeaderModel_
+        flashSaleProductTitle
                 .showMore(true)
-                .title("Flash Sale")
-                .transparentBackground(true)
+                .title("Products")
                 .clickListener((model, parentView, clickedView, position) -> {
                     for (CampaignCategoryResponse s : campaignCategoryList) {
                         if (s.getSlug().equals(Constants.FLASH_SALE_SLUG)) {
@@ -361,21 +384,95 @@ public class HomeController extends EpoxyController {
                 })
                 .addIf(flashSaleProducts.size() > 0, this);
 
-        List<DataBindingEpoxyModel> flashSaleModels = new ArrayList<>();
+        List<DataBindingEpoxyModel> flashSaleProductModels = new ArrayList<>();
 
         for (CampaignProductResponse item : flashSaleProducts) {
-            flashSaleModels.add(new CampaignSmallProductModel_()
-                    .id("flash_sale_item", item.getSlug())
+            flashSaleProductModels.add(new CycloneProductModel_()
+                    .id("flash_sale_product_item", item.getSlug())
                     .model(item)
                     .clickListener((model, parentView, clickedView, position) -> {
                         clickListener.onCampaignProductClick(model.model());
                     }));
         }
 
-        flashSaleCarousel
-                .models(flashSaleModels)
-                .padding(Carousel.Padding.dp(15, 12, 10, 10, 10))
-                .addIf(flashSaleModels.size() > 0, this);
+        flashSaleProductsCarousel
+                .models(flashSaleProductModels)
+                .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
+                .addIf(flashSaleProductModels.size() > 0, this);
+
+        // brands
+
+        flashSaleBrandTitle
+                .showMore(true)
+                .title("Brands")
+                .clickListener((model, parentView, clickedView, position) -> {
+                    for (CampaignCategoryResponse s : campaignCategoryList) {
+                        if (s.getSlug().equals(Constants.FLASH_SALE_SLUG)) {
+                            clickListener.onCampaignCategoryClick(s);
+                            return;
+                        }
+                    }
+                    clickListener.onFlashSaleClick(Constants.FLASH_SALE_SLUG);
+                })
+                .addIf(flashSaleBrands.size() > 0, this);
+
+        List<DataBindingEpoxyModel> flashSaleBrandsModels = new ArrayList<>();
+
+        for (CampaignBrandResponse item : flashSaleBrands) {
+            flashSaleBrandsModels.add(new CycloneBrandModel_()
+                    .id("flash_sale_brand_item", item.getSlug())
+                    .model(item)
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        // clickListener.onCampaignProductClick(model.model());
+                    }));
+        }
+
+        flashSaleBrandsCarousel
+                .models(flashSaleBrandsModels)
+                .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
+                .addIf(flashSaleBrandsModels.size() > 0, this);
+
+        // shops
+
+        flashSaleShopTitle
+                .showMore(true)
+                .title("Shops")
+                .clickListener((model, parentView, clickedView, position) -> {
+                    for (CampaignCategoryResponse s : campaignCategoryList) {
+                        if (s.getSlug().equals(Constants.FLASH_SALE_SLUG)) {
+                            clickListener.onCampaignCategoryClick(s);
+                            return;
+                        }
+                    }
+                    clickListener.onFlashSaleClick(Constants.FLASH_SALE_SLUG);
+                })
+                .addIf(flashSaleShops.size() > 0, this);
+
+        List<DataBindingEpoxyModel> flashSaleShopModels = new ArrayList<>();
+
+        for (CampaignShopResponse item : flashSaleShops) {
+            flashSaleShopModels.add(new CycloneShopModel_()
+                    .id("flash_sale_shop_item", item.getSlug())
+                    .model(item)
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        // clickListener.onCampaignProductClick(model.model());
+                    }));
+        }
+
+        flashSaleShopCarousel
+                .models(flashSaleShopModels)
+                .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
+                .addIf(flashSaleShopModels.size() > 0, this);
+
+        cycloneBottomBarModel.addIf(flashSaleProductModels.size() > 0 || flashSaleBrandsModels.size() > 0 || flashSaleShopModels.size() > 0, this);
+    }
+
+    public void setFlashSaleBrands(List<CampaignBrandResponse> flashSaleBrands) {
+        this.flashSaleBrands = flashSaleBrands;
+    }
+
+    public void setFlashSaleShops(List<CampaignShopResponse> flashSaleShops) {
+        this.flashSaleShops = flashSaleShops;
     }
 
     public void setRsBrandList(List<RsEntity> rsBrandList) {

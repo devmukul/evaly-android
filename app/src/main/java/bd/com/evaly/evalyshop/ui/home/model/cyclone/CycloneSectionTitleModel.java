@@ -33,6 +33,8 @@ public abstract class CycloneSectionTitleModel extends DataBindingEpoxyModel {
 
         ItemCycloneTitleBinding binding = (ItemCycloneTitleBinding) holder.getDataBinding();
         StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
+//        int margin = Utils.convertDpToPixel(15);
+//        params.setMargins(margin, 0, margin, 0);
         params.setFullSpan(true);
 
         if (title != null)

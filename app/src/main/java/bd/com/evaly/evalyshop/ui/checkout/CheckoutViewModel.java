@@ -120,7 +120,7 @@ public class CheckoutViewModel extends ViewModel {
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 errorOrder.setValue(true);
-                ToastUtils.show("Couldn't place order, try again later.");
+                ToastUtils.show((errorBody != null && !errorBody.equals("")) ? errorBody : "Couldn't place order, try again later.");
             }
 
             @Override

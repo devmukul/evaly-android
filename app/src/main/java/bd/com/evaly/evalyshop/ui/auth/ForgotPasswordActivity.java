@@ -64,6 +64,7 @@ public class ForgotPasswordActivity extends BaseActivity {
         body.put("phone_number", binding.phone.getText().toString());
         body.put("captcha_id", captchaModel.getCaptchaId());
         body.put("captcha_value", binding.captchaInput.getText().toString().trim());
+        body.put("service_name", "evaly");
 
         AuthApiHelper.forgetPassword(body, new ResponseListenerAuth<JsonObject, String>() {
             @Override
@@ -71,11 +72,11 @@ public class ForgotPasswordActivity extends BaseActivity {
                 dialog.hideDialog();
                 Toast.makeText(ForgotPasswordActivity.this, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
                 if (statusCode == 201 || statusCode == 200) {
-                    Intent il = new Intent(ForgotPasswordActivity.this, PasswordActivity.class);
-                    il.putExtra("phone", binding.phone.getText().toString());
-                    il.putExtra("request_id", response.get("data").getAsJsonObject().get("request_id").getAsString());
+                    Intent intent = new Intent(ForgotPasswordActivity.this, PasswordActivity.class);
+                    intent.putExtra("phone", binding.phone.getText().toString());
+                    intent.putExtra("request_id", response.get("data").getAsJsonObject().get("request_id").getAsString());
                     finish();
-                    startActivity(il);
+                    startActivity(intent);
                 }
             }
 

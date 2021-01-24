@@ -203,6 +203,18 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             homeController.requestModelBuild();
         });
 
+        viewModel.flashSaleBrandList.observe(getViewLifecycleOwner(), campaignBrandResponses -> {
+            homeController.setFlashSaleBrands(campaignBrandResponses);
+            homeController.cancelPendingModelBuild();
+            homeController.requestModelBuild();
+        });
+
+        viewModel.flashSaleShopList.observe(getViewLifecycleOwner(), campaignShopResponses -> {
+            homeController.setFlashSaleShops(campaignShopResponses);
+            homeController.cancelPendingModelBuild();
+            homeController.requestModelBuild();
+        });
+
         viewModel.getBannerListLive().observe(getViewLifecycleOwner(), bannerItems -> {
             homeController.setBannerList(bannerItems);
             homeController.cancelPendingModelBuild();

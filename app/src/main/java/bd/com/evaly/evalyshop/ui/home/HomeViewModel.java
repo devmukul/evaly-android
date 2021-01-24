@@ -19,8 +19,10 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
+import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
+import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
@@ -36,9 +38,11 @@ import io.reactivex.schedulers.Schedulers;
 
 public class HomeViewModel extends ViewModel {
 
+    protected MutableLiveData<List<CampaignProductResponse>> flashSaleProductList = new MutableLiveData<>();
+    protected MutableLiveData<List<CampaignBrandResponse>> flashSaleBrandList = new MutableLiveData<>();
+    protected MutableLiveData<List<CampaignShopResponse>> flashSaleShopList = new MutableLiveData<>();
     private int tabPosition = -1;
     private MutableLiveData<List<CampaignCategoryResponse>> categoryLiveList = new MutableLiveData<>();
-    private MutableLiveData<List<CampaignProductResponse>> flashSaleProductList = new MutableLiveData<>();
     private MutableLiveData<List<ProductItem>> productListLive = new MutableLiveData<>();
     private List<ProductItem> productArrayList = new ArrayList<>();
     private LiveData<List<BannerItem>> bannerListLive;
@@ -63,6 +67,8 @@ public class HomeViewModel extends ViewModel {
         loadExpressServices();
         loadCampaignCategory();
         loadFlashSaleProductList();
+        loadFlashSaleBrandsList();
+        loadFlashSaleShopList();
     }
 
     @Override
@@ -89,12 +95,53 @@ public class HomeViewModel extends ViewModel {
 
     public void loadFlashSaleProductList() {
 
-        //  flash-sale-2509b8bb  hot-deal-3b06c2c4
         CampaignApiHelper.getCampaignCategoryProducts(1, 20, null, Constants.FLASH_SALE_SLUG, null,
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
                         flashSaleProductList.setValue(response.getData());
+                    }
+
+                    @Override
+                    public void onFailed(String errorBody, int errorCode) {
+
+                    }
+
+                    @Override
+                    public void onAuthError(boolean logout) {
+
+                    }
+                });
+    }
+
+    public void loadFlashSaleBrandsList() {
+
+        CampaignApiHelper.getCampaignCategoryBrands(1, 20, null, Constants.FLASH_SALE_SLUG, null,
+                new ResponseListenerAuth<CommonDataResponse<List<CampaignBrandResponse>>, String>() {
+                    @Override
+                    public void onDataFetched(CommonDataResponse<List<CampaignBrandResponse>> response, int statusCode) {
+                        flashSaleBrandList.setValue(response.getData());
+                    }
+
+                    @Override
+                    public void onFailed(String errorBody, int errorCode) {
+
+                    }
+
+                    @Override
+                    public void onAuthError(boolean logout) {
+
+                    }
+                });
+    }
+
+    public void loadFlashSaleShopList() {
+
+        CampaignApiHelper.getCampaignCategoryShops(1, 20, null, Constants.FLASH_SALE_SLUG, null,
+                new ResponseListenerAuth<CommonDataResponse<List<CampaignShopResponse>>, String>() {
+                    @Override
+                    public void onDataFetched(CommonDataResponse<List<CampaignShopResponse>> response, int statusCode) {
+                        flashSaleShopList.setValue(response.getData());
                     }
 
                     @Override
