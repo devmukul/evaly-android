@@ -274,6 +274,10 @@ public class CampaignDetailsFragment extends Fragment {
 
     private void liveEventObservers() {
 
+        viewModel.productCategoriesLiveData.observe(getViewLifecycleOwner(), campaignProductCategoryResponses -> {
+            controller.setCategoryList(campaignProductCategoryResponses);
+            controller.requestModelBuild();
+        });
         viewModel.switchTab.observe(getViewLifecycleOwner(), s -> {
             if (s.contains("shop") || s.contains("supplier"))
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0));

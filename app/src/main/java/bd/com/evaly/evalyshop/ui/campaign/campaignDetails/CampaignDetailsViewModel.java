@@ -15,6 +15,7 @@ import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
@@ -37,8 +38,10 @@ public class CampaignDetailsViewModel extends ViewModel {
     private String campaign = null;
     private String selectTypeAfterLoading = null;
     private SingleLiveEvent<CampaignProductResponse> buyNowClick = new SingleLiveEvent<>();
+    protected MutableLiveData<List<CampaignProductCategoryResponse>> productCategoriesLiveData = new MutableLiveData<>();
 
     public CampaignDetailsViewModel() {
+
         loadListFromApi();
     }
 
@@ -52,6 +55,25 @@ public class CampaignDetailsViewModel extends ViewModel {
 
     public void setBuyNowClick(CampaignProductResponse model) {
         this.buyNowClick.setValue(model);
+    }
+
+    public void loadProductCategories() {
+        CampaignApiHelper.getCampaignProductCategories(getCategorySlug(), campaign, 1, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<CampaignProductCategoryResponse>> response, int statusCode) {
+                productCategoriesLiveData.setValue(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void loadSubCampaignDetails(String campaign_slug) {
@@ -132,6 +154,8 @@ public class CampaignDetailsViewModel extends ViewModel {
             loadBrandList();
         else if (type.equals("campaign"))
             loadCampaignList();
+
+        loadProductCategories();
     }
 
     public void loadCampaignList() {

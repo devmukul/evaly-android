@@ -31,6 +31,7 @@ import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.carousel.CampaignCarouselResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
@@ -84,7 +85,6 @@ import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -447,6 +447,11 @@ public interface IApiClient {
     Call<CommonDataResponse<ShopDetailsResponse>> getCampaignShopDetails(@Header("Authorization") String token,
                                                                          @Path("shopSlug") String shopSlug);
 
+    @GET(UrlUtils.BASE_CATALOG + "campaign/products/categories")
+    Call<CommonDataResponse<List<CampaignProductCategoryResponse>>> getCampaignProductCategories(@Query("category") String categorySlug,
+                                                                                                 @Query("campaign") String campaignSlug,
+                                                                                                 @Query("page") int page,
+                                                                                                 @Query("limit") int limit);
 
     @GET(UrlUtils.CAMPAIGNS + "/{campaignSlug}/shops/{shopSlug}/items")
     Call<ShopDetailsModel> getCampaignShopDetails(@Header("Authorization") String token,

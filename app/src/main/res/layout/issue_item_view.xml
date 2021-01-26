@@ -54,12 +54,11 @@
             android:layout_marginLeft="18dp"
             android:layout_marginRight="18dp"
             android:fontFamily="sans-serif-medium"
-            android:paddingTop="3dp"
             android:paddingRight="10dp"
             android:paddingBottom="3dp"
             android:text="Delivery Issue"
             android:textColor="@color/c333"
-            android:textSize="18sp"
+            android:textSize="17sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

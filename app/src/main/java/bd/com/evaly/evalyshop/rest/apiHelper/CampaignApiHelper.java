@@ -11,12 +11,16 @@ import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.carousel.CampaignCarouselResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
 
 public class CampaignApiHelper extends BaseApiHelper {
 
+    public static void getCampaignProductCategories(String category, String campaignSlug, int page, ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String> listener) {
+        getiApiClient().getCampaignProductCategories(category, campaignSlug, page, 30).enqueue(getResponseCallBackDefault(listener));
+    }
 
     public static void getSubCampaignDetails(String campaignSlug, ResponseListenerAuth<CommonDataResponse<SubCampaignDetailsResponse>, String> listener) {
         getiApiClient().getSubCampaignDetails(campaignSlug).enqueue(getResponseCallBackDefault(listener));

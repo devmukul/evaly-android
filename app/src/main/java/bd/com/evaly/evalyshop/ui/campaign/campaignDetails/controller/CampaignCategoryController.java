@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 
+import com.airbnb.epoxy.AutoModel;
+import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.EpoxyController;
 
 import java.util.ArrayList;
@@ -16,9 +18,12 @@ import bd.com.evaly.evalyshop.databinding.ItemCampaignTitleBinding;
 import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.CampaignDetailsViewModel;
+import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryCarouselModel_;
+import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBrandModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignShopModel_;
@@ -37,7 +42,10 @@ public class CampaignCategoryController extends EpoxyController {
     private CampaignDetailsViewModel viewModel;
     private MainViewModel mainViewModel;
     private AppCompatActivity activity;
+    private List<CampaignProductCategoryResponse> categoryList = new ArrayList<>();
 
+    @AutoModel
+    ProductCategoryCarouselModel_ categoryCarousel;
 
     public CampaignCategoryController() {
         setFilterDuplicates(true);
@@ -45,6 +53,27 @@ public class CampaignCategoryController extends EpoxyController {
 
     @Override
     protected void buildModels() {
+
+        new CampaignTitleModel_()
+                .id("title_category")
+                .title("Categories")
+                .onBind((model, view, position) -> {
+//                    ItemCampaignTitleBinding binding = (ItemCampaignTitleBinding) view.getDataBinding();
+//                    binding.title.setText(model.title());
+                })
+                .addTo(this);
+
+        List<ProductCategoryModel_> categoryModels = new ArrayList<>();
+        for (CampaignProductCategoryResponse item : categoryList) {
+            categoryModels.add(new ProductCategoryModel_()
+                    .id("category", item.getCategorySlug() + item.getShopSlug())
+                    .model(item));
+        }
+
+        categoryCarousel
+                .models(categoryModels)
+                .padding(Carousel.Padding.dp(10, 5, 10, 5, 10))
+                .addTo(this);
 
         if (mainViewModel.getCampaignOnClick().getValue() != null)
             new CampaignTitleModel_()
@@ -138,6 +167,10 @@ public class CampaignCategoryController extends EpoxyController {
             return "No brand found";
         else
             return "No product found";
+    }
+
+    public void setCategoryList(List<CampaignProductCategoryResponse> categoryList) {
+        this.categoryList = categoryList;
     }
 
     public void setMainViewModel(MainViewModel mainViewModel) {
