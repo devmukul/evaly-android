@@ -2,6 +2,8 @@ package bd.com.evaly.evalyshop.models.issueNew.comment;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class IssueCommentBody {
 
     @SerializedName("comment")
@@ -9,6 +11,17 @@ public class IssueCommentBody {
 
     @SerializedName("ticket")
     private int ticket;
+
+    @SerializedName("attachments")
+    private List<String> attachments;
+
+    public List<String> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<String> attachments) {
+        this.attachments = attachments;
+    }
 
     public String getComment() {
         return comment;

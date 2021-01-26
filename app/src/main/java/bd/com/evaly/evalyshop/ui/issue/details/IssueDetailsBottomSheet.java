@@ -180,7 +180,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         ProgressDialog dialog = new ProgressDialog(getContext());
         dialog.show();
 
-        IssueApiHelper.resolveIssue(issueModel.getId(), new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
+        IssueApiHelper.resolveIssue("resolved", (int) issueModel.getId(), new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<IssueListModel> response, int statusCode) {
                 dialog.dismiss();

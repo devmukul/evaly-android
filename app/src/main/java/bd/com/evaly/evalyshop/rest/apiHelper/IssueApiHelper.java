@@ -21,8 +21,8 @@ public class IssueApiHelper extends BaseApiHelper {
         getiApiClient().getIssueTicketList(CredentialManager.getToken(), invoice, page).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void resolveIssue(int id, ResponseListenerAuth<CommonDataResponse<IssueListModel>, String> listener) {
-        getiApiClient().resolveIssueTicketStatus(CredentialManager.getToken(), id).enqueue(getResponseCallBackDefault(listener));
+    public static void resolveIssue(String status, int id, ResponseListenerAuth<CommonDataResponse<IssueListModel>, String> listener) {
+        getiApiClient().resolveIssueTicketStatus(CredentialManager.getToken(), status, id).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void createIssue(IssueCreateBody body, ResponseListenerAuth<CommonDataResponse<IssueListModel>, String> listener) {
