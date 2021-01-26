@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="bd.com.evaly.evalyshop">
 
-
     <uses-permission android:name="android.permission.INTERNET" />
     <permission
         android:name="android.permission.INTERACT_ACROSS_USERS_FULL"

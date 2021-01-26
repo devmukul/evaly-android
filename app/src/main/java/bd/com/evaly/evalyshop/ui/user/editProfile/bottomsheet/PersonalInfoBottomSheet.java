@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet;
 
 import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -36,16 +36,6 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
 
     private BottomSheetEditPersonalInformationBinding binding;
     private String dateOfBirth = "";
-    DatePickerDialog.OnDateSetListener datePickerListener = (datePicker, year, month, day) -> {
-        String inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat formatter = new SimpleDateFormat(inputFormat);
-        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day, 0, 0);
-        dateOfBirth = formatter.format(calendar.getTime());
-        binding.dateOfBirth.setText(Utils.formattedDateFromString("", "dd/MM/yyyy", dateOfBirth));
-    };
     private EditProfileViewModel viewModel;
 
     public static PersonalInfoBottomSheet newInstance() {
@@ -111,17 +101,20 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
         }
 
         binding.dateOfBirth.setOnClickListener(v -> {
-            Calendar cal = Calendar.getInstance();
-            int year = 2000;
-            int month = cal.get(Calendar.MONTH);
-            int day = cal.get(Calendar.DAY_OF_MONTH);
-
-            DatePickerDialog dialog = new DatePickerDialog(
-                    getContext(),
-                    datePickerListener,
-                    year, month, day
-            );
-            dialog.show();
+            MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+            builder.setTitleText("Select your birth date");
+            MaterialDatePicker<Long> picker = builder.build();
+            picker.addOnPositiveButtonClickListener(selection -> {
+                String inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat formatter = new SimpleDateFormat(inputFormat);
+                formatter.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(selection);
+                dateOfBirth = formatter.format(calendar.getTime());
+                binding.dateOfBirth.setText(Utils.formattedDateFromString("", "dd/MM/yyyy", dateOfBirth));
+            });
+            picker.show(getParentFragmentManager(), picker.toString());
         });
 
         binding.save.setOnClickListener(v -> {
