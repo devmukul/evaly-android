@@ -6,66 +6,66 @@ import java.io.Serializable;
 
 public class IssueCategoryModel implements Serializable {
 
-	@SerializedName("is_active")
-	private boolean isActive;
+    @SerializedName("is_active")
+    private boolean isActive;
 
-	@SerializedName("updated_at")
-	private Object updatedAt;
+    @SerializedName("updated_at")
+    private Object updatedAt;
 
-	@SerializedName("name")
-	private String name;
+    @SerializedName("name")
+    private String name;
 
-	@SerializedName("updated_by")
-	private Object updatedBy;
+    @SerializedName("updated_by")
+    private Object updatedBy;
 
-	@SerializedName("created_at")
-	private String createdAt;
+    @SerializedName("created_at")
+    private String createdAt;
 
-	@SerializedName("id")
-	private int id;
+    @SerializedName("id")
+    private int id;
 
-	@SerializedName("deleted_at")
-	private Object deletedAt;
+    @SerializedName("deleted_at")
+    private Object deletedAt;
 
-	@SerializedName("created_by")
-	private CreatedBy createdBy;
+    @SerializedName("created_by")
+    private CreatedBy createdBy;
 
-	@SerializedName("slug")
-	private String slug;
+    @SerializedName("slug")
+    private String slug;
 
-	public boolean isIsActive(){
-		return isActive;
-	}
+    public boolean isIsActive() {
+        return isActive;
+    }
 
-	public Object getUpdatedAt(){
-		return updatedAt;
-	}
+    public Object getUpdatedAt() {
+        return updatedAt;
+    }
 
-	public String getName(){
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Object getUpdatedBy(){
-		return updatedBy;
-	}
+    public Object getUpdatedBy() {
+        return updatedBy;
+    }
 
-	public String getCreatedAt(){
-		return createdAt;
-	}
+    public String getCreatedAt() {
+        return createdAt;
+    }
 
-	public int getId(){
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public Object getDeletedAt(){
-		return deletedAt;
-	}
+    public Object getDeletedAt() {
+        return deletedAt;
+    }
 
-	public CreatedBy getCreatedBy(){
-		return createdBy;
-	}
+    public CreatedBy getCreatedBy() {
+        return createdBy;
+    }
 
-	public String getSlug(){
-		return slug;
-	}
+    public String getSlug() {
+        return slug;
+    }
 }

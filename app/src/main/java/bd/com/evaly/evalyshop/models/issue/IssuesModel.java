@@ -95,7 +95,7 @@ public class IssuesModel implements Serializable {
         this.order_invoice = order_invoice;
     }
 
-    public class ReplyModel implements Serializable{
+    public class ReplyModel implements Serializable {
         private int id;
         private String body;
         private String attachement;

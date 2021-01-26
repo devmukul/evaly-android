@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.rest.apiHelper;
 
+import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -22,7 +23,9 @@ public class IssueApiHelper extends BaseApiHelper {
     }
 
     public static void resolveIssue(String status, int id, ResponseListenerAuth<CommonDataResponse<IssueListModel>, String> listener) {
-        getiApiClient().resolveIssueTicketStatus(CredentialManager.getToken(), status, id).enqueue(getResponseCallBackDefault(listener));
+        HashMap<String, String> body= new HashMap<>();
+        body.put("order_status", status);
+        getiApiClient().resolveIssueTicketStatus(CredentialManager.getToken(), body, id).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void createIssue(IssueCreateBody body, ResponseListenerAuth<CommonDataResponse<IssueListModel>, String> listener) {
@@ -37,7 +40,7 @@ public class IssueApiHelper extends BaseApiHelper {
         IssueCommentBody body = new IssueCommentBody();
         body.setComment(comment);
         body.setTicket(ticketId);
-        getiApiClient().createIssueTicketComment(CredentialManager.getToken(), body, "undefined").enqueue(getResponseCallBackDefault(listener));
+        getiApiClient().createIssueTicketComment(CredentialManager.getToken(), body, ticketId).enqueue(getResponseCallBackDefault(listener));
     }
 
 }

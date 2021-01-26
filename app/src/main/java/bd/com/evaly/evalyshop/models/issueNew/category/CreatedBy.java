@@ -6,31 +6,31 @@ import java.io.Serializable;
 
 public class CreatedBy implements Serializable {
 
-	@SerializedName("last_name")
-	private String lastName;
+    @SerializedName("last_name")
+    private String lastName;
 
-	@SerializedName("first_name")
-	private String firstName;
+    @SerializedName("first_name")
+    private String firstName;
 
-	@SerializedName("email")
-	private String email;
+    @SerializedName("email")
+    private String email;
 
-	@SerializedName("username")
-	private String username;
+    @SerializedName("username")
+    private String username;
 
-	public String getLastName(){
-		return lastName;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public String getFirstName(){
-		return firstName;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public String getEmail(){
-		return email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public String getUsername(){
-		return username;
-	}
+    public String getUsername() {
+        return username;
+    }
 }

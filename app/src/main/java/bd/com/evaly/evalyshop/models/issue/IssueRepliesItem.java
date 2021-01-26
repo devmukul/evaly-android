@@ -3,84 +3,84 @@ package bd.com.evaly.evalyshop.models.issue;
 
 import com.google.gson.annotations.SerializedName;
 
-public class IssueRepliesItem{
+public class IssueRepliesItem {
 
-	@SerializedName("updated_at")
-	private String updatedAt;
+    @SerializedName("updated_at")
+    private String updatedAt;
 
-	@SerializedName("reply_by")
-	private ReplyBy replyBy;
+    @SerializedName("reply_by")
+    private ReplyBy replyBy;
 
-	@SerializedName("attachement")
-	private Object attachement;
+    @SerializedName("attachement")
+    private Object attachement;
 
-	@SerializedName("created_at")
-	private String createdAt;
+    @SerializedName("created_at")
+    private String createdAt;
 
-	@SerializedName("id")
-	private int id;
+    @SerializedName("id")
+    private int id;
 
-	@SerializedName("body")
-	private String body;
+    @SerializedName("body")
+    private String body;
 
-	public void setUpdatedAt(String updatedAt){
-		this.updatedAt = updatedAt;
-	}
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
 
-	public String getUpdatedAt(){
-		return updatedAt;
-	}
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
-	public void setReplyBy(ReplyBy replyBy){
-		this.replyBy = replyBy;
-	}
+    public ReplyBy getReplyBy() {
+        return replyBy;
+    }
 
-	public ReplyBy getReplyBy(){
-		return replyBy;
-	}
+    public void setReplyBy(ReplyBy replyBy) {
+        this.replyBy = replyBy;
+    }
 
-	public void setAttachement(Object attachement){
-		this.attachement = attachement;
-	}
+    public Object getAttachement() {
+        return attachement;
+    }
 
-	public Object getAttachement(){
-		return attachement;
-	}
+    public void setAttachement(Object attachement) {
+        this.attachement = attachement;
+    }
 
-	public void setCreatedAt(String createdAt){
-		this.createdAt = createdAt;
-	}
+    public String getCreatedAt() {
+        return createdAt;
+    }
 
-	public String getCreatedAt(){
-		return createdAt;
-	}
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
 
-	public void setId(int id){
-		this.id = id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public int getId(){
-		return id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setBody(String body){
-		this.body = body;
-	}
+    public String getBody() {
+        return body;
+    }
 
-	public String getBody(){
-		return body;
-	}
+    public void setBody(String body) {
+        this.body = body;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"IssueRepliesItem{" + 
-			"updated_at = '" + updatedAt + '\'' + 
-			",reply_by = '" + replyBy + '\'' + 
-			",attachement = '" + attachement + '\'' + 
-			",created_at = '" + createdAt + '\'' + 
-			",id = '" + id + '\'' + 
-			",body = '" + body + '\'' + 
-			"}";
-		}
+    @Override
+    public String toString() {
+        return
+                "IssueRepliesItem{" +
+                        "updated_at = '" + updatedAt + '\'' +
+                        ",reply_by = '" + replyBy + '\'' +
+                        ",attachement = '" + attachement + '\'' +
+                        ",created_at = '" + createdAt + '\'' +
+                        ",id = '" + id + '\'' +
+                        ",body = '" + body + '\'' +
+                        "}";
+    }
 }

@@ -84,7 +84,7 @@ import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
-import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -224,24 +224,23 @@ public interface IApiClient {
                                                                       @Query("invoice_no") String invoice,
                                                                       @Query("offset") int page);
 
-
-    @PATCH(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/comments/{tickerId}")
+    @PATCH(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/{tickerId}")
     Call<CommonDataResponse<IssueListModel>> resolveIssueTicketStatus(@Header("Authorization") String token,
-                                                                      @Field("status") String status,
+                                                                      @Body HashMap<String, String> body,
                                                                       @Path("tickerId") int id);
 
     @POST(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/evaly")
     Call<CommonDataResponse<IssueListModel>> createIssueTicket(@Header("Authorization") String token,
                                                                @Body IssueCreateBody body);
 
-    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/comments/{tickerId}")
+    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/comments/{ticket_id}")
     Call<CommonDataResponse<List<IssueTicketCommentModel>>> getIssueTicketComment(@Header("Authorization") String token,
                                                                                   @Path("ticket_id") int ticketId);
 
-    @POST(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/comments/{tickerId}")
+    @POST(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/comments/{ticket_id}")
     Call<CommonDataResponse<IssueTicketCommentModel>> createIssueTicketComment(@Header("Authorization") String token,
                                                                                @Body IssueCommentBody body,
-                                                                               @Path("ticket_id") String tickerId);
+                                                                               @Path("ticket_id") int tickerId);
 
     @POST(UrlUtils.DOMAIN_EAUTH + "set-password")
     Call<JsonObject> setPassword(@Body HashMap<String, String> setPasswordModel);

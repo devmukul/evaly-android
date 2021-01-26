@@ -59,16 +59,12 @@ public class IssueListModel implements Serializable {
     @SerializedName("assigned_to")
     private AssignedTo assignedTo;
 
-    public void setShop(Shop shop) {
-        this.shop = shop;
-    }
-
     public Shop getShop() {
         return shop;
     }
 
-    public void setAttachments(List<String> attachments) {
-        this.attachments = attachments;
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     public List<String> getAttachments() {
@@ -77,84 +73,88 @@ public class IssueListModel implements Serializable {
         return attachments;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setAttachments(List<String> attachments) {
+        this.attachments = attachments;
     }
 
     public String getChannel() {
         return channel;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 
     public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setPriority(String priority) {
-        this.priority = priority;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getPriority() {
         return priority;
     }
 
-    public void setCreatedBy(CreatedBy createdBy) {
-        this.createdBy = createdBy;
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 
     public CreatedBy getCreatedBy() {
         return createdBy;
     }
 
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setCreatedBy(CreatedBy createdBy) {
+        this.createdBy = createdBy;
     }
 
     public String getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setAdditionalInfo(String additionalInfo) {
-        this.additionalInfo = additionalInfo;
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public String getAdditionalInfo() {
         return additionalInfo;
     }
 
-    public void setContext(String context) {
-        this.context = context;
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
     }
 
     public String getContext() {
         return context;
     }
 
-    public void setUpdatedBy(UpdatedBy updatedBy) {
-        this.updatedBy = updatedBy;
+    public void setContext(String context) {
+        this.context = context;
     }
 
     public UpdatedBy getUpdatedBy() {
         return updatedBy;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUpdatedBy(UpdatedBy updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getCategory() {
         return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public Category getCategoryDetails() {
@@ -165,36 +165,36 @@ public class IssueListModel implements Serializable {
         this.categoryDetails = categoryDetails;
     }
 
-    public void setInvoiceNumber(String invoiceNumber) {
-        this.invoiceNumber = invoiceNumber;
-    }
-
     public String getInvoiceNumber() {
         return invoiceNumber;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public void setCustomer(String customer) {
-        this.customer = customer;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getCustomer() {
         return customer;
     }
 
-    public void setAssignedTo(AssignedTo assignedTo) {
-        this.assignedTo = assignedTo;
+    public void setCustomer(String customer) {
+        this.customer = customer;
     }
 
     public AssignedTo getAssignedTo() {
         return assignedTo;
+    }
+
+    public void setAssignedTo(AssignedTo assignedTo) {
+        this.assignedTo = assignedTo;
     }
 
     @Override

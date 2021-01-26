@@ -6,58 +6,58 @@ import java.io.Serializable;
 
 public class AssignedTo implements Serializable {
 
-	@SerializedName("last_name")
-	private Object lastName;
+    @SerializedName("last_name")
+    private Object lastName;
 
-	@SerializedName("first_name")
-	private Object firstName;
+    @SerializedName("first_name")
+    private Object firstName;
 
-	@SerializedName("email")
-	private Object email;
+    @SerializedName("email")
+    private Object email;
 
-	@SerializedName("username")
-	private String username;
+    @SerializedName("username")
+    private String username;
 
-	public void setLastName(Object lastName){
-		this.lastName = lastName;
-	}
+    public Object getLastName() {
+        return lastName;
+    }
 
-	public Object getLastName(){
-		return lastName;
-	}
+    public void setLastName(Object lastName) {
+        this.lastName = lastName;
+    }
 
-	public void setFirstName(Object firstName){
-		this.firstName = firstName;
-	}
+    public Object getFirstName() {
+        return firstName;
+    }
 
-	public Object getFirstName(){
-		return firstName;
-	}
+    public void setFirstName(Object firstName) {
+        this.firstName = firstName;
+    }
 
-	public void setEmail(Object email){
-		this.email = email;
-	}
+    public Object getEmail() {
+        return email;
+    }
 
-	public Object getEmail(){
-		return email;
-	}
+    public void setEmail(Object email) {
+        this.email = email;
+    }
 
-	public void setUsername(String username){
-		this.username = username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public String getUsername(){
-		return username;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"AssignedTo{" + 
-			"last_name = '" + lastName + '\'' + 
-			",first_name = '" + firstName + '\'' + 
-			",email = '" + email + '\'' + 
-			",username = '" + username + '\'' + 
-			"}";
-		}
+    @Override
+    public String toString() {
+        return
+                "AssignedTo{" +
+                        "last_name = '" + lastName + '\'' +
+                        ",first_name = '" + firstName + '\'' +
+                        ",email = '" + email + '\'' +
+                        ",username = '" + username + '\'' +
+                        "}";
+    }
 }

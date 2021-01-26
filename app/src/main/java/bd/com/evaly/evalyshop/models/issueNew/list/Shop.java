@@ -6,118 +6,118 @@ import java.io.Serializable;
 
 public class Shop implements Serializable {
 
-	@SerializedName("is_active")
-	private boolean isActive;
+    @SerializedName("is_active")
+    private boolean isActive;
 
-	@SerializedName("updated_at")
-	private Object updatedAt;
+    @SerializedName("updated_at")
+    private Object updatedAt;
 
-	@SerializedName("name")
-	private String name;
+    @SerializedName("name")
+    private String name;
 
-	@SerializedName("updated_by")
-	private Object updatedBy;
+    @SerializedName("updated_by")
+    private Object updatedBy;
 
-	@SerializedName("created_at")
-	private String createdAt;
+    @SerializedName("created_at")
+    private String createdAt;
 
-	@SerializedName("id")
-	private int id;
+    @SerializedName("id")
+    private int id;
 
-	@SerializedName("created_by")
-	private CreatedBy createdBy;
+    @SerializedName("created_by")
+    private CreatedBy createdBy;
 
-	@SerializedName("slug")
-	private String slug;
+    @SerializedName("slug")
+    private String slug;
 
-	@SerializedName("kam_user")
-	private Object kamUser;
+    @SerializedName("kam_user")
+    private Object kamUser;
 
-	public void setIsActive(boolean isActive){
-		this.isActive = isActive;
-	}
+    public boolean isIsActive() {
+        return isActive;
+    }
 
-	public boolean isIsActive(){
-		return isActive;
-	}
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
 
-	public void setUpdatedAt(Object updatedAt){
-		this.updatedAt = updatedAt;
-	}
+    public Object getUpdatedAt() {
+        return updatedAt;
+    }
 
-	public Object getUpdatedAt(){
-		return updatedAt;
-	}
+    public void setUpdatedAt(Object updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
-	public void setName(String name){
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getName(){
-		return name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setUpdatedBy(Object updatedBy){
-		this.updatedBy = updatedBy;
-	}
+    public Object getUpdatedBy() {
+        return updatedBy;
+    }
 
-	public Object getUpdatedBy(){
-		return updatedBy;
-	}
+    public void setUpdatedBy(Object updatedBy) {
+        this.updatedBy = updatedBy;
+    }
 
-	public void setCreatedAt(String createdAt){
-		this.createdAt = createdAt;
-	}
+    public String getCreatedAt() {
+        return createdAt;
+    }
 
-	public String getCreatedAt(){
-		return createdAt;
-	}
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
 
-	public void setId(int id){
-		this.id = id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public int getId(){
-		return id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setCreatedBy(CreatedBy createdBy){
-		this.createdBy = createdBy;
-	}
+    public CreatedBy getCreatedBy() {
+        return createdBy;
+    }
 
-	public CreatedBy getCreatedBy(){
-		return createdBy;
-	}
+    public void setCreatedBy(CreatedBy createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	public void setSlug(String slug){
-		this.slug = slug;
-	}
+    public String getSlug() {
+        return slug;
+    }
 
-	public String getSlug(){
-		return slug;
-	}
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 
-	public void setKamUser(Object kamUser){
-		this.kamUser = kamUser;
-	}
+    public Object getKamUser() {
+        return kamUser;
+    }
 
-	public Object getKamUser(){
-		return kamUser;
-	}
+    public void setKamUser(Object kamUser) {
+        this.kamUser = kamUser;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"Shop{" + 
-			"is_active = '" + isActive + '\'' + 
-			",updated_at = '" + updatedAt + '\'' + 
-			",name = '" + name + '\'' + 
-			",updated_by = '" + updatedBy + '\'' + 
-			",created_at = '" + createdAt + '\'' + 
-			",id = '" + id + '\'' + 
-			",created_by = '" + createdBy + '\'' + 
-			",slug = '" + slug + '\'' + 
-			",kam_user = '" + kamUser + '\'' + 
-			"}";
-		}
+    @Override
+    public String toString() {
+        return
+                "Shop{" +
+                        "is_active = '" + isActive + '\'' +
+                        ",updated_at = '" + updatedAt + '\'' +
+                        ",name = '" + name + '\'' +
+                        ",updated_by = '" + updatedBy + '\'' +
+                        ",created_at = '" + createdAt + '\'' +
+                        ",id = '" + id + '\'' +
+                        ",created_by = '" + createdBy + '\'' +
+                        ",slug = '" + slug + '\'' +
+                        ",kam_user = '" + kamUser + '\'' +
+                        "}";
+    }
 }
