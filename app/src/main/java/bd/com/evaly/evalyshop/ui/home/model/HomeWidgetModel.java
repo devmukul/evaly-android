@@ -58,27 +58,7 @@ public abstract class HomeWidgetModel extends DataBindingEpoxyModel {
                 navController.navigate(R.id.orderListBaseFragment);
         });
 
-        if (!CredentialManager.getToken().equals("")) {
-            GeneralApiHelper.getNotificationCount(CredentialManager.getToken(), "newsfeed", new ResponseListenerAuth<NotificationCount, String>() {
-                @Override
-                public void onDataFetched(NotificationCount response, int statusCode) {
-                    if (response.getCount() > 0)
-                        binding.btn1Indicator.setVisibility(View.VISIBLE);
-                    else
-                        binding.btn1Indicator.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onFailed(String errorBody, int errorCode) {
-
-                }
-
-                @Override
-                public void onAuthError(boolean logout) {
-
-                }
-            });
-        }
+        binding.btn1Indicator.setVisibility(View.GONE);
     }
 
 

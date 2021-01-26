@@ -30,9 +30,10 @@ public class CreateIssueViewModel extends ViewModel {
     protected SingleLiveEvent<Boolean> issueCreatedLiveData = new SingleLiveEvent<>();
     protected MutableLiveData<ImageDataModel> imageLiveData = new SingleLiveEvent<>();
     protected SingleLiveEvent<String> imageErrorLiveData = new SingleLiveEvent<>();
-
+    protected String orderStatus;
     @ViewModelInject
     public CreateIssueViewModel(@Assisted SavedStateHandle savedStateHandle) {
+        this.orderStatus = savedStateHandle.get("orderStatus");
         loadCategories();
     }
 
@@ -66,7 +67,7 @@ public class CreateIssueViewModel extends ViewModel {
 
     public void loadCategories() {
 
-        IssueApiHelper.getCategories(new ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String>() {
+        IssueApiHelper.getCategories(orderStatus, new ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<IssueCategoryModel>> response, int statusCode) {
                 categoryLiveList.setValue(response.getData());

@@ -34,7 +34,7 @@ public class IssueCreateBody implements Serializable {
 	@SerializedName("category")
 	private int category;
 
-	@SerializedName("invoice_number")
+	@SerializedName("invoice_no")
 	private String invoiceNumber;
 
 	@SerializedName("customer")

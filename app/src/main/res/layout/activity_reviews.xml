@@ -2,6 +2,7 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,10 +13,12 @@
         android:layout_gravity="bottom|right"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
+        android:backgroundTint="#000"
         android:clickable="true"
-        android:tint="@color/fff"
         android:visibility="gone"
-        app:srcCompat="@drawable/ic_plus" />
+        app:srcCompat="@drawable/ic_plus"
+        app:tint="@color/fffh"
+        tools:visibility="visible" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/stickyScrollView"

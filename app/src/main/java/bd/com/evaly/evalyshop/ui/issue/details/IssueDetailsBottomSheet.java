@@ -269,7 +269,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         else
             binding.tvResolveIssueHolder.setVisibility(View.VISIBLE);
 
-        binding.issueType.setText(Utils.toFirstCharUpperAll(postModel.getCategory().getName()));
+        binding.issueType.setText(Utils.toFirstCharUpperAll(postModel.getCategory()));
 
         binding.postImage.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ImagePreview.class);

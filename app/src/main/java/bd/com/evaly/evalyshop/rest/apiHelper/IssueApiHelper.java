@@ -13,12 +13,12 @@ import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 
 public class IssueApiHelper extends BaseApiHelper {
 
-    public static void getCategories(ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String> listener) {
-        getiApiClient().getIssueTicketCategory(CredentialManager.getToken(), 50).enqueue(getResponseCallBackDefault(listener));
+    public static void getCategories(String orderStatus, ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String> listener) {
+        getiApiClient().getIssueTicketCategory(CredentialManager.getToken(), orderStatus,250).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getIssueList(String invoice, ResponseListenerAuth<CommonDataResponse<List<IssueListModel>>, String> listener) {
-        getiApiClient().getIssueTicketList(CredentialManager.getToken(), invoice).enqueue(getResponseCallBackDefault(listener));
+    public static void getIssueList(String invoice, int page, ResponseListenerAuth<CommonDataResponse<List<IssueListModel>>, String> listener) {
+        getiApiClient().getIssueTicketList(CredentialManager.getToken(), invoice, page).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void resolveIssue(int id, ResponseListenerAuth<CommonDataResponse<IssueListModel>, String> listener) {

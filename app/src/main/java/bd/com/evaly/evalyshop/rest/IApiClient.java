@@ -212,20 +212,22 @@ public interface IApiClient {
                                                              @Path("username") String username);
 
     // issue ticket
-    @GET(UrlUtils.DOMAIN + "issue/api/v1/users/categories")
+    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/categories/customer")
     Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Header("Authorization") String token,
+                                                                              @Query("order_status") String orderStatus,
                                                                               @Query("limit") int limit);
 
-    @GET(UrlUtils.DOMAIN + "issue/api/v1/common/tickets")
+    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/evaly")
     Call<CommonDataResponse<List<IssueListModel>>> getIssueTicketList(@Header("Authorization") String token,
-                                                                      @Query("invoice_number") String invoice);
+                                                                      @Query("invoice_no") String invoice,
+                                                                      @Query("offset") int page);
 
 
     @PUT(UrlUtils.DOMAIN + "issue/api/v1/users/tickets/{id}/change-status")
     Call<CommonDataResponse<IssueListModel>> resolveIssueTicketStatus(@Header("Authorization") String token,
                                                                       @Path("id") int id);
 
-    @POST(UrlUtils.DOMAIN + "issue/api/v1/common/tickets")
+    @POST(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/evaly")
     Call<CommonDataResponse<IssueListModel>> createIssueTicket(@Header("Authorization") String token,
                                                                @Body IssueCreateBody body);
 
