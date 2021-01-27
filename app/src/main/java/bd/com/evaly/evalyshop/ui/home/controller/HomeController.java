@@ -13,6 +13,7 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
@@ -31,7 +32,6 @@ import bd.com.evaly.evalyshop.ui.home.HomeViewModel;
 import bd.com.evaly.evalyshop.ui.home.model.HomeDefaultCarouselModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressCarouselModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressHeaderModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressSkeletonModel_;
@@ -55,8 +55,6 @@ public class HomeController extends EpoxyController {
     HomeSliderModel_ sliderModel;
     @AutoModel
     HomeWidgetModel_ widgetModel;
-    @AutoModel
-    HomeExpressModel_ expressModel;
     @AutoModel
     LoadingModel_ loader;
     @AutoModel
@@ -131,6 +129,11 @@ public class HomeController extends EpoxyController {
     private ClickListener clickListener;
 
     public HomeController() {
+        setFilterDuplicates(true);
+        if(BuildConfig.DEBUG) {
+            setDebugLoggingEnabled(true);
+            setGlobalDebugLoggingEnabled(true);
+        }
         if (sliderController == null) {
             sliderController = new SliderController();
             sliderController.setActivity(activity);
@@ -159,7 +162,6 @@ public class HomeController extends EpoxyController {
                 .fragment(fragment)
                 .activity(activity)
                 .addTo(this);
-
 
         initCampaignCarousel();
 
@@ -327,7 +329,7 @@ public class HomeController extends EpoxyController {
         campaignCategoryCarousel
                 .models(isCampaignLoading ? campaignSkeletonItemModels : campaignModels)
                 .onBind((model, view, position) -> {
-                    view.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.white_to_grey_gradient));
+                    view.setBackground(ContextCompat.getDrawable(activity, R.drawable.white_to_grey_gradient));
                 })
                 .padding(Carousel.Padding.dp(2, 12, 12, 10, 0))
                 .addTo(this);

@@ -72,7 +72,7 @@ public class CampaignCategoryController extends EpoxyController {
 
         categoryCarousel
                 .models(categoryModels)
-                .padding(Carousel.Padding.dp(10, 5, 10, 5, 10))
+                .padding(Carousel.Padding.dp(10, 5, 10, 0, 10))
                 .addTo(this);
 
         if (mainViewModel.getCampaignOnClick().getValue() != null)

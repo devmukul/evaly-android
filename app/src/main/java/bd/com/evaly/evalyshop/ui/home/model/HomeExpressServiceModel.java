@@ -16,7 +16,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.HomeModelExpressServiceBinding;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
-import bd.com.evaly.evalyshop.util.Utils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -41,29 +40,17 @@ public abstract class HomeExpressServiceModel extends DataBindingEpoxyModel {
         super.bind(holder);
         HomeModelExpressServiceBinding binding = (HomeModelExpressServiceBinding) holder.getDataBinding();
 
-        String name = model.getName();
-
-        if (model.getAppName() == null) {
-            if (name.contains("Meat"))
-                name = name.replace("Market", "");
-            int wordCount = Utils.countWords(name);
-            if (wordCount > 1 && wordCount < 4) {
-                String firstWord = name.substring(0, model.getName().indexOf(' '));
-                name = name.replace(firstWord + " ", firstWord + "\n");
-            }
-        } else
-            name = model.getAppName();
-
-        Glide.with(binding.getRoot())
-                .asBitmap()
-                .load(model.getAppLogo() == null ? model.getImage() : model.getAppLogo())
-                .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.bg_f8f8f8_round))
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .into(binding.image);
+        if (binding.getRoot().getContext() != null)
+            Glide.with(binding.getRoot())
+                    .asBitmap()
+                    .load(model.getAppLogo() == null ? model.getImage() : model.getAppLogo())
+                    .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.bg_f8f8f8_round))
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .into(binding.image);
 
         binding.image.setPadding(0, 0, 0, 0);
 
-        binding.title.setText(name.replace("\\n", "\n"));
+        binding.title.setText(model.getAppName().replace("\\n", "\n"));
         if (fontSize > 0) {
             binding.title.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
         }

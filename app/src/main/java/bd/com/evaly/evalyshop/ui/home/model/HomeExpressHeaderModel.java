@@ -45,9 +45,10 @@ public abstract class HomeExpressHeaderModel extends DataBindingEpoxyModel {
 
         if (transparentBackground)
             binding.container.setBackgroundColor(Color.TRANSPARENT);
-        else
-            binding.container.setBackgroundColor(binding.container.getContext().getResources().getColor(R.color.white));
-
+        else {
+            if (binding.container.getContext() != null)
+                binding.container.setBackgroundColor(binding.container.getContext().getResources().getColor(R.color.white));
+        }
         binding.help.setOnClickListener(clickListener);
     }
 

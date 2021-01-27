@@ -53,6 +53,10 @@ public class BindingUtils {
     }
 
     public static void setImage(ImageView view, String url, int placeHolder, int errorImage, int width, int height, boolean whiteBg) {
+
+        if (view.getContext() == null)
+            return;
+
         if (url == null)
             return;
         url = url.replace("\n\r", "");

@@ -60,14 +60,15 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
 
         binding.title.setText(Html.fromHtml(model.getName()));
 
-        Glide.with(binding.getRoot())
-                .asBitmap()
-                .skipMemoryCache(true)
-                .apply(new RequestOptions().override(300, 300))
-                .load(model.getFirstImage())
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
-                .into(binding.image);
+        if (binding.getRoot().getContext() != null)
+            Glide.with(binding.getRoot())
+                    .asBitmap()
+                    .skipMemoryCache(true)
+                    .apply(new RequestOptions().override(300, 300))
+                    .load(model.getFirstImage())
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
+                    .into(binding.image);
 
         if (cashbackRate == 0)
             binding.tvCashback.setVisibility(View.GONE);

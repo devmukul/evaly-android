@@ -23,19 +23,18 @@ public class StaggeredSpacingItemDecoration extends RecyclerView.ItemDecoration 
 
         StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
 
+        if (lp == null)
+            return;
+
         int position = lp.getSpanIndex(); // item position
         int column = position % spanCount; // item column
 
         if (lp.isFullSpan()) {
-
             outRect.top = 0;
             outRect.left = 0;
             outRect.right = 0;
             outRect.bottom = 0;
-
-
         } else {
-
             if (includeEdge) {
                 outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
                 outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
@@ -44,7 +43,6 @@ public class StaggeredSpacingItemDecoration extends RecyclerView.ItemDecoration 
             } else {
                 outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
                 outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
-
             }
 
     }
