@@ -17,7 +17,8 @@ public abstract class EpoxyModelStaggeredGrid<T extends View> extends EpoxyModel
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        params.setFullSpan(true);
+        if (view.getContext() != null)
+            params.setFullSpan(true);
         view.setLayoutParams(params);
     }
 }

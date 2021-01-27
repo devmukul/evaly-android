@@ -41,7 +41,7 @@ public abstract class CampaignBannerModel extends DataBindingEpoxyModel {
 
         }
 
-        BindingUtils.setImage(binding.image, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460, false);
+        BindingUtils.setImage(binding.image, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 800, 253, false);
 
         binding.headerText.setText(model.getBannerHeaderText().toUpperCase());
         binding.subText.setText(model.getBannerSubText());

@@ -13,7 +13,6 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
@@ -72,7 +71,6 @@ public class HomeController extends EpoxyController {
     @AutoModel
     HomeDefaultCarouselModel_ campaignCategoryCarousel;
 
-
     @AutoModel
     CycloneBannerModel_ cycloneBannerModel;
     @AutoModel
@@ -90,7 +88,6 @@ public class HomeController extends EpoxyController {
     CycloneCarouselModel_ flashSaleShopCarousel;
     @AutoModel
     CycloneBottomBarModel_ cycloneBottomBarModel;
-
 
     @AutoModel
     HomeRsCarouselModel_ categoryCarousel;
@@ -130,10 +127,6 @@ public class HomeController extends EpoxyController {
 
     public HomeController() {
         setFilterDuplicates(true);
-        if(BuildConfig.DEBUG) {
-            setDebugLoggingEnabled(true);
-            setGlobalDebugLoggingEnabled(true);
-        }
         if (sliderController == null) {
             sliderController = new SliderController();
             sliderController.setActivity(activity);
@@ -319,7 +312,7 @@ public class HomeController extends EpoxyController {
         List<DataBindingEpoxyModel> campaignModels = new ArrayList<>();
         for (CampaignCategoryResponse item : campaignCategoryList) {
             campaignModels.add(new CampaignBannerModel_()
-                    .id("campaign_categories", item.getSlug())
+                    .id("campaign_categories_banner", item.getSlug())
                     .model(item)
                     .clickListener((model, parentView, clickedView, position) -> {
                         clickListener.onCampaignCategoryClick(model.model());

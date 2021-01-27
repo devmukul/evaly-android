@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.home;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,7 +49,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     RecommenderViewModel recommenderViewModel;
 
     private MainActivity activity;
-    private Context context;
     private boolean isLoading = true;
     private FragmentHomeBinding binding;
     private NavController navController;
@@ -81,15 +79,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         activity = (MainActivity) getActivity();
-        context = getContext();
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        binding.swipeRefresh.setOnRefreshListener(this);
         return binding.getRoot();
     }
 
     private void networkCheck() {
-        if (!Utils.isNetworkAvailable(context))
-            new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
+        if (getContext() != null && !Utils.isNetworkAvailable(getContext()))
+            new NetworkErrorDialog(getContext(), new NetworkErrorDialogListener() {
                 @Override
                 public void onRetry() {
                     refreshFragment();
@@ -107,7 +103,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onViewCreated(view, savedInstanceState);
         navController = NavHostFragment.findNavController(this);
         networkCheck();
-
+        binding.swipeRefresh.setOnRefreshListener(this);
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "home", mainViewModel);
         FragmentAppBarHeaderBinding headerBinding = binding.header;
@@ -121,6 +117,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         boolean homeControllerInitialized = false;
         if (homeController == null) {
             homeController = new HomeController();
+            if (BuildConfig.DEBUG)
+                homeController.setDebugLoggingEnabled(true);
             homeControllerInitialized = true;
         }
 
@@ -155,70 +153,68 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         liveEventObservers();
     }
 
+    private void requestModelBuild() {
+        if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
+            homeController.requestModelBuild();
+    }
+
     private void liveEventObservers() {
 
         recommenderViewModel.getRsBrandLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
             homeController.setRsBrandList(rsEntities);
-            homeController.cancelPendingModelBuild();
-            homeController.requestModelBuild();
+            if (rsEntities.size() > 0)
+                requestModelBuild();
         });
 
         recommenderViewModel.getRsCategoryLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
             homeController.setRsCategoryList(rsEntities);
-            homeController.cancelPendingModelBuild();
-            homeController.requestModelBuild();
+            if (rsEntities.size() > 0)
+                requestModelBuild();
         });
 
         recommenderViewModel.getRsShopLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
             homeController.setRsShopList(rsEntities);
-            homeController.cancelPendingModelBuild();
-            homeController.requestModelBuild();
+            if (rsEntities.size() > 0)
+                requestModelBuild();
         });
 
         viewModel.getProductListLive().observe(getViewLifecycleOwner(), list -> {
             isLoading = false;
             homeController.setLoadingMore(false);
             homeController.setProductData(list);
-            homeController.cancelPendingModelBuild();
-            homeController.requestModelBuild();
+            requestModelBuild();
         });
 
         viewModel.getExpressListLive().observe(getViewLifecycleOwner(), expressServiceModels -> {
             homeController.setExpressLoading(false);
             homeController.setExpressData(expressServiceModels);
-            homeController.cancelPendingModelBuild();
-            homeController.requestModelBuild();
+            requestModelBuild();
         });
 
         viewModel.getCampaignCategoryLiveList().observe(getViewLifecycleOwner(), campaignCategoryResponses -> {
             homeController.setCampaignLoading(false);
             homeController.setCampaignCategoryList(campaignCategoryResponses);
-            homeController.cancelPendingModelBuild();
-            homeController.requestModelBuild();
+            requestModelBuild();
         });
 
         viewModel.getFlashSaleProductList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
             homeController.setFlashSaleProducts(campaignProductResponses);
-            homeController.cancelPendingModelBuild();
-            homeController.requestModelBuild();
+            requestModelBuild();
         });
 
         viewModel.flashSaleBrandList.observe(getViewLifecycleOwner(), campaignBrandResponses -> {
             homeController.setFlashSaleBrands(campaignBrandResponses);
-            homeController.cancelPendingModelBuild();
-            homeController.requestModelBuild();
+            requestModelBuild();
         });
 
         viewModel.flashSaleShopList.observe(getViewLifecycleOwner(), campaignShopResponses -> {
             homeController.setFlashSaleShops(campaignShopResponses);
-            homeController.cancelPendingModelBuild();
-            homeController.requestModelBuild();
+            requestModelBuild();
         });
 
         viewModel.getBannerListLive().observe(getViewLifecycleOwner(), bannerItems -> {
             homeController.setBannerList(bannerItems);
-            homeController.cancelPendingModelBuild();
-            homeController.requestModelBuild();
+            requestModelBuild();
         });
 
     }
@@ -349,6 +345,16 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onShowMoreCampaignClick() {
+
         navController.navigate(R.id.campaignFragment);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (homeController != null)
+            homeController.cancelPendingModelBuild();
+        if (binding != null)
+            binding.recyclerView.setAdapter(null);
+        super.onDestroy();
     }
 }
