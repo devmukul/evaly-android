@@ -17,6 +17,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import java.util.Random;
+
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
@@ -154,8 +156,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void requestModelBuild() {
-        if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
-            homeController.requestModelBuild();
+        // if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
+        homeController.requestDelayedModelBuild(randInt(100, 200));
     }
 
     private void liveEventObservers() {
@@ -217,6 +219,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             requestModelBuild();
         });
 
+    }
+
+
+    public static int randInt(int min, int max) {
+        Random rand = new Random();
+        return rand.nextInt((max - min) + 1) + min;
     }
 
     @Override
