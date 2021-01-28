@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ItemCampaignProductCategoryTitleBinding;
 import bd.com.evaly.evalyshop.databinding.ItemCampaignTitleBinding;
 import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
@@ -24,6 +26,7 @@ import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.CampaignDetailsViewModel;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryCarouselModel_;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryModel_;
+import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryTitleModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBrandModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignShopModel_;
@@ -54,36 +57,67 @@ public class CampaignCategoryController extends EpoxyController {
     @Override
     protected void buildModels() {
 
-        new CampaignTitleModel_()
+        new ProductCategoryTitleModel_()
                 .id("title_category")
                 .title("Categories")
+                .showClear(viewModel.getSelectedCategorySlug() != null)
                 .onBind((model, view, position) -> {
-//                    ItemCampaignTitleBinding binding = (ItemCampaignTitleBinding) view.getDataBinding();
-//                    binding.title.setText(model.title());
+                    ItemCampaignProductCategoryTitleBinding binding = (ItemCampaignProductCategoryTitleBinding) view.getDataBinding();
+                    if (model.showClear())
+                        binding.clear.setVisibility(View.VISIBLE);
+                    else
+                        binding.clear.setVisibility(View.GONE);
                 })
-                .addTo(this);
+                .clickListener((model, parentView, clickedView, position) -> {
+                    setLoading(true);
+                    viewModel.setSelectedCategoryModel(null);
+                    viewModel.clear();
+                    viewModel.loadListFromApi();
+                })
+                .addIf(viewModel.getType().contains("product"), this);
 
         List<ProductCategoryModel_> categoryModels = new ArrayList<>();
         for (CampaignProductCategoryResponse item : categoryList) {
             categoryModels.add(new ProductCategoryModel_()
                     .id("category", item.getCategorySlug() + item.getShopSlug())
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        setLoading(true);
+                        viewModel.setSelectedCategoryModel(model.model());
+                        viewModel.clear();
+                        viewModel.loadListFromApi();
+                    })
+                    .onBind((model, view, position) -> {
+                        if (position >= categoryList.size() - 4)
+                            viewModel.loadProductCategories();
+                    })
                     .model(item));
         }
 
         categoryCarousel
                 .models(categoryModels)
                 .padding(Carousel.Padding.dp(10, 5, 10, 0, 10))
-                .addTo(this);
+                .addIf(viewModel.getType().contains("product"), this);
 
-        if (mainViewModel.getCampaignOnClick().getValue() != null)
-            new CampaignTitleModel_()
-                    .id("title_cc")
-                    .title(mainViewModel.getCampaignOnClick().getValue().getName())
-                    .onBind((model, view, position) -> {
-                        ItemCampaignTitleBinding binding = (ItemCampaignTitleBinding) view.getDataBinding();
-                        binding.title.setText(model.title());
-                    })
-                    .addIf(viewModel.getCampaign() != null && mainViewModel.getCampaignOnClick().getValue() != null, this);
+
+        String campaignTitle = null;
+        if (viewModel.getCampaign() != null && mainViewModel.getCampaignOnClick().getValue() != null)
+            campaignTitle = mainViewModel.getCampaignOnClick().getValue().getName();
+
+        String categoryTitle = viewModel.getSelectedCategoryTitle();
+
+        if (campaignTitle != null)
+            campaignTitle = categoryTitle + " in " + campaignTitle;
+        else
+            campaignTitle = categoryTitle;
+
+        new CampaignTitleModel_()
+                .id("title_cc")
+                .title(campaignTitle == null ? "Products" : campaignTitle)
+                .onBind((model, view, position) -> {
+                    ItemCampaignTitleBinding binding = (ItemCampaignTitleBinding) view.getDataBinding();
+                    binding.title.setText(model.title());
+                })
+                .addTo(this);
 
         for (CampaignParentModel item : list) {
             if (item instanceof CampaignProductResponse)

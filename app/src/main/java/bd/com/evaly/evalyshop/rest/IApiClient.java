@@ -177,7 +177,8 @@ public interface IApiClient {
                                                                                         @Query("limit") int limit,
                                                                                         @Query("search") String search,
                                                                                         @Query("category") String category,
-                                                                                        @Query("campaign") String campaign);
+                                                                                        @Query("campaign") String campaign,
+                                                                                        @Query("product_category") String productCategory);
 
     @GET(UrlUtils.BASE_CATALOG + "campaign")
     Call<CommonDataResponse<List<SubCampaignResponse>>> getCampaignCategoryCampaigns(@Query("page") int page,

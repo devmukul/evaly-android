@@ -21,9 +21,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.ShopModelItemCategoryBinding;
+import bd.com.evaly.evalyshop.databinding.ItemCampaignProductCategoryBinding;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
-import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.util.Utils;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -31,7 +30,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
-@EpoxyModelClass(layout = R.layout.shop_model_item_category)
+@EpoxyModelClass(layout = R.layout.item_campaign_product_category)
 public abstract class ProductCategoryModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
@@ -43,7 +42,7 @@ public abstract class ProductCategoryModel extends DataBindingEpoxyModel {
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
-        ShopModelItemCategoryBinding binding = (ShopModelItemCategoryBinding) holder.getDataBinding();
+        ItemCampaignProductCategoryBinding binding = (ItemCampaignProductCategoryBinding) holder.getDataBinding();
 
         Glide.with(binding.getRoot())
                 .load(model.getCategoryImage())

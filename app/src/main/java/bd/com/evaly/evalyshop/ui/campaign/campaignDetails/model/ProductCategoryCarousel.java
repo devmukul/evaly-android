@@ -17,7 +17,6 @@ public class ProductCategoryCarousel extends Carousel {
     public ProductCategoryCarousel(Context context) {
         super(context);
         setNestedScrollingEnabled(false);
-        setMinimumHeight((int) Utils.convertDpToPixel(175, getContext()));
     }
 
     @Nullable

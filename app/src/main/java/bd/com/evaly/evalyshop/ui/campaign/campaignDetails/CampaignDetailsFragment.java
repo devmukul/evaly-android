@@ -113,6 +113,8 @@ public class CampaignDetailsFragment extends Fragment {
             if (!type.contains("shop") && !type.contains("supplier"))
                 viewModel.setSelectTypeAfterLoading(requireArguments().getString("type"));
         }
+
+        viewModel.loadProductCategories();
     }
 
 

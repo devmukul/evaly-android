@@ -38,15 +38,30 @@ public class CampaignDetailsViewModel extends ViewModel {
     private String campaign = null;
     private String selectTypeAfterLoading = null;
     private SingleLiveEvent<CampaignProductResponse> buyNowClick = new SingleLiveEvent<>();
+    private CampaignProductCategoryResponse selectedCategoryModel;
+    protected List<CampaignProductCategoryResponse> productCategoriesList = new ArrayList<>();
     protected MutableLiveData<List<CampaignProductCategoryResponse>> productCategoriesLiveData = new MutableLiveData<>();
+    private int productCategoryPage = 1;
+    private boolean isProductCategoryLoading = false;
 
     public CampaignDetailsViewModel() {
-
         loadListFromApi();
     }
 
     public void setSelectTypeAfterLoading(String selectTypeAfterLoading) {
         this.selectTypeAfterLoading = selectTypeAfterLoading;
+    }
+
+    public String getSelectedCategorySlug() {
+        if (selectedCategoryModel == null)
+            return null;
+        return selectedCategoryModel.getCategorySlug();
+    }
+
+    public String getSelectedCategoryTitle() {
+        if (selectedCategoryModel == null)
+            return null;
+        return selectedCategoryModel.getCategoryName();
     }
 
     public SingleLiveEvent<CampaignProductResponse> getBuyNowClick() {
@@ -58,10 +73,16 @@ public class CampaignDetailsViewModel extends ViewModel {
     }
 
     public void loadProductCategories() {
-        CampaignApiHelper.getCampaignProductCategories(getCategorySlug(), campaign, 1, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String>() {
+        if (isProductCategoryLoading)
+            return;
+        isProductCategoryLoading = true;
+        CampaignApiHelper.getCampaignProductCategories(getCategorySlug(), campaign, productCategoryPage, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignProductCategoryResponse>> response, int statusCode) {
-                productCategoriesLiveData.setValue(response.getData());
+                productCategoriesList.addAll(response.getData());
+                productCategoriesLiveData.setValue(productCategoriesList);
+                productCategoryPage++;
+                isProductCategoryLoading = false;
             }
 
             @Override
@@ -154,8 +175,6 @@ public class CampaignDetailsViewModel extends ViewModel {
             loadBrandList();
         else if (type.equals("campaign"))
             loadCampaignList();
-
-        loadProductCategories();
     }
 
     public void loadCampaignList() {
@@ -182,7 +201,7 @@ public class CampaignDetailsViewModel extends ViewModel {
 
     public void loadProductList() {
 
-        CampaignApiHelper.getCampaignCategoryProducts(currentPage, 20, search, getCategorySlug(), campaign,
+        CampaignApiHelper.getCampaignCategoryProducts(currentPage, 20, search, getCategorySlug(), campaign, getSelectedCategorySlug(),
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
@@ -253,6 +272,10 @@ public class CampaignDetailsViewModel extends ViewModel {
         arrayList.clear();
         currentPage = 1;
         totalCount = 0;
+    }
+
+    public void setSelectedCategoryModel(CampaignProductCategoryResponse selectedCategoryModel) {
+        this.selectedCategoryModel = selectedCategoryModel;
     }
 
     private String getCategorySlug() {
