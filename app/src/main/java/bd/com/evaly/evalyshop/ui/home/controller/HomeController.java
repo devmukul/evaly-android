@@ -24,6 +24,7 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.database.table.RsEntity;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerSkeletonModel_;
+import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSmallProductModel_;
 import bd.com.evaly.evalyshop.ui.epoxy.EpoxyDividerModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
@@ -90,13 +91,16 @@ public class HomeController extends EpoxyController {
     CycloneBottomBarModel_ cycloneBottomBarModel;
 
     @AutoModel
+    HomeRsCarouselModel_ flashSaleCarousel;
+    @AutoModel
+    HomeExpressHeaderModel_ flashSaleHeaderModel_;
+
+    @AutoModel
     HomeRsCarouselModel_ categoryCarousel;
     @AutoModel
     HomeRsCarouselModel_ shopCarousel;
     @AutoModel
     HomeRsCarouselModel_ brandCarousel;
-    @AutoModel
-    HomeExpressHeaderModel_ flashSaleHeaderModel_;
     @AutoModel
     HomeExpressHeaderModel_ categoryHeaderModel_;
     @AutoModel
@@ -122,6 +126,8 @@ public class HomeController extends EpoxyController {
     private boolean loadingMore = true;
     private boolean isExpressLoading = true;
     private boolean isCampaignLoading = true;
+    private boolean isCycloneOngoing = false;
+    private String cycloneBanner = "https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/images/cyclone1.gif";
     private SliderController sliderController;
     private ClickListener clickListener;
 
@@ -366,12 +372,49 @@ public class HomeController extends EpoxyController {
                 .addTo(this);
     }
 
+
     private void initFlashSaleCarousel() {
+
+        //flash sale carousel
+        flashSaleHeaderModel_
+                .showMore(true)
+                .title("Flash Sale")
+                .transparentBackground(true)
+                .clickListener((model, parentView, clickedView, position) -> {
+                    for (CampaignCategoryResponse s : campaignCategoryList) {
+                        if (s.getSlug().equals(Constants.FLASH_SALE_SLUG)) {
+                            clickListener.onCampaignCategoryClick(s);
+                            return;
+                        }
+                    }
+                    clickListener.onFlashSaleClick(Constants.FLASH_SALE_SLUG);
+                })
+                .addIf(!isCycloneOngoing && flashSaleProducts.size() > 0, this);
+
+        List<DataBindingEpoxyModel> flashSaleModels = new ArrayList<>();
+
+        for (CampaignProductResponse item : flashSaleProducts) {
+            flashSaleModels.add(new CampaignSmallProductModel_()
+                    .id("flash_sale_item", item.getSlug())
+                    .model(item)
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        clickListener.onCampaignProductClick(model.model());
+                    }));
+        }
+
+        flashSaleCarousel
+                .models(flashSaleModels)
+                .padding(Carousel.Padding.dp(15, 12, 10, 10, 10))
+                .addIf(!isCycloneOngoing && flashSaleModels.size() > 0, this);
+
+        initCycloneCarousel();
+    }
+
+    private void initCycloneCarousel() {
 
         cycloneBannerModel
                 .image("https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/images/cyclone1.gif")
-                .addIf(flashSaleShops.size() > 0 || flashSaleProducts.size() > 0 || flashSaleBrands.size() > 0, this);
-
+                .addIf(isCycloneOngoing && (flashSaleShops.size() > 0 || flashSaleProducts.size() > 0 || flashSaleBrands.size() > 0), this);
 
         //flash sale carousel
         flashSaleProductTitle
@@ -386,7 +429,7 @@ public class HomeController extends EpoxyController {
                     }
                     clickListener.onFlashSaleClick(Constants.FLASH_SALE_SLUG);
                 })
-                .addIf(flashSaleProducts.size() > 0, this);
+                .addIf(isCycloneOngoing && flashSaleProducts.size() > 0, this);
 
         List<DataBindingEpoxyModel> flashSaleProductModels = new ArrayList<>();
 
@@ -402,7 +445,7 @@ public class HomeController extends EpoxyController {
         flashSaleProductsCarousel
                 .models(flashSaleProductModels)
                 .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
-                .addIf(flashSaleProductModels.size() > 0, this);
+                .addIf(isCycloneOngoing && flashSaleProductModels.size() > 0, this);
 
         // brands
 
@@ -418,7 +461,7 @@ public class HomeController extends EpoxyController {
                     }
                     clickListener.onFlashSaleClick(Constants.FLASH_SALE_SLUG);
                 })
-                .addIf(flashSaleBrands.size() > 0, this);
+                .addIf(isCycloneOngoing && flashSaleBrands.size() > 0, this);
 
         List<DataBindingEpoxyModel> flashSaleBrandsModels = new ArrayList<>();
 
@@ -434,7 +477,7 @@ public class HomeController extends EpoxyController {
         flashSaleBrandsCarousel
                 .models(flashSaleBrandsModels)
                 .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
-                .addIf(flashSaleBrandsModels.size() > 0, this);
+                .addIf(isCycloneOngoing && flashSaleBrandsModels.size() > 0, this);
 
         // shops
 
@@ -450,7 +493,7 @@ public class HomeController extends EpoxyController {
                     }
                     clickListener.onFlashSaleClick(Constants.FLASH_SALE_SLUG);
                 })
-                .addIf(flashSaleShops.size() > 0, this);
+                .addIf(isCycloneOngoing && flashSaleShops.size() > 0, this);
 
         List<DataBindingEpoxyModel> flashSaleShopModels = new ArrayList<>();
 
@@ -466,9 +509,20 @@ public class HomeController extends EpoxyController {
         flashSaleShopCarousel
                 .models(flashSaleShopModels)
                 .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
-                .addIf(flashSaleShopModels.size() > 0, this);
+                .addIf(isCycloneOngoing && flashSaleShopModels.size() > 0, this);
 
-        cycloneBottomBarModel.addIf(flashSaleProductModels.size() > 0 || flashSaleBrandsModels.size() > 0 || flashSaleShopModels.size() > 0, this);
+        cycloneBottomBarModel
+                .addIf(isCycloneOngoing && (flashSaleProductModels.size() > 0 || flashSaleBrandsModels.size() > 0 || flashSaleShopModels.size() > 0), this);
+    }
+
+    public void setCycloneBanner(String cycloneBanner) {
+        if (cycloneBanner != null && !cycloneBanner.equals(""))
+            this.cycloneBanner = cycloneBanner;
+    }
+
+
+    public void setCycloneOngoing(boolean cycloneOngoing) {
+        isCycloneOngoing = cycloneOngoing;
     }
 
     public void setFlashSaleBrands(List<CampaignBrandResponse> flashSaleBrands) {

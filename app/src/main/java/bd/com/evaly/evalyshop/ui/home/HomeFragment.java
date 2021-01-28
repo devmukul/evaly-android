@@ -17,6 +17,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+
 import java.util.Random;
 
 import javax.inject.Inject;
@@ -49,6 +51,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Inject
     RecommenderViewModel recommenderViewModel;
+
+    @Inject
+    FirebaseRemoteConfig firebaseRemoteConfig;
 
     private MainActivity activity;
     private boolean isLoading = true;
@@ -130,6 +135,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         homeController.setClickListener(this);
         homeController.setFragment(this);
         homeController.setHomeViewModel(viewModel);
+        homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
+        homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
 
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
