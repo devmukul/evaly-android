@@ -166,7 +166,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void requestModelBuild() {
         // if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
-        homeController.requestDelayedModelBuild(randInt(100, 200));
+        homeController.requestDelayedModelBuild(randInt(200, 300));
     }
 
     private void liveEventObservers() {
