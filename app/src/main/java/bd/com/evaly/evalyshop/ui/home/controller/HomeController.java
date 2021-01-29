@@ -414,6 +414,7 @@ public class HomeController extends EpoxyController {
 
         cycloneBannerModel
                 .image(cycloneBanner)
+                .clickListener((model, parentView, clickedView, position) -> clickListener.navigateToUrl("https://evaly.com.bd/campaign/products/" + Constants.FLASH_SALE_SLUG))
                 .addIf(isCycloneOngoing && (flashSaleShops.size() > 0 || flashSaleProducts.size() > 0 || flashSaleBrands.size() > 0), this);
 
         //flash sale carousel
@@ -421,13 +422,7 @@ public class HomeController extends EpoxyController {
                 .showMore(true)
                 .title("Products")
                 .clickListener((model, parentView, clickedView, position) -> {
-                    for (CampaignCategoryResponse s : campaignCategoryList) {
-                        if (s.getSlug().equals(Constants.FLASH_SALE_SLUG)) {
-                            clickListener.onCampaignCategoryClick(s);
-                            return;
-                        }
-                    }
-                    clickListener.onFlashSaleClick(Constants.FLASH_SALE_SLUG);
+                    clickListener.navigateToUrl("https://evaly.com.bd/campaign/products/" + Constants.FLASH_SALE_SLUG);
                 })
                 .addIf(isCycloneOngoing && flashSaleProducts.size() > 0, this);
 
@@ -453,13 +448,7 @@ public class HomeController extends EpoxyController {
                 .showMore(true)
                 .title("Brands")
                 .clickListener((model, parentView, clickedView, position) -> {
-                    for (CampaignCategoryResponse s : campaignCategoryList) {
-                        if (s.getSlug().equals(Constants.FLASH_SALE_SLUG)) {
-                            clickListener.onCampaignCategoryClick(s);
-                            return;
-                        }
-                    }
-                    clickListener.onFlashSaleClick(Constants.FLASH_SALE_SLUG);
+                    clickListener.navigateToUrl("https://evaly.com.bd/campaign/brands/" + Constants.FLASH_SALE_SLUG);
                 })
                 .addIf(isCycloneOngoing && flashSaleBrands.size() > 0, this);
 
@@ -470,7 +459,7 @@ public class HomeController extends EpoxyController {
                     .id("flash_sale_brand_item", item.getSlug())
                     .model(item)
                     .clickListener((model, parentView, clickedView, position) -> {
-                        // clickListener.onCampaignProductClick(model.model());
+                        clickListener.onCampaignBrandClick(model.model());
                     }));
         }
 
@@ -480,18 +469,11 @@ public class HomeController extends EpoxyController {
                 .addIf(isCycloneOngoing && flashSaleBrandsModels.size() > 0, this);
 
         // shops
-
         flashSaleShopTitle
                 .showMore(true)
                 .title("Shops")
                 .clickListener((model, parentView, clickedView, position) -> {
-                    for (CampaignCategoryResponse s : campaignCategoryList) {
-                        if (s.getSlug().equals(Constants.FLASH_SALE_SLUG)) {
-                            clickListener.onCampaignCategoryClick(s);
-                            return;
-                        }
-                    }
-                    clickListener.onFlashSaleClick(Constants.FLASH_SALE_SLUG);
+                    clickListener.navigateToUrl("https://evaly.com.bd/campaign/suppliers/" + Constants.FLASH_SALE_SLUG);
                 })
                 .addIf(isCycloneOngoing && flashSaleShops.size() > 0, this);
 
@@ -502,7 +484,7 @@ public class HomeController extends EpoxyController {
                     .id("flash_sale_shop_item", item.getSlug())
                     .model(item)
                     .clickListener((model, parentView, clickedView, position) -> {
-                        // clickListener.onCampaignProductClick(model.model());
+                        clickListener.onCampaignShopClick(model.model());
                     }));
         }
 
@@ -619,6 +601,12 @@ public class HomeController extends EpoxyController {
         void onShowMoreExpressClick();
 
         void onShowMoreCampaignClick();
+
+        void navigateToUrl(String url);
+
+        void onCampaignBrandClick(CampaignBrandResponse model);
+
+        void onCampaignShopClick(CampaignShopResponse model);
     }
 }
 

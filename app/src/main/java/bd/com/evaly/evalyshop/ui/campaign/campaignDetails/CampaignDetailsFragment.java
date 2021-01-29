@@ -356,6 +356,7 @@ public class CampaignDetailsFragment extends Fragment {
         }
         BindingUtils.setImage(binding.bannerImage, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460, false);
         binding.title.setText(model.getName());
+        viewModel.loadProductCategories();
     }
 
     private void setStatusBarColor() {

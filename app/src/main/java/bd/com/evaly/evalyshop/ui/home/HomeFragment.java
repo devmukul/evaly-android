@@ -29,8 +29,10 @@ import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
+import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
@@ -362,6 +364,40 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onShowMoreCampaignClick() {
 
         navController.navigate(R.id.campaignFragment);
+    }
+
+    @Override
+    public void navigateToUrl(String url) {
+        try {
+            navController.navigate(Uri.parse(url));
+        } catch (Exception e) {
+            ToastUtils.show("Show not found");
+        }
+    }
+
+    @Override
+    public void onCampaignBrandClick(CampaignBrandResponse model) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", 1);
+        bundle.putString("shop_name", model.getName());
+        bundle.putString("logo_image", model.getImage());
+        bundle.putString("shop_slug", model.getShopSlug());
+        bundle.putString("category", "root");
+        bundle.putString("brand_slug", model.getSlug());
+        bundle.putString("campaign_slug", model.getCampaignSlug());
+        navController.navigate(R.id.shopFragment, bundle);
+    }
+
+    @Override
+    public void onCampaignShopClick(CampaignShopResponse model) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", 2);
+        bundle.putString("shop_name", model.getName());
+        bundle.putString("logo_image", model.getImage());
+        bundle.putString("shop_slug", model.getSlug());
+        bundle.putString("category", "root");
+        bundle.putString("campaign_slug", model.getCampaignSlug());
+        navController.navigate(R.id.shopFragment, bundle);
     }
 
     @Override

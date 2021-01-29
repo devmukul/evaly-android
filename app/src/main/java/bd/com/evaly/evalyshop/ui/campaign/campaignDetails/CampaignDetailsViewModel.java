@@ -73,7 +73,7 @@ public class CampaignDetailsViewModel extends ViewModel {
     }
 
     public void loadProductCategories() {
-        if (isProductCategoryLoading)
+        if (isProductCategoryLoading || getCategorySlug() == null)
             return;
         isProductCategoryLoading = true;
         CampaignApiHelper.getCampaignProductCategories(getCategorySlug(), campaign, productCategoryPage, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String>() {
