@@ -16,7 +16,6 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemCampaignProductCategoryTitleBinding;
-import bd.com.evaly.evalyshop.databinding.ItemCampaignTitleBinding;
 import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
@@ -31,7 +30,6 @@ import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBrandModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignShopModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSubModel_;
-import bd.com.evaly.evalyshop.ui.campaign.model.CampaignTitleModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
@@ -60,21 +58,12 @@ public class CampaignCategoryController extends EpoxyController {
         new ProductCategoryTitleModel_()
                 .id("title_category")
                 .title("Categories")
-                .showClear(viewModel.getSelectedCategorySlug() != null)
-                .onBind((model, view, position) -> {
-                    ItemCampaignProductCategoryTitleBinding binding = (ItemCampaignProductCategoryTitleBinding) view.getDataBinding();
-                    if (model.showClear())
-                        binding.clear.setVisibility(View.VISIBLE);
-                    else
-                        binding.clear.setVisibility(View.GONE);
-                })
+                .showClear(true)
+                .title2("Show All")
                 .clickListener((model, parentView, clickedView, position) -> {
-                    setLoading(true);
-                    viewModel.setSelectedCategoryModel(null);
-                    viewModel.clear();
-                    viewModel.loadListFromApi();
+                    viewModel.openFilterModal.call();
                 })
-                .addIf(viewModel.getType().contains("product") && categoryList.size() > 0, this);
+                .addIf(viewModel.getType().contains("product"), this);
 
         List<ProductCategoryModel_> categoryModels = new ArrayList<>();
         for (CampaignProductCategoryResponse item : categoryList) {
@@ -95,12 +84,12 @@ public class CampaignCategoryController extends EpoxyController {
 
         categoryCarousel
                 .models(categoryModels)
-                .padding(Carousel.Padding.dp(10, 5, 10, 0, 10))
+                .padding(Carousel.Padding.dp(10, 0, 10, 5, 10))
                 .addIf(viewModel.getType().contains("product"), this);
 
         String campaignTitle = null;
-        if (viewModel.getCampaign() != null && mainViewModel.getCampaignOnClick().getValue() != null)
-            campaignTitle = mainViewModel.getCampaignOnClick().getValue().getName();
+        if (viewModel.getCampaign() != null && mainViewModel.selectedCampaignModel != null)
+            campaignTitle = mainViewModel.selectedCampaignModel.getName();
 
         String categoryTitle = viewModel.getSelectedCategoryTitle();
 
@@ -114,12 +103,24 @@ public class CampaignCategoryController extends EpoxyController {
                 campaignTitle = "Products";
         }
 
-        new CampaignTitleModel_()
+        new ProductCategoryTitleModel_()
                 .id("title_cc")
                 .title(campaignTitle)
+                .title2("Clear Filter")
+                .clickListener((model, parentView, clickedView, position) -> {
+                    setLoading(true);
+                    viewModel.setSelectedCategoryModel(null);
+                    viewModel.clear();
+                    viewModel.loadListFromApi();
+                })
+                .showClear(viewModel.getSelectedCategorySlug() != null)
                 .onBind((model, view, position) -> {
-                    ItemCampaignTitleBinding binding = (ItemCampaignTitleBinding) view.getDataBinding();
+                    ItemCampaignProductCategoryTitleBinding binding = (ItemCampaignProductCategoryTitleBinding) view.getDataBinding();
                     binding.title.setText(model.title());
+                    if (model.showClear())
+                        binding.clear.setVisibility(View.VISIBLE);
+                    else
+                        binding.clear.setVisibility(View.GONE);
                 })
                 .addIf(campaignTitle != null, this);
 

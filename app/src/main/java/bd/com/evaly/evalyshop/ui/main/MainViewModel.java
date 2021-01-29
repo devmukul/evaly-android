@@ -11,6 +11,7 @@ import java.util.HashMap;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import retrofit2.Response;
@@ -21,8 +22,10 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<Boolean> backOnClick = new MutableLiveData<>();
     private MutableLiveData<Boolean> updateNewsfeed = new MutableLiveData<>();
     public MutableLiveData<Boolean> registered = new MutableLiveData<>();
-    private SingleLiveEvent<SubCampaignResponse> campaignOnClick = new SingleLiveEvent<>();
-    private SingleLiveEvent<Void> refreshCurrentFragment = new SingleLiveEvent<>();
+    public SubCampaignResponse selectedCampaignModel;
+    public CampaignProductCategoryResponse selectedCampaignProductCategoryModel;
+    public SingleLiveEvent<Void> campaignFilterUpdated = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> refreshCurrentFragment = new SingleLiveEvent<>();
 
     public SingleLiveEvent<Void> getRefreshCurrentFragment() {
         return refreshCurrentFragment;
@@ -32,13 +35,6 @@ public class MainViewModel extends ViewModel {
         this.refreshCurrentFragment.call();
     }
 
-    public void setCampaignOnClick(SubCampaignResponse model) {
-        this.campaignOnClick.setValue(model);
-    }
-
-    public SingleLiveEvent<SubCampaignResponse> getCampaignOnClick() {
-        return campaignOnClick;
-    }
 
     public LiveData<Boolean> getDrawerOnClick() {
         return drawerOnClick;

@@ -51,8 +51,8 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
     }
 
 
-    class ShopHeaderHolder extends EpoxyHolder {
-        View itemView;
+    public class ShopHeaderHolder extends EpoxyHolder {
+        public View itemView;
 
         @Override
         protected void bindView(@NonNull View itemView) {

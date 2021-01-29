@@ -18,6 +18,10 @@ public class StaggeredSpacingItemDecoration extends RecyclerView.ItemDecoration 
         this.includeEdge = includeEdge;
     }
 
+    public void setSpanCount(int spanCount) {
+        this.spanCount = spanCount;
+    }
+
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
 

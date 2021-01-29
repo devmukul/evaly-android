@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -15,6 +18,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.EpoxyController;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +104,18 @@ public class ShopController extends EpoxyController {
                 .activity(activity)
                 .fragment(fragment)
                 .shopInfo(shopInfo)
+                .onBind((model, view, position) -> {
+                    if (shopInfo != null) {
+                        TextView name = view.itemView.findViewById(R.id.name);
+                        ImageView image = view.itemView.findViewById(R.id.logo);
+                        name.setText(shopInfo.getShopName());
+                        Glide.with(image)
+                                .load(shopInfo.getShopImage())
+                                .skipMemoryCache(true)
+                                .placeholder(ContextCompat.getDrawable(activity, R.drawable.ic_evaly_placeholder))
+                                .into(image);
+                    }
+                })
                 .viewModel(viewModel)
                 .addTo(this);
 

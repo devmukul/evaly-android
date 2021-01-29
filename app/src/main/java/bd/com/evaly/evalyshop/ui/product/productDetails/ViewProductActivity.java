@@ -626,7 +626,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
     private void inflateShopDetails(AvailableShopModel shop) {
 
-        if (cashbackText != null) {
+        if (cashbackText != null && !cashbackText.equals("")) {
             binding.tvCashback.setVisibility(View.VISIBLE);
             binding.tvCashback.setText(cashbackText.replaceAll(".00", ""));
         } else

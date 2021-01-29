@@ -11,6 +11,8 @@
         <item name="android:buttonStyle">@style/DefaultButtonStyle</item>
         <item name="tabStyle">@style/AppTheme.TabLayout</item>
         <item name="actionBarTheme">@style/MyActionBar</item>
+        <item name="materialAlertDialogTheme">@style/AlertDialogTheme</item>
+        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
     </style>
 
 </resources>

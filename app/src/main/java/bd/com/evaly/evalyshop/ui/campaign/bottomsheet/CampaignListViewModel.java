@@ -8,28 +8,64 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.BaseModel;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class CampaignListViewModel extends ViewModel {
 
-    private MutableLiveData<List<SubCampaignResponse>> liveData = new MutableLiveData<>();
+    private MutableLiveData<List<BaseModel>> liveData = new MutableLiveData<>();
     private SingleLiveEvent<Boolean> hideLoadingBar = new SingleLiveEvent<>();
-    private List<SubCampaignResponse> arrayList = new ArrayList<>();
+    private List<BaseModel> arrayList = new ArrayList<>();
     private int currentPage = 1;
     private int totalCount = 0;
     private String search = null;
     private CampaignCategoryResponse category;
+    private String type = "categories";
 
     public CampaignListViewModel() {
         if (category != null)
             loadFromApi();
     }
 
-    public LiveData<List<SubCampaignResponse>> getLiveData() {
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    private String getCategorySlug() {
+        if (category == null)
+            return null;
+        return category.getSlug();
+    }
+
+    public void loadProductCategories() {
+        if (getCategorySlug() == null)
+            return;
+        CampaignApiHelper.getCampaignProductCategories(getCategorySlug(), null, search, currentPage, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<CampaignProductCategoryResponse>> response, int statusCode) {
+                arrayList.addAll(response.getData());
+                liveData.setValue(arrayList);
+                currentPage++;
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
+    public LiveData<List<BaseModel>> getLiveData() {
         return liveData;
     }
 
@@ -45,12 +81,23 @@ public class CampaignListViewModel extends ViewModel {
         return category;
     }
 
+    public String getType() {
+        return type;
+    }
+
     public void setCategory(CampaignCategoryResponse category) {
         this.category = category;
     }
 
     public void loadFromApi() {
-        CampaignApiHelper.getCampaignCategoryCampaigns(currentPage, 20, search, category.getSlug(), new ResponseListenerAuth<CommonDataResponse<List<SubCampaignResponse>>, String>() {
+        if (type.contains("categories"))
+            loadProductCategories();
+        else if (type.contains("campaigns"))
+            loadCampaignList();
+    }
+
+    public void loadCampaignList() {
+        CampaignApiHelper.getCampaignCategoryCampaigns(currentPage, 20, search, getCategorySlug(), new ResponseListenerAuth<CommonDataResponse<List<SubCampaignResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<SubCampaignResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());

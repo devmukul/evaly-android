@@ -8,43 +8,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.models.BaseModel;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
+import bd.com.evaly.evalyshop.ui.campaign.bottomsheet.model.ProductCategoryListModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSubModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 
 public class CampaignListController extends EpoxyController {
 
-    private List<SubCampaignResponse> list = new ArrayList<>();
-    private NavController navController;
+    private List<BaseModel> list = new ArrayList<>();
     private boolean isLoading = true;
     private ClickListener clickListener;
 
 
     public interface ClickListener {
         void onClick(SubCampaignResponse model);
+        void onProductCategoryClick(CampaignProductCategoryResponse model);
     }
 
     public void setClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
-    public void setNavController(NavController navController) {
-        this.navController = navController;
-    }
-
     @Override
     protected void buildModels() {
-        for (SubCampaignResponse item : list)
-            new CampaignSubModel_()
-                    .id(item.getSlug())
-                    .model(item)
-                    .clickListener((model, parentView, clickedView, position) -> clickListener.onClick(model.model()))
-                    .addTo(this);
+        for (BaseModel item : list) {
+            if (item instanceof SubCampaignResponse) {
+                new CampaignSubModel_()
+                        .id(((SubCampaignResponse) item).getSlug())
+                        .model((SubCampaignResponse) item)
+                        .clickListener((model, parentView, clickedView, position) -> {
+                            clickListener.onClick(model.model());
+                        })
+                        .addTo(this);
+
+            } else if (item instanceof CampaignProductCategoryResponse) {
+                new ProductCategoryListModel_()
+                        .id("category", ((CampaignProductCategoryResponse) item).getCategorySlug() + ((CampaignProductCategoryResponse) item).getShopSlug())
+                        .clickListener((model, parentView, clickedView, position) -> {
+                            clickListener.onProductCategoryClick(model.model());
+                        })
+                        .model((CampaignProductCategoryResponse) item)
+                        .addTo(this);
+            }
+        }
 
         new NoItemModel_()
                 .id("no_product_model")
-                .text("No campaign found")
+                .text("Nothing found")
                 .image(R.drawable.ic_discount_tag)
                 .width(80)
                 .addIf(list.size() == 0 && !isLoading, this);
@@ -54,7 +67,7 @@ public class CampaignListController extends EpoxyController {
                 .addIf(isLoading, this);
     }
 
-    public void setList(List<SubCampaignResponse> list) {
+    public void setList(List<BaseModel> list) {
         this.list = list;
     }
 

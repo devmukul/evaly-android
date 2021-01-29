@@ -18,8 +18,8 @@ import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResp
 
 public class CampaignApiHelper extends BaseApiHelper {
 
-    public static void getCampaignProductCategories(String category, String campaignSlug, int page, ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String> listener) {
-        getiApiClient().getCampaignProductCategories(category, campaignSlug, page, 30).enqueue(getResponseCallBackDefault(listener));
+    public static void getCampaignProductCategories(String category, String campaignSlug, String search, int page, ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String> listener) {
+        getiApiClient().getCampaignProductCategories(category, campaignSlug, search, page, 30).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void getSubCampaignDetails(String campaignSlug, ResponseListenerAuth<CommonDataResponse<SubCampaignDetailsResponse>, String> listener) {

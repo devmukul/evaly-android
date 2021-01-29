@@ -27,6 +27,7 @@ public class CampaignDetailsViewModel extends ViewModel {
     protected SingleLiveEvent<Boolean> hideProgressDialog = new SingleLiveEvent<>();
     protected MutableLiveData<SubCampaignResponse> subCampaignLiveData = new MutableLiveData<>();
     protected SingleLiveEvent<String> switchTab = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> openFilterModal = new SingleLiveEvent<>();
     private MutableLiveData<CampaignCategoryResponse> campaignCategoryLiveData = new MutableLiveData<>();
     private MutableLiveData<List<CampaignParentModel>> liveList = new MutableLiveData<>();
     private SingleLiveEvent<Boolean> hideLoadingBar = new SingleLiveEvent<>();
@@ -50,6 +51,10 @@ public class CampaignDetailsViewModel extends ViewModel {
 
     public void setSelectTypeAfterLoading(String selectTypeAfterLoading) {
         this.selectTypeAfterLoading = selectTypeAfterLoading;
+    }
+
+    public CampaignProductCategoryResponse getSelectedCategoryModel() {
+        return selectedCategoryModel;
     }
 
     public String getSelectedCategorySlug() {
@@ -76,7 +81,7 @@ public class CampaignDetailsViewModel extends ViewModel {
         if (isProductCategoryLoading || getCategorySlug() == null)
             return;
         isProductCategoryLoading = true;
-        CampaignApiHelper.getCampaignProductCategories(getCategorySlug(), campaign, productCategoryPage, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String>() {
+        CampaignApiHelper.getCampaignProductCategories(getCategorySlug(), campaign, null, productCategoryPage, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignProductCategoryResponse>> response, int statusCode) {
                 productCategoriesList.addAll(response.getData());
@@ -272,6 +277,10 @@ public class CampaignDetailsViewModel extends ViewModel {
         arrayList.clear();
         currentPage = 1;
         totalCount = 0;
+    }
+
+    public boolean isProductCategoryLoading() {
+        return isProductCategoryLoading;
     }
 
     public void setSelectedCategoryModel(CampaignProductCategoryResponse selectedCategoryModel) {

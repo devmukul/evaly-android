@@ -1,4 +1,6 @@
 package bd.com.evaly.evalyshop.models.campaign;
 
-public class CampaignParentModel {
+import bd.com.evaly.evalyshop.models.BaseModel;
+
+public class CampaignParentModel extends BaseModel {
 }

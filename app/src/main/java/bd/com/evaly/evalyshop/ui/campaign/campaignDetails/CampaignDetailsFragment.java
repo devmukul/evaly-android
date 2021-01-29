@@ -82,7 +82,8 @@ public class CampaignDetailsFragment extends Fragment {
 
         if (getArguments() != null && getArguments().containsKey("sub_model") && getArguments().getSerializable("sub_model") != null) {
             SubCampaignResponse subCampaignResponse = (SubCampaignResponse) getArguments().getSerializable("sub_model");
-            mainViewModel.setCampaignOnClick(subCampaignResponse);
+            mainViewModel.selectedCampaignModel = subCampaignResponse;
+            mainViewModel.campaignFilterUpdated.call();
             viewModel.setCampaign(subCampaignResponse.getSlug());
         }
 
@@ -269,12 +270,16 @@ public class CampaignDetailsFragment extends Fragment {
         if (viewModel.getCampaignCategoryLiveData() != null && viewModel.getCampaignCategoryLiveData().getValue() != null) {
             Bundle bundle = new Bundle();
             bundle.putSerializable("category", Objects.requireNonNull(viewModel.getCampaignCategoryLiveData().getValue()));
-            bundle.putBoolean("show_clear", viewModel.getCampaign() != null);
+            if (viewModel.getSelectedCategoryModel() != null)
+                bundle.putSerializable("product_category", Objects.requireNonNull(viewModel.getSelectedCategoryModel()));
+            bundle.putBoolean("show_clear", viewModel.getCampaign() != null || viewModel.getSelectedCategorySlug() != null);
             navController.navigate(R.id.campaignListBottomSheet, bundle);
         }
     }
 
     private void liveEventObservers() {
+
+        viewModel.openFilterModal.observe(getViewLifecycleOwner(), aVoid -> openFilterModal());
 
         viewModel.productCategoriesLiveData.observe(getViewLifecycleOwner(), campaignProductCategoryResponses -> {
             controller.setCategoryList(campaignProductCategoryResponses);
@@ -290,9 +295,10 @@ public class CampaignDetailsFragment extends Fragment {
         });
 
         viewModel.subCampaignLiveData.observe(getViewLifecycleOwner(), subCampaignResponse -> {
-            if (subCampaignResponse != null)
-                mainViewModel.setCampaignOnClick(subCampaignResponse);
-            else {
+            if (subCampaignResponse != null) {
+                mainViewModel.selectedCampaignModel = subCampaignResponse;
+                mainViewModel.campaignFilterUpdated.call();
+            } else {
                 ToastUtils.show("Campaign is not running now!");
                 if (getActivity() != null)
                     getActivity().onBackPressed();
@@ -327,19 +333,21 @@ public class CampaignDetailsFragment extends Fragment {
             }
         });
 
-        mainViewModel.getCampaignOnClick().observe(getViewLifecycleOwner(), subCampaignResponse -> {
+        mainViewModel.campaignFilterUpdated.observe(getViewLifecycleOwner(), aVoid -> {
             viewModel.clear();
-            if (subCampaignResponse == null) {
+            if (mainViewModel.selectedCampaignModel == null && mainViewModel.selectedCampaignProductCategoryModel == null) {
                 binding.filterIndicator.setVisibility(View.GONE);
                 viewModel.setCampaign(null);
+                viewModel.setSelectedCategoryModel(null);
             } else {
-                viewModel.setCampaign(subCampaignResponse.getSlug());
+                if (mainViewModel.selectedCampaignModel != null)
+                    viewModel.setCampaign(mainViewModel.selectedCampaignModel.getSlug());
+                viewModel.setSelectedCategoryModel(mainViewModel.selectedCampaignProductCategoryModel);
                 binding.filterIndicator.setVisibility(View.VISIBLE);
             }
             viewModel.loadListFromApi();
             binding.recyclerView.scrollToPosition(0);
         });
-
     }
 
     private void loadCampaignDetails(CampaignCategoryResponse model) {

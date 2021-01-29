@@ -21,6 +21,9 @@ public abstract class ProductCategoryTitleModel extends DataBindingEpoxyModel {
     @EpoxyAttribute
     String title;
 
+    @EpoxyAttribute
+    String title2;
+
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
 
@@ -34,6 +37,7 @@ public abstract class ProductCategoryTitleModel extends DataBindingEpoxyModel {
         StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         params.setFullSpan(true);
         binding.title.setText(title);
+        binding.clear.setText(title2);
         binding.clear.setOnClickListener(clickListener);
 
         if (showClear)

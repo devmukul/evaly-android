@@ -31,7 +31,7 @@ public class ViewProductViewModel extends ViewModel {
     protected MutableLiveData<JsonObject> createPostResponse = new MutableLiveData<>();
     private boolean isShop = false;
 
-    public void getProductDetails(String slug){
+    public void getProductDetails(String slug) {
 
         ProductApiHelper.getProductDetails(slug, new ResponseListenerAuth<ProductDetailsModel, String>() {
             @Override
@@ -160,7 +160,7 @@ public class ViewProductViewModel extends ViewModel {
     }
 
 
-    public void createPost(CreatePostModel createPostModel){
+    public void createPost(CreatePostModel createPostModel) {
         NewsfeedApiHelper.post(CredentialManager.getToken(), createPostModel, null, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
