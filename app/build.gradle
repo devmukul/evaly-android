@@ -136,14 +136,14 @@ dependencies {
 
     // Test helpers
     implementation "com.github.smart-fun:XmlToJson:$rootProject.xml_to_json_version"
-
-    implementation "androidx.navigation:navigation-fragment:2.3.2"
-    implementation "androidx.navigation:navigation-ui:2.3.2"
+    implementation 'androidx.fragment:fragment-ktx:1.2.5'
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.2"
+    implementation "androidx.navigation:navigation-ui-ktx:2.3.2"
     implementation "net.opacapp:multiline-collapsingtoolbar:$rootProject.collapsing_toolbar_version"
     implementation "androidx.viewpager2:viewpager2:$rootProject.viewpager2_version"
     implementation "com.google.android.material:material:1.2.1"
     implementation "androidx.transition:transition:$rootProject.transition_version"
-    implementation "androidx.paging:paging-runtime:$rootProject.paging_version"
+    implementation "androidx.paging:paging-runtime-ktx:$rootProject.paging_version"
     implementation 'jp.wasabeef:glide-transformations:4.2.0'
     implementation project(path: ':evalyPaymentLibrary')
     implementation project(path: ':richlinkpreview')
