@@ -74,7 +74,7 @@ public class CampaignCategoryController extends EpoxyController {
                     viewModel.clear();
                     viewModel.loadListFromApi();
                 })
-                .addIf(viewModel.getType().contains("product"), this);
+                .addIf(viewModel.getType().contains("product") && categoryList.size() > 0, this);
 
         List<ProductCategoryModel_> categoryModels = new ArrayList<>();
         for (CampaignProductCategoryResponse item : categoryList) {
@@ -98,26 +98,30 @@ public class CampaignCategoryController extends EpoxyController {
                 .padding(Carousel.Padding.dp(10, 5, 10, 0, 10))
                 .addIf(viewModel.getType().contains("product"), this);
 
-
         String campaignTitle = null;
         if (viewModel.getCampaign() != null && mainViewModel.getCampaignOnClick().getValue() != null)
             campaignTitle = mainViewModel.getCampaignOnClick().getValue().getName();
 
         String categoryTitle = viewModel.getSelectedCategoryTitle();
 
-        if (campaignTitle != null)
-            campaignTitle = categoryTitle + " in " + campaignTitle;
-        else
-            campaignTitle = categoryTitle;
+        if (viewModel.getType().contains("product")) {
+            if (campaignTitle != null && categoryTitle != null)
+                campaignTitle = categoryTitle + " in " + campaignTitle;
+            else if (categoryTitle != null)
+                campaignTitle = categoryTitle;
+
+            if (campaignTitle == null)
+                campaignTitle = "Products";
+        }
 
         new CampaignTitleModel_()
                 .id("title_cc")
-                .title(campaignTitle == null ? "Products" : campaignTitle)
+                .title(campaignTitle)
                 .onBind((model, view, position) -> {
                     ItemCampaignTitleBinding binding = (ItemCampaignTitleBinding) view.getDataBinding();
                     binding.title.setText(model.title());
                 })
-                .addTo(this);
+                .addIf(campaignTitle != null, this);
 
         for (CampaignParentModel item : list) {
             if (item instanceof CampaignProductResponse)

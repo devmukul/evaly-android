@@ -413,7 +413,7 @@ public class HomeController extends EpoxyController {
     private void initCycloneCarousel() {
 
         cycloneBannerModel
-                .image("https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/images/cyclone1.gif")
+                .image(cycloneBanner)
                 .addIf(isCycloneOngoing && (flashSaleShops.size() > 0 || flashSaleProducts.size() > 0 || flashSaleBrands.size() > 0), this);
 
         //flash sale carousel

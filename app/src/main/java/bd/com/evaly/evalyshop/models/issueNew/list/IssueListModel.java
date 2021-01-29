@@ -42,10 +42,7 @@ public class IssueListModel implements Serializable {
     private int id;
 
     @SerializedName("category")
-    private String category;
-
-    @SerializedName("category_details")
-    private Category categoryDetails;
+    private Category category;
 
     @SerializedName("invoice_number")
     private String invoiceNumber;
@@ -59,146 +56,136 @@ public class IssueListModel implements Serializable {
     @SerializedName("assigned_to")
     private AssignedTo assignedTo;
 
-    public Shop getShop() {
-        return shop;
-    }
-
-    public void setShop(Shop shop) {
+    public void setShop(Shop shop){
         this.shop = shop;
     }
 
-    public List<String> getAttachments() {
-        if (attachments == null)
-            return new ArrayList<>();
-        return attachments;
+    public Shop getShop(){
+        return shop;
     }
 
-    public void setAttachments(List<String> attachments) {
+    public void setAttachments(List<String> attachments){
         this.attachments = attachments;
     }
 
-    public String getChannel() {
-        return channel;
+    public List<String> getAttachments(){
+        return attachments;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(String channel){
         this.channel = channel;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public String getChannel(){
+        return channel;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(String createdAt){
         this.createdAt = createdAt;
     }
 
-    public String getPriority() {
-        return priority;
+    public String getCreatedAt(){
+        return createdAt;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(String priority){
         this.priority = priority;
     }
 
-    public CreatedBy getCreatedBy() {
-        return createdBy;
+    public String getPriority(){
+        return priority;
     }
 
-    public void setCreatedBy(CreatedBy createdBy) {
+    public void setCreatedBy(CreatedBy createdBy){
         this.createdBy = createdBy;
     }
 
-    public String getUpdatedAt() {
-        return updatedAt;
+    public CreatedBy getCreatedBy(){
+        return createdBy;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(String updatedAt){
         this.updatedAt = updatedAt;
     }
 
-    public String getAdditionalInfo() {
-        return additionalInfo;
+    public String getUpdatedAt(){
+        return updatedAt;
     }
 
-    public void setAdditionalInfo(String additionalInfo) {
+    public void setAdditionalInfo(String additionalInfo){
         this.additionalInfo = additionalInfo;
     }
 
-    public String getContext() {
-        return context;
+    public String getAdditionalInfo(){
+        return additionalInfo;
     }
 
-    public void setContext(String context) {
+    public void setContext(String context){
         this.context = context;
     }
 
-    public UpdatedBy getUpdatedBy() {
-        return updatedBy;
+    public String getContext(){
+        return context;
     }
 
-    public void setUpdatedBy(UpdatedBy updatedBy) {
+    public void setUpdatedBy(UpdatedBy updatedBy){
         this.updatedBy = updatedBy;
     }
 
-    public int getId() {
-        return id;
+    public UpdatedBy getUpdatedBy(){
+        return updatedBy;
     }
 
-    public void setId(int id) {
+    public void setId(int id){
         this.id = id;
     }
 
-    public String getCategory() {
-        return category;
+    public int getId(){
+        return id;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category){
         this.category = category;
     }
 
-    public Category getCategoryDetails() {
-        return categoryDetails;
+    public Category getCategory(){
+        return category;
     }
 
-    public void setCategoryDetails(Category categoryDetails) {
-        this.categoryDetails = categoryDetails;
-    }
-
-    public String getInvoiceNumber() {
-        return invoiceNumber;
-    }
-
-    public void setInvoiceNumber(String invoiceNumber) {
+    public void setInvoiceNumber(String invoiceNumber){
         this.invoiceNumber = invoiceNumber;
     }
 
-    public String getStatus() {
-        return status;
+    public String getInvoiceNumber(){
+        return invoiceNumber;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(String status){
         this.status = status;
     }
 
-    public String getCustomer() {
-        return customer;
+    public String getStatus(){
+        return status;
     }
 
-    public void setCustomer(String customer) {
+    public void setCustomer(String customer){
         this.customer = customer;
     }
 
-    public AssignedTo getAssignedTo() {
-        return assignedTo;
+    public String getCustomer(){
+        return customer;
     }
 
-    public void setAssignedTo(AssignedTo assignedTo) {
+    public void setAssignedTo(AssignedTo assignedTo){
         this.assignedTo = assignedTo;
     }
 
+    public AssignedTo getAssignedTo(){
+        return assignedTo;
+    }
+
     @Override
-    public String toString() {
+    public String toString(){
         return
                 "Response{" +
                         "shop = '" + shop + '\'' +

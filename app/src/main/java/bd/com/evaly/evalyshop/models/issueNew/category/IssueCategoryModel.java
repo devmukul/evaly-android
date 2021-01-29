@@ -33,39 +33,39 @@ public class IssueCategoryModel implements Serializable {
     @SerializedName("slug")
     private String slug;
 
-    public boolean isIsActive() {
+    public boolean isIsActive(){
         return isActive;
     }
 
-    public Object getUpdatedAt() {
+    public Object getUpdatedAt(){
         return updatedAt;
     }
 
-    public String getName() {
+    public String getName(){
         return name;
     }
 
-    public Object getUpdatedBy() {
+    public Object getUpdatedBy(){
         return updatedBy;
     }
 
-    public String getCreatedAt() {
+    public String getCreatedAt(){
         return createdAt;
     }
 
-    public int getId() {
+    public int getId(){
         return id;
     }
 
-    public Object getDeletedAt() {
+    public Object getDeletedAt(){
         return deletedAt;
     }
 
-    public CreatedBy getCreatedBy() {
+    public CreatedBy getCreatedBy(){
         return createdBy;
     }
 
-    public String getSlug() {
+    public String getSlug(){
         return slug;
     }
 }

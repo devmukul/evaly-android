@@ -185,7 +185,8 @@ public class MainActivity extends BaseActivity {
         });
 
         BadgeDrawable wishListBadge = binding.bottomNavigationView.getOrCreateBadge(R.id.wishListFragment);
-
+        if (wishListBadge != null)
+            wishListBadge.setVisible(false);
         wishListDao.getLiveCount().observe(this, integer -> {
             if (wishListBadge != null) {
                 if (integer == 0) {
@@ -199,6 +200,8 @@ public class MainActivity extends BaseActivity {
         });
 
         BadgeDrawable cartBadge = binding.bottomNavigationView.getOrCreateBadge(R.id.cartFragment);
+        if (cartBadge != null)
+            cartBadge.setVisible(false);
 
         cartDao.getLiveCount().observe(this, integer -> {
             if (cartBadge != null) {

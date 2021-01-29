@@ -40,7 +40,6 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
     BottomSheetDialog bottomSheetDialog;
     private List<IssueListModel> list;
     private ViewDialog dialog;
-    private int page = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,33 +66,36 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
 
     }
 
-    public void refreshPage() {
+    public void refreshPage(){
         list.clear();
         getIssuesList();
     }
 
     private void getIssuesList() {
-        IssueApiHelper.getIssueList(invoice, page, new ResponseListenerAuth<CommonDataResponse<List<IssueListModel>>, String>() {
+        IssueApiHelper.getIssueList(invoice, new ResponseListenerAuth<CommonDataResponse<List<IssueListModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<IssueListModel>> response, int statusCode) {
                 dialog.hideDialog();
                 if (response != null) {
+
                     list.addAll(response.getData());
                     adapter.notifyDataSetChanged();
+
                     if (list.size() == 0) {
                         noIssue.setVisibility(View.VISIBLE);
                     } else {
                         noIssue.setVisibility(View.GONE);
                     }
                 } else {
+
                     noIssue.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-                dialog.hideDialog();
                 ToastUtils.show(errorBody);
+                dialog.hideDialog();
             }
 
             @Override

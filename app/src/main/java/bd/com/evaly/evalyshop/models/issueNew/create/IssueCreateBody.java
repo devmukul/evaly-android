@@ -34,102 +34,102 @@ public class IssueCreateBody implements Serializable {
     @SerializedName("category")
     private int category;
 
-    @SerializedName("invoice_no")
+    @SerializedName("invoice_number")
     private String invoiceNumber;
 
     @SerializedName("customer")
     private String customer;
 
-    public String getSeller() {
-        return seller;
-    }
-
-    public void setSeller(String seller) {
+    public void setSeller(String seller){
         this.seller = seller;
     }
 
-    public String getShop() {
-        return shop;
+    public String getSeller(){
+        return seller;
     }
 
-    public void setShop(String shop) {
+    public void setShop(String shop){
         this.shop = shop;
     }
 
-    public List<String> getAttachments() {
-        return attachments;
+    public String getShop(){
+        return shop;
     }
 
-    public void setAttachments(List<String> attachments) {
+    public void setAttachments(List<String> attachments){
         this.attachments = attachments;
     }
 
-    public String getAdditionalInfo() {
-        return additionalInfo;
+    public List<String> getAttachments(){
+        return attachments;
     }
 
-    public void setAdditionalInfo(String additionalInfo) {
+    public void setAdditionalInfo(String additionalInfo){
         this.additionalInfo = additionalInfo;
     }
 
-    public Meta getMeta() {
-        return meta;
+    public String getAdditionalInfo(){
+        return additionalInfo;
     }
 
-    public void setMeta(Meta meta) {
+    public void setMeta(Meta meta){
         this.meta = meta;
     }
 
-    public String getContext() {
-        return context;
+    public Meta getMeta(){
+        return meta;
     }
 
-    public void setContext(String context) {
+    public void setContext(String context){
         this.context = context;
     }
 
-    public String getChannel() {
-        return channel;
+    public String getContext(){
+        return context;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(String channel){
         this.channel = channel;
     }
 
-    public String getPriority() {
-        return priority;
+    public String getChannel(){
+        return channel;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(String priority){
         this.priority = priority;
     }
 
-    public int getCategory() {
-        return category;
+    public String getPriority(){
+        return priority;
     }
 
-    public void setCategory(int category) {
+    public void setCategory(int category){
         this.category = category;
     }
 
-    public String getInvoiceNumber() {
-        return invoiceNumber;
+    public int getCategory(){
+        return category;
     }
 
-    public void setInvoiceNumber(String invoiceNumber) {
+    public void setInvoiceNumber(String invoiceNumber){
         this.invoiceNumber = invoiceNumber;
     }
 
-    public String getCustomer() {
-        return customer;
+    public String getInvoiceNumber(){
+        return invoiceNumber;
     }
 
-    public void setCustomer(String customer) {
+    public void setCustomer(String customer){
         this.customer = customer;
     }
 
+    public String getCustomer(){
+        return customer;
+    }
+
     @Override
-    public String toString() {
+    public String toString(){
         return
                 "IssueCreateBody{" +
                         "seller = '" + seller + '\'' +

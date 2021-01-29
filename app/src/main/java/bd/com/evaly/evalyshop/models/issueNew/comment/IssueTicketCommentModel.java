@@ -6,11 +6,11 @@ import java.io.Serializable;
 
 public class IssueTicketCommentModel implements Serializable {
 
-    @SerializedName("created_by")
+    @SerializedName("commented_by")
     private CommentedBy commentedBy;
 
     @SerializedName("ticket")
-    private int ticket;
+    private Ticket ticket;
 
     @SerializedName("created_at")
     private String createdAt;
@@ -21,48 +21,48 @@ public class IssueTicketCommentModel implements Serializable {
     @SerializedName("id")
     private int id;
 
-    public CommentedBy getCommentedBy() {
-        return commentedBy;
-    }
-
-    public void setCommentedBy(CommentedBy commentedBy) {
+    public void setCommentedBy(CommentedBy commentedBy){
         this.commentedBy = commentedBy;
     }
 
-    public int getTicket() {
-        return ticket;
+    public CommentedBy getCommentedBy(){
+        return commentedBy;
     }
 
-    public void setTicket(int ticket) {
+    public void setTicket(Ticket ticket){
         this.ticket = ticket;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public Ticket getTicket(){
+        return ticket;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(String createdAt){
         this.createdAt = createdAt;
     }
 
-    public String getComment() {
-        return comment;
+    public String getCreatedAt(){
+        return createdAt;
     }
 
-    public void setComment(String comment) {
+    public void setComment(String comment){
         this.comment = comment;
     }
 
-    public int getId() {
-        return id;
+    public String getComment(){
+        return comment;
     }
 
-    public void setId(int id) {
+    public void setId(int id){
         this.id = id;
     }
 
+    public int getId(){
+        return id;
+    }
+
     @Override
-    public String toString() {
+    public String toString(){
         return
                 "IssueTicketCommentModel{" +
                         "commented_by = '" + commentedBy + '\'' +

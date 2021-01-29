@@ -214,34 +214,31 @@ public interface IApiClient {
     Call<CommonDataResponse<String>> getUnreadedMessageCount(@Header("Authorization") String token,
                                                              @Path("username") String username);
 
-    // issue ticket
-    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/categories/customer")
+    @GET(UrlUtils.DOMAIN + "issue/api/v1/users/categories")
     Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Header("Authorization") String token,
-                                                                              @Query("order_status") String orderStatus,
                                                                               @Query("limit") int limit);
 
-    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/evaly")
+    @GET(UrlUtils.DOMAIN + "issue/api/v1/common/tickets")
     Call<CommonDataResponse<List<IssueListModel>>> getIssueTicketList(@Header("Authorization") String token,
-                                                                      @Query("invoice_no") String invoice,
-                                                                      @Query("offset") int page);
+                                                                      @Query("invoice_number") String invoice);
 
-    @PATCH(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/{tickerId}")
+
+    @PUT(UrlUtils.DOMAIN + "issue/api/v1/users/tickets/{id}/change-status")
     Call<CommonDataResponse<IssueListModel>> resolveIssueTicketStatus(@Header("Authorization") String token,
-                                                                      @Body HashMap<String, String> body,
-                                                                      @Path("tickerId") int id);
+                                                                      @Path("id") int id);
 
-    @POST(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/evaly")
+    @POST(UrlUtils.DOMAIN + "issue/api/v1/common/tickets")
     Call<CommonDataResponse<IssueListModel>> createIssueTicket(@Header("Authorization") String token,
                                                                @Body IssueCreateBody body);
 
-    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/comments/{ticket_id}")
+    @GET(UrlUtils.DOMAIN + "issue/api/v1/common/comments")
     Call<CommonDataResponse<List<IssueTicketCommentModel>>> getIssueTicketComment(@Header("Authorization") String token,
-                                                                                  @Path("ticket_id") int ticketId);
+                                                                                  @Query("ticket_id") int ticketId);
 
-    @POST(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/comments/{ticket_id}")
+    @POST(UrlUtils.DOMAIN + "issue/api/v1/common/comments")
     Call<CommonDataResponse<IssueTicketCommentModel>> createIssueTicketComment(@Header("Authorization") String token,
                                                                                @Body IssueCommentBody body,
-                                                                               @Path("ticket_id") int tickerId);
+                                                                               @Query("ticket_id") String tickerId);
 
     @POST(UrlUtils.DOMAIN_EAUTH + "set-password")
     Call<JsonObject> setPassword(@Body HashMap<String, String> setPasswordModel);
