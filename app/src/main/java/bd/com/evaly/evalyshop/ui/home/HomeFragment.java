@@ -110,6 +110,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         navController = NavHostFragment.findNavController(this);
         networkCheck();
         binding.swipeRefresh.setOnRefreshListener(this);
@@ -166,7 +167,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void requestModelBuild() {
         // if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
-        homeController.requestDelayedModelBuild(randInt(100, 200));
+        homeController.requestDelayedModelBuild(randInt(150, 200));
     }
 
     private void liveEventObservers() {
