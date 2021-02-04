@@ -22,17 +22,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
 
-import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
-import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.util.Utils;
 
@@ -40,18 +35,6 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
     private List<AvailableShopModel> availableShops;
     private Context context;
-    private CartEntity cartItem;
-    private View view;
-    private AvailableShopClickListener clickListener;
-
-    public void setClickListener(AvailableShopClickListener clickListener) {
-        this.clickListener = clickListener;
-    }
-
-    public interface AvailableShopClickListener{
-        void onAddToCartClick(AvailableShopModel model);
-    }
-
     View.OnClickListener storeClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -64,14 +47,19 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
             context.startActivity(intent);
         }
     };
-    private CartDao cartDao;
+    private CartEntity cartItem;
+    private View view;
+    private AvailableShopClickListener clickListener;
 
-    public AvailableShopAdapter(Context context, View view, List<AvailableShopModel> availableShops, CartDao cartDao, CartEntity cartItem) {
+    public AvailableShopAdapter(Context context, View view, List<AvailableShopModel> availableShops, CartEntity cartItem) {
         this.availableShops = availableShops;
         this.context = context;
-        this.cartDao = cartDao;
         this.cartItem = cartItem;
         this.view = view;
+    }
+
+    public void setClickListener(AvailableShopClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -94,7 +82,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         else
             viewHolder.address.setText(shop.getShopAddress());
 
-        if (shop.getInStock() < 1){
+        if (shop.getInStock() < 1) {
             viewHolder.stock.setText("Contact Seller");
         } else {
             viewHolder.stock.setText("Stock Available");
@@ -195,6 +183,10 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
     @Override
     public int getItemCount() {
         return availableShops.size();
+    }
+
+    public interface AvailableShopClickListener {
+        void onAddToCartClick(AvailableShopModel model);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,22 +32,16 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.FragmentBuyNowBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.ui.checkout.CheckoutFragment;
@@ -60,8 +55,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
-    @Inject
-    CartDao cartDao;
+
+    private BuyNowViewModel viewModel;
     private FragmentBuyNowBinding binding;
     private SkeletonScreen skeleton;
     private Context context;
@@ -131,6 +126,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             shopItem = (AvailableShopModel) args.getSerializable("shopItem");
         if (args.containsKey("cartItem"))
             cartItem = (CartEntity) args.getSerializable("cartItem");
+
+        viewModel = new ViewModelProvider(this).get(BuyNowViewModel.class);
     }
 
     @Nullable
@@ -173,14 +170,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         binding.variationHolder.setVisibility(View.GONE);
 
         binding.addToCart.setOnClickListener(v -> {
-            CartEntity cartEntity = getCartItem();
-            Executors.newSingleThreadExecutor().execute(() -> {
-                List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
-                if (dbItem.size() == 0)
-                    cartDao.insert(cartEntity);
-                else
-                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + quantityCount);
-            });
+            viewModel.insertCartEntity(getCartItem());
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
             dismiss();
         });
@@ -281,10 +271,25 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         if (shopItem == null) {
             skeleton.show();
-            getProductDetails();
         } else
             inflateFromModel();
 
+        liveEvents();
+
+    }
+
+    private void liveEvents() {
+        viewModel.liveList.observe(getViewLifecycleOwner(), shopItems -> {
+            skeleton.hide();
+            itemsList.clear();
+            itemsList.addAll(shopItems);
+            adapterVariation.notifyDataSetChanged();
+
+            if (itemsList.size() > 0) {
+                itemsList.get(0).setSelected(true);
+                loadProductById(0);
+            }
+        });
     }
 
     @Override
@@ -302,35 +307,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         return bottomSheetDialog;
     }
 
-    public void getProductDetails() {
-
-        ProductApiHelper.getProductVariants(shop_slug, shop_item_slug, new ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<List<ShopItem>> response, int statusCode) {
-
-                skeleton.hide();
-
-                itemsList.clear();
-                itemsList.addAll(response.getData());
-                adapterVariation.notifyDataSetChanged();
-
-                if (itemsList.size() > 0) {
-                    itemsList.get(0).setSelected(true);
-                    loadProductById(0);
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-    }
 
     private void loadProductById(int position) {
 
@@ -375,13 +351,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         binding.addToCart.setOnClickListener(v -> {
             CartEntity cartEntity = getCartEntity(firstItem);
-            Executors.newSingleThreadExecutor().execute(() -> {
-                List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
-                if (dbItem.size() == 0)
-                    cartDao.insert(cartEntity);
-                else
-                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + quantityCount);
-            });
+            viewModel.insertCartEntity(getCartEntity(firstItem));
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
             dismiss();
         });

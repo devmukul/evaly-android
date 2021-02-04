@@ -46,9 +46,7 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
-import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.databinding.ActivityViewProductBinding;
 import bd.com.evaly.evalyshop.listener.ProductListener;
@@ -92,10 +90,6 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
     @Inject
     RecommenderViewModel recommenderViewModel;
-    @Inject
-    WishListDao wishListDao;
-    @Inject
-    CartDao cartDao;
 
     long startTime = 0;
     ProductVariantsItem firstProductVariantsItem;
@@ -170,7 +164,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         if (getIntent().hasExtra("cashback_text"))
             cashbackText = getIntent().getStringExtra("cashback_text");
 
-        cartDao.getLiveCount().observe(this, integer -> binding.cartCount.setText(integer.toString()));
+        viewModel.cartLiveCount.observe(this, integer -> binding.cartCount.setText(integer.toString()));
 
         wishListItem = new WishList();
         cartItem = new CartEntity();
@@ -220,7 +214,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             if (isAddedToWishList) {
 
                 binding.addToWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black));
-                Executors.newSingleThreadExecutor().execute(() -> wishListDao.deleteBySlug(wishListItem.getProductSlug()));
+                Executors.newSingleThreadExecutor().execute(() -> viewModel.deleteBySlugWishList(wishListItem.getProductSlug()));
                 Toast.makeText(context, "Removed from wish list", Toast.LENGTH_SHORT).show();
                 isAddedToWishList = false;
 
@@ -232,7 +226,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
                 wishListEntity.setPrice(wishListItem.getPrice());
                 wishListEntity.setTime(calendar.getTimeInMillis());
 
-                Executors.newSingleThreadExecutor().execute(() -> wishListDao.insert(wishListEntity));
+                viewModel.insertWishList(wishListEntity);
                 Toast.makeText(context, "Added to wish list", Toast.LENGTH_SHORT).show();
                 binding.addToWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
                 isAddedToWishList = true;
@@ -559,7 +553,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         getAvailableShops(item.getVariantId());
 
         Executors.newSingleThreadExecutor().execute(() -> {
-            int c = wishListDao.checkExists(slug);
+            int c = viewModel.checkExistsWishList(slug);
             runOnUiThread(() -> {
                 if (c > 0) {
                     binding.addToWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
@@ -708,13 +702,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             cartEntity.setSlug(slug);
             cartEntity.setProductID(String.valueOf(shop.getShopItemId()));
 
-            Executors.newSingleThreadExecutor().execute(() -> {
-                List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
-                if (dbItem.size() == 0)
-                    cartDao.insert(cartEntity);
-                else
-                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
-            });
+            viewModel.insertCartEntity(cartEntity);
 
             Snackbar snackBar = Snackbar.make(getWindow().getDecorView(), "Added to cart", 1500);
             snackBar.setAction("Go to Cart", view -> {
@@ -778,7 +766,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             }
         }
 
-        AvailableShopAdapter adapter = new AvailableShopAdapter(this, binding.rootView, list, cartDao, cartItem);
+        AvailableShopAdapter adapter = new AvailableShopAdapter(this, binding.rootView, list, cartItem);
         adapter.setClickListener(this);
         binding.availableShops.setAdapter(adapter);
         binding.progressBarShop.setVisibility(View.GONE);
@@ -948,13 +936,8 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         cartEntity.setVariantDetails(cartItem.getVariantDetails());
         cartEntity.setProductID(String.valueOf(shop.getShopItemId()));
 
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
-            if (dbItem.size() == 0)
-                cartDao.insert(cartEntity);
-            else
-                cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
-        });
+        viewModel.insertCartEntity(cartEntity);
+
         Snackbar snackBar = Snackbar.make(getWindow().getDecorView(), "Added to cart", 1500);
         snackBar.setAction("Go to Cart", v1 -> {
             Intent intent = new Intent(context, CartActivity.class);

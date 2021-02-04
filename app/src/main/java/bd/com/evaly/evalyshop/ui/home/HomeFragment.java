@@ -44,6 +44,7 @@ import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -149,7 +150,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        //   binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(2, spacing, true));
+        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(2, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(homeController.getAdapter());
 

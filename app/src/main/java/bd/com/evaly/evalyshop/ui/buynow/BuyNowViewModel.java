@@ -1,14 +1,15 @@
 package bd.com.evaly.evalyshop.ui.buynow;
 
-import androidx.hilt.Assisted;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -16,7 +17,9 @@ import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class BuyNowViewModel extends ViewModel {
 
     protected MutableLiveData<List<ShopItem>> liveList = new MutableLiveData<>();
@@ -24,9 +27,10 @@ public class BuyNowViewModel extends ViewModel {
     private String shopSlug, productSlug;
     private AvailableShopModel shopItem;
     private CartEntity cartItem;
+    private CartDao cartDao;
 
     @Inject
-    public BuyNowViewModel(@Assisted SavedStateHandle savedStateHandle) {
+    public BuyNowViewModel(CartDao cartDao, SavedStateHandle savedStateHandle) {
         if (savedStateHandle.contains("shopSlug") && savedStateHandle.contains("productSlug")) {
             shopSlug = savedStateHandle.get("shop_slug");
             productSlug = savedStateHandle.get("product_slug");
@@ -36,6 +40,17 @@ public class BuyNowViewModel extends ViewModel {
             cartItem = savedStateHandle.get("cartItem");
             loadFromModel.setValue(true);
         }
+        this.cartDao = cartDao;
+    }
+
+    public void insertCartEntity(CartEntity cartEntity){
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
+            if (dbItem.size() == 0)
+                cartDao.insert(cartEntity);
+            else
+                cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
+        });
     }
 
     public AvailableShopModel getShopItem() {
