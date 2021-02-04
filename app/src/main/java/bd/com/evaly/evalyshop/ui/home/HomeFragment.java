@@ -137,6 +137,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         homeController.setClickListener(this);
         homeController.setFragment(this);
         homeController.setHomeViewModel(viewModel);
+        homeController.setSpanCount(2);
         homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
         homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
 
@@ -166,7 +167,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void requestModelBuild() {
         // if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
-        homeController.requestDelayedModelBuild(randInt(200, 300));
+        // homeController.requestDelayedModelBuild(randInt(200, 300));
+        homeController.requestModelBuild();
     }
 
     private void liveEventObservers() {
@@ -183,11 +185,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 requestModelBuild();
         });
 
-        recommenderViewModel.getRsShopLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
-            homeController.setRsShopList(rsEntities);
-            if (rsEntities.size() > 0)
-                requestModelBuild();
-        });
+//        recommenderViewModel.getRsShopLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
+//            homeController.setRsShopList(rsEntities);
+//            if (rsEntities.size() > 0)
+//                requestModelBuild();
+//        });
 
         viewModel.getProductListLive().observe(getViewLifecycleOwner(), list -> {
             isLoading = false;

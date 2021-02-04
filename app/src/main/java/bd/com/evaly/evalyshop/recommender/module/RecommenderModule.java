@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.recommender.module;
 
-import android.app.Application;
 import android.content.Context;
 
 import androidx.room.Room;
@@ -12,11 +11,11 @@ import bd.com.evaly.evalyshop.recommender.database.table.RsDao;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
-import dagger.hilt.android.components.ApplicationComponent;
+import dagger.hilt.components.SingletonComponent;
 import io.reactivex.disposables.CompositeDisposable;
 
 @Module
-@InstallIn(ApplicationComponent.class)
+@InstallIn(SingletonComponent.class)
 public class RecommenderModule {
 
     @Provides

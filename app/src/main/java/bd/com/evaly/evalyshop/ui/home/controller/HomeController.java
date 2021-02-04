@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.ui.home.controller;
 
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -9,6 +11,8 @@ import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.airbnb.epoxy.EpoxyModel;
+import com.airbnb.epoxy.EpoxyViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,21 +150,21 @@ public class HomeController extends EpoxyController {
     @Override
     protected void buildModels() {
 
-        // slider model
-        sliderModel
-                .controller(sliderController)
-                .activity(activity)
-                .list(bannerList)
-                .onBind((model, view, position) -> {
-                    sliderController.setData(bannerList);
-                })
-                .addTo(this);
+//        // slider model
+//        sliderModel
+//                .controller(sliderController)
+//                .activity(activity)
+//                .list(bannerList)
+//                .onBind((model, view, position) -> {
+//                    sliderController.setData(bannerList);
+//                })
+//                .addTo(this);
 
         // home widget buttons
-        widgetModel
-                .fragment(fragment)
-                .activity(activity)
-                .addTo(this);
+//        widgetModel
+//                .fragment(fragment)
+//                .activity(activity)
+//                .addTo(this);
 
         initCampaignCarousel();
 
@@ -169,8 +173,6 @@ public class HomeController extends EpoxyController {
         initExpressCarousel();
 
         initCategoryCarousel();
-
-        initShopCarousel();
 
         initBrandsCarousel();
 
@@ -573,6 +575,13 @@ public class HomeController extends EpoxyController {
 
     public void setBannerList(List<BannerItem> bannerList) {
         this.bannerList = bannerList;
+    }
+
+
+    @Override
+    protected void onModelBound(@NonNull EpoxyViewHolder holder, @NonNull EpoxyModel<?> boundModel, int position, @Nullable EpoxyModel<?> previouslyBoundModel) {
+        super.onModelBound(holder, boundModel, position, previouslyBoundModel);
+
     }
 
     public interface ClickListener {

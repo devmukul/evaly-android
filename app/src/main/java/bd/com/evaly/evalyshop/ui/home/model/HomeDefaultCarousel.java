@@ -8,9 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.ModelView;
 
-import bd.com.evaly.evalyshop.util.Utils;
-
-@ModelView(saveViewState = true, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT, baseModelClass = EpoxyModelStaggeredGrid.class)
+@ModelView(saveViewState = true, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT)
 public class HomeDefaultCarousel extends Carousel {
 
     public HomeDefaultCarousel(Context context) {
