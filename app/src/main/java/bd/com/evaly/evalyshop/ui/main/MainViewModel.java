@@ -8,14 +8,20 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
+import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import retrofit2.Response;
 
+@HiltViewModel
 public class MainViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> drawerOnClick = new MutableLiveData<>();
@@ -26,9 +32,17 @@ public class MainViewModel extends ViewModel {
     public CampaignProductCategoryResponse selectedCampaignProductCategoryModel;
     public SingleLiveEvent<Void> campaignFilterUpdated = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> refreshCurrentFragment = new SingleLiveEvent<>();
-
     public SingleLiveEvent<Void> getRefreshCurrentFragment() {
         return refreshCurrentFragment;
+    }
+    public LiveData<Integer> wishListLiveCount;
+    public LiveData<Integer> cartLiveCount;
+
+
+    @Inject
+    public MainViewModel(CartDao cartDao, WishListDao wishListDao){
+        cartLiveCount = cartDao.getLiveCount();
+        wishListLiveCount = wishListDao.getLiveCount();
     }
 
     public void setRefreshCurrentFragment() {

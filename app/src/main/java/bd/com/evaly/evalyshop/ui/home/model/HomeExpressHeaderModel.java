@@ -33,9 +33,10 @@ public abstract class HomeExpressHeaderModel extends DataBindingEpoxyModel {
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
 
-        HomeModelFlashsaleHeaderBinding binding = (HomeModelFlashsaleHeaderBinding) holder.getDataBinding();
+       HomeModelFlashsaleHeaderBinding binding = (HomeModelFlashsaleHeaderBinding) holder.getDataBinding();
         StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         params.setFullSpan(true);
+
         if (title != null)
             binding.title.setText(title);
         if (showMore)

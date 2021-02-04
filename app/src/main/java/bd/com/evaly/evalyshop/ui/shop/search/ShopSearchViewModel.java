@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.ui.shop.search;
 
-import androidx.hilt.Assisted;
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
@@ -10,6 +8,8 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
@@ -17,7 +17,9 @@ import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class ShopSearchViewModel extends ViewModel {
 
     protected MutableLiveData<ShopDetailsResponse> shopDetailsLive = new MutableLiveData<>();
@@ -34,8 +36,8 @@ public class ShopSearchViewModel extends ViewModel {
     private List<ItemsItem> productArrayList = new ArrayList<>();
     private boolean isShop = true;
 
-    @ViewModelInject
-    public ShopSearchViewModel(@Assisted SavedStateHandle args) {
+    @Inject
+    public ShopSearchViewModel(SavedStateHandle args) {
         this.categorySlug = null;
         this.campaignSlug = args.get("campaign_slug");
         this.shopSlug = args.get("shop_slug");

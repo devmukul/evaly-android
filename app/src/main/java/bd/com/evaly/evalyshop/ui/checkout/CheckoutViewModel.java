@@ -2,8 +2,6 @@ package bd.com.evaly.evalyshop.ui.checkout;
 
 import android.graphics.Bitmap;
 
-import androidx.hilt.Assisted;
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
@@ -18,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -29,9 +29,11 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
+@HiltViewModel
 public class CheckoutViewModel extends ViewModel {
 
     public SingleLiveEvent<Integer> imagePicker = new SingleLiveEvent<>();
@@ -45,8 +47,8 @@ public class CheckoutViewModel extends ViewModel {
     private HashMap<String, List<String>> attachmentMap = new HashMap<>();
     private String selectedShopSlug;
 
-    @ViewModelInject
-    public CheckoutViewModel(CartDao cartDao, @Assisted SavedStateHandle savedStateHandle) {
+    @Inject
+    public CheckoutViewModel(CartDao cartDao, SavedStateHandle savedStateHandle) {
         this.cartDao = cartDao;
 
         if (savedStateHandle != null && savedStateHandle.contains("model")) {

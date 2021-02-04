@@ -36,6 +36,7 @@ public class WishListFragment extends Fragment {
     private ViewDialog alert;
     private View view;
     private Toolbar mToolbar;
+
     @Inject
     WishListDao wishListDao;
 

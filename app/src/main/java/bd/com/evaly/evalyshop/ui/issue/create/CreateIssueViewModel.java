@@ -2,8 +2,6 @@ package bd.com.evaly.evalyshop.ui.issue.create;
 
 import android.graphics.Bitmap;
 
-import androidx.hilt.Assisted;
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
@@ -11,6 +9,8 @@ import androidx.lifecycle.ViewModel;
 import com.google.gson.Gson;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -23,7 +23,9 @@ import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class CreateIssueViewModel extends ViewModel {
 
     protected MutableLiveData<List<IssueCategoryModel>> categoryLiveList = new MutableLiveData<>();
@@ -31,8 +33,8 @@ public class CreateIssueViewModel extends ViewModel {
     protected MutableLiveData<ImageDataModel> imageLiveData = new SingleLiveEvent<>();
     protected SingleLiveEvent<String> imageErrorLiveData = new SingleLiveEvent<>();
 
-    @ViewModelInject
-    public CreateIssueViewModel(@Assisted SavedStateHandle savedStateHandle) {
+    @Inject
+    public CreateIssueViewModel(SavedStateHandle savedStateHandle) {
         loadCategories();
     }
 

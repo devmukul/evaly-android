@@ -17,10 +17,7 @@ import com.airbnb.epoxy.EpoxyModelClass;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.HomeModelQuickAccessBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.notification.NotificationCount;
-import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 
 @EpoxyModelClass(layout = R.layout.home_model_quick_access)

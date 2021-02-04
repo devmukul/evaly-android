@@ -75,10 +75,7 @@ public class MainActivity extends BaseActivity {
     public boolean isLaunchActivity = true;
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
-    @Inject
-    WishListDao wishListDao;
-    @Inject
-    CartDao cartDao;
+
     private AlertDialog exitDialog;
     private AlertDialog.Builder exitDialogBuilder;
     private NavController navController;
@@ -187,7 +184,8 @@ public class MainActivity extends BaseActivity {
         BadgeDrawable wishListBadge = binding.bottomNavigationView.getOrCreateBadge(R.id.wishListFragment);
         if (wishListBadge != null)
             wishListBadge.setVisible(false);
-        wishListDao.getLiveCount().observe(this, integer -> {
+
+        viewModel.wishListLiveCount.observe(this, integer -> {
             if (wishListBadge != null) {
                 if (integer == 0) {
                     wishListBadge.clearNumber();
@@ -203,7 +201,7 @@ public class MainActivity extends BaseActivity {
         if (cartBadge != null)
             cartBadge.setVisible(false);
 
-        cartDao.getLiveCount().observe(this, integer -> {
+        viewModel.cartLiveCount.observe(this, integer -> {
             if (cartBadge != null) {
                 if (integer == 0) {
                     cartBadge.clearNumber();

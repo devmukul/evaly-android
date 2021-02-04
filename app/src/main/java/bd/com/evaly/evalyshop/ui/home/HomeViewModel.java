@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.home;
 
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -12,6 +11,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.roomdb.banner.BannerDao;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
@@ -31,11 +32,13 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+@HiltViewModel
 public class HomeViewModel extends ViewModel {
 
     protected MutableLiveData<List<CampaignProductResponse>> flashSaleProductList = new MutableLiveData<>();
@@ -56,7 +59,7 @@ public class HomeViewModel extends ViewModel {
     private CompositeDisposable compositeDisposable;
     private BannerDao bannerDao;
 
-    @ViewModelInject
+    @Inject
     public HomeViewModel(BannerDao bannerDao) {
         this.bannerDao = bannerDao;
         bannerListLive = bannerDao.getAll();

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.orhanobut.logger.Logger;
 
 import java.util.Random;
 
@@ -25,7 +26,6 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
@@ -37,7 +37,6 @@ import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
-import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
@@ -45,7 +44,6 @@ import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -57,12 +55,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Inject
     FirebaseRemoteConfig firebaseRemoteConfig;
 
-    private MainActivity activity;
     private boolean isLoading = true;
     private FragmentHomeBinding binding;
     private NavController navController;
     private HomeController homeController;
     private HomeViewModel viewModel;
+    private MainViewModel mainViewModel;
 
     public HomeFragment() {
 
@@ -70,6 +68,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
+    }
+
+    public static int randInt(int min, int max) {
+        Random rand = new Random();
+        return rand.nextInt((max - min) + 1) + min;
     }
 
     @Override
@@ -87,8 +90,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-        activity = (MainActivity) getActivity();
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         return binding.getRoot();
     }
 
@@ -110,19 +113,21 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        navController = NavHostFragment.findNavController(this);
         networkCheck();
+        navController = NavHostFragment.findNavController(this);
         binding.swipeRefresh.setOnRefreshListener(this);
-        MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-        new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "home", mainViewModel);
-        FragmentAppBarHeaderBinding headerBinding = binding.header;
 
-        headerBinding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
+        initAppHeader();
+        setupRecycler();
+        liveEventObservers();
+    }
 
-//        headerBinding.homeSearch.setOnClickListener(view1 -> {
-//            navController.navigate(R.id.globalSearchFragment);
-//        });
+    private void initAppHeader() {
+        new InitializeActionBar(binding.header.headerLogo, getActivity(), "home", mainViewModel);
+        binding.header.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
+    }
 
+    private void setupRecycler() {
         boolean homeControllerInitialized = false;
         if (homeController == null) {
             homeController = new HomeController();
@@ -130,6 +135,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 homeController.setDebugLoggingEnabled(true);
             homeControllerInitialized = true;
         }
+
 
         if (!BuildConfig.DEBUG)
             homeController.setFilterDuplicates(true);
@@ -140,10 +146,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         homeController.setSpanCount(2);
         homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
         homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
-
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(2, spacing, true));
+        //   binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(2, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(homeController.getAdapter());
 
@@ -161,13 +167,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         if (homeControllerInitialized && !binding.recyclerView.isComputingLayout())
             homeController.requestModelBuild();
-
-        liveEventObservers();
     }
 
     private void requestModelBuild() {
-        // if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
-        // homeController.requestDelayedModelBuild(randInt(200, 300));
+//        if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
+//            homeController.requestDelayedModelBuild(randInt(200, 300));
         homeController.requestModelBuild();
     }
 
@@ -232,15 +236,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     }
 
-
-    public static int randInt(int min, int max) {
-        Random rand = new Random();
-        return rand.nextInt((max - min) + 1) + min;
-    }
-
     @Override
     public void onProductClick(ProductItem item) {
-        Intent intent = new Intent(activity, ViewProductActivity.class);
+        Intent intent = new Intent(getContext(), ViewProductActivity.class);
         intent.putExtra("product_slug", item.getSlug());
         intent.putExtra("product_name", item.getName());
         intent.putExtra("product_price", item.getMaxPrice());
@@ -283,7 +281,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onCampaignProductClick(CampaignProductResponse item1) {
-        Intent intent = new Intent(activity, ViewProductActivity.class);
+        Intent intent = new Intent(getContext(), ViewProductActivity.class);
         intent.putExtra("product_slug", item1.getSlug());
         intent.putExtra("product_name", item1.getName());
         intent.putExtra("product_price", item1.getPrice());
@@ -291,7 +289,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             intent.putExtra("shop_slug", item1.getShopSlug());
         intent.putExtra("product_image", item1.getImage());
         intent.putExtra("cashback_text", item1.getCashbackText());
-        activity.startActivity(intent);
+        getContext().startActivity(intent);
     }
 
     @Override
@@ -402,12 +400,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         navController.navigate(R.id.shopFragment, bundle);
     }
 
+
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
+        Logger.e("onDestroyed");
         if (homeController != null)
             homeController.cancelPendingModelBuild();
         if (binding != null)
             binding.recyclerView.setAdapter(null);
-        super.onDestroy();
+        super.onDestroyView();
     }
 }

@@ -69,12 +69,12 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(CartViewModel.class);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(CartViewModel.class);
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(this);
         setupToolbar();

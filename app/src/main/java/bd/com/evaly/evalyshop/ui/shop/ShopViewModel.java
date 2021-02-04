@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.ui.shop;
 
-import androidx.hilt.Assisted;
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
@@ -12,6 +10,8 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -25,7 +25,9 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class ShopViewModel extends ViewModel {
 
     protected MutableLiveData<ShopDetailsResponse> shopDetailsLive = new MutableLiveData<>();
@@ -52,8 +54,8 @@ public class ShopViewModel extends ViewModel {
     private boolean isShop = true;
 
 
-    @ViewModelInject
-    public ShopViewModel(@Assisted SavedStateHandle args) {
+    @Inject
+    public ShopViewModel(SavedStateHandle args) {
 
         this.categorySlug = null;
         this.campaignSlug = args.get("campaign_slug");

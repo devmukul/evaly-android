@@ -151,20 +151,20 @@ public class HomeController extends EpoxyController {
     protected void buildModels() {
 
 //        // slider model
-//        sliderModel
-//                .controller(sliderController)
-//                .activity(activity)
-//                .list(bannerList)
-//                .onBind((model, view, position) -> {
-//                    sliderController.setData(bannerList);
-//                })
-//                .addTo(this);
+        sliderModel
+                .controller(sliderController)
+                .activity(activity)
+                .list(bannerList)
+                .onBind((model, view, position) -> {
+                    sliderController.setData(bannerList);
+                })
+                .addTo(this);
 
         // home widget buttons
-//        widgetModel
-//                .fragment(fragment)
-//                .activity(activity)
-//                .addTo(this);
+        widgetModel
+                .fragment(fragment)
+                .activity(activity)
+                .addTo(this);
 
         initCampaignCarousel();
 
@@ -189,9 +189,9 @@ public class HomeController extends EpoxyController {
                 .transparentBackground(true)
                 .addTo(this);
 
-        emptySpaceModel_
-                .height(15)
-                .addTo(this);
+//        emptySpaceModel_
+//                .height(15)
+//                .addTo(this);
 
         // product listing
         for (ProductItem productItem : items) {

@@ -10,7 +10,7 @@ import com.airbnb.epoxy.ModelView;
 
 import bd.com.evaly.evalyshop.util.Utils;
 
-@ModelView(saveViewState = true, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT)
+@ModelView(saveViewState = true, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT, baseModelClass =  EpoxyModelStaggeredGrid.class)
 public class HomeRsCarousel extends Carousel {
 
     public HomeRsCarousel(Context context) {

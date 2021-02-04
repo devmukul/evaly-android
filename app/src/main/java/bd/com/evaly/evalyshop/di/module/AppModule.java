@@ -12,11 +12,6 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import javax.inject.Singleton;
 
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
-import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
-import bd.com.evaly.evalyshop.data.roomdb.banner.BannerDao;
-import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
-import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
-import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.di.qualifiers.FirebaseRemoteConfigLiveData;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
@@ -33,14 +28,6 @@ public class AppModule {
     @Singleton
     Context provideContext(Application application) {
         return application;
-    }
-
-    @Provides
-    @Singleton
-    AppDatabase provideAppDatabase(Context context) {
-        return Room.databaseBuilder(context, AppDatabase.class, "app_database")
-                .fallbackToDestructiveMigration()
-                .build();
     }
 
     @Provides
@@ -69,36 +56,6 @@ public class AppModule {
 
     @Provides
     @Singleton
-    AddressListDao addressListDao(AppDatabase appDatabase) {
-        return appDatabase.addressListDao();
-    }
-
-    @Provides
-    @Singleton
-    BannerDao bannerDao(AppDatabase appDatabase) {
-        return appDatabase.bannerDao();
-    }
-
-    @Provides
-    @Singleton
-    CartDao cartDao(AppDatabase appDatabase) {
-        return appDatabase.cartDao();
-    }
-
-    @Provides
-    @Singleton
-    ExpressServiceDao expressServiceDao(AppDatabase appDatabase) {
-        return appDatabase.expressServiceDao();
-    }
-
-    @Provides
-    @Singleton
-    WishListDao wishListDao(AppDatabase appDatabase) {
-        return appDatabase.wishListDao();
-    }
-
-    @Provides
-    @Singleton
     GlobalSearchViewModel provideGlobalSearchViewModel() {
         return new GlobalSearchViewModel();
     }
@@ -108,4 +65,13 @@ public class AppModule {
     SharedObservers sharedObservers() {
         return new SharedObservers();
     }
+
+    @Provides
+    @Singleton
+    AppDatabase provideAppDatabase(Context context) {
+        return Room.databaseBuilder(context, AppDatabase.class, "app_database")
+                .fallbackToDestructiveMigration()
+                .build();
+    }
+
 }

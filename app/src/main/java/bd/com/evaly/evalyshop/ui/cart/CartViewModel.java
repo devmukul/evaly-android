@@ -1,23 +1,26 @@
 package bd.com.evaly.evalyshop.ui.cart;
 
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class CartViewModel extends ViewModel {
+@HiltViewModel
+public final class CartViewModel extends ViewModel {
 
     protected LiveData<List<CartEntity>> liveList;
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
 
-    @ViewModelInject
+    @Inject
     public CartViewModel(CartDao cartDao) {
         this.cartDao = cartDao;
         liveList = cartDao.getAllLive();
