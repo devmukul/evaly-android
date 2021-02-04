@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ActivityForgotPasswordBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -103,7 +104,7 @@ public class ForgotPasswordActivity extends BaseActivity {
             @Override
             public void onDataFetched(CommonDataResponse<CaptchaResponse> response, int statusCode) {
                 captchaModel = response.getData();
-                Glide.with(binding.captchaImage)
+                Glide.with(AppController.getmContext())
                         .asBitmap()
                         .load(captchaModel.getCaptcha())
                         .into(binding.captchaImage);

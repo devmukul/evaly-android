@@ -71,7 +71,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private AvailableShopModel shopItem;
     private NavController navController;
 
-
     public static BuyNowFragment newInstance(String shopSlug, String productSlug) {
         BuyNowFragment f = new BuyNowFragment();
         Bundle args = new Bundle();
@@ -219,7 +218,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         cartEntity.setQuantity(quantity);
         cartEntity.setShopSlug(shopItem.getShopSlug());
         cartEntity.setShopName(shopItem.getShopName());
-        cartEntity.setSlug(cartItem.getImage());
+        cartEntity.setSlug(cartItem.getSlug());
         cartEntity.setVariantDetails(cartItem.getVariantDetails());
         cartEntity.setProductID(String.valueOf(shopItem.getShopItemId()));
 

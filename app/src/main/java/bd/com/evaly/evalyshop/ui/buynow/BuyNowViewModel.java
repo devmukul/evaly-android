@@ -32,8 +32,8 @@ public class BuyNowViewModel extends ViewModel {
     @Inject
     public BuyNowViewModel(CartDao cartDao, SavedStateHandle savedStateHandle) {
         if (savedStateHandle.contains("shopSlug") && savedStateHandle.contains("productSlug")) {
-            shopSlug = savedStateHandle.get("shop_slug");
-            productSlug = savedStateHandle.get("product_slug");
+            shopSlug = savedStateHandle.get("shopSlug");
+            productSlug = savedStateHandle.get("productSlug");
             getProductDetails();
         } else if (savedStateHandle.contains("cartItem")) {
             shopItem = savedStateHandle.get("shopItem");

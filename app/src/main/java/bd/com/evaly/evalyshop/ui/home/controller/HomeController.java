@@ -187,11 +187,9 @@ public class HomeController extends EpoxyController {
                 .title("Products")
                 .showMore(false)
                 .transparentBackground(true)
+                .bottomSpace(true)
                 .addTo(this);
 
-//        emptySpaceModel_
-//                .height(15)
-//                .addTo(this);
 
         // product listing
         for (ProductItem productItem : items) {

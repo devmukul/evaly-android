@@ -75,8 +75,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<IssuesAdapter.IssuesView
         public IssuesViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
-            itemView.setOnClickListener(view -> listener.onRecyclerViewItemClicked(list.get(getLayoutPosition())));
+            if (getLayoutPosition() < list.size())
+                itemView.setOnClickListener(view -> listener.onRecyclerViewItemClicked(list.get(getLayoutPosition())));
         }
     }
 }

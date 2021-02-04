@@ -211,10 +211,8 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
 
         int spacing = (int) Utils.convertDpToPixel(10, requireActivity());
         staggeredSpacingItemDecoration = new StaggeredSpacingItemDecoration(3, spacing, true);
-
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         binding.recyclerView.setLayoutManager(staggeredGridLayoutManager);
-
 
         binding.recyclerView.addItemDecoration(staggeredSpacingItemDecoration);
         binding.recyclerView.addOnScrollListener(new PaginationScrollListener(staggeredGridLayoutManager) {

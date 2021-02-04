@@ -140,7 +140,6 @@ public class CheckoutFragment extends DialogFragment {
 
     private void updateInfo() {
         UserModel userModel = CredentialManager.getUserData();
-
         binding.userName.setText(userModel.getFullName());
         binding.contact.setText(userModel.getUsername());
 

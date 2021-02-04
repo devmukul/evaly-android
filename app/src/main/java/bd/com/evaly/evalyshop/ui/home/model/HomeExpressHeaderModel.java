@@ -25,6 +25,8 @@ public abstract class HomeExpressHeaderModel extends DataBindingEpoxyModel {
     boolean showMore;
     @EpoxyAttribute
     boolean transparentBackground;
+    @EpoxyAttribute
+    boolean bottomSpace;
 
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
@@ -33,7 +35,7 @@ public abstract class HomeExpressHeaderModel extends DataBindingEpoxyModel {
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
 
-       HomeModelFlashsaleHeaderBinding binding = (HomeModelFlashsaleHeaderBinding) holder.getDataBinding();
+        HomeModelFlashsaleHeaderBinding binding = (HomeModelFlashsaleHeaderBinding) holder.getDataBinding();
         StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         params.setFullSpan(true);
 
@@ -50,6 +52,12 @@ public abstract class HomeExpressHeaderModel extends DataBindingEpoxyModel {
             if (binding.container.getContext() != null)
                 binding.container.setBackgroundColor(binding.container.getContext().getResources().getColor(R.color.white));
         }
+
+        if (bottomSpace)
+            binding.bottomSpace.setVisibility(View.VISIBLE);
+        else
+            binding.bottomSpace.setVisibility(View.GONE);
+
         binding.help.setOnClickListener(clickListener);
     }
 

@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.orhanobut.logger.Logger;
 
 import java.util.Random;
 
@@ -77,16 +76,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
-    public void onRefresh() {
-        binding.swipeRefresh.setRefreshing(false);
-        refreshFragment();
-    }
-
-    private void refreshFragment() {
-        navController.navigate(HomeFragmentDirections.actionHomeFragmentPop());
-    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -94,21 +83,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         return binding.getRoot();
-    }
-
-    private void networkCheck() {
-        if (getContext() != null && !Utils.isNetworkAvailable(getContext()))
-            new NetworkErrorDialog(getContext(), new NetworkErrorDialogListener() {
-                @Override
-                public void onRetry() {
-                    refreshFragment();
-                }
-
-                @Override
-                public void onBackPress() {
-                    navController.navigate(R.id.homeFragment);
-                }
-            });
     }
 
     @Override
@@ -123,20 +97,39 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         liveEventObservers();
     }
 
+    private void networkCheck() {
+        if (getContext() != null && !Utils.isNetworkAvailable(getContext()))
+            new NetworkErrorDialog(getContext(), new NetworkErrorDialogListener() {
+                @Override
+                public void onRetry() {
+                    viewModel.reload();
+                }
+
+                @Override
+                public void onBackPress() {
+                    navController.navigate(R.id.homeFragment);
+                }
+            });
+    }
+
     private void initAppHeader() {
         new InitializeActionBar(binding.header.headerLogo, getActivity(), "home", mainViewModel);
         binding.header.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
     }
 
-    private void setupRecycler() {
-        boolean homeControllerInitialized = false;
-        if (homeController == null) {
-            homeController = new HomeController();
-            if (BuildConfig.DEBUG)
-                homeController.setDebugLoggingEnabled(true);
-            homeControllerInitialized = true;
-        }
+    @Override
+    public void onRefresh() {
+        binding.swipeRefresh.setRefreshing(false);
+        viewModel.reload();
+    }
 
+    private void setupRecycler() {
+
+        if (homeController == null)
+            homeController = new HomeController();
+
+        if (BuildConfig.DEBUG && !homeController.isDebugLoggingEnabled())
+            homeController.setDebugLoggingEnabled(true);
 
         if (!BuildConfig.DEBUG)
             homeController.setFilterDuplicates(true);
@@ -166,14 +159,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
 
-        if (homeControllerInitialized && !binding.recyclerView.isComputingLayout())
-            homeController.requestModelBuild();
+        homeController.requestModelBuild();
     }
 
     private void requestModelBuild() {
-//        if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
-//            homeController.requestDelayedModelBuild(randInt(200, 300));
-        homeController.requestModelBuild();
+        if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
+            homeController.requestDelayedModelBuild(randInt(100, 200));
     }
 
     private void liveEventObservers() {
@@ -363,7 +354,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onShowMoreCampaignClick() {
-
         navController.navigate(R.id.campaignFragment);
     }
 
@@ -399,16 +389,5 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         bundle.putString("category", "root");
         bundle.putString("campaign_slug", model.getCampaignSlug());
         navController.navigate(R.id.shopFragment, bundle);
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        Logger.e("onDestroyed");
-        if (homeController != null)
-            homeController.cancelPendingModelBuild();
-        if (binding != null)
-            binding.recyclerView.setAdapter(null);
-        super.onDestroyView();
     }
 }

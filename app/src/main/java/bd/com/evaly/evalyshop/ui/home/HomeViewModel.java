@@ -80,6 +80,20 @@ public class HomeViewModel extends ViewModel {
         compositeDisposable.clear();
     }
 
+    public void reload() {
+        brandArrayList.clear();
+        productArrayList.clear();
+        shopArrayList.clear();
+        currentPageProducts = 1;
+        loadBanners();
+        loadProducts();
+        loadExpressServices();
+        loadCampaignCategory();
+        loadFlashSaleProductList();
+        loadFlashSaleBrandsList();
+        loadFlashSaleShopList();
+    }
+
     public int getTabPosition() {
         return tabPosition;
     }
