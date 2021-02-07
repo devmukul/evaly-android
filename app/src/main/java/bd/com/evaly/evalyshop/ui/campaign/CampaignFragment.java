@@ -292,12 +292,12 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             sliderController.addData(campaignCategoryResponses);
             sliderController.requestModelBuild();
             productController.setCategoryList(campaignCategoryResponses);
-            productController.requestModelBuild();
+            requestModelBuild();
             if (binding.sliderIndicator.getTabCount() > 0 && sliderController.getAdapter().getItemCount() > 0) {
                 CampaignSliderModel_ model = (CampaignSliderModel_) sliderController.getAdapter().getModelAtPosition(0);
                 initHeader(model.model().getBannerImage());
             }
-            productController.requestModelBuild();
+            requestModelBuild();
 
         });
 
@@ -305,16 +305,19 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             productController.setLoading(false);
             isLoading = false;
             productController.setProductList(campaignProductResponses);
-            productController.requestModelBuild();
+            requestModelBuild();
         });
 
         viewModel.getHideLoadingBar().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
                 productController.setLoading(false);
-                productController.requestModelBuild();
+                requestModelBuild();
             }
         });
+    }
 
+    private void requestModelBuild() {
+        productController.requestDelayedModelBuild(Utils.randInt(100, 150));
     }
 
     private void initRecycler() {
@@ -335,7 +338,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             public void loadMoreItem() {
                 if (!isLoading) {
                     productController.setLoading(true);
-                    productController.requestModelBuild();
+                    requestModelBuild();
                     viewModel.loadCampaignProducts();
                     isLoading = true;
                 }
