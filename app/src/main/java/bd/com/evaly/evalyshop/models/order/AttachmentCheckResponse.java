@@ -6,70 +6,92 @@ import java.util.List;
 
 public class AttachmentCheckResponse {
 
-	@SerializedName("attachment_required")
-	private boolean attachmentRequired;
+    @SerializedName("attachment_required")
+    private boolean attachmentRequired;
 
-	@SerializedName("shop_name")
-	private String shopName;
+    @SerializedName("shop_name")
+    private String shopName;
 
-	@SerializedName("shop_image")
-	private String shopImage;
+    @SerializedName("shop_image")
+    private String shopImage;
 
-	@SerializedName("items")
-	private List<Integer> items;
+    @SerializedName("items")
+    private List<Integer> items;
 
-	@SerializedName("shop_slug")
-	private String shopSlug;
+    @SerializedName("shop_slug")
+    private String shopSlug;
 
-	public void setAttachmentRequired(boolean attachmentRequired){
-		this.attachmentRequired = attachmentRequired;
-	}
+    @SerializedName("apply_delivery_charge")
+    private boolean applyDeliveryCharge;
 
-	public boolean isAttachmentRequired(){
-		return attachmentRequired;
-	}
+    @SerializedName("delivery_charge")
+    private double deliveryCharge;
 
-	public void setShopName(String shopName){
-		this.shopName = shopName;
-	}
+    public boolean isApplyDeliveryCharge() {
+        return applyDeliveryCharge;
+    }
 
-	public String getShopName(){
-		return shopName;
-	}
+    public void setApplyDeliveryCharge(boolean applyDeliveryCharge) {
+        this.applyDeliveryCharge = applyDeliveryCharge;
+    }
 
-	public void setShopImage(String shopImage){
-		this.shopImage = shopImage;
-	}
+    public double getDeliveryCharge() {
+        return deliveryCharge;
+    }
 
-	public String getShopImage(){
-		return shopImage;
-	}
+    public void setDeliveryCharge(double deliveryCharge) {
+        this.deliveryCharge = deliveryCharge;
+    }
 
-	public void setItems(List<Integer> items){
-		this.items = items;
-	}
+    public boolean isAttachmentRequired() {
+        return attachmentRequired;
+    }
 
-	public List<Integer> getItems(){
-		return items;
-	}
+    public void setAttachmentRequired(boolean attachmentRequired) {
+        this.attachmentRequired = attachmentRequired;
+    }
 
-	public void setShopSlug(String shopSlug){
-		this.shopSlug = shopSlug;
-	}
+    public String getShopName() {
+        return shopName;
+    }
 
-	public String getShopSlug(){
-		return shopSlug;
-	}
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"CheckoutItemResponse{" + 
-			"attachment_required = '" + attachmentRequired + '\'' + 
-			",shop_name = '" + shopName + '\'' + 
-			",shop_image = '" + shopImage + '\'' + 
-			",items = '" + items + '\'' + 
-			",shop_slug = '" + shopSlug + '\'' + 
-			"}";
-		}
+    public String getShopImage() {
+        return shopImage;
+    }
+
+    public void setShopImage(String shopImage) {
+        this.shopImage = shopImage;
+    }
+
+    public List<Integer> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Integer> items) {
+        this.items = items;
+    }
+
+    public String getShopSlug() {
+        return shopSlug;
+    }
+
+    public void setShopSlug(String shopSlug) {
+        this.shopSlug = shopSlug;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "CheckoutItemResponse{" +
+                        "attachment_required = '" + attachmentRequired + '\'' +
+                        ",shop_name = '" + shopName + '\'' +
+                        ",shop_image = '" + shopImage + '\'' +
+                        ",items = '" + items + '\'' +
+                        ",shop_slug = '" + shopSlug + '\'' +
+                        "}";
+    }
 }

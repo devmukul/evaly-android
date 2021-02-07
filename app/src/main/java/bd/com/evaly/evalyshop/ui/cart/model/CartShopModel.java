@@ -23,10 +23,14 @@ public abstract class CartShopModel extends DataBindingEpoxyModel {
     @EpoxyAttribute
     boolean noMargin;
 
+    @EpoxyAttribute
+    double deliveryCharge;
+
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
         ItemCartShopBinding binding = (ItemCartShopBinding) holder.getDataBinding();
+
         if (noMargin) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,

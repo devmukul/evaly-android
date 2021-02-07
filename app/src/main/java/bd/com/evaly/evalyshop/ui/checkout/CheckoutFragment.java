@@ -97,6 +97,7 @@ public class CheckoutFragment extends DialogFragment {
     private double totalDeliveryCharge;
     private ProgressDialog progressDialog;
     private List<Uri> selectedImagesList;
+    private double totalAmount = 0;
 
     public CheckoutFragment() {
         //setCancelable(false);
@@ -122,6 +123,7 @@ public class CheckoutFragment extends DialogFragment {
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(CheckoutFragment.this);
         dialog = new ViewDialog(getActivity());
+        dialog.showDialog();
         progressDialog = new ProgressDialog(getActivity());
         selectedImagesList = new ArrayList<>();
         startAnimation();
@@ -217,7 +219,6 @@ public class CheckoutFragment extends DialogFragment {
         binding.privacyText.setText(Html.fromHtml("Upon clicking on 'Place Order', I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
         binding.privacyText.setMovementMethod(LinkMovementMethod.getInstance());
 
-
         boolean isExpress = false;
         boolean showDeliveryCharge = false;
         totalDeliveryCharge = 0;
@@ -246,22 +247,9 @@ public class CheckoutFragment extends DialogFragment {
 
                 JsonObject shopObject = JsonParser.parseString(cartItem.getShopJson()).getAsJsonObject();
                 if (shopObject.has("is_express_shop")) {
-                    if (shopObject.get("is_express_shop").getAsBoolean() || shopObject.get("is_express_shop").getAsString().equals("1")) {
+                    if (shopObject.get("is_express_shop").getAsBoolean() ||
+                            shopObject.get("is_express_shop").getAsString().equals("1"))
                         isExpress = true;
-                        if (deliveryChargeApplicable != null) {
-                            String[] array = deliveryChargeApplicable.split(",");
-                            for (String s : array) {
-                                String shopTitle = shopObject.get("shop_name").getAsString();
-                                if (shopTitle.toLowerCase().contains(s.toLowerCase())) {
-                                    if (!expressShopSlugs.containsKey(cartItem.getShopSlug()))
-                                        totalDeliveryCharge += deliveryChargeAmount;
-                                    expressShopSlugs.put(cartItem.getShopSlug(), "added");
-                                    showDeliveryCharge = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
                 } else {
                     if (cartItem.getShopSlug().contains("evaly-express")) {
                         isExpress = true;
@@ -294,14 +282,6 @@ public class CheckoutFragment extends DialogFragment {
             binding.deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
         }
 
-        if (showDeliveryCharge && isExpress) {
-            if (totalDeliveryCharge > 0)
-                binding.deliveryCharge.setText(Utils.formatPriceSymbol(totalDeliveryCharge));
-            binding.vatHolder.setVisibility(View.VISIBLE);
-        } else {
-            totalDeliveryCharge = 0;
-            binding.vatHolder.setVisibility(View.GONE);
-        }
     }
 
     private void checkLocationPermission() {
@@ -387,11 +367,21 @@ public class CheckoutFragment extends DialogFragment {
     }
 
     private void liveEvents() {
-
+        viewModel.deliveryChargeLiveData.observe(getViewLifecycleOwner(), deliveryCharge -> {
+            dialog.hideDialog();
+            if (deliveryCharge == null)
+                binding.deliveryCharge.setText(Utils.formatPriceSymbol(0));
+            else {
+                binding.deliveryCharge.setText(Utils.formatPriceSymbol(deliveryCharge));
+                totalDeliveryCharge = deliveryCharge;
+                binding.totalAmount.setText(Utils.formatPriceSymbol(totalAmount + totalDeliveryCharge));
+                binding.totalText.setText(String.format("%s %s", getString(R.string.total_colon), Utils.formatPriceSymbol(totalAmount + totalDeliveryCharge)));
+            }
+        });
         viewModel.attachmentCheckLiveData.observe(getViewLifecycleOwner(), list -> {
-            HashMap<String, Boolean> map = new HashMap<>();
+            HashMap<String, AttachmentCheckResponse> map = new HashMap<>();
             for (AttachmentCheckResponse item : list) {
-                map.put(item.getShopSlug(), item.isAttachmentRequired());
+                map.put(item.getShopSlug(), item);
             }
             controller.setShowAttachmentMap(map);
             controller.requestModelBuild();
@@ -429,7 +419,7 @@ public class CheckoutFragment extends DialogFragment {
             controller.setList(cartEntities);
             controller.requestModelBuild();
             updateViews();
-            double totalAmount = 0;
+            totalAmount = 0;
             int totalItems = 0;
             for (CartEntity cartEntity : cartEntities) {
                 totalAmount += cartEntity.getPriceDouble() * cartEntity.getQuantity();

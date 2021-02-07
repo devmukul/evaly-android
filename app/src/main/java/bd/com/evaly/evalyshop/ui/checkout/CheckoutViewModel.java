@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +38,8 @@ public class CheckoutViewModel extends ViewModel {
     public SingleLiveEvent<Integer> imagePicker = new SingleLiveEvent<>();
     protected LiveData<List<CartEntity>> liveList = new MutableLiveData<>();
     protected SingleLiveEvent<Boolean> errorOrder = new SingleLiveEvent<>();
+    protected SingleLiveEvent<Boolean> hideDialog = new SingleLiveEvent<>();
+    protected MutableLiveData<Double> deliveryChargeLiveData = new MutableLiveData<>();
     protected MutableLiveData<List<AttachmentCheckResponse>> attachmentCheckLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse<List<JsonObject>>> orderPlacedLiveData = new MutableLiveData<>();
     protected MutableLiveData<HashMap<String, List<String>>> attachmentMapLiveData = new MutableLiveData<>();
@@ -83,16 +84,25 @@ public class CheckoutViewModel extends ViewModel {
     }
 
     public void checkAttachmentRequirements(List<Integer> list) {
-        Logger.e("called");
         OrderApiHelper.isAttachmentRequired(list, new ResponseListenerAuth<CommonDataResponse<List<AttachmentCheckResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AttachmentCheckResponse>> response, int statusCode) {
                 attachmentCheckLiveData.setValue(response.getData());
+                List<String> shopSlugs = new ArrayList<>();
+                double deliveryCharge = 0;
+                for (AttachmentCheckResponse item : response.getData()) {
+                    if (item.isApplyDeliveryCharge() && !shopSlugs.contains(item.getShopSlug())) {
+                        deliveryCharge += item.getDeliveryCharge();
+                        shopSlugs.add(item.getShopSlug());
+                    }
+                }
+                deliveryChargeLiveData.setValue(deliveryCharge);
+                shopSlugs.clear();
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
+                errorOrder.setValue(true);
             }
 
             @Override

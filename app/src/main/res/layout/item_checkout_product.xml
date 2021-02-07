@@ -52,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="15dp"
                 android:textColor="@color/c555"
                 tools:text="This is the product title, variation name is on bottom" />
 
@@ -61,7 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="15dp"
                 android:layout_weight="0"
                 android:textColor="@color/c555"
                 android:textSize="12sp"
@@ -72,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="15dp"
                 android:background="@color/fafafa" />
 
             <LinearLayout
@@ -97,7 +97,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="2dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginRight="15dp"
                     android:layout_weight="1"
                     android:fontFamily="sans-serif-medium"
                     android:textAlignment="textEnd"
