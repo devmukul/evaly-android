@@ -18,19 +18,19 @@ public class CreatedBy implements Serializable {
     @SerializedName("username")
     private String username;
 
-    public String getLastName(){
+    public String getLastName() {
         return lastName;
     }
 
-    public String getFirstName(){
+    public String getFirstName() {
         return firstName;
     }
 
-    public String getEmail(){
+    public String getEmail() {
         return email;
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
 }

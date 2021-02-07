@@ -41,8 +41,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<IssuesAdapter.IssuesView
     public void onBindViewHolder(@NonNull IssuesViewHolder holder, int i) {
         IssueListModel model = list.get(i);
 
-        holder.tvIssueType.setText(Utils.toFirstCharUpperAll(model.getCategory().getName()));
-        holder.tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMTIssue("yyyy-MM-dd HH:mm:ss.SSS", "", model.getCreatedAt())));
+        holder.tvIssueType.setText(Utils.toFirstCharUpperAll(model.getCategory()));
+        holder.tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMTIssue("", "", model.getCreatedAt())));
 
         holder.tvIssueStatus.setText(Utils.toFirstCharUpperAll(model.getStatus()));
 
@@ -75,8 +75,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<IssuesAdapter.IssuesView
         public IssuesViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            if (getLayoutPosition() < list.size())
-                itemView.setOnClickListener(view -> listener.onRecyclerViewItemClicked(list.get(getLayoutPosition())));
+
+            itemView.setOnClickListener(view -> listener.onRecyclerViewItemClicked(list.get(getLayoutPosition())));
         }
     }
 }

@@ -6,11 +6,11 @@ import java.io.Serializable;
 
 public class IssueTicketCommentModel implements Serializable {
 
-    @SerializedName("commented_by")
+    @SerializedName("created_by")
     private CommentedBy commentedBy;
 
     @SerializedName("ticket")
-    private Ticket ticket;
+    private int ticket;
 
     @SerializedName("created_at")
     private String createdAt;
@@ -21,48 +21,48 @@ public class IssueTicketCommentModel implements Serializable {
     @SerializedName("id")
     private int id;
 
-    public void setCommentedBy(CommentedBy commentedBy){
-        this.commentedBy = commentedBy;
-    }
-
-    public CommentedBy getCommentedBy(){
+    public CommentedBy getCommentedBy() {
         return commentedBy;
     }
 
-    public void setTicket(Ticket ticket){
-        this.ticket = ticket;
+    public void setCommentedBy(CommentedBy commentedBy) {
+        this.commentedBy = commentedBy;
     }
 
-    public Ticket getTicket(){
+    public int getTicket() {
         return ticket;
     }
 
-    public void setCreatedAt(String createdAt){
-        this.createdAt = createdAt;
+    public void setTicket(int ticket) {
+        this.ticket = ticket;
     }
 
-    public String getCreatedAt(){
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setComment(String comment){
-        this.comment = comment;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public String getComment(){
+    public String getComment() {
         return comment;
     }
 
-    public void setId(int id){
-        this.id = id;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
-    public String toString(){
+    public String toString() {
         return
                 "IssueTicketCommentModel{" +
                         "commented_by = '" + commentedBy + '\'' +
