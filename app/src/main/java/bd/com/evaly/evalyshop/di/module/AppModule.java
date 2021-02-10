@@ -12,6 +12,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import javax.inject.Singleton;
 
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.CartDatabase;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.di.qualifiers.FirebaseRemoteConfigLiveData;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
@@ -70,6 +71,14 @@ public class AppModule {
     @Singleton
     AppDatabase provideAppDatabase(Context context) {
         return Room.databaseBuilder(context, AppDatabase.class, "app_database")
+                .fallbackToDestructiveMigration()
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    CartDatabase provideCartDatabase(Context context) {
+        return Room.databaseBuilder(context, CartDatabase.class, "cart_database")
                 .fallbackToDestructiveMigration()
                 .build();
     }

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.BuildConfig;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
@@ -35,6 +36,7 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryRe
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
+import bd.com.evaly.evalyshop.models.cart.CartRequest;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandCatResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
 import bd.com.evaly.evalyshop.models.catalog.category.ChildCategoryResponse;
@@ -96,6 +98,15 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface IApiClient {
+
+    @GET(UrlUtils.BASE_CART + "carts/users/evaly")
+    Call<CommonDataResponse<List<CartEntity>>> getCartList(@Header("Authorization") String token);
+
+    @POST(UrlUtils.BASE_CART + "carts")
+    Call<CommonDataResponse<List<CartEntity>>> syncCartList(@Header("Authorization") String token,
+                                                            @Body CartRequest body);
+
+
 
     @POST(UrlUtils.BASE_CATALOG + "orders/checkout/buckets")
     Call<CommonDataResponse<List<AttachmentCheckResponse>>> isAttachmentRequired(@Header("Authorization") String token,

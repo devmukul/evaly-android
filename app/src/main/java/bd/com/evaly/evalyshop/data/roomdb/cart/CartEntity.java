@@ -4,39 +4,55 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
-@Entity(tableName = "cart_table")
+@Entity(tableName = "cart_table_new")
 public class CartEntity implements Serializable {
 
-    @PrimaryKey(autoGenerate = true)
-    private int id;
-
-    @ColumnInfo(name = "slug")
+    @ColumnInfo(name = "product_slug")
+    @SerializedName("product_slug")
     private String slug;
 
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = "product_name")
+    @SerializedName("product_name")
     private String name;
 
-    @ColumnInfo(name = "image")
+    @ColumnInfo(name = "product_image")
+    @SerializedName("product_image")
     private String image;
 
     @ColumnInfo(name = "price")
+    @SerializedName("price")
     private String price;
+
+    @ColumnInfo(name = "discounted_price")
+    @SerializedName("discounted_price")
+    private String discountedPrice;
+
+    @ColumnInfo(name = "shop_image")
+    @SerializedName("shop_image")
+    private String shopImage;
 
     @ColumnInfo(name = "time")
     private long time;
 
     @ColumnInfo(name = "quantity")
+    @SerializedName("quantity")
     private int quantity;
 
     @ColumnInfo(name = "shop_name")
+    @SerializedName("shop_name")
     private String shopName;
 
     @ColumnInfo(name = "shop_slug")
+    @SerializedName("shop_slug")
     private String shopSlug;
 
-    @ColumnInfo(name = "product_id")
+    @PrimaryKey
+    @ColumnInfo(name = "shop_item_id")
+    @SerializedName("shop_item_id")
     private String productID;
 
     @ColumnInfo(name = "shop_json")
@@ -50,12 +66,28 @@ public class CartEntity implements Serializable {
 
     private boolean showShopTitle;
 
-    public void setVariantDetails(String variantDetails) {
-        this.variantDetails = variantDetails;
+    public String getDiscountedPrice() {
+        return discountedPrice;
+    }
+
+    public void setDiscountedPrice(String discountedPrice) {
+        this.discountedPrice = discountedPrice;
+    }
+
+    public String getShopImage() {
+        return shopImage;
+    }
+
+    public void setShopImage(String shopImage) {
+        this.shopImage = shopImage;
     }
 
     public String getVariantDetails() {
         return variantDetails;
+    }
+
+    public void setVariantDetails(String variantDetails) {
+        this.variantDetails = variantDetails;
     }
 
     public boolean isShowShopTitle() {
@@ -110,6 +142,10 @@ public class CartEntity implements Serializable {
         return price;
     }
 
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
     public int getPriceInt() {
         try {
             return Integer.parseInt(price);
@@ -124,11 +160,6 @@ public class CartEntity implements Serializable {
         } catch (Exception e) {
             return 0;
         }
-    }
-
-
-    public void setPrice(String price) {
-        this.price = price;
     }
 
     public void setPriceRound(String p) {

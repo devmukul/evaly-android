@@ -9,6 +9,10 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.cart.CartRequest;
+import bd.com.evaly.evalyshop.rest.apiHelper.CartApiHelper;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -25,6 +29,46 @@ public final class CartViewModel extends ViewModel {
         this.cartDao = cartDao;
         liveList = cartDao.getAllLive();
         compositeDisposable = new CompositeDisposable();
+    }
+
+    public void getCartList() {
+        CartApiHelper.getCartList(new ResponseListenerAuth<CommonDataResponse<List<CartEntity>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<CartEntity>> response, int statusCode) {
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
+    public void syncCartList() {
+        CartRequest body = new CartRequest();
+        CartApiHelper.syncCartList(body, new ResponseListenerAuth<CommonDataResponse<List<CartEntity>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<CartEntity>> response, int statusCode) {
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
     }
 
     public void increaseQuantity(String id) {
