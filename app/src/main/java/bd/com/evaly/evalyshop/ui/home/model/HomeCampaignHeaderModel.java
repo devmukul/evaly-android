@@ -4,13 +4,13 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
-import com.airbnb.epoxy.EpoxyHolder;
 import com.airbnb.epoxy.EpoxyModelClass;
-import com.airbnb.epoxy.EpoxyModelWithHolder;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.HomeModelCampaignHeaderBinding;
@@ -18,7 +18,7 @@ import bd.com.evaly.evalyshop.databinding.HomeModelCampaignHeaderBinding;
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
 @EpoxyModelClass(layout = R.layout.home_model_campaign_header)
-public abstract class HomeCampaignHeaderModel extends EpoxyModelWithHolder<HomeCampaignHeaderModel.HomeExpressHolder> {
+public abstract class HomeCampaignHeaderModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
     public AppCompatActivity activity;
@@ -28,17 +28,17 @@ public abstract class HomeCampaignHeaderModel extends EpoxyModelWithHolder<HomeC
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
 
-    public class HomeExpressHolder extends EpoxyHolder {
-        View itemView;
-
-        @Override
-        protected void bindView(@NonNull View itemView) {
-            this.itemView = itemView;
-            HomeModelCampaignHeaderBinding binding = HomeModelCampaignHeaderBinding.bind(itemView);
-            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
-            params.setFullSpan(true);
-            binding.help.setOnClickListener(clickListener);
-        }
+    @Override
+    public void bind(@NonNull DataBindingHolder holder) {
+        super.bind(holder);
+        HomeModelCampaignHeaderBinding binding = (HomeModelCampaignHeaderBinding) holder.getDataBinding();
+        StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
+        params.setFullSpan(true);
+        binding.help.setOnClickListener(clickListener);
     }
 
+    @Override
+    protected void setDataBindingVariables(ViewDataBinding binding) {
+
+    }
 }

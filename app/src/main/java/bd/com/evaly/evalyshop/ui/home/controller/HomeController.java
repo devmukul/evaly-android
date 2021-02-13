@@ -172,9 +172,9 @@ public class HomeController extends EpoxyController {
 
         initExpressCarousel();
 
-        initCategoryCarousel();
+     //   initCategoryCarousel();
 
-        initBrandsCarousel();
+      //  initBrandsCarousel();
 
         initProductGrid();
 

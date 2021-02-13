@@ -36,6 +36,7 @@ public abstract class HomeOngoingCampaignHeaderModel extends DataBindingEpoxyMod
         HomeModelFlashsaleHeaderBinding binding = (HomeModelFlashsaleHeaderBinding) holder.getDataBinding();
         StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         params.setFullSpan(true);
+
         if (title != null)
             binding.title.setText(title);
         if (showMore)

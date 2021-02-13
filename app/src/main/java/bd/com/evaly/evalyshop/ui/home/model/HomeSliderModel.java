@@ -1,15 +1,13 @@
 package bd.com.evaly.evalyshop.ui.home.model;
 
-import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
-import com.airbnb.epoxy.EpoxyHolder;
 import com.airbnb.epoxy.EpoxyModelClass;
-import com.airbnb.epoxy.EpoxyModelWithHolder;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.List;
@@ -20,7 +18,7 @@ import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.ui.home.controller.SliderController;
 
 @EpoxyModelClass(layout = R.layout.home_model_slider)
-public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderModel.HomeSliderHolder> {
+public abstract class HomeSliderModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
     AppCompatActivity activity;
@@ -31,30 +29,32 @@ public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderMod
     @EpoxyAttribute
     SliderController controller;
 
-    public class HomeSliderHolder extends EpoxyHolder {
+    @Override
+    public void bind(@NonNull DataBindingHolder holder) {
+        super.bind(holder);
 
-        View itemView;
+        HomeModelSliderBinding binding = (HomeModelSliderBinding) holder.getDataBinding();
 
-        @Override
-        protected void bindView(@NonNull View itemView) {
-            this.itemView = itemView;
-            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) itemView.getLayoutParams();
-            params.setFullSpan(true);
+        StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
+        params.setFullSpan(true);
 
-            HomeModelSliderBinding binding = HomeModelSliderBinding.bind(itemView);
+        if (controller == null)
+            controller = new SliderController();
+        controller.setFilterDuplicates(true);
+        controller.setActivity(activity);
+        binding.sliderPager.setAdapter(controller.getAdapter());
 
-            if (controller == null)
-                controller = new SliderController();
-            controller.setFilterDuplicates(true);
-            controller.setActivity(activity);
-            binding.sliderPager.setAdapter(controller.getAdapter());
+        new TabLayoutMediator(binding.sliderIndicator, binding.sliderPager,
+                (tab, position) -> tab.setText("")
+        ).attach();
 
-            new TabLayoutMediator(binding.sliderIndicator, binding.sliderPager,
-                    (tab, position) -> tab.setText("")
-            ).attach();
-
-            if (list.size() > 0)
-                controller.setData(list);
-        }
+        if (list.size() > 0)
+            controller.setData(list);
     }
+
+    @Override
+    protected void setDataBindingVariables(ViewDataBinding binding) {
+
+    }
+
 }
