@@ -13,6 +13,7 @@ import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
 import com.airbnb.epoxy.EpoxyModel;
 import com.airbnb.epoxy.EpoxyViewHolder;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,14 +156,20 @@ public class HomeController extends EpoxyController {
 
         initExpressCarousel();
 
-        //   initCategoryCarousel();
+        initCategoryCarousel();
 
-        //  initBrandsCarousel();
+        initBrandsCarousel();
 
         initProductGrid();
 
         // bottom loading bar
         loader.addIf(loadingMore, this);
+    }
+
+    @Override
+    protected void onExceptionSwallowed(@NonNull RuntimeException exception) {
+        super.onExceptionSwallowed(exception);
+        Logger.e(exception.toString());
     }
 
     private void initProductGrid() {

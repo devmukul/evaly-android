@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.orhanobut.logger.Logger;
+
 public class RecyclerViewNoLeak extends RecyclerView {
     public RecyclerViewNoLeak(@NonNull Context context) {
         super(context);
@@ -20,15 +22,24 @@ public class RecyclerViewNoLeak extends RecyclerView {
         super(context, attrs, defStyleAttr);
     }
 
+//    @Override
+//    protected void onDetachedFromWindow() {
+//        super.onDetachedFromWindow();
+//        if (getAdapter() != null) {
+//            setAdapter(null);
+//        }
+//    }
+//
+//
+
+
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (getAdapter() != null) {
-            setAdapter(null);
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        try {
+            super.onLayout(changed, l, t, r, b);
+        } catch (Exception e){
+            Logger.e("hmtzz" + e.toString());
         }
     }
-
-
-
 }
 

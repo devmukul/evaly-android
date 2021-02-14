@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.ModelView;
 
-@ModelView(saveViewState = true, defaultLayout = 0, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT)
+import bd.com.evaly.evalyshop.views.FixedGridLayoutManager;
+
+@ModelView(saveViewState = true, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT)
 public class HomeExpressCarousel extends Carousel {
 
     public HomeExpressCarousel(Context context) {
@@ -34,7 +36,7 @@ public class HomeExpressCarousel extends Carousel {
     @Nullable
     @Override
     public LayoutManager createLayoutManager() {
-        return new GridLayoutManager(getContext(), 4,
+        return new FixedGridLayoutManager(getContext(), 4,
                 GridLayoutManager.VERTICAL, false);
     }
 

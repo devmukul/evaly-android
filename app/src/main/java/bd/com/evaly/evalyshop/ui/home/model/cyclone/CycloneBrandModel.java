@@ -34,7 +34,6 @@ public abstract class CycloneBrandModel extends DataBindingEpoxyModel {
 
         binding.title.setText(Html.fromHtml(model.getName()));
         BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300, true);
-        binding.getRoot().setOnClickListener(clickListener);
 
         binding.tvCashback.setText(model.getBadgeText2().replace(".00", ""));
 
@@ -42,6 +41,8 @@ public abstract class CycloneBrandModel extends DataBindingEpoxyModel {
             binding.tvCashback.setVisibility(View.GONE);
         else
             binding.tvCashback.setVisibility(View.VISIBLE);
+
+        binding.getRoot().setOnClickListener(clickListener);
     }
 
 

@@ -3,6 +3,8 @@ package bd.com.evaly.evalyshop.ui.home;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.airbnb.epoxy.EpoxyController;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import java.util.Random;
@@ -33,6 +36,7 @@ import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
@@ -47,6 +51,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, HomeController.ClickListener {
 
+    @Inject
+    RecommenderViewModel recommenderViewModel;
 
     @Inject
     FirebaseRemoteConfig firebaseRemoteConfig;
@@ -69,6 +75,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public static int randInt(int min, int max) {
         Random rand = new Random();
         return rand.nextInt((max - min) + 1) + min;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        homeController.cancelPendingModelBuild();
     }
 
     @Override
@@ -121,7 +133,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void setupRecycler() {
 
-        if (homeController == null)
+        if (homeController == null || homeController.getAdapter() == null)
             homeController = new HomeController();
 
         homeController.setFilterDuplicates(true);
@@ -130,8 +142,16 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         homeController.setFragment(this);
         homeController.setHomeViewModel(viewModel);
         homeController.setSpanCount(2);
-        homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
+        //firebaseRemoteConfig.getBoolean("cyclone_ongoing")
+        homeController.setCycloneOngoing(true);
         homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
+
+        HandlerThread handlerThread = new HandlerThread("epoxy");
+        handlerThread.start();
+        Handler handler = new Handler(handlerThread.getLooper());
+        EpoxyController.defaultDiffingHandler = handler;
+        EpoxyController.defaultModelBuildingHandler = handler;
+
         binding.recyclerView.setAdapter(homeController.getAdapter());
 
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -140,7 +160,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(2, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
 
-        homeController.requestModelBuild();
+
+        if (!binding.recyclerView.isComputingLayout())
+            homeController.requestModelBuild();
+
         binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
             public void loadMoreItem() {
@@ -156,24 +179,25 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void requestModelBuild() {
-        homeController.requestModelBuild();
+        if (!binding.recyclerView.isComputingLayout())
+            homeController.requestModelBuild();
         //if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
         //homeController.requestDelayedModelBuild(randInt(100, 200));
     }
 
     private void liveEventObservers() {
 
-//        recommenderViewModel.getRsBrandLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
-//            homeController.setRsBrandList(rsEntities);
-//            if (rsEntities.size() > 0)
-//                requestModelBuild();
-//        });
-//
-//        recommenderViewModel.getRsCategoryLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
-//            homeController.setRsCategoryList(rsEntities);
-//            if (rsEntities.size() > 0)
-//                requestModelBuild();
-//        });
+        recommenderViewModel.getRsBrandLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
+            homeController.setRsBrandList(rsEntities);
+            if (rsEntities.size() > 0)
+                requestModelBuild();
+        });
+
+        recommenderViewModel.getRsCategoryLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
+            homeController.setRsCategoryList(rsEntities);
+            if (rsEntities.size() > 0)
+                requestModelBuild();
+        });
 
 //        recommenderViewModel.getRsShopLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
 //            homeController.setRsShopList(rsEntities);

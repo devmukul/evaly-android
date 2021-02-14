@@ -72,6 +72,8 @@ public class CampaignBrandResponse extends CampaignParentModel {
 	}
 
 	public String getBadgeText2(){
+		if (badgeText2 == null)
+			return "";
 		return badgeText2;
 	}
 
