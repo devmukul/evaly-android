@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.ViewDataBinding;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
@@ -53,12 +52,8 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
         super.bind(holder);
 
         HomeModelProductGridBinding binding = (HomeModelProductGridBinding) holder.getDataBinding();
-        if (binding.getRoot().getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
-            params.setFullSpan(false);
-        }
 
-        binding.title.setText(Html.fromHtml(model.getName()));
+        binding.title.setText(model.getName());
 
         if (binding.getRoot().getContext() != null)
             Glide.with(binding.getRoot())

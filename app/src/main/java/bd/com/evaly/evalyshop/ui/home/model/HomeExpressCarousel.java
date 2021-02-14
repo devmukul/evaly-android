@@ -28,4 +28,5 @@ public class HomeExpressCarousel extends Carousel {
         return new GridLayoutManager(getContext(), 4,
                 GridLayoutManager.VERTICAL, false);
     }
+
 }

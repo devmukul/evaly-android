@@ -35,6 +35,7 @@ public abstract class HomeExpressServiceModel extends DataBindingEpoxyModel {
         return model;
     }
 
+
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
@@ -51,9 +52,11 @@ public abstract class HomeExpressServiceModel extends DataBindingEpoxyModel {
         binding.image.setPadding(0, 0, 0, 0);
 
         binding.title.setText(model.getAppName().replace("\\n", "\n"));
+
         if (fontSize > 0) {
             binding.title.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
         }
+
         binding.getRoot().setOnClickListener(clickListener);
     }
 
