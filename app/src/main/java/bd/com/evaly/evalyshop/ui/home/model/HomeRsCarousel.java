@@ -1,22 +1,31 @@
 package bd.com.evaly.evalyshop.ui.home.model;
 
 import android.content.Context;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.ModelView;
 
 import bd.com.evaly.evalyshop.util.Utils;
 
-@ModelView(saveViewState = true, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT, baseModelClass =  EpoxyModelStaggeredGrid.class)
+@ModelView(saveViewState = true, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT)
 public class HomeRsCarousel extends Carousel {
 
     public HomeRsCarousel(Context context) {
         super(context);
         setNestedScrollingEnabled(false);
         setMinimumHeight((int) Utils.convertDpToPixel(175, getContext()));
+        StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        params.setFullSpan(true);
+        setLayoutParams(params);
     }
 
     @Nullable

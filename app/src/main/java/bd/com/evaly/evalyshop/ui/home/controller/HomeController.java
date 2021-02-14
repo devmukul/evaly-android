@@ -33,21 +33,21 @@ import bd.com.evaly.evalyshop.ui.epoxy.EpoxyDividerModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.home.HomeViewModel;
-import bd.com.evaly.evalyshop.ui.home.model.HomeDefaultCarouselModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressCarouselModel_;
+import bd.com.evaly.evalyshop.ui.home.model.HomeDefaultCarouselModel;
+import bd.com.evaly.evalyshop.ui.home.model.HomeExpressCarouselModel;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressHeaderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeRsCarouselModel_;
+import bd.com.evaly.evalyshop.ui.home.model.HomeRsCarouselModel;
 import bd.com.evaly.evalyshop.ui.home.model.HomeRsGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneBannerModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneBottomBarModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneBrandModel_;
-import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneCarouselModel_;
+import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneCarouselModel;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneSectionTitleModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneShopModel_;
@@ -61,8 +61,7 @@ public class HomeController extends EpoxyController {
     HomeWidgetModel_ widgetModel;
     @AutoModel
     LoadingModel_ loader;
-    @AutoModel
-    HomeExpressCarouselModel_ expressCarouselModel_;
+
     @AutoModel
     EpoxyDividerModel_ dividerModel_;
     @AutoModel
@@ -73,8 +72,6 @@ public class HomeController extends EpoxyController {
     HomeExpressHeaderModel_ productHeaderModel_;
     @AutoModel
     HomeExpressSkeletonModel_ expressSkeletonBindingModel_;
-    @AutoModel
-    HomeDefaultCarouselModel_ campaignCategoryCarousel;
 
     @AutoModel
     CycloneBannerModel_ cycloneBannerModel;
@@ -86,25 +83,11 @@ public class HomeController extends EpoxyController {
     CycloneSectionTitleModel_ flashSaleShopTitle;
 
     @AutoModel
-    CycloneCarouselModel_ flashSaleProductsCarousel;
-    @AutoModel
-    CycloneCarouselModel_ flashSaleBrandsCarousel;
-    @AutoModel
-    CycloneCarouselModel_ flashSaleShopCarousel;
-    @AutoModel
     CycloneBottomBarModel_ cycloneBottomBarModel;
 
     @AutoModel
-    HomeRsCarouselModel_ flashSaleCarousel;
-    @AutoModel
     HomeExpressHeaderModel_ flashSaleHeaderModel_;
 
-    @AutoModel
-    HomeRsCarouselModel_ categoryCarousel;
-    @AutoModel
-    HomeRsCarouselModel_ shopCarousel;
-    @AutoModel
-    HomeRsCarouselModel_ brandCarousel;
     @AutoModel
     HomeExpressHeaderModel_ categoryHeaderModel_;
     @AutoModel
@@ -172,9 +155,9 @@ public class HomeController extends EpoxyController {
 
         initExpressCarousel();
 
-     //   initCategoryCarousel();
+        //   initCategoryCarousel();
 
-      //  initBrandsCarousel();
+        //  initBrandsCarousel();
 
         initProductGrid();
 
@@ -229,7 +212,8 @@ public class HomeController extends EpoxyController {
                     }));
         }
 
-        categoryCarousel
+        new HomeRsCarouselModel()
+                .id("rs_categorycarousel")
                 .models(models)
                 .padding(Carousel.Padding.dp(12, 12, 10, 10, 10))
                 .addIf(rsCategoryList.size() > 0, this);
@@ -261,7 +245,8 @@ public class HomeController extends EpoxyController {
                     }));
         }
 
-        brandCarousel
+        new HomeRsCarouselModel()
+                .id("rs_brands_carousel")
                 .models(models)
                 .padding(Carousel.Padding.dp(12, 12, 10, 10, 10))
                 .addIf(rsBrandList.size() > 0, this);
@@ -293,7 +278,8 @@ public class HomeController extends EpoxyController {
                     }));
         }
 
-        shopCarousel
+        new HomeRsCarouselModel()
+                .id("rs_shop_carousel")
                 .models(models)
                 .padding(Carousel.Padding.dp(12, 12, 10, 10, 10))
                 .addIf(rsShopList.size() > 0, this);
@@ -325,7 +311,8 @@ public class HomeController extends EpoxyController {
                     }));
         }
 
-        campaignCategoryCarousel
+        new HomeDefaultCarouselModel()
+                .id("campaign_carousel")
                 .models(isCampaignLoading ? campaignSkeletonItemModels : campaignModels)
                 .onBind((model, view, position) -> {
                     view.setBackground(ContextCompat.getDrawable(activity, R.drawable.white_to_grey_gradient));
@@ -366,7 +353,8 @@ public class HomeController extends EpoxyController {
                     .id("express_dummy" + i));
         }
 
-        expressCarouselModel_
+        new HomeExpressCarouselModel()
+                .id("express_carousel")
                 .models(isExpressLoading ? expressDummyItemModels : expressItemModels)
                 .padding(Carousel.Padding.dp(7, 12, 7, 0, 0))
                 .addTo(this);
@@ -402,7 +390,8 @@ public class HomeController extends EpoxyController {
                     }));
         }
 
-        flashSaleCarousel
+        new HomeRsCarouselModel()
+                .id("flashsale_carousel")
                 .models(flashSaleModels)
                 .padding(Carousel.Padding.dp(15, 12, 10, 10, 10))
                 .addIf(!isCycloneOngoing && flashSaleModels.size() > 0, this);
@@ -437,7 +426,9 @@ public class HomeController extends EpoxyController {
                     }));
         }
 
-        flashSaleProductsCarousel
+
+        new CycloneCarouselModel()
+                .id("flashSaleProductsCarousel")
                 .models(flashSaleProductModels)
                 .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
                 .addIf(isCycloneOngoing && flashSaleProductModels.size() > 0, this);
@@ -463,7 +454,8 @@ public class HomeController extends EpoxyController {
                     }));
         }
 
-        flashSaleBrandsCarousel
+        new CycloneCarouselModel()
+                .id("flashSaleBrandsCarousel")
                 .models(flashSaleBrandsModels)
                 .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
                 .addIf(isCycloneOngoing && flashSaleBrandsModels.size() > 0, this);
@@ -488,7 +480,8 @@ public class HomeController extends EpoxyController {
                     }));
         }
 
-        flashSaleShopCarousel
+        new CycloneCarouselModel()
+                .id("flashSaleShopCarousel")
                 .models(flashSaleShopModels)
                 .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
                 .addIf(isCycloneOngoing && flashSaleShopModels.size() > 0, this);
