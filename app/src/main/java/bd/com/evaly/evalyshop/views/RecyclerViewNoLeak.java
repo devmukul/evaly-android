@@ -22,22 +22,19 @@ public class RecyclerViewNoLeak extends RecyclerView {
         super(context, attrs, defStyleAttr);
     }
 
-//    @Override
-//    protected void onDetachedFromWindow() {
-//        super.onDetachedFromWindow();
-//        if (getAdapter() != null) {
-//            setAdapter(null);
-//        }
-//    }
-//
-//
-
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (getAdapter() != null) {
+            setAdapter(null);
+        }
+    }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         try {
             super.onLayout(changed, l, t, r, b);
-        } catch (Exception e){
+        } catch (Exception e) {
             Logger.e("hmtzz" + e.toString());
         }
     }

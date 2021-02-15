@@ -47,6 +47,7 @@ import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSliderModel_;
 import bd.com.evaly.evalyshop.util.BindingUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.FixedStaggeredGridLayoutManager;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
@@ -328,7 +329,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         productController.setViewModel(viewModel);
         productController.setActivity((AppCompatActivity) getActivity());
         binding.recyclerView.setAdapter(productController.getAdapter());
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        FixedStaggeredGridLayoutManager staggeredGridLayoutManager = new FixedStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         binding.recyclerView.setLayoutManager(staggeredGridLayoutManager);
         productController.setSpanCount(2);
         int spacing = (int) Utils.convertDpToPixel(10, requireActivity());
@@ -360,7 +361,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                     isSharingBottomShowing = true;
                     binding.buttonRight.setImageDrawable(getResources().getDrawable(R.drawable.ic_share));
                 }
-
             }
         });
         productController.requestModelBuild();

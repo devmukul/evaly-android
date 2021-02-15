@@ -36,12 +36,7 @@ public abstract class HomeExpressHeaderModel extends BaseDataBindingEpoxyModel {
         HomeModelFlashsaleHeaderBinding binding = (HomeModelFlashsaleHeaderBinding) baseBinding;
         StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         params.setFullSpan(true);
-        if (transparentBackground)
-            binding.container.setBackgroundColor(Color.TRANSPARENT);
-        else {
-            if (binding.container.getContext() != null)
-                binding.container.setBackgroundColor(binding.container.getContext().getResources().getColor(R.color.white));
-        }
+
         super.preBind(baseBinding);
     }
 
@@ -58,11 +53,17 @@ public abstract class HomeExpressHeaderModel extends BaseDataBindingEpoxyModel {
         else
             binding.help.setVisibility(View.GONE);
 
-
         if (bottomSpace)
             binding.bottomSpace.setVisibility(View.VISIBLE);
         else
             binding.bottomSpace.setVisibility(View.GONE);
+
+        if (transparentBackground)
+            binding.container.setBackgroundColor(Color.TRANSPARENT);
+        else {
+            if (binding.container.getContext() != null)
+                binding.container.setBackgroundColor(binding.container.getContext().getResources().getColor(R.color.white));
+        }
 
         binding.help.setOnClickListener(clickListener);
     }

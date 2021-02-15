@@ -45,6 +45,7 @@ import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.FixedStaggeredGridLayoutManager;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -142,8 +143,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         homeController.setFragment(this);
         homeController.setHomeViewModel(viewModel);
         homeController.setSpanCount(2);
-        //firebaseRemoteConfig.getBoolean("cyclone_ongoing")
-        homeController.setCycloneOngoing(true);
+        homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
         homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
 
         HandlerThread handlerThread = new HandlerThread("epoxy");
@@ -154,7 +154,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         binding.recyclerView.setAdapter(homeController.getAdapter());
 
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        FixedStaggeredGridLayoutManager layoutManager = new FixedStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
         binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(2, spacing, true));
