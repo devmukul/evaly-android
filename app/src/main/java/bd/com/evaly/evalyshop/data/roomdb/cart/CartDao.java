@@ -11,12 +11,16 @@ import androidx.room.Query;
 import java.util.List;
 
 import io.reactivex.Completable;
+import io.reactivex.Single;
 
 @Dao
 public interface CartDao {
 
     @Insert
     void insert(CartEntity entity);
+
+    @Insert
+    Completable insertRx(CartEntity entity);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Completable insertIgnore(CartEntity entity);
@@ -41,6 +45,12 @@ public interface CartDao {
 
     @Query("SELECT * FROM cart_table WHERE shop_item_id = :productID LIMIT 1")
     List<CartEntity> checkExistsEntity(String productID);
+
+    @Query("SELECT * FROM cart_table WHERE shop_item_id = :productID LIMIT 1")
+    Single<List<CartEntity>> checkExistsRx(String productID);
+
+    @Query("SELECT * FROM cart_table ORDER BY shop_slug, time desc")
+    Single<List<CartEntity>> getListRx();
 
     @Query("SELECT * FROM cart_table ORDER BY shop_slug, time desc")
     List<CartEntity> getAll();

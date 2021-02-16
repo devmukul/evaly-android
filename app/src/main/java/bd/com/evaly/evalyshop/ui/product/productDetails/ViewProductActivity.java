@@ -67,6 +67,7 @@ import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
+import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.AvailableShopAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SpecificationAdapter;
@@ -107,6 +108,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
     private BottomSheetDialog newsfeedShareDialog;
     private ActivityViewProductBinding binding;
     private ViewProductViewModel viewModel;
+    private CartViewModel cartViewModel;
     private List<ProductSpecificationsItem> specificationsItemList = new ArrayList<>();
     private List<AttributesItem> productAttributesItemList;
     private List<ProductVariantsItem> productVariantsItemList;
@@ -147,12 +149,12 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
         binding.selectedShopHolder.setVisibility(View.GONE);
         viewModel = new ViewModelProvider(this).get(ViewProductViewModel.class);
+        cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
         context = this;
 
         setSupportActionBar(binding.zToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         getSupportActionBar().setTitle("View Product");
-
 
         productPrice = getIntent().getDoubleExtra("product_price", -1);
         productImage = getIntent().getStringExtra("product_image");
@@ -567,10 +569,9 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         if (item.getProductImages().size() > 0)
             cartItem.setImage(item.getProductImages().get(0));
         cartItem.setSlug(slug);
-        // cartItem.setVariantDetails(item.get);
+        cartItem.setTime(Calendar.getInstance().getTimeInMillis());
 
         // for wishlist
-
         int price = 0;
         try {
             price = Math.round(item.getMinPrice());
@@ -695,14 +696,14 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             CartEntity cartEntity = cartItem;
             cartEntity.setPriceRound(price);
             cartEntity.setTime(calendar.getTimeInMillis());
-            cartEntity.setShopJson(sellerJson);
+            cartEntity.setExpressShop(shop.isExpressShop());
             cartEntity.setQuantity(1);
             cartEntity.setShopSlug(shop.getShopSlug());
             cartEntity.setShopName(shop.getShopName());
             cartEntity.setSlug(slug);
             cartEntity.setProductID(String.valueOf(shop.getShopItemId()));
 
-            viewModel.insertCartEntity(cartEntity);
+            cartViewModel.insert(cartEntity);
 
             Snackbar snackBar = Snackbar.make(getWindow().getDecorView(), "Added to cart", 1500);
             snackBar.setAction("Go to Cart", view -> {
@@ -921,22 +922,20 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             if (shop.getDiscountedPrice() > 0)
                 price = Utils.formatPrice(shop.getDiscountedPrice());
 
-        String sellerJson = new Gson().toJson(shop);
-
         CartEntity cartEntity = new CartEntity();
         cartEntity.setName(cartItem.getName());
         cartEntity.setImage(cartItem.getImage());
         cartEntity.setPriceRound(price);
-        cartEntity.setTime(calendar.getTimeInMillis());
-        cartEntity.setShopJson(sellerJson);
+        cartEntity.setExpressShop(shop.isExpressShop());
         cartEntity.setQuantity(1);
         cartEntity.setShopSlug(shop.getShopSlug());
         cartEntity.setShopName(shop.getShopName());
         cartEntity.setSlug(cartItem.getSlug());
         cartEntity.setVariantDetails(cartItem.getVariantDetails());
         cartEntity.setProductID(String.valueOf(shop.getShopItemId()));
+        cartEntity.setTime(Calendar.getInstance().getTimeInMillis());
 
-        viewModel.insertCartEntity(cartEntity);
+        cartViewModel.insert(cartEntity);
 
         Snackbar snackBar = Snackbar.make(getWindow().getDecorView(), "Added to cart", 1500);
         snackBar.setAction("Go to Cart", v1 -> {

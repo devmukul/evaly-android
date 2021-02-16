@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.JsonObject;
+import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
 
@@ -13,12 +14,18 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
+import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.CartApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
 @HiltViewModel
@@ -32,18 +39,54 @@ public class MainViewModel extends ViewModel {
     public CampaignProductCategoryResponse selectedCampaignProductCategoryModel;
     public SingleLiveEvent<Void> campaignFilterUpdated = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> refreshCurrentFragment = new SingleLiveEvent<>();
+    public LiveData<Integer> wishListLiveCount;
+    public LiveData<Integer> cartLiveCount;
+    private CompositeDisposable compositeDisposable;
+    private CartDao cartDao;
+
+    @Inject
+    public MainViewModel(CartDao cartDao, WishListDao wishListDao) {
+        this.cartDao = cartDao;
+        cartLiveCount = cartDao.getLiveCount();
+        wishListLiveCount = wishListDao.getLiveCount();
+        compositeDisposable = new CompositeDisposable();
+        getCartList();
+    }
+
+    public void getCartList() {
+        if (CredentialManager.getToken().equals(""))
+            return;
+
+        CartApiHelper.getCartList(new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<CartHolderModel> response, int statusCode) {
+                if (response.getData() == null || response.getData().getCart() == null || response.getData().getCart().getItems() == null)
+                    return;
+                compositeDisposable.add(cartDao.insertAllIgnore(response.getData().getCart().getItems())
+                        .subscribeOn(Schedulers.io())
+                        .onErrorComplete(throwable -> {
+                            Logger.e(throwable.getMessage());
+                            return false;
+                        })
+                        .subscribe());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
     public SingleLiveEvent<Void> getRefreshCurrentFragment() {
         return refreshCurrentFragment;
     }
-    public LiveData<Integer> wishListLiveCount;
-    public LiveData<Integer> cartLiveCount;
 
-
-    @Inject
-    public MainViewModel(CartDao cartDao, WishListDao wishListDao){
-        cartLiveCount = cartDao.getLiveCount();
-        wishListLiveCount = wishListDao.getLiveCount();
-    }
 
     public void setRefreshCurrentFragment() {
         this.refreshCurrentFragment.call();

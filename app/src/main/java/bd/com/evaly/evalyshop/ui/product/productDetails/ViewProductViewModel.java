@@ -57,15 +57,6 @@ public class ViewProductViewModel extends ViewModel {
         return cartDao;
     }
 
-    public void insertCartEntity(CartEntity cartEntity){
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
-            if (dbItem.size() == 0)
-                cartDao.insert(cartEntity);
-            else
-                cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
-        });
-    }
 
     public void deleteBySlugWishList(String slug) {
         Executors.newSingleThreadExecutor().execute(() -> wishListDao.deleteBySlug(slug));

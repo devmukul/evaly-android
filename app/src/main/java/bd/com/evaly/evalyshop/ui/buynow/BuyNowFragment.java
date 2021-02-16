@@ -28,7 +28,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,6 +43,7 @@ import bd.com.evaly.evalyshop.models.shop.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
+import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
 import bd.com.evaly.evalyshop.ui.checkout.CheckoutFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -57,6 +57,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     private BuyNowViewModel viewModel;
+    private CartViewModel cartViewModel;
     private FragmentBuyNowBinding binding;
     private SkeletonScreen skeleton;
     private Context context;
@@ -127,6 +128,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             cartItem = (CartEntity) args.getSerializable("cartItem");
 
         viewModel = new ViewModelProvider(this).get(BuyNowViewModel.class);
+        cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
     }
 
     @Nullable
@@ -169,7 +171,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         binding.variationHolder.setVisibility(View.GONE);
 
         binding.addToCart.setOnClickListener(v -> {
-            viewModel.insertCartEntity(getCartItem());
+            cartViewModel.insert(getCartItem());
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
             dismiss();
         });
@@ -207,20 +209,18 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             if (shopItem.getDiscountedPrice() > 0)
                 price = Utils.formatPrice(shopItem.getDiscountedPrice());
 
-        String sellerJson = new Gson().toJson(shopItem);
-
         CartEntity cartEntity = new CartEntity();
         cartEntity.setName(cartItem.getName());
         cartEntity.setImage(cartItem.getImage());
         cartEntity.setPriceRound(price);
-        cartEntity.setTime(calendar.getTimeInMillis());
-        cartEntity.setShopJson(sellerJson);
+        cartEntity.setExpressShop(shopItem.isExpressShop());
         cartEntity.setQuantity(quantity);
         cartEntity.setShopSlug(shopItem.getShopSlug());
         cartEntity.setShopName(shopItem.getShopName());
         cartEntity.setSlug(cartItem.getSlug());
         cartEntity.setVariantDetails(cartItem.getVariantDetails());
         cartEntity.setProductID(String.valueOf(shopItem.getShopItemId()));
+        cartEntity.setTime(Calendar.getInstance().getTimeInMillis());
 
         return cartEntity;
     }
@@ -350,7 +350,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         binding.addToCart.setOnClickListener(v -> {
             CartEntity cartEntity = getCartEntity(firstItem);
-            viewModel.insertCartEntity(getCartEntity(firstItem));
+            cartViewModel.insert(getCartEntity(firstItem));
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
             dismiss();
         });
@@ -388,19 +388,18 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             if (!(firstItem.getShopItemDiscountedPrice().trim().equals("0") || firstItem.getShopItemDiscountedPrice().trim().equals("0.0")))
                 price = firstItem.getShopItemDiscountedPrice();
 
-        String sellerJson = new Gson().toJson(firstItem);
 
         CartEntity cartEntity = new CartEntity();
         cartEntity.setName(firstItem.getShopItemName());
         cartEntity.setImage(firstItem.getShopItemImage());
         cartEntity.setPriceRound(price);
-        cartEntity.setTime(calendar.getTimeInMillis());
-        cartEntity.setShopJson(sellerJson);
+        cartEntity.setExpressShop(firstItem.isExpress());
         cartEntity.setQuantity(quantityCount);
         cartEntity.setShopSlug(firstItem.getShopSlug());
         cartEntity.setShopName(firstItem.getShopName());
         cartEntity.setSlug(shop_item_slug);
         cartEntity.setProductID(String.valueOf(firstItem.getShopItemId()));
+        cartEntity.setTime(Calendar.getInstance().getTimeInMillis());
 
         StringBuilder variantDetails = new StringBuilder();
         for (AttributesItem entry : firstItem.getAttributes()) {

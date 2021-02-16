@@ -59,16 +59,24 @@ public class CartEntity implements Serializable {
     @SerializedName("shop_slug")
     private String shopSlug;
 
-    @ColumnInfo(name = "shop_json")
-    private String shopJson;
-
     @ColumnInfo(name = "is_selected")
     private boolean selected = true;
 
     @ColumnInfo(name = "variant_details")
     private String variantDetails;
 
+    @ColumnInfo(name = "is_express_shop")
+    private boolean isExpressShop;
+
     private boolean showShopTitle;
+
+    public void setExpressShop(boolean expressShop) {
+        isExpressShop = expressShop;
+    }
+
+    public boolean isExpressShop() {
+        return isExpressShop;
+    }
 
     public String getDiscountedPrice() {
         return discountedPrice;
@@ -194,14 +202,6 @@ public class CartEntity implements Serializable {
 
     public void setProductID(@NotNull String productID) {
         this.productID = productID;
-    }
-
-    public String getShopJson() {
-        return shopJson;
-    }
-
-    public void setShopJson(String shopJson) {
-        this.shopJson = shopJson;
     }
 
     public boolean isSelected() {

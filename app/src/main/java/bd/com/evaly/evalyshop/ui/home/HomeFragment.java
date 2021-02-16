@@ -37,6 +37,7 @@ import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
+import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;

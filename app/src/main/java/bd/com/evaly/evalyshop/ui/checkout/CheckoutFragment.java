@@ -35,13 +35,10 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 import com.zhihu.matisse.internal.entity.CaptureStrategy;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -245,11 +242,8 @@ public class CheckoutFragment extends DialogFragment {
                 else
                     shopAmountMap.put(ss, cartItem.getPriceInt() * cartItem.getQuantity());
 
-                JsonObject shopObject = JsonParser.parseString(cartItem.getShopJson()).getAsJsonObject();
-                if (shopObject.has("is_express_shop")) {
-                    if (shopObject.get("is_express_shop").getAsBoolean() ||
-                            shopObject.get("is_express_shop").getAsString().equals("1"))
-                        isExpress = true;
+                if (cartItem.isExpressShop()) {
+                    isExpress = true;
                 } else {
                     if (cartItem.getShopSlug().contains("evaly-express")) {
                         isExpress = true;
@@ -576,16 +570,10 @@ public class CheckoutFragment extends DialogFragment {
 
         for (int i = 0; i < adapterItems.size(); i++) {
             if (adapterItems.get(i).isSelected()) {
-                String fromShopJson = adapterItems.get(i).getShopJson();
                 OrderItemsItem item = new OrderItemsItem();
                 item.setQuantity(adapterItems.get(i).getQuantity());
-                try {
-                    JSONObject sellerJson = new JSONObject(fromShopJson);
-                    String item_id = sellerJson.getString("shop_item_id");
-                    item.setShopItemId(Integer.parseInt(item_id));
-                    productList.add(item);
-                } catch (Exception e) {
-                }
+                item.setShopItemId(Integer.parseInt(adapterItems.get(i).getProductID()));
+                productList.add(item);
             }
         }
 
