@@ -318,7 +318,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     }
 
     private void requestModelBuild() {
-        productController.requestDelayedModelBuild(Utils.randInt(100, 150));
+        productController.requestModelBuild();
     }
 
     private void initRecycler() {

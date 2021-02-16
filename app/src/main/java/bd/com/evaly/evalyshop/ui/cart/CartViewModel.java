@@ -3,6 +3,8 @@ package bd.com.evaly.evalyshop.ui.cart;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -10,8 +12,9 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.cart.CartRequest;
+import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.CartApiHelper;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.disposables.CompositeDisposable;
@@ -27,15 +30,27 @@ public final class CartViewModel extends ViewModel {
     @Inject
     public CartViewModel(CartDao cartDao) {
         this.cartDao = cartDao;
+        getCartList();
         liveList = cartDao.getAllLive();
         compositeDisposable = new CompositeDisposable();
     }
 
     public void getCartList() {
-        CartApiHelper.getCartList(new ResponseListenerAuth<CommonDataResponse<List<CartEntity>>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<List<CartEntity>> response, int statusCode) {
+        if (CredentialManager.getToken().equals(""))
+            return;
 
+        CartApiHelper.getCartList(new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<CartHolderModel> response, int statusCode) {
+                if (response.getData() == null || response.getData().getCart() == null || response.getData().getCart().getItems() == null)
+                    return;
+                compositeDisposable.add(cartDao.insertAllIgnore(response.getData().getCart().getItems())
+                        .subscribeOn(Schedulers.io())
+                        .onErrorComplete(throwable -> {
+                            Logger.e(throwable.getMessage());
+                            return false;
+                        })
+                        .subscribe());
             }
 
             @Override
@@ -51,10 +66,10 @@ public final class CartViewModel extends ViewModel {
     }
 
     public void syncCartList() {
-        CartRequest body = new CartRequest();
-        CartApiHelper.syncCartList(body, new ResponseListenerAuth<CommonDataResponse<List<CartEntity>>, String>() {
+        CartHolderModel body = new CartHolderModel();
+        CartApiHelper.syncCartList(body, new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<List<CartEntity>> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<CartHolderModel> response, int statusCode) {
 
             }
 

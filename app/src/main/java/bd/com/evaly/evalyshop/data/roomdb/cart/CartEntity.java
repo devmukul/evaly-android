@@ -1,15 +1,24 @@
 package bd.com.evaly.evalyshop.data.roomdb.cart;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 
-@Entity(tableName = "cart_table_new")
+@Entity(tableName = "cart_table")
 public class CartEntity implements Serializable {
+
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "shop_item_id")
+    @SerializedName("shop_item_id")
+    private String productID;
 
     @ColumnInfo(name = "product_slug")
     @SerializedName("product_slug")
@@ -49,11 +58,6 @@ public class CartEntity implements Serializable {
     @ColumnInfo(name = "shop_slug")
     @SerializedName("shop_slug")
     private String shopSlug;
-
-    @PrimaryKey
-    @ColumnInfo(name = "shop_item_id")
-    @SerializedName("shop_item_id")
-    private String productID;
 
     @ColumnInfo(name = "shop_json")
     private String shopJson;
@@ -104,14 +108,6 @@ public class CartEntity implements Serializable {
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getSlug() {
@@ -191,11 +187,12 @@ public class CartEntity implements Serializable {
         this.shopSlug = shopSlug;
     }
 
+    @NotNull
     public String getProductID() {
         return productID;
     }
 
-    public void setProductID(String productID) {
+    public void setProductID(@NotNull String productID) {
         this.productID = productID;
     }
 

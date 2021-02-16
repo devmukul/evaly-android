@@ -36,7 +36,7 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryRe
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
-import bd.com.evaly.evalyshop.models.cart.CartRequest;
+import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandCatResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
 import bd.com.evaly.evalyshop.models.catalog.category.ChildCategoryResponse;
@@ -100,11 +100,11 @@ import retrofit2.http.Url;
 public interface IApiClient {
 
     @GET(UrlUtils.BASE_CART + "carts/users/evaly")
-    Call<CommonDataResponse<List<CartEntity>>> getCartList(@Header("Authorization") String token);
+    Call<CommonDataResponse<CartHolderModel>> getCartList(@Header("Authorization") String token);
 
     @POST(UrlUtils.BASE_CART + "carts")
-    Call<CommonDataResponse<List<CartEntity>>> syncCartList(@Header("Authorization") String token,
-                                                            @Body CartRequest body);
+    Call<CommonDataResponse<CartHolderModel>> syncCartList(@Header("Authorization") String token,
+                                                            @Body CartHolderModel body);
 
 
 

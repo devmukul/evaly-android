@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.di.module;
 
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.CartDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
 import bd.com.evaly.evalyshop.data.roomdb.banner.BannerDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
@@ -25,8 +26,8 @@ public final class ViewModelModule {
     }
 
     @Provides
-    CartDao cartDao(AppDatabase appDatabase) {
-        return appDatabase.cartDao();
+    CartDao cartDao(CartDatabase cartDatabase) {
+        return cartDatabase.cartDao();
     }
 
     @Provides

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class CartRequest implements Serializable {
+public class CartHolderModel implements Serializable {
 
     @SerializedName("context")
     private String context;
