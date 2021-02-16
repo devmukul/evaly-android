@@ -41,6 +41,24 @@ public final class CartViewModel extends ViewModel {
         compositeDisposable = new CompositeDisposable();
     }
 
+    public int getItemCount() {
+        if (liveList == null || liveList.getValue() == null)
+            return 0;
+
+        return liveList.getValue().size();
+    }
+
+    public int getSelectedItemCount() {
+        if (liveList == null || liveList.getValue() == null)
+            return 0;
+        int count = 0;
+        for (CartEntity item : liveList.getValue())
+            if (item.isSelected())
+                count++;
+
+        return count;
+    }
+
     public void getCartList() {
         if (CredentialManager.getToken().equals(""))
             return;

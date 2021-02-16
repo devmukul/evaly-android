@@ -156,9 +156,11 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
                 case android.R.id.home:
                     return true;
                 case R.id.action_delete:
-                    if (viewModel.liveList.getValue().size() == 0) {
+                    if (viewModel.getItemCount() == 0)
                         ToastUtils.show("No item is available in cart to delete");
-                    } else {
+                    else if (viewModel.getSelectedItemCount() == 0)
+                        ToastUtils.show("Please select item to delete");
+                    else {
                         new MaterialAlertDialogBuilder(getContext())
                                 .setMessage("Are you sure you want to delete the selected products from the cart?")
                                 .setIcon(android.R.drawable.ic_dialog_alert)

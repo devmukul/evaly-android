@@ -144,7 +144,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         homeController.setFragment(this);
         homeController.setHomeViewModel(viewModel);
         homeController.setSpanCount(2);
-        homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
+
+        homeController.setCycloneOngoing(true);
+        // homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
         homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
 
         binding.recyclerView.setAdapter(homeController.getAdapter());
