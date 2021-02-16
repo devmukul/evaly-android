@@ -59,7 +59,6 @@ public abstract class CycloneProductModel extends DataBindingEpoxyModel {
             binding.price.setText(Utils.formatPriceSymbol(model.getPrice()));
         }
 
-        binding.getRoot().setOnClickListener(clickListener);
         if (model.getCashbackText() == null || model.getCashbackText().length() == 0)
             binding.tvCashback.setVisibility(View.GONE);
         else {
@@ -69,17 +68,14 @@ public abstract class CycloneProductModel extends DataBindingEpoxyModel {
                 binding.tvCashback.setVisibility(View.VISIBLE);
             binding.tvCashback.setText(Utils.toFirstCharUpperAll(model.getCashbackText().replace(".00", "")));
         }
+
+
+        binding.getRoot().setOnClickListener(clickListener);
     }
 
 
     @Override
     protected void setDataBindingVariables(ViewDataBinding binding) {
-    }
-
-    @Override
-    public void unbind(@NonNull DataBindingHolder holder) {
-        super.unbind(holder);
-        holder.getDataBinding().unbind();
     }
 
 }

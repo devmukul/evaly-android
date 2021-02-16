@@ -9,9 +9,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.MotionEvent;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +20,6 @@ import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorActivity;
 
 public class BaseActivity extends AppCompatActivity {
 
-
     /*
         H. M. Tamim
         24/Jun/2019
@@ -30,45 +27,28 @@ public class BaseActivity extends AppCompatActivity {
 
     public  void adjustFontScale( Configuration configuration) {
 
-
-
-
         try {
 
             configuration.fontScale = (float) 1.05;
             DisplayMetrics metrics = getResources().getDisplayMetrics();
             WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+            assert wm != null;
             wm.getDefaultDisplay().getMetrics(metrics);
             metrics.scaledDensity = configuration.fontScale * metrics.density;
-            // //getBaseContext().getResources().updateConfiguration(configuration, metrics);
-
-            // //metrics.scaledDensity = ((metrics.xdpi / metrics.densityDpi) * metrics.density);
-
-
             try {
                 if (!(Build.MANUFACTURER.toLowerCase().contains("meizu")) && Build.MODEL.contains("RNE-L22"))
                         configuration.densityDpi = ((int) getResources().getDisplayMetrics().xdpi);
-
             } catch (Exception e){
                 configuration.densityDpi = ((int) getResources().getDisplayMetrics().xdpi);
             }
-
             getBaseContext().getResources().updateConfiguration(configuration, metrics);
 
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 getWindow().setStatusBarColor(Color.BLACK);
             }
-
-
-
-
-
         }catch (Exception e){
 
         }
-
-
-
     }
 
     @Override
@@ -83,10 +63,7 @@ public class BaseActivity extends AppCompatActivity {
                 startActivityForResult(intent, 9187);
             }
         }
-
-
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -94,31 +71,10 @@ public class BaseActivity extends AppCompatActivity {
 
         if (requestCode == 9187) {
             if (resultCode == RESULT_OK) { // Activity.RESULT_OK
-
                 finish();
                 startActivity(getIntent());
-
             }
         }
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-//        Logger.d("HOME PRESSED");
-//        if (AppController.getmService() !=  null && AppController.getmService().xmpp != null){
-//           if (AppController.getmService().xmpp.isConnected()){
-//               XMPPHandler xmppHandler = AppController.getmService().xmpp;
-//               xmppHandler.changePresence();
-//               XMPPHandler.disconnect();
-//
-//           }
-//        }
-//        super.onUserLeaveHint();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     public boolean isNetworkAvailable(Context context) {
@@ -129,30 +85,14 @@ public class BaseActivity extends AppCompatActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (getCurrentFocus() != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            assert imm != null;
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
-    /*
-
-
-
-            configuration.fontScale = (float) 1.0;
-            DisplayMetrics metrics = getResources().getDisplayMetrics();
-            WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-            wm.getDefaultDisplay().getMetrics(metrics);
-            metrics.scaledDensity = configuration.fontScale * metrics.density;
-            getBaseContext().getResources().updateConfiguration(configuration, metrics);
-     */
-
-
-
+//    @Override
+//    public boolean dispatchTouchEvent(MotionEvent ev) {
+//        if (getCurrentFocus() != null) {
+//            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//            assert imm != null;
+//            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+//        }
+//        return super.dispatchTouchEvent(ev);
+//    }
 
 }

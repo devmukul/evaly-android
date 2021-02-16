@@ -65,13 +65,20 @@ public abstract class HomeRsGridModel extends DataBindingEpoxyModel {
                 .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
                 .listener(new RequestListener<Drawable>() {
                               @Override
-                              public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                              public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e,
+                                                          Object model,
+                                                          Target<Drawable> target,
+                                                          boolean isFirstResource) {
                                   return false;
                               }
 
                               @SuppressLint("CheckResult")
                               @Override
-                              public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                              public boolean onResourceReady(Drawable resource,
+                                                             Object model,
+                                                             Target<Drawable> target,
+                                                             DataSource dataSource,
+                                                             boolean isFirstResource) {
                                   Observable.fromCallable(() -> Utils.changeColor(((BitmapDrawable) resource).getBitmap(),
                                           Color.parseColor("#ecf3f9"), Color.WHITE))
                                           .subscribeOn(Schedulers.io())
@@ -82,6 +89,7 @@ public abstract class HomeRsGridModel extends DataBindingEpoxyModel {
                           }
                 )
                 .into(binding.image);
+
         binding.getRoot().setOnClickListener(clickListener);
     }
 

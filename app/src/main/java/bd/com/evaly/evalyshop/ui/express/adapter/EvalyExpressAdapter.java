@@ -28,9 +28,6 @@ import bd.com.evaly.evalyshop.util.Utils;
 
 public class EvalyExpressAdapter extends ListAdapter<GroupShopModel, EvalyExpressAdapter.MyViewHolder> {
 
-    private Context context;
-    private NavController navController;
-
     private static final DiffUtil.ItemCallback<GroupShopModel> diffCallback = new DiffUtil.ItemCallback<GroupShopModel>() {
         @Override
         public boolean areItemsTheSame(@NonNull GroupShopModel oldItem, @NonNull GroupShopModel newItem) {
@@ -42,6 +39,8 @@ public class EvalyExpressAdapter extends ListAdapter<GroupShopModel, EvalyExpres
             return oldItem.getShopSlug().equals(newItem.getShopSlug());
         }
     };
+    private Context context;
+    private NavController navController;
 
     public EvalyExpressAdapter(Context context, NavController navController) {
         super(diffCallback);
@@ -68,7 +67,7 @@ public class EvalyExpressAdapter extends ListAdapter<GroupShopModel, EvalyExpres
 
         holder.tv.setText(Utils.titleBeautify(model.getShopName()));
 
-       // holder.view.setTag(position);
+        // holder.view.setTag(position);
 
         Glide.with(context)
                 .load(model.getLogoImage())
@@ -78,12 +77,9 @@ public class EvalyExpressAdapter extends ListAdapter<GroupShopModel, EvalyExpres
                 .into(holder.iv);
     }
 
-
-    public void clear(){
+    public void clear() {
 
     }
-
-
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -97,16 +93,17 @@ public class EvalyExpressAdapter extends ListAdapter<GroupShopModel, EvalyExpres
             iv = itemView.findViewById(R.id.image);
 
             itemView.setOnClickListener(v -> {
-                        GroupShopModel model = getItem(getAdapterPosition());
-                        Bundle bundle = new Bundle();
-                        bundle.putString("shop_name", model.getShopName());
-                        bundle.putString("logo_image", model.getLogoImage());
-                        bundle.putString("shop_slug", model.getShopSlug());
-                        navController.navigate(R.id.shopFragment, bundle);
+                final int p = getAdapterPosition();
+                if (p != RecyclerView.NO_POSITION) {
+                    GroupShopModel model = getItem(p);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("shop_name", model.getShopName());
+                    bundle.putString("logo_image", model.getLogoImage());
+                    bundle.putString("shop_slug", model.getShopSlug());
+                    navController.navigate(R.id.shopFragment, bundle);
+                }
             });
-
         }
     }
-
 
 }

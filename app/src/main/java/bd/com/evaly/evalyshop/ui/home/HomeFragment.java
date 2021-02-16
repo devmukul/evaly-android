@@ -3,6 +3,8 @@ package bd.com.evaly.evalyshop.ui.home;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +19,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.airbnb.epoxy.EpoxyController;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import java.util.Random;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
@@ -43,6 +45,7 @@ import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.FixedStaggeredGridLayoutManager;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -73,6 +76,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public static int randInt(int min, int max) {
         Random rand = new Random();
         return rand.nextInt((max - min) + 1) + min;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        homeController.cancelPendingModelBuild();
     }
 
     @Override
@@ -125,14 +134,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void setupRecycler() {
 
-        if (homeController == null)
+        if (homeController == null || homeController.getAdapter() == null)
             homeController = new HomeController();
 
-        if (BuildConfig.DEBUG && !homeController.isDebugLoggingEnabled())
-            homeController.setDebugLoggingEnabled(true);
-
-        if (!BuildConfig.DEBUG)
-            homeController.setFilterDuplicates(true);
+        homeController.setFilterDuplicates(true);
         homeController.setActivity((AppCompatActivity) getActivity());
         homeController.setClickListener(this);
         homeController.setFragment(this);
@@ -140,12 +145,24 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         homeController.setSpanCount(2);
         homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
         homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+
+        HandlerThread handlerThread = new HandlerThread("epoxy");
+        handlerThread.start();
+        Handler handler = new Handler(handlerThread.getLooper());
+        EpoxyController.defaultDiffingHandler = handler;
+        EpoxyController.defaultModelBuildingHandler = handler;
+
+        binding.recyclerView.setAdapter(homeController.getAdapter());
+
+        FixedStaggeredGridLayoutManager layoutManager = new FixedStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
         binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(2, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
-        binding.recyclerView.setAdapter(homeController.getAdapter());
+
+
+        if (!binding.recyclerView.isComputingLayout())
+            homeController.requestModelBuild();
 
         binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
@@ -159,12 +176,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
 
-        homeController.requestModelBuild();
     }
 
     private void requestModelBuild() {
-        if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
-            homeController.requestDelayedModelBuild(randInt(100, 200));
+        if (!binding.recyclerView.isComputingLayout())
+            homeController.requestModelBuild();
+        //if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
+        //homeController.requestDelayedModelBuild(randInt(100, 200));
     }
 
     private void liveEventObservers() {

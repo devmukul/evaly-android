@@ -34,6 +34,7 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.CompletableObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -203,6 +204,7 @@ public class HomeViewModel extends ViewModel {
                 }.getType());
                 bannerDao.insertListRx(bannerItems)
                         .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new CompletableObserver() {
                             @Override
                             public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
@@ -242,6 +244,7 @@ public class HomeViewModel extends ViewModel {
     private void deleteOldBanners(List<String> slugs) {
         bannerDao.deleteOldRx(slugs)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
                     @Override
                     public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
@@ -284,7 +287,6 @@ public class HomeViewModel extends ViewModel {
         ProductApiHelper.getCategoryBrandProducts(currentPageProducts, "root", null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
-
                 productArrayList.addAll(response.getData());
                 productListLive.setValue(productArrayList);
                 currentPageProducts++;

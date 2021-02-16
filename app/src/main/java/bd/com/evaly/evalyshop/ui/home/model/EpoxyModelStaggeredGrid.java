@@ -10,8 +10,10 @@ import com.airbnb.epoxy.EpoxyModel;
 
 
 public abstract class EpoxyModelStaggeredGrid<T extends View> extends EpoxyModel<T> {
+
     @Override
     public void bind(@NonNull T view) {
+
         StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -19,7 +21,7 @@ public abstract class EpoxyModelStaggeredGrid<T extends View> extends EpoxyModel
 
         params.setFullSpan(true);
         view.setLayoutParams(params);
-
         super.bind(view);
     }
+
 }
