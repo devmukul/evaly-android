@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.airbnb.epoxy.AsyncEpoxyController;
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
@@ -54,7 +55,7 @@ import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneSectionTitleModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneShopModel_;
 import bd.com.evaly.evalyshop.util.Constants;
 
-public class HomeController extends EpoxyController {
+public class HomeController extends AsyncEpoxyController {
 
     @AutoModel
     HomeSliderModel_ sliderModel;

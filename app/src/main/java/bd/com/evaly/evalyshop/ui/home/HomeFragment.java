@@ -147,12 +147,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
         homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
 
-        HandlerThread handlerThread = new HandlerThread("epoxy");
-        handlerThread.start();
-        Handler handler = new Handler(handlerThread.getLooper());
-        EpoxyController.defaultDiffingHandler = handler;
-        EpoxyController.defaultModelBuildingHandler = handler;
-
         binding.recyclerView.setAdapter(homeController.getAdapter());
 
         FixedStaggeredGridLayoutManager layoutManager = new FixedStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);

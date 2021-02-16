@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.airbnb.epoxy.AsyncEpoxyController;
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.EpoxyController;
@@ -36,7 +37,7 @@ import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryTitleModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopProductTitleModel_;
 import bd.com.evaly.evalyshop.util.Utils;
 
-public class BrandController extends EpoxyController {
+public class BrandController extends AsyncEpoxyController {
 
     @AutoModel
     BrandHeaderModel_ headerModel_;

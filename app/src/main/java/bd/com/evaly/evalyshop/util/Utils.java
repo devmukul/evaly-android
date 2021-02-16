@@ -753,11 +753,10 @@ public class Utils {
 
 
     public static String titleBeautify(String str) {
-
+        if (str == null)
+            return "";
         str = str.replace("-", " ");
         return str;
-
-
     }
 
 
