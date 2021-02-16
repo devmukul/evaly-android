@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.orhanobut.logger.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -51,11 +52,21 @@ public final class CartViewModel extends ViewModel {
                     return;
                 compositeDisposable.add(cartDao.insertAllIgnore(response.getData().getCart().getItems())
                         .subscribeOn(Schedulers.io())
-                        .onErrorComplete(throwable -> {
-                            Logger.e(throwable.getMessage());
-                            return false;
-                        })
-                        .subscribe());
+                        .subscribeWith(new DisposableCompletableObserver() {
+                            @Override
+                            public void onComplete() {
+                                List<String> slugs = new ArrayList<>();
+                                for (CartEntity item : response.getData().getCart().getItems())
+                                    slugs.add(item.getProductID());
+                                if (slugs.size() > 0)
+                                    deleteOld(slugs);
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+
+                            }
+                        }));
             }
 
             @Override
@@ -68,6 +79,12 @@ public final class CartViewModel extends ViewModel {
 
             }
         });
+    }
+
+    public void deleteOld(List<String> list) {
+        compositeDisposable.add(cartDao.deleteOldRx(list)
+                .subscribeOn(Schedulers.io())
+                .subscribe());
     }
 
 

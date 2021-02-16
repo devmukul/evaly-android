@@ -30,7 +30,6 @@ import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 
 @HiltViewModel
 public class CheckoutViewModel extends ViewModel {
@@ -112,11 +111,6 @@ public class CheckoutViewModel extends ViewModel {
         });
     }
 
-    public void deleteSelected() {
-        compositeDisposable.add(cartDao.rxDeleteSelected()
-                .subscribeOn(Schedulers.io())
-                .subscribe());
-    }
 
     public void placeOrder(PlaceOrderItem payload) {
         Gson gson = new Gson();

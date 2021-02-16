@@ -5,13 +5,15 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.JsonObject;
-import com.orhanobut.logger.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -24,7 +26,9 @@ import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.CartApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
@@ -64,11 +68,21 @@ public class MainViewModel extends ViewModel {
                     return;
                 compositeDisposable.add(cartDao.insertAllIgnore(response.getData().getCart().getItems())
                         .subscribeOn(Schedulers.io())
-                        .onErrorComplete(throwable -> {
-                            Logger.e(throwable.getMessage());
-                            return false;
-                        })
-                        .subscribe());
+                        .subscribeWith(new DisposableCompletableObserver() {
+                            @Override
+                            public void onComplete() {
+                                List<String> slugs = new ArrayList<>();
+                                for (CartEntity item : response.getData().getCart().getItems())
+                                    slugs.add(item.getProductID());
+                                if (slugs.size() > 0)
+                                    deleteOld(slugs);
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+
+                            }
+                        }));
             }
 
             @Override
@@ -81,6 +95,18 @@ public class MainViewModel extends ViewModel {
 
             }
         });
+    }
+
+    public void deleteOld(List<String> list) {
+        compositeDisposable.add(cartDao.deleteOldRx(list)
+                .subscribeOn(Schedulers.io())
+                .subscribe());
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        compositeDisposable.clear();
     }
 
     public SingleLiveEvent<Void> getRefreshCurrentFragment() {

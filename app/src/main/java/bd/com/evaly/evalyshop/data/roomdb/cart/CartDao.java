@@ -37,6 +37,9 @@ public interface CartDao {
     @Query("DELETE FROM cart_table")
     void deleteAll();
 
+    @Query("DELETE FROM cart_table WHERE cart_table.shop_item_id NOT IN(:list)")
+    Completable deleteOldRx(List<String> list);
+
     @Query("DELETE FROM cart_table WHERE shop_item_id = :productID")
     void deleteBySlug(String productID);
 

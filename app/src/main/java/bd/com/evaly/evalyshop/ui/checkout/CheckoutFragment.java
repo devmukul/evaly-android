@@ -62,6 +62,7 @@ import bd.com.evaly.evalyshop.models.user.AddressItem;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.address.AddressFragment;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
 import bd.com.evaly.evalyshop.ui.checkout.controller.CheckoutProductController;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
@@ -84,6 +85,7 @@ public class CheckoutFragment extends DialogFragment {
     SharedObservers sharedObservers;
     private FragmentCheckoutBinding binding;
     private CheckoutViewModel viewModel;
+    private CartViewModel cartViewModel;
     private String deliveryChargeApplicable = null, deliveryDuration;
     private double deliveryChargeAmount = 0;
     private NavController navController;
@@ -112,6 +114,7 @@ public class CheckoutFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme);
         viewModel = new ViewModelProvider(this).get(CheckoutViewModel.class);
+        cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
     }
 
     @Override
@@ -436,7 +439,7 @@ public class CheckoutFragment extends DialogFragment {
                 return;
 
             if ((getArguments() == null || !getArguments().containsKey("model"))) {
-                viewModel.deleteSelected();
+                cartViewModel.deleteSelected();
             }
 
             if (isVisible())
