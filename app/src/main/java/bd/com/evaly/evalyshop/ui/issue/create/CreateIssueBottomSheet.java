@@ -316,7 +316,11 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
         intent.setType("image/*");
         String[] mimeTypes = {"image/jpeg", "image/png"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-        startActivityForResult(intent, 1001);
+        try {
+            startActivityForResult(intent, 1001);
+        } catch (Exception e){
+            ToastUtils.show("Can't open image picker");
+        }
     }
 
 }

@@ -35,7 +35,6 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
-import com.orhanobut.logger.Logger;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -46,8 +45,6 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
-import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.databinding.ActivityMainBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -73,6 +70,7 @@ import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
 public class MainActivity extends BaseActivity {
 
     public boolean isLaunchActivity = true;
+
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
 
@@ -81,6 +79,57 @@ public class MainActivity extends BaseActivity {
     private NavController navController;
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        if (CredentialManager.isDarkMode())
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        else
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        setTheme(R.style.AppTheme_NoActionBar);
+        super.onCreate(savedInstanceState);
+
+        if (CredentialManager.getLanguage().equalsIgnoreCase("bn"))
+            changeLanguage("BN");
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        if (!CredentialManager.getToken().equals("") &&
+                (CredentialManager.getUserData() == null ||
+                        CredentialManager.getUserName().equals("") ||
+                        CredentialManager.getPassword().equals(""))) {
+            AppController.logout(this);
+            return;
+        }
+
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        if (!CredentialManager.getToken().isEmpty() && !CredentialManager.isUserRegistered())
+            viewModel.registerXMPP();
+
+        setupNavigation();
+        setupBottomNav();
+        checkRemoteConfig();
+        setupFirebase();
+        liveEvents();
+        setupDialogs();
+        handleNotificationNavigation(getIntent());
+        handleOtherIntent();
+    }
+
+    private void setupDialogs() {
+        exitDialogBuilder = new AlertDialog.Builder(MainActivity.this)
+                .setMessage("Are you sure you want to close the app?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    exitDialog.dismiss();
+                    finish();
+                })
+                .setNegativeButton("No", null);
+        exitDialog = exitDialogBuilder.create();
+
+        if (!isConnected(MainActivity.this))
+            buildDialog(MainActivity.this).show();
+    }
+
 
     public void changeLanguage(String lang) {
         Locale myLocale;
@@ -123,42 +172,21 @@ public class MainActivity extends BaseActivity {
         handleNotificationNavigation(intent);
     }
 
+    private void liveEvents() {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        if (CredentialManager.isDarkMode())
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        else
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
-        setTheme(R.style.AppTheme_NoActionBar);
-        super.onCreate(savedInstanceState);
-
-        if (CredentialManager.getLanguage().equalsIgnoreCase("bn"))
-            changeLanguage("BN");
-
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
-        if (!CredentialManager.getToken().equals("") && CredentialManager.getUserData() == null) {
-            AppController.logout(this);
-            return;
-        }
-
-        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-
-        navController.createDeepLink();
-
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-
+        viewModel.getBackOnClick().observe(this, aBoolean -> {
+            if (aBoolean)
+                onBackPressed();
         });
 
-        if (!CredentialManager.getToken().isEmpty() && !CredentialManager.isUserRegistered()) {
-            Logger.e(CredentialManager.isUserRegistered() + "");
-            viewModel.registerXMPP();
-        }
+        viewModel.getDrawerOnClick().observe(this, aBoolean -> {
+            if (aBoolean)
+                binding.drawerLayout.openDrawer(Gravity.START);
+        });
 
-        checkRemoteConfig();
+    }
+
+    private void setupBottomNav() {
 
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -213,20 +241,9 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+    }
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        binding.drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        if (!isConnected(MainActivity.this)) {
-            buildDialog(MainActivity.this).show();
-        }
-
-        if (!CredentialManager.getToken().equals("")) {
-            if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals(""))
-                AppController.logout(MainActivity.this);
-        }
-
+    private void setupFirebase() {
         String email = CredentialManager.getUserName();
         String strNew = email.replaceAll("[^A-Za-z0-9]", "");
 
@@ -237,17 +254,9 @@ public class MainActivity extends BaseActivity {
             FirebaseMessaging.getInstance().subscribeToTopic("USER." + CredentialManager.getUserName());
         }
         FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user");
+    }
 
-        viewModel.getBackOnClick().observe(this, aBoolean -> {
-            if (aBoolean)
-                onBackPressed();
-        });
-
-        viewModel.getDrawerOnClick().observe(this, aBoolean -> {
-            if (aBoolean)
-                binding.drawerLayout.openDrawer(Gravity.START);
-        });
-
+    private void handleOtherIntent() {
         Intent data = getIntent();
 
         if (data.hasExtra("type")) {
@@ -293,17 +302,14 @@ public class MainActivity extends BaseActivity {
             Toast.makeText(this, "Payment Successful!", Toast.LENGTH_SHORT).show();
             navController.navigate(R.id.accountFragment);
         }
+    }
 
-        exitDialogBuilder = new AlertDialog.Builder(MainActivity.this)
-                .setMessage("Are you sure you want to close the app?")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    exitDialog.dismiss();
-                    finish();
-                })
-                .setNegativeButton("No", null);
-        exitDialog = exitDialogBuilder.create();
+    private void setupNavigation() {
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        navController.createDeepLink();
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
 
-        handleNotificationNavigation(getIntent());
+        });
     }
 
     private void handleNotificationNavigation(Intent intent) {
@@ -551,6 +557,10 @@ public class MainActivity extends BaseActivity {
                 return true;
             });
         }
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        binding.drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
     }
 
     private void openTermsConditions() {
