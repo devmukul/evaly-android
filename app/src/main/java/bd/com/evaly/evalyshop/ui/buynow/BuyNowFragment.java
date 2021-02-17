@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,10 +63,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private SkeletonScreen skeleton;
     private Context context;
     private ArrayList<ShopItem> itemsList;
-    private String shop_slug = "tvs-bangladesh";
     private String shop_item_slug = "tvs-apache-rtr-160cc-single-disc";
     private int quantityCount = 1;
     private double productPriceInt = 0;
+    private double productActualPriceInt = 0;
     private VariationAdapter adapterVariation;
     private ViewDialog dialog;
     private CartEntity cartItem;
@@ -117,8 +118,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         dialog = new ViewDialog(getActivity());
 
         Bundle args = getArguments();
-        if (args.containsKey("shopSlug"))
-            shop_slug = args.getString("shopSlug");
         if (args.containsKey("productSlug"))
             shop_item_slug = args.getString("productSlug");
 
@@ -145,22 +144,13 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         skeleton.hide();
 
         shop_item_slug = cartItem.getSlug();
-        shop_slug = shopItem.getShopSlug();
-        productPriceInt = shopItem.getPrice();
 
-        if (shopItem.getDiscountedPrice() != null)
-            if (shopItem.getDiscountedPrice() > 0) {
-                double disPrice = shopItem.getDiscountedPrice();
-                binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(disPrice)));
-                binding.priceTotal.setText(Utils.formatPriceSymbol(disPrice));
-                productPriceInt = disPrice;
-            }
+        productPriceInt = shopItem.getDiscountedPrice();
+        productActualPriceInt = shopItem.getPrice();
+        inflateQuantity();
 
         binding.productName.setText(cartItem.getName());
         binding.shopName.setText(String.format("Seller: %s", shopItem.getShopName()));
-        binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(productPriceInt)));
-        binding.quantity.setText("1");
-        binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
 
         Glide.with(this)
                 .load(cartItem.getImage())
@@ -203,16 +193,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         }
 
         Calendar calendar = Calendar.getInstance();
-        String price = Utils.formatPrice(shopItem.getPrice());
-
-        if (shopItem.getDiscountedPrice() != null)
-            if (shopItem.getDiscountedPrice() > 0)
-                price = Utils.formatPrice(shopItem.getDiscountedPrice());
 
         CartEntity cartEntity = new CartEntity();
         cartEntity.setName(cartItem.getName());
         cartEntity.setImage(cartItem.getImage());
-        cartEntity.setPriceRound(price);
+        cartEntity.setPriceRound(String.valueOf(shopItem.getPrice()));
+        cartEntity.setDiscountedPrice(shopItem.getDiscountedPrice());
         cartEntity.setExpressShop(shopItem.isExpressShop());
         cartEntity.setQuantity(quantity);
         cartEntity.setShopSlug(shopItem.getShopSlug());
@@ -230,13 +216,19 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         binding.quantity.setText(String.format("%d", quantityCount));
         binding.price.setText(String.format("%s x %d", Utils.formatPriceSymbol(productPriceInt), quantityCount));
         binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt * quantityCount));
+        binding.priceTotalDiscounted.setText(Utils.formatPriceSymbol(productActualPriceInt * quantityCount));
+
+        if (productPriceInt > 0 && productActualPriceInt > productPriceInt) {
+            binding.priceTotalDiscounted.setVisibility(View.VISIBLE);
+            binding.priceTotalDiscounted.setPaintFlags(binding.priceTotalDiscounted.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else
+            binding.priceTotalDiscounted.setVisibility(View.GONE);
     }
 
     @SuppressLint("DefaultLocale")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
 
         context = view.getContext();
 
@@ -283,7 +275,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             itemsList.clear();
             itemsList.addAll(shopItems);
             adapterVariation.notifyDataSetChanged();
-
             if (itemsList.size() > 0) {
                 itemsList.get(0).setSelected(true);
                 loadProductById(0);
@@ -311,26 +302,13 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         ShopItem firstItem = itemsList.get(position);
 
-        try {
-            productPriceInt = (int) Math.round(Double.parseDouble(firstItem.getShopItemPrice()));
-        } catch (Exception ignored) {
-        }
-
-
-        if (firstItem.getShopItemDiscountedPrice() != null)
-            if (!(firstItem.getShopItemDiscountedPrice().equals("0.0") || firstItem.getShopItemDiscountedPrice().equals("0"))) {
-                int disPrice = (int) Math.round(Double.parseDouble(firstItem.getShopItemDiscountedPrice()));
-                binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(disPrice)));
-                binding.priceTotal.setText(Utils.formatPriceSymbol(disPrice));
-                productPriceInt = disPrice;
-            }
+        productPriceInt = firstItem.getShopItemDiscountedPriceD();
+        productActualPriceInt = firstItem.getShopItemPriceD();
 
         binding.productName.setText(firstItem.getShopItemName());
         binding.shopName.setText(String.format("Seller: %s", firstItem.getShopName()));
-        binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(productPriceInt)));
-        binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
-        binding.quantity.setText("1");
-        binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
+
+        inflateQuantity();
 
         if (getContext() != null && this.isVisible() && !requireActivity().isDestroyed())
             Glide.with(getContext())
@@ -381,18 +359,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
 
     public CartEntity getCartEntity(ShopItem firstItem) {
-        Calendar calendar = Calendar.getInstance();
-        String price = firstItem.getShopItemPrice();
-
-        if (firstItem.getShopItemDiscountedPrice() != null)
-            if (!(firstItem.getShopItemDiscountedPrice().trim().equals("0") || firstItem.getShopItemDiscountedPrice().trim().equals("0.0")))
-                price = firstItem.getShopItemDiscountedPrice();
-
 
         CartEntity cartEntity = new CartEntity();
         cartEntity.setName(firstItem.getShopItemName());
         cartEntity.setImage(firstItem.getShopItemImage());
-        cartEntity.setPriceRound(price);
+        cartEntity.setPriceRound(firstItem.getShopItemPrice());
+        cartEntity.setDiscountedPrice(firstItem.getShopItemDiscountedPrice());
         cartEntity.setExpressShop(firstItem.isExpress());
         cartEntity.setQuantity(quantityCount);
         cartEntity.setShopSlug(firstItem.getShopSlug());

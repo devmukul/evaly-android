@@ -62,12 +62,24 @@ public class ShopItem {
         return shopItemPrice;
     }
 
+    public double getShopItemPriceD() {
+        return Double.parseDouble(shopItemPrice);
+    }
+
     public void setShopItemPrice(String shopItemPrice) {
         this.shopItemPrice = shopItemPrice;
     }
 
     public String getShopItemDiscountedPrice() {
+        if (shopItemDiscountedPrice == null)
+            return shopItemPrice;
         return shopItemDiscountedPrice;
+    }
+
+    public double getShopItemDiscountedPriceD() {
+        if (shopItemDiscountedPrice == null)
+            return Double.parseDouble(shopItemPrice);
+        return Double.parseDouble(shopItemDiscountedPrice);
     }
 
     public void setShopItemDiscountedPrice(String shopItemDiscountedPrice) {

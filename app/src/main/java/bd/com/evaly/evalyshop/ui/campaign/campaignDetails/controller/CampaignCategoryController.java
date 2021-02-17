@@ -7,7 +7,6 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 
-import com.airbnb.epoxy.AsyncEpoxyController;
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.EpoxyController;
@@ -36,7 +35,7 @@ import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 
-public class CampaignCategoryController extends AsyncEpoxyController {
+public class CampaignCategoryController extends EpoxyController {
 
     private List<CampaignParentModel> list = new ArrayList<>();
     private NavController navController;

@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.data.roomdb.cart;
 
+import android.graphics.Paint;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -82,8 +84,21 @@ public class CartEntity implements Serializable {
         return discountedPrice;
     }
 
+    public double getDiscountedPriceD() {
+        if (discountedPrice == null || discountedPrice.equals(""))
+            return getPriceDouble();
+        return Double.parseDouble(discountedPrice);
+    }
+
     public void setDiscountedPrice(String discountedPrice) {
         this.discountedPrice = discountedPrice;
+    }
+
+    public void setDiscountedPrice(Double discountedPrice) {
+        if (discountedPrice == null)
+            this.discountedPrice = "0";
+        else
+            this.discountedPrice = String.valueOf(discountedPrice);
     }
 
     public String getShopImage() {

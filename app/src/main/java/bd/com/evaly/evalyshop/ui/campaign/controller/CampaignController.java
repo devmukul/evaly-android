@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.airbnb.epoxy.AsyncEpoxyController;
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
@@ -33,7 +32,7 @@ import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.util.Utils;
 
-public class CampaignController extends AsyncEpoxyController {
+public class CampaignController extends EpoxyController {
 
     @AutoModel
     CategoryCarouselModel_ buttonCarousel;

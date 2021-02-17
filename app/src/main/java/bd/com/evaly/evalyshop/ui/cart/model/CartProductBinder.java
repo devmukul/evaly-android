@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.cart.model;
 
 import android.annotation.SuppressLint;
+import android.graphics.Paint;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
@@ -19,7 +20,7 @@ public class CartProductBinder {
     public static void bind(ItemCartProductBinding binding, CartEntity model) {
         Logger.d(new Gson().toJson(model));
 
-        binding.productName.setText(model.getName());
+        binding.productName.setText(Utils.formatPriceSymbol(model.getDiscountedPriceD()));
         Glide.with(binding.getRoot())
                 .load(model.getImage())
                 .placeholder(R.drawable.ic_placeholder_small)
@@ -35,8 +36,16 @@ public class CartProductBinder {
 
         binding.checkBox.setChecked(model.isSelected(), binding.checkBox.isChecked() != model.isSelected());
         binding.quantity.setText(String.format("%d", model.getQuantity()));
-        binding.priceTotal.setText(Utils.formatPriceSymbol(model.getPriceInt() * model.getQuantity()));
-        binding.price.setText(String.format("%s x %d", Utils.formatPriceSymbol(model.getPriceInt()), model.getQuantity()));
+        binding.priceTotal.setText(Utils.formatPriceSymbol(model.getDiscountedPriceD() * model.getQuantity()));
+
+        if (model.getDiscountedPriceD() > 0 && model.getDiscountedPriceD() < model.getPriceDouble()) {
+            binding.priceTotalDiscounted.setVisibility(View.VISIBLE);
+            binding.priceTotalDiscounted.setPaintFlags(binding.priceTotalDiscounted.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            binding.priceTotalDiscounted.setText(Utils.formatPriceSymbol(model.getPriceDouble() * model.getQuantity()));
+        } else
+            binding.priceTotalDiscounted.setVisibility(View.GONE);
+
+        binding.price.setText(String.format("%s x %d", Utils.formatPriceSymbol(model.getDiscountedPriceD()), model.getQuantity()));
     }
 
 }

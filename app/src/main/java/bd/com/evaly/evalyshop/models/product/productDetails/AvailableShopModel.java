@@ -140,7 +140,7 @@ public class AvailableShopModel implements Serializable {
 
     public Double getDiscountedPrice() {
         if (discountedPrice == null)
-            return 0.0;
+            return getPrice();
         return discountedPrice;
     }
 

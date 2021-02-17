@@ -687,14 +687,11 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             Calendar calendar = Calendar.getInstance();
             String price = Utils.formatPrice(shop.getPrice());
 
-            if (shop.getDiscountedPrice() != null)
-                if (shop.getDiscountedPrice() > 0)
-                    price = Utils.formatPrice(shop.getDiscountedPrice());
-
             String sellerJson = new Gson().toJson(shop);
 
             CartEntity cartEntity = cartItem;
             cartEntity.setPriceRound(price);
+            cartEntity.setDiscountedPrice(shop.getDiscountedPrice());
             cartEntity.setTime(calendar.getTimeInMillis());
             cartEntity.setExpressShop(shop.isExpressShop());
             cartEntity.setQuantity(1);
@@ -915,17 +912,12 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
     @Override
     public void onAddToCartClick(AvailableShopModel shop) {
         updateVariantDetails();
-        Calendar calendar = Calendar.getInstance();
         String price = Utils.formatPrice(shop.getPrice());
-
-        if (shop.getDiscountedPrice() != null)
-            if (shop.getDiscountedPrice() > 0)
-                price = Utils.formatPrice(shop.getDiscountedPrice());
-
         CartEntity cartEntity = new CartEntity();
         cartEntity.setName(cartItem.getName());
         cartEntity.setImage(cartItem.getImage());
         cartEntity.setPriceRound(price);
+        cartEntity.setDiscountedPrice(shop.getDiscountedPrice());
         cartEntity.setExpressShop(shop.isExpressShop());
         cartEntity.setQuantity(1);
         cartEntity.setShopSlug(shop.getShopSlug());

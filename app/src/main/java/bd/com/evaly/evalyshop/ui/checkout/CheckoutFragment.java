@@ -419,7 +419,7 @@ public class CheckoutFragment extends DialogFragment {
             totalAmount = 0;
             int totalItems = 0;
             for (CartEntity cartEntity : cartEntities) {
-                totalAmount += cartEntity.getPriceDouble() * cartEntity.getQuantity();
+                totalAmount += cartEntity.getDiscountedPriceD() * cartEntity.getQuantity();
                 totalItems += cartEntity.getQuantity();
             }
             binding.subtotal.setText(Utils.formatPriceSymbol(totalAmount));

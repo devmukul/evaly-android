@@ -3,7 +3,6 @@ package bd.com.evaly.evalyshop.ui.browseProduct.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.airbnb.epoxy.AsyncEpoxyController;
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.EpoxyController;
 
@@ -23,7 +22,7 @@ import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 
-public class BrowseProductController extends AsyncEpoxyController {
+public class BrowseProductController extends EpoxyController {
 
     @AutoModel
     LoadingModel_ loader;

@@ -100,7 +100,7 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
                 if (!entity.isSelected()) {
                     allSelected = false;
                 } else
-                    totalPrice += entity.getPriceDouble() * entity.getQuantity();
+                    totalPrice += entity.getDiscountedPriceD() * entity.getQuantity();
             }
             binding.checkBox.setOnCheckedChangeListener(null);
             binding.checkBox.setChecked(allSelected);

@@ -7,7 +7,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.Navigation;
 
-import com.airbnb.epoxy.AsyncEpoxyController;
 import com.airbnb.epoxy.EpoxyController;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderItemModel_;
 import bd.com.evaly.evalyshop.util.Utils;
 
-public class SliderController extends AsyncEpoxyController {
+public class SliderController extends EpoxyController {
 
     private AppCompatActivity activity;
     private List<BannerItem> items = new ArrayList<>();

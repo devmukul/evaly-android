@@ -30,9 +30,9 @@ public abstract class CheckoutProductModel extends DataBindingEpoxyModel {
         ItemCheckoutProductBinding binding = (ItemCheckoutProductBinding) holder.getDataBinding();
 
         binding.productName.setText(model.getName());
-        binding.price.setText(Utils.formatPriceSymbol(model.getPriceDouble() * model.getQuantity()));
+        binding.price.setText(Utils.formatPriceSymbol(model.getDiscountedPriceD() * model.getQuantity()));
         binding.priceQuan.setText(String.format(Locale.ENGLISH, "%s x %s",
-                Utils.formatPriceSymbol(model.getPriceDouble()), model.getQuantity()));
+                Utils.formatPriceSymbol(model.getDiscountedPriceD()), model.getQuantity()));
         if (model.getVariantDetails() == null) {
             binding.variation.setVisibility(View.GONE);
         } else {

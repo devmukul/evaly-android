@@ -59,8 +59,8 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:clipToPadding="true"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="10dp"
@@ -69,8 +69,8 @@
 
                     <ImageView
                         android:id="@+id/productImage"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:adjustViewBounds="true"
                         android:padding="1dp"
@@ -141,22 +141,20 @@
                 app:layout_constraintStart_toStartOf="@id/product_name"
                 app:layout_constraintTop_toBottomOf="@id/price" />
 
-
             <TextView
-                android:id="@+id/time"
+                android:id="@+id/priceTotalDiscounted"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/price"
                 android:layout_alignStart="@+id/product_name"
-                android:layout_alignParentBottom="false"
-                android:layout_marginTop="5dp"
-                android:drawableLeft="@drawable/ic_time_small"
-                android:drawablePadding="5dp"
-                android:paddingBottom="5dp"
-                android:text="1 minute ago"
+                android:layout_marginStart="5dp"
+                android:text="2000"
                 android:textColor="@color/c777"
-                android:textSize="14sp"
-                android:visibility="gone" />
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/priceTotal"
+                app:layout_constraintStart_toEndOf="@id/priceTotal"
+                app:layout_constraintTop_toTopOf="@id/priceTotal" />
+
 
             <LinearLayout
                 android:id="@+id/countHolder"
