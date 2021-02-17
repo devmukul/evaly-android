@@ -216,9 +216,7 @@ public class HomeViewModel extends ViewModel {
                                 List<String> slugs = new ArrayList<>();
                                 for (BannerItem item : bannerItems)
                                     slugs.add(item.slug);
-
-                                if (slugs.size() > 0)
-                                    deleteOldBanners(slugs);
+                                deleteOldBanners(slugs);
                             }
 
                             @Override

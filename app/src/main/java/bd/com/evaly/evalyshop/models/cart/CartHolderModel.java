@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.models.cart;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class CartHolderModel implements Serializable {
 
@@ -21,6 +22,10 @@ public class CartHolderModel implements Serializable {
     }
 
     public Cart getCart() {
+        if (cart == null){
+            cart = new Cart();
+            cart.setItems(new ArrayList<>());
+        }
         return cart;
     }
 

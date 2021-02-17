@@ -20,7 +20,7 @@ public class CartProductBinder {
     public static void bind(ItemCartProductBinding binding, CartEntity model) {
         Logger.d(new Gson().toJson(model));
 
-        binding.productName.setText(Utils.formatPriceSymbol(model.getDiscountedPriceD()));
+        binding.productName.setText(model.getName());
         Glide.with(binding.getRoot())
                 .load(model.getImage())
                 .placeholder(R.drawable.ic_placeholder_small)

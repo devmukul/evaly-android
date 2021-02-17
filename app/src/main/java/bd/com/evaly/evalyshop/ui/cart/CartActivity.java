@@ -27,7 +27,7 @@ public class CartActivity extends BaseActivity {
         FragmentManager fm = getSupportFragmentManager();
         CartFragment fragment = CartFragment.newInstance();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.add(R.id.fragmentHolder,fragment,"cart");
+        ft.add(R.id.fragmentHolder, fragment, "cart");
         ft.commit();
 
     }

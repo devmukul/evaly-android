@@ -64,8 +64,7 @@ public class MainViewModel extends ViewModel {
         CartApiHelper.getCartList(new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<CartHolderModel> response, int statusCode) {
-                if (response.getData() == null || response.getData().getCart() == null || response.getData().getCart().getItems() == null)
-                    return;
+
                 compositeDisposable.add(cartDao.insertAllIgnore(response.getData().getCart().getItems())
                         .subscribeOn(Schedulers.io())
                         .subscribeWith(new DisposableCompletableObserver() {
@@ -74,8 +73,7 @@ public class MainViewModel extends ViewModel {
                                 List<String> slugs = new ArrayList<>();
                                 for (CartEntity item : response.getData().getCart().getItems())
                                     slugs.add(item.getProductID());
-                                if (slugs.size() > 0)
-                                    deleteOld(slugs);
+                                deleteOld(slugs);
                             }
 
                             @Override
