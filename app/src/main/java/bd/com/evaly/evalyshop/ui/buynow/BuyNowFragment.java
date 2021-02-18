@@ -160,7 +160,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         binding.variationHolder.setVisibility(View.GONE);
 
-        binding.addToCart.setOnClickListener(v -> {
+        binding.addCart.setOnClickListener(v -> {
             cartViewModel.insert(getCartItem());
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
             dismiss();
@@ -326,7 +326,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         } else
             binding.variationHolder.setVisibility(View.GONE);
 
-        binding.addToCart.setOnClickListener(v -> {
+        binding.addCart.setOnClickListener(v -> {
             CartEntity cartEntity = getCartEntity(firstItem);
             cartViewModel.insert(getCartEntity(firstItem));
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
