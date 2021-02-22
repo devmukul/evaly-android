@@ -13,8 +13,8 @@ android {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 283
-        versionName "2.8.3"
+        versionCode 284
+        versionName "2.8.4"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
@@ -51,13 +51,13 @@ android {
             buildConfigField "String", "APPOINTMENT_URL", "\"https://api.evaly.com.bd/eappointment/api/v1/\""
         }
         debug {
-            buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
-            buildConfigField "String", 'WEB_URL', "\"https://beta.evaly.com.bd/\""
-            buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
+//            buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
+//            buildConfigField "String", 'WEB_URL', "\"https://beta.evaly.com.bd/\""
+//            buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
 
-//            buildConfigField "String", 'BASE_URL', "\"https://api.evaly.com.bd/\""
-//            buildConfigField "String", 'WEB_URL', "\"https://evaly.com.bd/\""
-//            buildConfigField "String", 'CHAT_BASE', "\"chat.evaly.com.bd\""
+            buildConfigField "String", 'BASE_URL', "\"https://api.evaly.com.bd/\""
+            buildConfigField "String", 'WEB_URL', "\"https://evaly.com.bd/\""
+            buildConfigField "String", 'CHAT_BASE', "\"chat.evaly.com.bd\""
 
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111667\""
             buildConfigField "String", 'BUILD', "\"dev\""
