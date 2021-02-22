@@ -14,16 +14,18 @@ import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 
 public class IssueApiHelper extends BaseApiHelper {
 
-    public static void getCategories(ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String> listener) {
-        getiApiClient().getIssueTicketCategory(CredentialManager.getToken(), 50).enqueue(getResponseCallBackDefault(listener));
+    public static void getCategories(String orderStatus, ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String> listener) {
+        getiApiClient().getIssueTicketCategory(CredentialManager.getToken(), orderStatus,250).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getIssueList(String invoice, ResponseListenerAuth<CommonDataResponse<List<IssueListModel>>, String> listener) {
-        getiApiClient().getIssueTicketList(CredentialManager.getToken(), invoice).enqueue(getResponseCallBackDefault(listener));
+    public static void getIssueList(String invoice, int page, ResponseListenerAuth<CommonDataResponse<List<IssueListModel>>, String> listener) {
+        getiApiClient().getIssueTicketList(CredentialManager.getToken(), invoice, page).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void resolveIssue(int id, ResponseListenerAuth<CommonDataResponse<IssueListModel>, String> listener) {
-        getiApiClient().resolveIssueTicketStatus(CredentialManager.getToken(), id).enqueue(getResponseCallBackDefault(listener));
+    public static void resolveIssue(String status, int id, ResponseListenerAuth<CommonDataResponse<IssueListModel>, String> listener) {
+        HashMap<String, String> body= new HashMap<>();
+        body.put("order_status", status);
+        getiApiClient().resolveIssueTicketStatus(CredentialManager.getToken(), body, id).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void createIssue(IssueCreateBody body, ResponseListenerAuth<CommonDataResponse<IssueListModel>, String> listener) {
@@ -38,7 +40,7 @@ public class IssueApiHelper extends BaseApiHelper {
         IssueCommentBody body = new IssueCommentBody();
         body.setComment(comment);
         body.setTicket(ticketId);
-        getiApiClient().createIssueTicketComment(CredentialManager.getToken(), body, "undefined").enqueue(getResponseCallBackDefault(listener));
+        getiApiClient().createIssueTicketComment(CredentialManager.getToken(), body, ticketId).enqueue(getResponseCallBackDefault(listener));
     }
 
 }
