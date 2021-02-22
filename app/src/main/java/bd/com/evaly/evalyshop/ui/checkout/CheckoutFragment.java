@@ -35,13 +35,10 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 import com.zhihu.matisse.internal.entity.CaptureStrategy;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,6 +62,7 @@ import bd.com.evaly.evalyshop.models.user.AddressItem;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.address.AddressFragment;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
 import bd.com.evaly.evalyshop.ui.checkout.controller.CheckoutProductController;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
@@ -87,6 +85,7 @@ public class CheckoutFragment extends DialogFragment {
     SharedObservers sharedObservers;
     private FragmentCheckoutBinding binding;
     private CheckoutViewModel viewModel;
+    private CartViewModel cartViewModel;
     private String deliveryChargeApplicable = null, deliveryDuration;
     private double deliveryChargeAmount = 0;
     private NavController navController;
@@ -97,6 +96,7 @@ public class CheckoutFragment extends DialogFragment {
     private double totalDeliveryCharge;
     private ProgressDialog progressDialog;
     private List<Uri> selectedImagesList;
+    private double totalAmount = 0;
 
     public CheckoutFragment() {
         //setCancelable(false);
@@ -114,6 +114,7 @@ public class CheckoutFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme);
         viewModel = new ViewModelProvider(this).get(CheckoutViewModel.class);
+        cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
     }
 
     @Override
@@ -122,6 +123,7 @@ public class CheckoutFragment extends DialogFragment {
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(CheckoutFragment.this);
         dialog = new ViewDialog(getActivity());
+        dialog.showDialog();
         progressDialog = new ProgressDialog(getActivity());
         selectedImagesList = new ArrayList<>();
         startAnimation();
@@ -140,7 +142,6 @@ public class CheckoutFragment extends DialogFragment {
 
     private void updateInfo() {
         UserModel userModel = CredentialManager.getUserData();
-
         binding.userName.setText(userModel.getFullName());
         binding.contact.setText(userModel.getUsername());
 
@@ -218,7 +219,6 @@ public class CheckoutFragment extends DialogFragment {
         binding.privacyText.setText(Html.fromHtml("Upon clicking on 'Place Order', I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
         binding.privacyText.setMovementMethod(LinkMovementMethod.getInstance());
 
-
         boolean isExpress = false;
         boolean showDeliveryCharge = false;
         totalDeliveryCharge = 0;
@@ -245,24 +245,8 @@ public class CheckoutFragment extends DialogFragment {
                 else
                     shopAmountMap.put(ss, cartItem.getPriceInt() * cartItem.getQuantity());
 
-                JsonObject shopObject = JsonParser.parseString(cartItem.getShopJson()).getAsJsonObject();
-                if (shopObject.has("is_express_shop")) {
-                    if (shopObject.get("is_express_shop").getAsBoolean() || shopObject.get("is_express_shop").getAsString().equals("1")) {
-                        isExpress = true;
-                        if (deliveryChargeApplicable != null) {
-                            String[] array = deliveryChargeApplicable.split(",");
-                            for (String s : array) {
-                                String shopTitle = shopObject.get("shop_name").getAsString();
-                                if (shopTitle.toLowerCase().contains(s.toLowerCase())) {
-                                    if (!expressShopSlugs.containsKey(cartItem.getShopSlug()))
-                                        totalDeliveryCharge += deliveryChargeAmount;
-                                    expressShopSlugs.put(cartItem.getShopSlug(), "added");
-                                    showDeliveryCharge = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                if (cartItem.isExpressShop()) {
+                    isExpress = true;
                 } else {
                     if (cartItem.getShopSlug().contains("evaly-express")) {
                         isExpress = true;
@@ -295,14 +279,6 @@ public class CheckoutFragment extends DialogFragment {
             binding.deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
         }
 
-        if (showDeliveryCharge && isExpress) {
-            if (totalDeliveryCharge > 0)
-                binding.deliveryCharge.setText(Utils.formatPriceSymbol(totalDeliveryCharge));
-            binding.vatHolder.setVisibility(View.VISIBLE);
-        } else {
-            totalDeliveryCharge = 0;
-            binding.vatHolder.setVisibility(View.GONE);
-        }
     }
 
     private void checkLocationPermission() {
@@ -388,11 +364,21 @@ public class CheckoutFragment extends DialogFragment {
     }
 
     private void liveEvents() {
-
+        viewModel.deliveryChargeLiveData.observe(getViewLifecycleOwner(), deliveryCharge -> {
+            dialog.hideDialog();
+            if (deliveryCharge == null)
+                binding.deliveryCharge.setText(Utils.formatPriceSymbol(0));
+            else {
+                binding.deliveryCharge.setText(Utils.formatPriceSymbol(deliveryCharge));
+                totalDeliveryCharge = deliveryCharge;
+                binding.totalAmount.setText(Utils.formatPriceSymbol(totalAmount + totalDeliveryCharge));
+                binding.totalText.setText(String.format("%s %s", getString(R.string.total_colon), Utils.formatPriceSymbol(totalAmount + totalDeliveryCharge)));
+            }
+        });
         viewModel.attachmentCheckLiveData.observe(getViewLifecycleOwner(), list -> {
-            HashMap<String, Boolean> map = new HashMap<>();
+            HashMap<String, AttachmentCheckResponse> map = new HashMap<>();
             for (AttachmentCheckResponse item : list) {
-                map.put(item.getShopSlug(), item.isAttachmentRequired());
+                map.put(item.getShopSlug(), item);
             }
             controller.setShowAttachmentMap(map);
             controller.requestModelBuild();
@@ -430,10 +416,10 @@ public class CheckoutFragment extends DialogFragment {
             controller.setList(cartEntities);
             controller.requestModelBuild();
             updateViews();
-            double totalAmount = 0;
+            totalAmount = 0;
             int totalItems = 0;
             for (CartEntity cartEntity : cartEntities) {
-                totalAmount += cartEntity.getPriceDouble() * cartEntity.getQuantity();
+                totalAmount += cartEntity.getDiscountedPriceD() * cartEntity.getQuantity();
                 totalItems += cartEntity.getQuantity();
             }
             binding.subtotal.setText(Utils.formatPriceSymbol(totalAmount));
@@ -453,7 +439,7 @@ public class CheckoutFragment extends DialogFragment {
                 return;
 
             if ((getArguments() == null || !getArguments().containsKey("model"))) {
-                viewModel.deleteSelected();
+                cartViewModel.deleteSelected();
             }
 
             if (isVisible())
@@ -587,16 +573,10 @@ public class CheckoutFragment extends DialogFragment {
 
         for (int i = 0; i < adapterItems.size(); i++) {
             if (adapterItems.get(i).isSelected()) {
-                String fromShopJson = adapterItems.get(i).getShopJson();
                 OrderItemsItem item = new OrderItemsItem();
                 item.setQuantity(adapterItems.get(i).getQuantity());
-                try {
-                    JSONObject sellerJson = new JSONObject(fromShopJson);
-                    String item_id = sellerJson.getString("shop_item_id");
-                    item.setShopItemId(Integer.parseInt(item_id));
-                    productList.add(item);
-                } catch (Exception e) {
-                }
+                item.setShopItemId(Integer.parseInt(adapterItems.get(i).getProductID()));
+                productList.add(item);
             }
         }
 

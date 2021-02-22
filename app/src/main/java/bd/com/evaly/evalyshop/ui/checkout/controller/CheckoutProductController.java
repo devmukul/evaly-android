@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.ui.checkout.controller;
 
+import android.view.View;
+
 import androidx.core.content.ContextCompat;
 
 import com.airbnb.epoxy.Carousel;
@@ -16,6 +18,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.ItemCartShopBinding;
 import bd.com.evaly.evalyshop.databinding.ItemCheckoutProductBinding;
+import bd.com.evaly.evalyshop.models.order.AttachmentCheckResponse;
 import bd.com.evaly.evalyshop.ui.cart.model.CartShopModel_;
 import bd.com.evaly.evalyshop.ui.checkout.CheckoutViewModel;
 import bd.com.evaly.evalyshop.ui.checkout.model.AttachmentCarouselModel_;
@@ -23,11 +26,12 @@ import bd.com.evaly.evalyshop.ui.checkout.model.CheckoutAttachmentModel_;
 import bd.com.evaly.evalyshop.ui.checkout.model.CheckoutAttachmentUploadModel_;
 import bd.com.evaly.evalyshop.ui.checkout.model.CheckoutProductModel_;
 import bd.com.evaly.evalyshop.ui.checkout.model.ImagePickerItemModel_;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class CheckoutProductController extends EpoxyController {
 
     private List<CartEntity> list = new ArrayList<>();
-    private HashMap<String, Boolean> showAttachmentMap = new HashMap<>();
+    private HashMap<String, AttachmentCheckResponse> showAttachmentMap = new HashMap<>();
     private HashMap<String, List<String>> attachmentMap = new HashMap<>();
     private CheckoutViewModel viewModel;
     private String selectedShopSlug = "";
@@ -44,7 +48,7 @@ public class CheckoutProductController extends EpoxyController {
         this.list = list;
     }
 
-    public void setShowAttachmentMap(HashMap<String, Boolean> showAttachmentMap) {
+    public void setShowAttachmentMap(HashMap<String, AttachmentCheckResponse> showAttachmentMap) {
         this.showAttachmentMap = showAttachmentMap;
     }
 
@@ -68,9 +72,15 @@ public class CheckoutProductController extends EpoxyController {
             else
                 endOfGroup = !list.get(index + 1).getShopSlug().equals(thisShopSlug);
 
+            AttachmentCheckResponse attachmentModel = showAttachmentMap.get(thisShopSlug);
+            double deliveryCharge = 0;
+            if (attachmentModel != null && attachmentModel.isApplyDeliveryCharge())
+                deliveryCharge = attachmentModel.getDeliveryCharge();
+
             new CartShopModel_()
                     .id("cart_shop_item", item.getProductID() + " " + item.getShopSlug())
                     .model(item)
+                    .deliveryCharge(deliveryCharge)
                     .onBind((model, view, position) -> {
                         ItemCartShopBinding binding = (ItemCartShopBinding) view.getDataBinding();
                         String shopName = model.model().getShopName();
@@ -78,6 +88,12 @@ public class CheckoutProductController extends EpoxyController {
                             binding.shop.setText(shopName);
                         else
                             binding.shop.setText("Unknown Seller");
+
+                        if (model.deliveryCharge() > 0) {
+                            binding.deliveryCharge.setVisibility(View.VISIBLE);
+                            binding.deliveryCharge.setText("Delivery Fee " + Utils.formatPriceSymbol(model.deliveryCharge()));
+                        } else
+                            binding.deliveryCharge.setVisibility(View.GONE);
                     })
                     .noMargin(true)
                     .addIf(addShopHeader, this);
@@ -100,7 +116,7 @@ public class CheckoutProductController extends EpoxyController {
                 attachmentList = attachmentMap.get(thisShopSlug);
 
             List<DataBindingEpoxyModel> attachmentModels = new ArrayList<>();
-            boolean attachmentRequired = (showAttachmentMap.get(thisShopSlug) != null && showAttachmentMap.get(thisShopSlug));
+            boolean attachmentRequired = (attachmentModel != null && attachmentModel.isAttachmentRequired());
 
             if (attachmentList.size() < 3 && attachmentRequired)
                 attachmentModels.add(new ImagePickerItemModel_()

@@ -2,8 +2,6 @@ package bd.com.evaly.evalyshop.ui.checkout;
 
 import android.graphics.Bitmap;
 
-import androidx.hilt.Assisted;
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
@@ -12,11 +10,12 @@ import androidx.lifecycle.ViewModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
@@ -29,14 +28,17 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 
+@HiltViewModel
 public class CheckoutViewModel extends ViewModel {
 
     public SingleLiveEvent<Integer> imagePicker = new SingleLiveEvent<>();
     protected LiveData<List<CartEntity>> liveList = new MutableLiveData<>();
     protected SingleLiveEvent<Boolean> errorOrder = new SingleLiveEvent<>();
+    protected SingleLiveEvent<Boolean> hideDialog = new SingleLiveEvent<>();
+    protected MutableLiveData<Double> deliveryChargeLiveData = new MutableLiveData<>();
     protected MutableLiveData<List<AttachmentCheckResponse>> attachmentCheckLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse<List<JsonObject>>> orderPlacedLiveData = new MutableLiveData<>();
     protected MutableLiveData<HashMap<String, List<String>>> attachmentMapLiveData = new MutableLiveData<>();
@@ -45,8 +47,8 @@ public class CheckoutViewModel extends ViewModel {
     private HashMap<String, List<String>> attachmentMap = new HashMap<>();
     private String selectedShopSlug;
 
-    @ViewModelInject
-    public CheckoutViewModel(CartDao cartDao, @Assisted SavedStateHandle savedStateHandle) {
+    @Inject
+    public CheckoutViewModel(CartDao cartDao, SavedStateHandle savedStateHandle) {
         this.cartDao = cartDao;
 
         if (savedStateHandle != null && savedStateHandle.contains("model")) {
@@ -81,16 +83,25 @@ public class CheckoutViewModel extends ViewModel {
     }
 
     public void checkAttachmentRequirements(List<Integer> list) {
-        Logger.e("called");
         OrderApiHelper.isAttachmentRequired(list, new ResponseListenerAuth<CommonDataResponse<List<AttachmentCheckResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AttachmentCheckResponse>> response, int statusCode) {
                 attachmentCheckLiveData.setValue(response.getData());
+                List<String> shopSlugs = new ArrayList<>();
+                double deliveryCharge = 0;
+                for (AttachmentCheckResponse item : response.getData()) {
+                    if (item.isApplyDeliveryCharge() && !shopSlugs.contains(item.getShopSlug())) {
+                        deliveryCharge += item.getDeliveryCharge();
+                        shopSlugs.add(item.getShopSlug());
+                    }
+                }
+                deliveryChargeLiveData.setValue(deliveryCharge);
+                shopSlugs.clear();
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
+                errorOrder.setValue(true);
             }
 
             @Override
@@ -100,11 +111,6 @@ public class CheckoutViewModel extends ViewModel {
         });
     }
 
-    public void deleteSelected() {
-        compositeDisposable.add(cartDao.rxDeleteSelected()
-                .subscribeOn(Schedulers.io())
-                .subscribe());
-    }
 
     public void placeOrder(PlaceOrderItem payload) {
         Gson gson = new Gson();

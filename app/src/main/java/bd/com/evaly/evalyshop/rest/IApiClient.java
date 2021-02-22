@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.BuildConfig;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
@@ -35,6 +36,7 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryRe
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
+import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandCatResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
 import bd.com.evaly.evalyshop.models.catalog.category.ChildCategoryResponse;
@@ -98,7 +100,16 @@ import retrofit2.http.Url;
 
 public interface IApiClient {
 
-    @POST(UrlUtils.BASE_URL + "orders/checkout/buckets")
+    @GET(UrlUtils.BASE_CART + "carts/users/evaly")
+    Call<CommonDataResponse<CartHolderModel>> getCartList(@Header("Authorization") String token);
+
+    @POST(UrlUtils.BASE_CART + "carts")
+    Call<CommonDataResponse<CartHolderModel>> syncCartList(@Header("Authorization") String token,
+                                                            @Body CartHolderModel body);
+
+
+
+    @POST(UrlUtils.BASE_CATALOG + "orders/checkout/buckets")
     Call<CommonDataResponse<List<AttachmentCheckResponse>>> isAttachmentRequired(@Header("Authorization") String token,
                                                                                  @Body List<Integer> list);
 
@@ -214,31 +225,35 @@ public interface IApiClient {
     Call<CommonDataResponse<String>> getUnreadedMessageCount(@Header("Authorization") String token,
                                                              @Path("username") String username);
 
-    @GET(UrlUtils.DOMAIN + "issue/api/v1/users/categories")
+    // issue ticket
+    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/categories/customer")
     Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Header("Authorization") String token,
+                                                                              @Query("order_status") String orderStatus,
                                                                               @Query("limit") int limit);
 
-    @GET(UrlUtils.DOMAIN + "issue/api/v1/common/tickets")
+    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/evaly")
     Call<CommonDataResponse<List<IssueListModel>>> getIssueTicketList(@Header("Authorization") String token,
-                                                                      @Query("invoice_number") String invoice);
+                                                                      @Query("invoice_no") String invoice,
+                                                                      @Query("offset") int page);
 
-
-    @PUT(UrlUtils.DOMAIN + "issue/api/v1/users/tickets/{id}/change-status")
+    @PATCH(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/{tickerId}")
     Call<CommonDataResponse<IssueListModel>> resolveIssueTicketStatus(@Header("Authorization") String token,
-                                                                      @Path("id") int id);
+                                                                      @Body HashMap<String, String> body,
+                                                                      @Path("tickerId") int id);
 
-    @POST(UrlUtils.DOMAIN + "issue/api/v1/common/tickets")
+    @POST(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/evaly")
     Call<CommonDataResponse<IssueListModel>> createIssueTicket(@Header("Authorization") String token,
                                                                @Body IssueCreateBody body);
 
-    @GET(UrlUtils.DOMAIN + "issue/api/v1/common/comments")
+    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/comments/{ticket_id}")
     Call<CommonDataResponse<List<IssueTicketCommentModel>>> getIssueTicketComment(@Header("Authorization") String token,
-                                                                                  @Query("ticket_id") int ticketId);
+                                                                                  @Path("ticket_id") int ticketId);
 
-    @POST(UrlUtils.DOMAIN + "issue/api/v1/common/comments")
+    @POST(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/comments/{ticket_id}")
     Call<CommonDataResponse<IssueTicketCommentModel>> createIssueTicketComment(@Header("Authorization") String token,
                                                                                @Body IssueCommentBody body,
-                                                                               @Query("ticket_id") String tickerId);
+                                                                               @Path("ticket_id") int tickerId);
+
 
     @POST(UrlUtils.DOMAIN_EAUTH + "set-password")
     Call<JsonObject> setPassword(@Body HashMap<String, String> setPasswordModel);
@@ -263,9 +278,8 @@ public interface IApiClient {
     Call<JsonObject> getUserInfoPay(@Header("Authorization") String token,
                                     @Path("username") String username);
 
-    @GET(UrlUtils.BASE_URL_PAYMENT + "complete-balance//{username}/")
-    Call<CommonDataResponse<BalanceResponse>> getBalance(@Header("Authorization") String token,
-                                                         @Path("username") String username);
+    @GET(UrlUtils.DOMAIN + "epay-reader/api/v1/user/balance")
+    Call<CommonDataResponse<BalanceResponse>> getBalance(@Header("Authorization") String token);
 
     @GET(UrlUtils.DOMAIN_EAUTH + "profile")
     Call<CommonDataResponse<UserModel>> getUserProfile(@Header("Authorization") String token);

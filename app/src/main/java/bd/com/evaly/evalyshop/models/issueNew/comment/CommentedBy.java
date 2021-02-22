@@ -18,40 +18,40 @@ public class CommentedBy implements Serializable {
     @SerializedName("username")
     private String username;
 
-    public void setLastName(String lastName){
-        this.lastName = lastName;
-    }
-
-    public String getLastName(){
+    public String getLastName() {
         return lastName;
     }
 
-    public void setFirstName(String firstName){
-        this.firstName = firstName;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getFirstName(){
+    public String getFirstName() {
         return firstName;
     }
 
-    public void setEmail(String email){
-        this.email = email;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getEmail(){
+    public String getEmail() {
         return email;
     }
 
-    public void setUsername(String username){
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
-    public String toString(){
+    public String toString() {
         return
                 "CommentedBy{" +
                         "last_name = '" + lastName + '\'' +

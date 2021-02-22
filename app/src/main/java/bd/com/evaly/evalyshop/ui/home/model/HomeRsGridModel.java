@@ -58,34 +58,38 @@ public abstract class HomeRsGridModel extends DataBindingEpoxyModel {
         super.bind(holder);
         HomeModelCarouselGridBinding binding = (HomeModelCarouselGridBinding) holder.getDataBinding();
         binding.title.setText(title);
-
-        if (binding.getRoot().getContext() != null)
-            Glide.with(binding.getRoot())
-                    .load(image)
-                    .apply(new RequestOptions().override(260, 260))
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
-                    .listener(new RequestListener<Drawable>() {
-                                  @Override
-                                  public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                      return false;
-                                  }
-
-                                  @SuppressLint("CheckResult")
-                                  @Override
-                                  public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                      Observable.fromCallable(() -> Utils.changeColor(((BitmapDrawable) resource).getBitmap(),
-                                              Color.parseColor("#ecf3f9"), Color.WHITE))
-                                              .subscribeOn(Schedulers.io())
-                                              .observeOn(AndroidSchedulers.mainThread())
-                                              .subscribe(binding.image::setImageBitmap, throwable -> Log.e("error", "Throwable " + throwable.getMessage()));
-                                      return true;
-                                  }
+        Glide.with(binding.getRoot())
+                .load(image)
+                .apply(new RequestOptions().override(260, 260))
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
+                .listener(new RequestListener<Drawable>() {
+                              @Override
+                              public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e,
+                                                          Object model,
+                                                          Target<Drawable> target,
+                                                          boolean isFirstResource) {
+                                  return false;
                               }
-                    )
-                    .into(binding.image);
-        if (color != null)
-            binding.cardView.setCardBackgroundColor(Color.parseColor(color));
+
+                              @SuppressLint("CheckResult")
+                              @Override
+                              public boolean onResourceReady(Drawable resource,
+                                                             Object model,
+                                                             Target<Drawable> target,
+                                                             DataSource dataSource,
+                                                             boolean isFirstResource) {
+                                  Observable.fromCallable(() -> Utils.changeColor(((BitmapDrawable) resource).getBitmap(),
+                                          Color.parseColor("#ecf3f9"), Color.WHITE))
+                                          .subscribeOn(Schedulers.io())
+                                          .observeOn(AndroidSchedulers.mainThread())
+                                          .subscribe(binding.image::setImageBitmap, throwable -> Log.e("error", "Throwable " + throwable.getMessage()));
+                                  return true;
+                              }
+                          }
+                )
+                .into(binding.image);
+
         binding.getRoot().setOnClickListener(clickListener);
     }
 

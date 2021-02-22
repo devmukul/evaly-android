@@ -1,13 +1,13 @@
 package bd.com.evaly.evalyshop.ui.browseProduct;
 
-import androidx.hilt.Assisted;
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.BaseModel;
@@ -18,7 +18,9 @@ import bd.com.evaly.evalyshop.models.catalog.category.ChildCategoryResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class BrowseProductViewModel extends ViewModel {
 
     protected String categorySlug;
@@ -27,8 +29,9 @@ public class BrowseProductViewModel extends ViewModel {
     private int tabPosition = -1;
     private String selectedType = "products";
     private int currentPage = 1;
-    @ViewModelInject
-    public BrowseProductViewModel(@Assisted SavedStateHandle stateHandle) {
+
+    @Inject
+    public BrowseProductViewModel(SavedStateHandle stateHandle) {
         this.categorySlug = stateHandle.get("category_slug");
         currentPage = 1;
         loadFromApi();

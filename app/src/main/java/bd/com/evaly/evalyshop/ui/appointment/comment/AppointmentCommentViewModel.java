@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.ui.appointment.comment;
 
-import androidx.hilt.Assisted;
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
@@ -11,6 +9,8 @@ import com.orhanobut.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.appointment.comment.AppointmentCommentRequest;
@@ -18,7 +18,9 @@ import bd.com.evaly.evalyshop.models.appointment.comment.AppointmentCommentRespo
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AppointmentApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class AppointmentCommentViewModel extends ViewModel {
 
     private final SavedStateHandle savedStateHandle;
@@ -29,8 +31,8 @@ public class AppointmentCommentViewModel extends ViewModel {
     private int page = 1;
     private boolean isLoading = false;
 
-    @ViewModelInject
-    public AppointmentCommentViewModel(@Assisted SavedStateHandle savedStateHandle) {
+    @Inject
+    public AppointmentCommentViewModel(SavedStateHandle savedStateHandle) {
         this.savedStateHandle = savedStateHandle;
         this.appointmentLiveData.setValue(this.savedStateHandle.get("model"));
         Logger.d(savedStateHandle.get("model"));

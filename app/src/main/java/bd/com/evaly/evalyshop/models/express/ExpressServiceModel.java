@@ -114,6 +114,11 @@ public class ExpressServiceModel implements Serializable {
     }
 
     public String getAppName() {
+        if (appName == null && name != null)
+            return name;
+        else if (appName == null)
+            return "";
+
         return appName;
     }
 

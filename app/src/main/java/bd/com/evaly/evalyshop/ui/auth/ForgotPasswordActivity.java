@@ -104,10 +104,11 @@ public class ForgotPasswordActivity extends BaseActivity {
             @Override
             public void onDataFetched(CommonDataResponse<CaptchaResponse> response, int statusCode) {
                 captchaModel = response.getData();
-                Glide.with(AppController.getmContext())
-                        .asBitmap()
-                        .load(captchaModel.getCaptcha())
-                        .into(binding.captchaImage);
+                if (!isDestroyed() && !isFinishing())
+                    Glide.with(AppController.getmContext())
+                            .asBitmap()
+                            .load(captchaModel.getCaptcha())
+                            .into(binding.captchaImage);
             }
 
             @Override

@@ -9,7 +9,6 @@ import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.ModelView;
 
 import bd.com.evaly.evalyshop.ui.home.model.EpoxyModelStaggeredGrid;
-import bd.com.evaly.evalyshop.util.Utils;
 
 @ModelView(saveViewState = true, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT, baseModelClass = EpoxyModelStaggeredGrid.class)
 public class ProductCategoryCarousel extends Carousel {

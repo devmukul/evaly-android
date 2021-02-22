@@ -39,7 +39,7 @@ public class IssueReplyAdapter extends RecyclerView.Adapter<IssueReplyAdapter.Is
         IssueTicketCommentModel model = list.get(i);
         holder.tvReply.setText(model.getComment());
         holder.tvName.setText(model.getCommentedBy().getFirstName() + " " + model.getCommentedBy().getLastName());
-        holder.tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMTIssue("yyyy-MM-dd HH:mm:ss.SSS", "", model.getCreatedAt())));
+        holder.tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMTIssue("", "", model.getCreatedAt())));
 
 //        if (model.getTicket().getAttachments() != null)
 //            Glide.with(context)

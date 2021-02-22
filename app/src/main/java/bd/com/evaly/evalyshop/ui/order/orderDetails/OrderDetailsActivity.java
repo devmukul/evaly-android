@@ -301,7 +301,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         });
 
         viewModel.confirmDeliveryLiveData.observe(this, commonDataResponse -> {
-            progressDialog.dismiss();
+            dismissProgressBar();
             if (commonDataResponse == null) {
                 ToastUtils.show("Couldn't confirm order delivery");
                 return;
@@ -573,7 +573,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     private void initAttachments() {
         List<String> list = orderDetailsModel.getAttachments();
-        if (list == null && list.size() == 0) {
+        if (list == null || list.size() == 0) {
             binding.attachmentsHolder.setVisibility(View.GONE);
             return;
         }

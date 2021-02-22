@@ -3,8 +3,6 @@ package bd.com.evaly.evalyshop.ui.order.orderDetails;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
-import androidx.hilt.Assisted;
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
@@ -17,6 +15,8 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -31,7 +31,9 @@ import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class OrderDetailsViewModel extends ViewModel {
 
     protected MutableLiveData<DeliveryHeroResponse> deliveryHeroLiveData = new MutableLiveData<>();
@@ -47,8 +49,8 @@ public class OrderDetailsViewModel extends ViewModel {
     protected MutableLiveData<BalanceResponse> balanceLiveData = new MutableLiveData<>();
     private String invoiceNo;
 
-    @ViewModelInject
-    public OrderDetailsViewModel(@Assisted SavedStateHandle savedStateHandle) {
+    @Inject
+    public OrderDetailsViewModel(SavedStateHandle savedStateHandle) {
         this.invoiceNo = savedStateHandle.get("orderID");
         getOrderDetails();
         getDeliveryHero();

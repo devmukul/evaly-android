@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.ui.brand;
 
-import androidx.hilt.Assisted;
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
@@ -9,6 +7,8 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -19,7 +19,9 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.BrandApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class BrandViewModel extends ViewModel {
 
     protected MutableLiveData<List<ProductItem>> liveList = new MutableLiveData<>();
@@ -35,8 +37,8 @@ public class BrandViewModel extends ViewModel {
     private MutableLiveData<TabsItem> selectedCategoryLiveData = new MutableLiveData<>();
     private int categoryCurrentPage = 1;
 
-    @ViewModelInject
-    public BrandViewModel(@Assisted SavedStateHandle savedStateHandle) {
+    @Inject
+    public BrandViewModel(SavedStateHandle savedStateHandle) {
         this.slug = savedStateHandle.get("brand_slug");
         if (savedStateHandle.contains("category_slug"))
             this.categorySlug = savedStateHandle.get("category_slug");

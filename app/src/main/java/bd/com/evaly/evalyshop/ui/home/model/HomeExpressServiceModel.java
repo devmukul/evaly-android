@@ -35,25 +35,26 @@ public abstract class HomeExpressServiceModel extends DataBindingEpoxyModel {
         return model;
     }
 
+
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
         HomeModelExpressServiceBinding binding = (HomeModelExpressServiceBinding) holder.getDataBinding();
 
-        if (binding.getRoot().getContext() != null)
-            Glide.with(binding.getRoot())
-                    .asBitmap()
-                    .load(model.getAppLogo() == null ? model.getImage() : model.getAppLogo())
-                    .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.bg_f8f8f8_round))
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .into(binding.image);
+        Glide.with(binding.image)
+                .asBitmap()
+                .override(200,200)
+                .load(model.getAppLogo() == null ? model.getImage() : model.getAppLogo())
+                .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.bg_f8f8f8_round))
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .into(binding.image);
 
         binding.image.setPadding(0, 0, 0, 0);
+        binding.title.setText(model.getAppName());
 
-        binding.title.setText(model.getAppName().replace("\\n", "\n"));
-        if (fontSize > 0) {
+        if (fontSize > 0)
             binding.title.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
-        }
+
         binding.getRoot().setOnClickListener(clickListener);
     }
 

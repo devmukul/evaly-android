@@ -47,6 +47,7 @@ import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSliderModel_;
 import bd.com.evaly.evalyshop.util.BindingUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.FixedStaggeredGridLayoutManager;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
@@ -292,12 +293,12 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             sliderController.addData(campaignCategoryResponses);
             sliderController.requestModelBuild();
             productController.setCategoryList(campaignCategoryResponses);
-            productController.requestModelBuild();
+            requestModelBuild();
             if (binding.sliderIndicator.getTabCount() > 0 && sliderController.getAdapter().getItemCount() > 0) {
                 CampaignSliderModel_ model = (CampaignSliderModel_) sliderController.getAdapter().getModelAtPosition(0);
                 initHeader(model.model().getBannerImage());
             }
-            productController.requestModelBuild();
+            requestModelBuild();
 
         });
 
@@ -305,16 +306,19 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             productController.setLoading(false);
             isLoading = false;
             productController.setProductList(campaignProductResponses);
-            productController.requestModelBuild();
+            requestModelBuild();
         });
 
         viewModel.getHideLoadingBar().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
                 productController.setLoading(false);
-                productController.requestModelBuild();
+                requestModelBuild();
             }
         });
+    }
 
+    private void requestModelBuild() {
+        productController.requestModelBuild();
     }
 
     private void initRecycler() {
@@ -325,7 +329,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         productController.setViewModel(viewModel);
         productController.setActivity((AppCompatActivity) getActivity());
         binding.recyclerView.setAdapter(productController.getAdapter());
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        FixedStaggeredGridLayoutManager staggeredGridLayoutManager = new FixedStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         binding.recyclerView.setLayoutManager(staggeredGridLayoutManager);
         productController.setSpanCount(2);
         int spacing = (int) Utils.convertDpToPixel(10, requireActivity());
@@ -335,7 +339,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             public void loadMoreItem() {
                 if (!isLoading) {
                     productController.setLoading(true);
-                    productController.requestModelBuild();
+                    requestModelBuild();
                     viewModel.loadCampaignProducts();
                     isLoading = true;
                 }
@@ -357,7 +361,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                     isSharingBottomShowing = true;
                     binding.buttonRight.setImageDrawable(getResources().getDrawable(R.drawable.ic_share));
                 }
-
             }
         });
         productController.requestModelBuild();

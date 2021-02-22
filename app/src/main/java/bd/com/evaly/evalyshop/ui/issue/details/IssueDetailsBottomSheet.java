@@ -180,7 +180,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         ProgressDialog dialog = new ProgressDialog(getContext());
         dialog.show();
 
-        IssueApiHelper.resolveIssue(issueModel.getId(), new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
+        IssueApiHelper.resolveIssue("resolved", (int) issueModel.getId(), new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<IssueListModel> response, int statusCode) {
                 dialog.dismiss();
@@ -269,7 +269,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         else
             binding.tvResolveIssueHolder.setVisibility(View.VISIBLE);
 
-        binding.issueType.setText(Utils.toFirstCharUpperAll(postModel.getCategory().getName()));
+        binding.issueType.setText(Utils.toFirstCharUpperAll(postModel.getCategory()));
 
         binding.postImage.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ImagePreview.class);

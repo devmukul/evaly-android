@@ -11,16 +11,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
-
-import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.ui.wishlist.adapter.WishListAdapter;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -36,8 +33,8 @@ public class WishListFragment extends Fragment {
     private ViewDialog alert;
     private View view;
     private Toolbar mToolbar;
-    @Inject
-    WishListDao wishListDao;
+    private WishListViewModel viewModel;
+
 
     public WishListFragment() {
         // Required empty public constructor
@@ -58,7 +55,7 @@ public class WishListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_wish_list, container, false);
-
+        viewModel = new ViewModelProvider(this).get(WishListViewModel.class);
         return view;
     }
 
@@ -88,7 +85,7 @@ public class WishListFragment extends Fragment {
 
             @Override
             public void delete(String slug) {
-                Executors.newSingleThreadExecutor().execute(() -> wishListDao.deleteBySlug(slug));
+                viewModel.deleteBySlug(slug);
             }
         });
 
@@ -97,7 +94,7 @@ public class WishListFragment extends Fragment {
         LinearLayout empty = view.findViewById(R.id.empty);
         NestedScrollView scrollView = view.findViewById(R.id.scroller);
 
-        wishListDao.getAllLive().observe(getViewLifecycleOwner(), wishListEntities -> {
+        viewModel.liveData.observe(getViewLifecycleOwner(), wishListEntities -> {
 
             wishLists.clear();
             wishLists.addAll(wishListEntities);

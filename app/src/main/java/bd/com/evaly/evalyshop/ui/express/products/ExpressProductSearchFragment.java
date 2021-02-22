@@ -13,18 +13,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.Executors;
-
-import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
 import bd.com.evaly.evalyshop.databinding.ActivityExpressProductSearchBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -40,8 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class ExpressProductSearchFragment extends Fragment {
 
-    @Inject
-    ExpressServiceDao expressServiceDao;
+    private ExpressProductSearchViewModel viewModel;
     private ActivityExpressProductSearchBinding binding;
     private List<ProductItem> itemList;
     private int currentPage = 1, totalCount = 0;
@@ -58,6 +54,7 @@ public class ExpressProductSearchFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = ActivityExpressProductSearchBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(this).get(ExpressProductSearchViewModel.class);
         return binding.getRoot();
     }
 
@@ -77,7 +74,7 @@ public class ExpressProductSearchFragment extends Fragment {
             expressProductController = new ExpressProductController();
         expressProductController.setActivity((AppCompatActivity) getActivity());
         expressProductController.setFragment(this);
-        expressProductController.setExpressServiceDao(expressServiceDao);
+        expressProductController.setExpressServiceDao(viewModel.expressServiceDao);
         expressProductController.setFilterDuplicates(true);
         binding.recyclerView.setAdapter(expressProductController.getAdapter());
         binding.back.setOnClickListener(v -> getActivity().onBackPressed());
@@ -140,7 +137,7 @@ public class ExpressProductSearchFragment extends Fragment {
             }
         });
 
-        expressServiceDao.getAll().observe(getViewLifecycleOwner(), expressServiceModels -> {
+        viewModel.expressServiceDao.getAll().observe(getViewLifecycleOwner(), expressServiceModels -> {
             expressProductController.setItemsExpress(expressServiceModels);
         });
         getExpressServices();
@@ -150,16 +147,7 @@ public class ExpressProductSearchFragment extends Fragment {
         ExpressApiHelper.getServicesList(new ResponseListenerAuth<CommonDataResponse<List<ExpressServiceModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ExpressServiceModel>> response, int statusCode) {
-                Executors.newFixedThreadPool(4).execute(() -> {
-                    expressServiceDao.insertList(response.getData());
-
-                    List<String> slugs = new ArrayList<>();
-                    for (ExpressServiceModel item : response.getData())
-                        slugs.add(item.getSlug());
-
-                    if (slugs.size() > 0)
-                        expressServiceDao.deleteOld(slugs);
-                });
+                viewModel.syncList(response.getData());
             }
 
             @Override

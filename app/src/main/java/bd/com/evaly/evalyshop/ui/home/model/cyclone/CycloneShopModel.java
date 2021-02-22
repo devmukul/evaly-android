@@ -49,12 +49,5 @@ public abstract class CycloneShopModel extends DataBindingEpoxyModel {
     @Override
     protected void setDataBindingVariables(ViewDataBinding binding) {
     }
-
-    @Override
-    public void unbind(@NonNull DataBindingHolder holder) {
-        super.unbind(holder);
-        holder.getDataBinding().unbind();
-    }
-
 }
 

@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.home;
 
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -12,6 +11,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.roomdb.banner.BannerDao;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
@@ -31,11 +32,14 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.CompletableObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+@HiltViewModel
 public class HomeViewModel extends ViewModel {
 
     protected MutableLiveData<List<CampaignProductResponse>> flashSaleProductList = new MutableLiveData<>();
@@ -56,7 +60,7 @@ public class HomeViewModel extends ViewModel {
     private CompositeDisposable compositeDisposable;
     private BannerDao bannerDao;
 
-    @ViewModelInject
+    @Inject
     public HomeViewModel(BannerDao bannerDao) {
         this.bannerDao = bannerDao;
         bannerListLive = bannerDao.getAll();
@@ -75,6 +79,20 @@ public class HomeViewModel extends ViewModel {
     protected void onCleared() {
         super.onCleared();
         compositeDisposable.clear();
+    }
+
+    public void reload() {
+        brandArrayList.clear();
+        productArrayList.clear();
+        shopArrayList.clear();
+        currentPageProducts = 1;
+        loadBanners();
+        loadProducts();
+        loadExpressServices();
+        loadCampaignCategory();
+        loadFlashSaleProductList();
+        loadFlashSaleBrandsList();
+        loadFlashSaleShopList();
     }
 
     public int getTabPosition() {
@@ -186,6 +204,7 @@ public class HomeViewModel extends ViewModel {
                 }.getType());
                 bannerDao.insertListRx(bannerItems)
                         .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new CompletableObserver() {
                             @Override
                             public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
@@ -197,9 +216,7 @@ public class HomeViewModel extends ViewModel {
                                 List<String> slugs = new ArrayList<>();
                                 for (BannerItem item : bannerItems)
                                     slugs.add(item.slug);
-
-                                if (slugs.size() > 0)
-                                    deleteOldBanners(slugs);
+                                deleteOldBanners(slugs);
                             }
 
                             @Override
@@ -225,6 +242,7 @@ public class HomeViewModel extends ViewModel {
     private void deleteOldBanners(List<String> slugs) {
         bannerDao.deleteOldRx(slugs)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
                     @Override
                     public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
@@ -267,7 +285,6 @@ public class HomeViewModel extends ViewModel {
         ProductApiHelper.getCategoryBrandProducts(currentPageProducts, "root", null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
-
                 productArrayList.addAll(response.getData());
                 productListLive.setValue(productArrayList);
                 currentPageProducts++;

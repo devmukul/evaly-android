@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.address;
 
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,6 +10,8 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -19,8 +20,10 @@ import bd.com.evaly.evalyshop.models.user.AddressItem;
 import bd.com.evaly.evalyshop.models.user.Addresses;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.disposables.CompositeDisposable;
 
+@HiltViewModel
 public class AddressViewModel extends ViewModel {
 
     private AddressListDao addressListDao;
@@ -28,7 +31,7 @@ public class AddressViewModel extends ViewModel {
     private MutableLiveData<List<AddressItem>> addressLiveData = new MutableLiveData<>();
     private CompositeDisposable compositeDisposable;
 
-    @ViewModelInject
+    @Inject
     public AddressViewModel(AddressListDao addressListDao) {
         this.addressListDao = addressListDao;
         compositeDisposable = new CompositeDisposable();

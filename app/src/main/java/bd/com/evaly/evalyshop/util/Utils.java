@@ -55,6 +55,11 @@ public class Utils {
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
+    public static int randInt(int min, int max) {
+        Random rand = new Random();
+        return rand.nextInt((max - min) + 1) + min;
+    }
+
     public static boolean isEmailValid(String email) {
         final Pattern EMAIL_REGEX = Pattern.compile("\\b[\\w.%-]+@[-.\\w]+\\.[A-Za-z]{2,4}\\b", Pattern.CASE_INSENSITIVE);
         return EMAIL_REGEX.matcher(email).matches();
@@ -726,7 +731,7 @@ public class Utils {
         long outputDate = 0;
 
         SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
-       // df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
+        df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
 
         SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.getDefault());
         df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
@@ -748,11 +753,10 @@ public class Utils {
 
 
     public static String titleBeautify(String str) {
-
+        if (str == null)
+            return "";
         str = str.replace("-", " ");
         return str;
-
-
     }
 
 

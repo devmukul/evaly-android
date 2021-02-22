@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.ViewDataBinding;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
@@ -53,12 +52,8 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
         super.bind(holder);
 
         HomeModelProductGridBinding binding = (HomeModelProductGridBinding) holder.getDataBinding();
-        if (binding.getRoot().getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
-            params.setFullSpan(false);
-        }
 
-        binding.title.setText(Html.fromHtml(model.getName()));
+        binding.title.setText(model.getName());
 
         if (binding.getRoot().getContext() != null)
             Glide.with(binding.getRoot())
@@ -82,7 +77,9 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
             binding.tvCashback.setVisibility(View.GONE);
             binding.price.setVisibility(View.GONE);
             binding.price.setText(Utils.formatPriceSymbol(0));
+            binding.priceDiscount.setVisibility(View.GONE);
         } else if (model.getMinDiscountedPriceD() != 0) {
+            binding.price.setVisibility(View.VISIBLE);
             if (model.getMinDiscountedPriceD() < model.getMinPriceD()) {
                 binding.priceDiscount.setText(Utils.formatPriceSymbol(model.getMinPrice()));
                 binding.priceDiscount.setVisibility(View.VISIBLE);
@@ -92,8 +89,10 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
                 binding.priceDiscount.setVisibility(View.GONE);
                 binding.price.setText(Utils.formatPriceSymbol(model.getMinPrice()));
             }
-        } else
+        } else {
+            binding.price.setVisibility(View.VISIBLE);
             binding.price.setText(Utils.formatPriceSymbol(model.getMinPrice()));
+        }
 
         binding.getRoot().setOnClickListener(clickListener);
 

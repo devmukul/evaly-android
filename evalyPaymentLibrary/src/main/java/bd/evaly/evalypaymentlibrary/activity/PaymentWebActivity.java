@@ -2,7 +2,6 @@ package bd.evaly.evalypaymentlibrary.activity;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -60,11 +59,9 @@ public final class PaymentWebActivity extends AppCompatActivity implements Advan
                         + "&amount=" + URLEncoder.encode(String.valueOf(PaymentWebBuilder.getPurchaseInformation().getAmount()), "UTF-8")
                         + "&invoice_no=" + URLEncoder.encode(PaymentWebBuilder.getPurchaseInformation().getInvoiceNo(), "UTF-8");
                 mWebView.loadUrl(PaymentWebBuilder.getRequestURL().concat(postData));
-                Log.e("]]]]", PaymentWebBuilder.getRequestURL().concat(postData));
+               // Log.e("]]]]", PaymentWebBuilder.getRequestURL().concat(postData));
             } else {
                 mWebView.loadUrl(PaymentWebBuilder.getRequestURL());
-                Log.e("}}}}}", PaymentWebBuilder.getRequestURL());
-
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

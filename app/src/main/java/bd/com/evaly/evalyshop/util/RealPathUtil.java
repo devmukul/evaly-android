@@ -250,6 +250,8 @@ public class RealPathUtil {
     }
 
     public static String writeToTempImageAndGetPath(Context inContext, Bitmap inImage) {
+        if (inImage == null)
+            return null;
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         final Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null));
