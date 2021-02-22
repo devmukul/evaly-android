@@ -64,7 +64,8 @@ public class CartEntity implements Serializable {
     @ColumnInfo(name = "is_selected")
     private boolean selected = true;
 
-    @ColumnInfo(name = "variant_details")
+    @SerializedName("variantLabel")
+    @ColumnInfo(name = "variantLabel")
     private String variantDetails;
 
     @ColumnInfo(name = "is_express_shop")
