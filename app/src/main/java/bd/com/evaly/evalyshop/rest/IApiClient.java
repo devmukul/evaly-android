@@ -273,9 +273,8 @@ public interface IApiClient {
     Call<JsonObject> getUserInfoPay(@Header("Authorization") String token,
                                     @Path("username") String username);
 
-    @GET(UrlUtils.BASE_URL_PAYMENT + "complete-balance//{username}/")
-    Call<CommonDataResponse<BalanceResponse>> getBalance(@Header("Authorization") String token,
-                                                         @Path("username") String username);
+    @GET(UrlUtils.DOMAIN + "epay-reader/api/v1/user/balance")
+    Call<CommonDataResponse<BalanceResponse>> getBalance(@Header("Authorization") String token);
 
     @GET(UrlUtils.DOMAIN_EAUTH + "profile")
     Call<CommonDataResponse<UserModel>> getUserProfile(@Header("Authorization") String token);

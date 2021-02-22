@@ -18,7 +18,7 @@ public class PaymentApiHelper extends BaseApiHelper {
     }
 
     public static void getBalance(String token, String username, ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String> listener) {
-        getiApiClient().getBalance(token, username).enqueue(getResponseCallBackDefault(listener));
+        getiApiClient().getBalance(token).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void makePartialPayment(String token, ParitalPaymentModel body, ResponseListenerAuth<JsonObject, String> listener) {
