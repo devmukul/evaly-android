@@ -69,7 +69,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         if (itemsList.get(i).getAuthorFullName().trim().equals(""))
             myViewHolder.userNameView.setText("User");
 
-        String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", itemsList.get(i).getCreatedAt()));
+        String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("gmt","yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", itemsList.get(i).getCreatedAt()));
 
         if (itemsList.get(i).getIsAdmin()) {
 

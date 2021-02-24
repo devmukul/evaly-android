@@ -115,11 +115,7 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
             itemList.clear();
             itemList.addAll(issueCategoryModels);
             for (IssueCategoryModel item : issueCategoryModels) {
-                if (orderStatus.equals("pending")) {
-                    if (item.getName().equals("Bank Payment") || item.getName().equals("Payment"))
-                        options.add(item.getName());
-                } else
-                    options.add(item.getName());
+                options.add(item.getName());
             }
             adapter.notifyDataSetChanged();
             updateViews();
@@ -172,7 +168,7 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
         binding.btnSubmit.setOnClickListener(view -> {
 
             model.setChannel("customer_app");
-            model.setContext("order");
+            model.setContext("evaly_order");
             model.setCustomer(CredentialManager.getUserName());
             model.setInvoiceNumber(invoice);
             model.setSeller(seller);
@@ -240,6 +236,9 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                         "Routing Number: " + routingNumber;
             } else
                 description = binding.etDescription.getText().toString();
+
+            if (description == null || description.isEmpty())
+                description = "Invoice:" + invoice + ", Phone number: " + CredentialManager.getUserName();
 
             model.setAdditionalInfo(description);
             viewModel.submitIssue(model);
@@ -318,7 +317,7 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         try {
             startActivityForResult(intent, 1001);
-        } catch (Exception e){
+        } catch (Exception e) {
             ToastUtils.show("Can't open image picker");
         }
     }

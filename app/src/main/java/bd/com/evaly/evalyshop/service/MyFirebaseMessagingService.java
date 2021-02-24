@@ -24,6 +24,7 @@ import com.orhanobut.logger.Logger;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
@@ -33,7 +34,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Logger.d(new Gson().toJson(remoteMessage.getData()));
+        if (BuildConfig.DEBUG)
+            Logger.d(new Gson().toJson(remoteMessage.getData()));
         Map<String, String> data = remoteMessage.getData();
         try {
             if (data.size() > 0) {
@@ -67,11 +69,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Intent intent;
 
-        if (type.equalsIgnoreCase("issue")) {
+        if (type != null && type.equalsIgnoreCase("issue")) {
             intent = new Intent(this, IssuesActivity.class);
             intent.putExtra("invoice", resourceId);
         }
-        if (type.equalsIgnoreCase("order")) {
+        if (type != null && type.equalsIgnoreCase("order")) {
             intent = new Intent(this, OrderDetailsActivity.class);
             intent.putExtra("orderID", resourceId);
         } else {

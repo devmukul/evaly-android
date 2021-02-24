@@ -27,7 +27,7 @@ import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.util.Utils;
 
 
-public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder>{
+public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder> {
 
     ArrayList<RepliesItem> itemsList;
     Context context;
@@ -42,7 +42,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
     @NonNull
     @Override
     public ReplyAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_reply,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_reply, viewGroup, false);
         return new ReplyAdapter.MyViewHolder(view);
     }
 
@@ -56,20 +56,18 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
 
         if (author.getIsAdmin()) {
             int sizeInPixel = context.getResources().getDimensionPixelSize(R.dimen.newsfeed_verified_icon);
-
             Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
             img.setBounds(0, 0, sizeInPixel, sizeInPixel);
             myViewHolder.userNameView.setCompoundDrawables(null, null, img, null);
             myViewHolder.userNameView.setCompoundDrawablePadding(15);
-        }else {
+        } else {
             myViewHolder.userNameView.setCompoundDrawables(null, null, null, null);
         }
-
 
         if (author.getFullName().trim().equals(""))
             myViewHolder.userNameView.setText("User");
 
-        myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", RepliesItem.getCreatedAt())));
+        myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("gmt", "yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", RepliesItem.getCreatedAt())));
         myViewHolder.statusView.setText(Html.fromHtml(RepliesItem.getBody()));
 
         Glide.with(context)
@@ -112,7 +110,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
                     new AlertDialog.Builder(context)
                             .setMessage("Are you sure you want to delete?")
                             .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton("YES", (dialog, whichButton) -> fragment.deletePost(RepliesItem.getId()+"", "reply"))
+                            .setPositiveButton("YES", (dialog, whichButton) -> fragment.deletePost(RepliesItem.getId() + "", "reply"))
                             .setNegativeButton("NO", null).show();
 
                     return false;
@@ -130,10 +128,11 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
         return position;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView userNameView, timeView, statusView, likeCountView, replyCountView;
         ImageView userImage, likeIcon, commentIcon, menuIcon, postImage;
         View view;
+
         public MyViewHolder(final View itemView) {
             super(itemView);
 

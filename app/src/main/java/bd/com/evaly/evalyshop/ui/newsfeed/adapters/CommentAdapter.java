@@ -125,7 +125,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         }
 
 
-        myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", commentItem.getCreatedAt())));
+        myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("gmt", "yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", commentItem.getCreatedAt())));
         // myViewHolder.statusView.setText(Html.fromHtml(commentItem.getBody()));
 
         myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(commentItem.getBody(), 180, "... <b>Show more</b>")));
