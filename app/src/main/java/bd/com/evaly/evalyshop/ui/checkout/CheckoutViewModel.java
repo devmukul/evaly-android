@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.checkout;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 
 import androidx.lifecycle.LiveData;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -24,12 +26,15 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.order.AttachmentCheckResponse;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
+import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 @HiltViewModel
 public class CheckoutViewModel extends ViewModel {
@@ -42,14 +47,30 @@ public class CheckoutViewModel extends ViewModel {
     protected MutableLiveData<List<AttachmentCheckResponse>> attachmentCheckLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse<List<JsonObject>>> orderPlacedLiveData = new MutableLiveData<>();
     protected MutableLiveData<HashMap<String, List<String>>> attachmentMapLiveData = new MutableLiveData<>();
+    private AddressListDao addressListDao;
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
     private HashMap<String, List<String>> attachmentMap = new HashMap<>();
     private String selectedShopSlug;
+    protected MutableLiveData<AddressResponse> selectedAddress = new MutableLiveData<>();
 
+
+    @SuppressLint("CheckResult")
     @Inject
-    public CheckoutViewModel(CartDao cartDao, SavedStateHandle savedStateHandle) {
+    public CheckoutViewModel(CartDao cartDao, AddressListDao addressListDao, SavedStateHandle savedStateHandle) {
         this.cartDao = cartDao;
+        this.addressListDao = addressListDao;
+        compositeDisposable = new CompositeDisposable();
+
+        compositeDisposable.add(
+                addressListDao.getAllPrimary()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(addressResponses -> {
+                            if (addressResponses != null && addressResponses.size() > 0)
+                                selectedAddress.setValue(addressResponses.get(0));
+                        }, throwable -> {
+                        }));
 
         if (savedStateHandle != null && savedStateHandle.contains("model")) {
             List<CartEntity> list = new ArrayList<>();
@@ -60,7 +81,6 @@ public class CheckoutViewModel extends ViewModel {
         } else
             liveList = cartDao.getAllSelectedLive();
 
-        compositeDisposable = new CompositeDisposable();
     }
 
     public String getSelectedShopSlug() {

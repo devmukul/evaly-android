@@ -149,8 +149,12 @@ public class AddressResponse implements Serializable {
         return address + ", " + area + ", " + city + ", " + region;
     }
 
+    public String getFullAddressWithName() {
+        return fullName + ", " + phoneNumber + ", " + address + ", " + area + ", " + city + ", " + region;
+    }
+
     public String getFullAddressLine() {
-        return address + ", " + area + "\n" + city + ", " + region;
+        return phoneNumber + "\n" + address + ", " + area + "\n" + city + ", " + region;
     }
 
     @Override

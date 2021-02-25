@@ -50,7 +50,6 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
-import bd.com.evaly.evalyshop.databinding.BottomSheetAddAddressBinding;
 import bd.com.evaly.evalyshop.databinding.BottomSheetCheckoutContactBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentCheckoutBinding;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
@@ -58,9 +57,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.AttachmentCheckResponse;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
-import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
-import bd.com.evaly.evalyshop.models.user.AddressItem;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.address.AddressFragment;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
@@ -174,7 +171,7 @@ public class CheckoutFragment extends DialogFragment {
         });
 
         binding.btnEditAddress.setOnClickListener(v -> {
-           openLocationSelector();
+            openLocationSelector();
         });
 
 //        binding.changeAddress.setOnClickListener(v -> {
@@ -366,6 +363,17 @@ public class CheckoutFragment extends DialogFragment {
     }
 
     private void liveEvents() {
+
+        viewModel.selectedAddress.observe(getViewLifecycleOwner(), addressResponse -> {
+            if (addressResponse == null)
+                binding.address.setText("No address provided");
+            else {
+                addressModel = addressResponse;
+                binding.address.setText(addressResponse.getFullAddressLine());
+                binding.userName.setText(addressResponse.getFullName());
+            }
+        });
+
         viewModel.deliveryChargeLiveData.observe(getViewLifecycleOwner(), deliveryCharge -> {
             dialog.hideDialog();
             if (deliveryCharge == null)
@@ -405,8 +413,8 @@ public class CheckoutFragment extends DialogFragment {
         });
 
         sharedObservers.onAddressChanged.observe(getViewLifecycleOwner(), addressItem -> {
+            viewModel.selectedAddress.setValue(addressItem);
             addressModel = addressItem;
-            binding.address.setText(addressItem.getFullAddressLine());
         });
 
         viewModel.errorOrder.observe(getViewLifecycleOwner(), aBoolean -> {
@@ -497,7 +505,7 @@ public class CheckoutFragment extends DialogFragment {
         PlaceOrderItem orderObject = new PlaceOrderItem();
 
         orderObject.setContactNumber(binding.contact.getText().toString());
-        orderObject.setCustomerAddress(addressModel.getFullAddress());
+        orderObject.setCustomerAddress(addressModel.getFullAddressWithName());
         orderObject.setOrderOrigin("app");
 
         if (CredentialManager.getLatitude() != null && CredentialManager.getLongitude() != null) {

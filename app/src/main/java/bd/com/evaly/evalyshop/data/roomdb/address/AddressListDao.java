@@ -11,6 +11,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import io.reactivex.Completable;
+import io.reactivex.Single;
 
 @Dao
 public interface AddressListDao {
@@ -35,6 +36,12 @@ public interface AddressListDao {
 
     @Query("SELECT * FROM address_list_table")
     LiveData<List<AddressResponse>> getAllLive();
+
+    @Query("SELECT * FROM address_list_table ORDER BY `primary`")
+    LiveData<List<AddressResponse>> getAllPrimaryLive();
+
+    @Query("SELECT * FROM address_list_table ORDER BY `primary`")
+    Single<List<AddressResponse>> getAllPrimary();
 
     @Query("SELECT COUNT(id) FROM address_list_table")
     int getCount();
