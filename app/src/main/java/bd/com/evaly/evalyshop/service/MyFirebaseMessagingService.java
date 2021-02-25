@@ -54,6 +54,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotification(String messageBody, String messageTitle, String resourceId, String type, String imageUrl) {
+
+        if (messageTitle == null || messageTitle.isEmpty())
+            return;
+
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANNEL_ID = "Evaly_NOTIFICATION";
 

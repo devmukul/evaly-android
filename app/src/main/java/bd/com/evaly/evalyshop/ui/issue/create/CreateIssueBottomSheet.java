@@ -141,6 +141,8 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                 if (paymentType.equals("Balance Refund") || paymentType.equals("Card Refund")) {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
+                    binding.descriptionHolder.setVisibility(View.GONE);
+                    binding.etDescription.setText("Invoice: " + invoice + "\nPhone number: " + CredentialManager.getUserName());
                 } else if (paymentType.equals("bKash Refund") || paymentType.equals("Nagad Refund")) {
                     binding.llBkashHolder.setVisibility(View.VISIBLE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
@@ -153,6 +155,7 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
                     binding.descriptionHolder.setVisibility(View.VISIBLE);
+                    binding.etDescription.setText("");
                 }
             }
 
@@ -234,11 +237,13 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                         "Bank Name: " + bankName + "\n" +
                         "Branch Name: " + branchName + "\n" +
                         "Routing Number: " + routingNumber;
-            } else
+            } else {
                 description = binding.etDescription.getText().toString();
-
-            if (description == null || description.isEmpty())
-                description = "Invoice:" + invoice + ", Phone number: " + CredentialManager.getUserName();
+                if (description.isEmpty()) {
+                    ToastUtils.show("Please enter description.");
+                    return;
+                }
+            }
 
             model.setAdditionalInfo(description);
             viewModel.submitIssue(model);

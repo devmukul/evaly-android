@@ -66,6 +66,9 @@
                         android:layout_toRightOf="@+id/pictureHolder"
                         android:text="Evaly User"
                         android:textColor="@color/c333"
+                        android:paddingHorizontal="40dp"
+                        android:maxLines="2"
+                        android:ellipsize="end"
                         android:textSize="22sp"
                         android:textStyle="bold" />
 
