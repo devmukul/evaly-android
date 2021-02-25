@@ -24,7 +24,8 @@ import bd.com.evaly.evalyshop.databinding.BottomSheetAddAddressBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentAddressBinding;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.user.AddressItem;
+import bd.com.evaly.evalyshop.models.profile.AddressRequest;
+import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.ui.address.controller.AddressController;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -64,7 +65,7 @@ public class AddressFragment extends BottomSheetDialogFragment implements Addres
     }
 
     private void liveEvents() {
-        viewModel.getAddressLiveData().observe(getViewLifecycleOwner(), addressResponses -> {
+        viewModel.addressLiveData.observe(getViewLifecycleOwner(), addressResponses -> {
             controller.setLoading(false);
             controller.setList(addressResponses);
             controller.requestModelBuild();
@@ -95,17 +96,17 @@ public class AddressFragment extends BottomSheetDialogFragment implements Addres
         });
         binding.toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.action_add)
-                addAddress(null, 0);
+                addAddress(null, false);
             return false;
         });
     }
 
-    public void deleteAddress(AddressItem model) {
+    public void deleteAddress(AddressResponse model) {
         new AlertDialog.Builder(getContext())
                 .setCancelable(false)
                 .setMessage("Are you sure you want to delete the address?")
                 .setPositiveButton(android.R.string.yes, (dialog1, which) -> {
-                    viewModel.deleteAddress(model);
+                    viewModel.deleteAddress(model.getId());
                 })
                 .setNegativeButton(android.R.string.no, (dialogInterface, i) -> {
 
@@ -113,7 +114,7 @@ public class AddressFragment extends BottomSheetDialogFragment implements Addres
                 .show();
     }
 
-    public void addAddress(AddressItem model, int position) {
+    public void addAddress(AddressResponse model, boolean isUpdate) {
         BottomSheetDialog dialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogTheme);
         final BottomSheetAddAddressBinding dialogBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
                 R.layout.bottom_sheet_add_address, null, false);
@@ -161,7 +162,7 @@ public class AddressFragment extends BottomSheetDialogFragment implements Addres
                 return;
             }
 
-            AddressItem body = new AddressItem();
+            AddressRequest body = new AddressRequest();
             body.setAddress(address);
             body.setArea(area);
             body.setCity(city);
@@ -169,10 +170,10 @@ public class AddressFragment extends BottomSheetDialogFragment implements Addres
             body.setFullName(fullName);
             body.setPhoneNumber(phoneNumber);
 
-            if (model == null)
+            if (model == null || !isUpdate)
                 viewModel.addAddress(body);
             else
-                viewModel.editAddress(body, position);
+                viewModel.editAddress(body, model.getId());
 
             viewModel.saveAddress();
             dialog.cancel();
@@ -184,7 +185,7 @@ public class AddressFragment extends BottomSheetDialogFragment implements Addres
     }
 
     @Override
-    public void onClick(AddressItem model) {
+    public void onClick(AddressResponse model) {
         if (isPicker) {
             sharedObservers.onAddressChanged.setValue(model);
             dismissAllowingStateLoss();
@@ -192,12 +193,12 @@ public class AddressFragment extends BottomSheetDialogFragment implements Addres
     }
 
     @Override
-    public void onDelete(AddressItem model) {
+    public void onDelete(AddressResponse model) {
         deleteAddress(model);
     }
 
     @Override
-    public void onEdit(AddressItem model, int position) {
-        addAddress(model, position);
+    public void onEdit(AddressResponse model) {
+        addAddress(model, true);
     }
 }

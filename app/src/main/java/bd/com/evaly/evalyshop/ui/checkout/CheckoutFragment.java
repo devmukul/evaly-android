@@ -58,6 +58,8 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.AttachmentCheckResponse;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
+import bd.com.evaly.evalyshop.models.profile.AddressRequest;
+import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.user.AddressItem;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.address.AddressFragment;
@@ -90,7 +92,7 @@ public class CheckoutFragment extends DialogFragment {
     private double deliveryChargeAmount = 0;
     private NavController navController;
     private CheckoutProductController controller;
-    private AddressItem addressModel = null;
+    private AddressResponse addressModel = null;
     private int minPrice = 0;
     private ViewDialog dialog;
     private double totalDeliveryCharge;
@@ -144,14 +146,14 @@ public class CheckoutFragment extends DialogFragment {
         UserModel userModel = CredentialManager.getUserData();
         binding.userName.setText(userModel.getFullName());
         binding.contact.setText(userModel.getUsername());
-
-        if (userModel.getAddresses() != null &&
-                userModel.getAddresses().getData() != null &&
-                userModel.getAddresses().getData().size() > 0) {
-            addressModel = userModel.getAddresses().getData().get(0);
-            binding.address.setText(addressModel.getFullAddressLine());
-        } else
-            binding.address.setText("No address provided");
+//
+//        if (userModel.getAddresses() != null &&
+//                userModel.getAddresses().getData() != null &&
+//                userModel.getAddresses().getData().size() > 0) {
+//            addressModel = userModel.getAddresses().getData().get(0);
+//            binding.address.setText(addressModel.getFullAddressLine());
+//        } else
+//            binding.address.setText("No address provided");
     }
 
     private void setupRecycler() {
@@ -507,12 +509,12 @@ public class CheckoutFragment extends DialogFragment {
                 return;
             }
 
-            AddressItem body = new AddressItem();
+            AddressRequest body = new AddressRequest();
             body.setAddress(address);
             body.setArea(area);
             body.setCity(city);
             body.setRegion(region);
-            addressModel = body;
+            // addressModel = body;
 
             binding.address.setText(body.getFullAddressLine());
             dialog.cancel();

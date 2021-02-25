@@ -52,7 +52,7 @@ public class ShopDetailsResponse {
     @SerializedName("subscriber_count")
     private int subscriberCount;
 
-    @SerializedName("shop_address")
+    @SerializedName(value = "shop_address", alternate = "address")
     private String shopAddress;
 
     public int getCashbackPercentage() {

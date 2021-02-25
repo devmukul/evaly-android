@@ -544,7 +544,10 @@ public class Utils {
 
     public static String formattedDateFromString(String inputFormat, String outputFormat, String inputDate) {
         if (inputFormat.equals("")) { // if inputFormat = "", set a default input format.
-            inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+            if (inputDate.contains("."))
+                inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+            else
+                inputFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
         }
         if (outputFormat.equals("")) {
             outputFormat = "EEEE d',' MMMM  yyyy"; // if inputFormat = "", set a default output format.

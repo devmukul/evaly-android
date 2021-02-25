@@ -1,18 +1,18 @@
 package bd.com.evaly.evalyshop.models.profile;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.util.Objects;
 
 @Entity(tableName = "address_list_table")
 public class AddressResponse {
 
     @PrimaryKey
     @SerializedName("id")
-    private int id;
+    @NonNull
+    private String id;
 
     @SerializedName("area")
     private String area;
@@ -34,6 +34,17 @@ public class AddressResponse {
 
     @SerializedName("status")
     private String status;
+
+    @SerializedName("is_primary")
+    private boolean primary;
+
+    public void setPrimary(boolean primary) {
+        this.primary = primary;
+    }
+
+    public boolean isPrimary() {
+        return primary;
+    }
 
     public void setArea(String area) {
         this.area = area;
@@ -75,11 +86,11 @@ public class AddressResponse {
         return phoneNumber;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -97,6 +108,14 @@ public class AddressResponse {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getFullAddress() {
+        return address + ", " + area + ", " + city + ", " + region;
+    }
+
+    public String getFullAddressLine() {
+        return address + ", " + area + "\n" + city + ", " + region;
     }
 
     @Override

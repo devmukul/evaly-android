@@ -7,6 +7,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemAddressBinding;
+import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.user.AddressItem;
 import bd.com.evaly.evalyshop.ui.address.model.AddressListModel_;
 import bd.com.evaly.evalyshop.ui.address.model.BindAddressModel;
@@ -16,22 +17,22 @@ import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 
 public class AddressController extends EpoxyController {
 
-    private List<AddressItem> list = new ArrayList<>();
+    private List<AddressResponse> list = new ArrayList<>();
     private boolean isLoading = true;
     private ClickListener clickListener;
 
     public interface ClickListener {
-        void onClick(AddressItem model);
+        void onClick(AddressResponse model);
 
-        void onDelete(AddressItem model);
+        void onDelete(AddressResponse model);
 
-        void onEdit(AddressItem model, int position);
+        void onEdit(AddressResponse model);
     }
 
     @Override
     protected void buildModels() {
 
-        for (AddressItem item : list) {
+        for (AddressResponse item : list) {
             new AddressListModel_()
                     .id(item.toString())
                     .model(item)
@@ -41,7 +42,7 @@ public class AddressController extends EpoxyController {
                     })
                     .onClickListener((model, parentView, clickedView, position) -> clickListener.onClick(model.model()))
                     .onDeleteClick((model, parentView, clickedView, position) -> clickListener.onDelete(model.model()))
-                    .onEditClick((model, parentView, clickedView, position) -> clickListener.onEdit(model.model(), position))
+                    .onEditClick((model, parentView, clickedView, position) -> clickListener.onEdit(model.model()))
                     .addTo(this);
         }
 
@@ -71,7 +72,7 @@ public class AddressController extends EpoxyController {
         isLoading = loading;
     }
 
-    public void setList(List<AddressItem> list) {
+    public void setList(List<AddressResponse> list) {
         this.list = list;
     }
 }

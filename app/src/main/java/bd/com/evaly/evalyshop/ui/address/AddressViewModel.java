@@ -1,11 +1,7 @@
 package bd.com.evaly.evalyshop.ui.address;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,61 +10,101 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.user.AddressItem;
-import bd.com.evaly.evalyshop.models.user.Addresses;
-import bd.com.evaly.evalyshop.models.user.UserModel;
+import bd.com.evaly.evalyshop.models.profile.AddressRequest;
+import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 @HiltViewModel
 public class AddressViewModel extends ViewModel {
 
-    private AddressListDao addressListDao;
-    private List<AddressItem> addressList = new ArrayList<>();
-    private MutableLiveData<List<AddressItem>> addressLiveData = new MutableLiveData<>();
-    private CompositeDisposable compositeDisposable;
+    AddressListDao addressListDao;
+    List<AddressResponse> addressList = new ArrayList<>();
+    LiveData<List<AddressResponse>> addressLiveData;
+    CompositeDisposable compositeDisposable;
 
     @Inject
     public AddressViewModel(AddressListDao addressListDao) {
         this.addressListDao = addressListDao;
         compositeDisposable = new CompositeDisposable();
+        addressLiveData = addressListDao.getAllLive();
         loadAddressList();
     }
 
     public void loadAddressList() {
-        Addresses addresses = CredentialManager.getUserData().getAddresses();
-        if (addresses != null && addresses.getData() != null)
-            addressList = addresses.getData();
-        addressLiveData.setValue(addressList);
+        AuthApiHelper.getUserAddress(new ResponseListenerAuth<CommonDataResponse<List<AddressResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<AddressResponse>> response, int statusCode) {
+                compositeDisposable.add(addressListDao.insertAll(response.getData())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
-    public List<AddressItem> getAddressList() {
-        return addressList;
+    public void addAddress(AddressRequest item) {
+        AuthApiHelper.addAddress(item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<AddressResponse> response, int statusCode) {
+                compositeDisposable.add(addressListDao.insert(response.getData())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
-    public void addAddress(AddressItem item) {
-        addressList.add(item);
-    }
+    public void editAddress(AddressRequest item, String id) {
+        AuthApiHelper.updateAddress(id, item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<AddressResponse> response, int statusCode) {
+                compositeDisposable.add(addressListDao.insert(response.getData())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe());
+            }
 
-    public void editAddress(AddressItem item, int position) {
-        addressList.set(position, item);
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void saveAddress() {
 
-        Addresses addresses = new Addresses();
-        addresses.setData(addressList);
-        JsonObject jsonObject = new Gson().toJsonTree(addresses).getAsJsonObject();
-        JsonObject requestBody = new JsonObject();
-        requestBody.add("addresses", jsonObject);
+    }
 
-        AuthApiHelper.setUserData(CredentialManager.getToken(), requestBody, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+    public void deleteAddress(String id) {
+        AuthApiHelper.removeAddress(id, new ResponseListenerAuth<CommonDataResponse, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
-                CredentialManager.saveUserData(response.getData());
+            public void onDataFetched(CommonDataResponse response, int statusCode) {
                 loadAddressList();
             }
 
@@ -79,20 +115,9 @@ public class AddressViewModel extends ViewModel {
 
             @Override
             public void onAuthError(boolean logout) {
-                if (!logout)
-                    saveAddress();
+
             }
         });
-    }
-
-    public void deleteAddress(AddressItem item) {
-        addressList.remove(item);
-        saveAddress();
-    }
-
-
-    public LiveData<List<AddressItem>> getAddressLiveData() {
-        return addressLiveData;
     }
 
     @Override

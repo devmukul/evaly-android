@@ -378,7 +378,11 @@ public class AuthApiHelper extends BaseApiHelper {
         getiApiClient().addAddress(CredentialManager.getToken(), body).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void removeAddress(int id, ResponseListenerAuth<CommonDataResponse, String> listener) {
+    public static void updateAddress(String id, AddressRequest body, ResponseListenerAuth<CommonDataResponse<AddressResponse>, String> listener) {
+        getiApiClient().updateAddress(CredentialManager.getToken(), id, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void removeAddress(String id, ResponseListenerAuth<CommonDataResponse, String> listener) {
         getiApiClient().removeAddress(CredentialManager.getToken(), id).enqueue(getResponseCallBackDefault(listener));
     }
 

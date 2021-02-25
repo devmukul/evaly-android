@@ -284,7 +284,7 @@ public class EditProfileActivity extends BaseActivity {
         if (userModel.getContact() != null)
             binding.contactNumber.setText(userModel.getContact());
         if (userModel.getBirthDate() != null)
-            binding.dateOfBirth.setText(Utils.formattedDateFromString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "dd/MM/yyyy", userModel.getBirthDate()));
+            binding.dateOfBirth.setText(Utils.formattedDateFromString("", "dd/MM/yyyy", userModel.getBirthDate()));
         if (userModel.getParentsInfo().getFatherName() != null)
             binding.fatherInfo.setText(String.format("%s%s", userModel.getParentsInfo().getFatherName(), userModel.getParentsInfo().getFatherPhoneNumber() != null ?
                     String.format(", %s", userModel.getParentsInfo().getFatherPhoneNumber()) : ""));
