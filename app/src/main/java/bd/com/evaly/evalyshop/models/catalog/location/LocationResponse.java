@@ -22,6 +22,12 @@ public class LocationResponse{
 	@SerializedName("slug")
 	private String slug;
 
+
+	public LocationResponse(String name, String slug) {
+		this.name = name;
+		this.slug = slug;
+	}
+
 	public void setParent(String parent){
 		this.parent = parent;
 	}
@@ -72,14 +78,14 @@ public class LocationResponse{
 
 	@Override
  	public String toString(){
-		return 
-			"LocationResponse{" + 
-			"parent = '" + parent + '\'' + 
-			",name_bn = '" + nameBn + '\'' + 
-			",name = '" + name + '\'' + 
-			",id = '" + id + '\'' + 
-			",type = '" + type + '\'' + 
-			",slug = '" + slug + '\'' + 
+		return
+			"LocationResponse{" +
+			"parent = '" + parent + '\'' +
+			",name_bn = '" + nameBn + '\'' +
+			",name = '" + name + '\'' +
+			",id = '" + id + '\'' +
+			",type = '" + type + '\'' +
+			",slug = '" + slug + '\'' +
 			"}";
 		}
 }

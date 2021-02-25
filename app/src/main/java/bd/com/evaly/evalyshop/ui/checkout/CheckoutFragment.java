@@ -174,12 +174,12 @@ public class CheckoutFragment extends DialogFragment {
         });
 
         binding.btnEditAddress.setOnClickListener(v -> {
-            editAddress(addressModel);
+           openLocationSelector();
         });
 
-        binding.changeAddress.setOnClickListener(v -> {
-            openLocationSelector();
-        });
+//        binding.changeAddress.setOnClickListener(v -> {
+//            openLocationSelector();
+//        });
 
         binding.btnPlaceOrder.setOnClickListener(view -> {
             if (CredentialManager.getToken().equals("")) {
@@ -460,69 +460,6 @@ public class CheckoutFragment extends DialogFragment {
                 }
             }
         });
-    }
-
-    public void editAddress(AddressItem model) {
-        BottomSheetDialog dialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogTheme);
-        final BottomSheetAddAddressBinding dialogBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
-                R.layout.bottom_sheet_add_address, null, false);
-
-        dialogBinding.fullName.setVisibility(View.GONE);
-        dialogBinding.fullNameTitle.setVisibility(View.GONE);
-        dialogBinding.contactNumber.setVisibility(View.GONE);
-        dialogBinding.contactTitle.setVisibility(View.GONE);
-
-        if (model != null) {
-            dialogBinding.address.setText(model.getAddress());
-            dialogBinding.area.setText(model.getArea());
-            dialogBinding.city.setText(model.getCity());
-            dialogBinding.region.setText(model.getRegion());
-            if (model.getFullName() == null || model.getFullName().equals(""))
-                dialogBinding.fullName.setText(CredentialManager.getUserData().getFullName());
-            else
-                dialogBinding.fullName.setText(model.getFullName());
-            if (model.getPhoneNumber() == null || model.getPhoneNumber().equals(""))
-                dialogBinding.contactNumber.setText(CredentialManager.getUserData().getContact());
-            else
-                dialogBinding.contactNumber.setText(model.getPhoneNumber());
-        } else {
-            dialogBinding.fullName.setText(CredentialManager.getUserData().getFullName());
-            dialogBinding.contactNumber.setText(CredentialManager.getUserData().getContact());
-        }
-
-        dialogBinding.save.setOnClickListener(view -> {
-            String address = dialogBinding.address.getText().toString().trim();
-            String area = dialogBinding.area.getText().toString().trim();
-            String city = dialogBinding.city.getText().toString().trim();
-            String region = dialogBinding.region.getText().toString().trim();
-
-            String error = null;
-            if (address.isEmpty())
-                error = "Please enter address line 1";
-            else if (area.isEmpty())
-                error = "Please enter area";
-            else if (city.isEmpty())
-                error = "Please enter city";
-
-            if (error != null) {
-                ToastUtils.show(error);
-                return;
-            }
-
-            AddressRequest body = new AddressRequest();
-            body.setAddress(address);
-            body.setArea(area);
-            body.setCity(city);
-            body.setRegion(region);
-            // addressModel = body;
-
-            binding.address.setText(body.getFullAddressLine());
-            dialog.cancel();
-        });
-
-        Objects.requireNonNull(dialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        dialog.setContentView(dialogBinding.getRoot());
-        dialog.show();
     }
 
 

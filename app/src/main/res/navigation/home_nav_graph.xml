@@ -402,5 +402,10 @@
         android:id="@+id/addressDialogFragment"
         android:name="bd.com.evaly.evalyshop.ui.address.AddressFragment"
         android:label="LocationDialogFragment" />
+    <dialog
+        android:id="@+id/addAddressBottomSheet"
+        android:name="bd.com.evaly.evalyshop.ui.address.addAddress.AddAddressBottomSheet"
+        android:label="AddAddressBottomSheet" />
+
 
 </navigation>

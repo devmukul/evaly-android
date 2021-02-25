@@ -1,10 +1,9 @@
-package bd.com.evaly.evalyshop.ui.address;
+package bd.com.evaly.evalyshop.ui.address.addAddress;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -18,32 +17,40 @@ import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.profile.AddressWholeResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.LocationApiHelper;
+import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 @HiltViewModel
-public class AddressViewModel extends ViewModel {
+public class AddAddressViewModel extends ViewModel {
 
+    private Boolean isEdit = false;
     AddressListDao addressListDao;
-    List<AddressResponse> addressList = new ArrayList<>();
-    LiveData<List<AddressResponse>> addressLiveData;
     CompositeDisposable compositeDisposable;
     MutableLiveData<List<LocationResponse>> divisionLiveData = new MutableLiveData<>();
     MutableLiveData<List<LocationResponse>> cityLiveData = new MutableLiveData<>();
     MutableLiveData<List<LocationResponse>> areaLiveData = new MutableLiveData<>();
+    MutableLiveData<AddressResponse> modelLiveData = new MutableLiveData<>();
 
     MutableLiveData<LocationResponse> selectedDivisionLiveData = new MutableLiveData<>();
     MutableLiveData<LocationResponse> selectedCityLiveData = new MutableLiveData<>();
     MutableLiveData<LocationResponse> selectedAreaLiveData = new MutableLiveData<>();
+    SingleLiveEvent<Void> dismissBottomSheet = new SingleLiveEvent<>();
 
     @Inject
-    public AddressViewModel(AddressListDao addressListDao) {
+    public AddAddressViewModel(AddressListDao addressListDao, SavedStateHandle bundle) {
         this.addressListDao = addressListDao;
+        modelLiveData.setValue(bundle.get("model"));
+        isEdit = bundle.get("is_edit");
         compositeDisposable = new CompositeDisposable();
-        addressLiveData = addressListDao.getAllLive();
-        loadAddressList();
         loadLocationList(null, "division");
+    }
+
+    public boolean isEdit() {
+        if (isEdit == null)
+            return false;
+        return isEdit;
     }
 
     public void loadLocationList(String parent, String type) {
@@ -96,9 +103,8 @@ public class AddressViewModel extends ViewModel {
         AuthApiHelper.addAddress(item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AddressResponse> response, int statusCode) {
-                compositeDisposable.add(addressListDao.insert(response.getData())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe());
+                loadAddressList();
+                dismissBottomSheet.call();
             }
 
             @Override
@@ -113,13 +119,14 @@ public class AddressViewModel extends ViewModel {
         });
     }
 
-    public void editAddress(AddressRequest item, String id) {
-        AuthApiHelper.updateAddress(id, item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
+    public void editAddress(AddressRequest item) {
+        if (modelLiveData.getValue() == null)
+            return;
+        AuthApiHelper.updateAddress(modelLiveData.getValue().getId(), item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AddressResponse> response, int statusCode) {
-                compositeDisposable.add(addressListDao.insert(response.getData())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe());
+                loadAddressList();
+                dismissBottomSheet.call();
             }
 
             @Override
@@ -136,25 +143,6 @@ public class AddressViewModel extends ViewModel {
 
     public void saveAddress() {
 
-    }
-
-    public void deleteAddress(String id) {
-        AuthApiHelper.removeAddress(id, new ResponseListenerAuth<CommonDataResponse, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse response, int statusCode) {
-                loadAddressList();
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
     }
 
     @Override

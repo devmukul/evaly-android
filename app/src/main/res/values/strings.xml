@@ -411,10 +411,10 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="save_address">Save Address</string>
     <string name="enter_road_no_block_sector">Enter road no, block/sector</string>
     <string name="area">Area</string>
-    <string name="enter_area">Enter area</string>
-    <string name="enter_region">Enter region</string>
-    <string name="region">Region</string>
-    <string name="enter_city">Enter city</string>
+    <string name="enter_area">Select area</string>
+    <string name="enter_region">Select region</string>
+    <string name="region">Division</string>
+    <string name="enter_city">Select city</string>
     <string name="nagad">Nagad</string>
     <string name="mother_s_name">Mother\'s Name</string>
     <string name="terms_amp_conditions"><![CDATA[Terms & Conditions]]></string>

@@ -6,8 +6,10 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 @Entity(tableName = "address_list_table")
-public class AddressResponse {
+public class AddressResponse implements Serializable {
 
     @PrimaryKey
     @SerializedName("id")
@@ -16,6 +18,9 @@ public class AddressResponse {
 
     @SerializedName("area")
     private String area;
+
+    @SerializedName("area_slug")
+    private String areaSlug;
 
     @SerializedName("address")
     private String address;
@@ -26,17 +31,47 @@ public class AddressResponse {
     @SerializedName("city")
     private String city;
 
+    @SerializedName("city_slug")
+    private String citySlug;
+
     @SerializedName("phone_number")
     private String phoneNumber;
 
     @SerializedName("region")
     private String region;
 
+    @SerializedName("region_slug")
+    private String regionSlug;
+
     @SerializedName("status")
     private String status;
 
     @SerializedName("is_primary")
     private boolean primary;
+
+    public String getAreaSlug() {
+        return areaSlug;
+    }
+
+    public void setAreaSlug(String areaSlug) {
+        this.areaSlug = areaSlug;
+    }
+
+    public String getCitySlug() {
+        return citySlug;
+    }
+
+    public void setCitySlug(String citySlug) {
+        this.citySlug = citySlug;
+    }
+
+    public String getRegionSlug() {
+        return regionSlug;
+    }
+
+    public void setRegionSlug(String regionSlug) {
+        this.regionSlug = regionSlug;
+    }
 
     public void setPrimary(boolean primary) {
         this.primary = primary;

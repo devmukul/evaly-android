@@ -60,6 +60,7 @@
                         android:paddingTop="15dp"
                         android:paddingBottom="10dp"
                         android:text="@string/change_cap"
+                        android:visibility="gone"
                         android:textColor="#EA1E1E" />
                 </LinearLayout>
 

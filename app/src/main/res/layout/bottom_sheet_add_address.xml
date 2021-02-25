@@ -16,7 +16,7 @@
             android:layout_height="4dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/bottomsheet_top_brd" />
 
         <TextView
@@ -79,6 +79,99 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/ln"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/region"
+            android:textColor="@color/c555"
+            app:layout_constraintStart_toStartOf="@id/region"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/region"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_brd_small"
+            android:drawableEnd="@drawable/ic_arrow_drop_down_white_24dp"
+            android:drawableTint="#999"
+            android:gravity="center_vertical"
+            android:hint="@string/enter_region"
+            android:imeOptions="actionDone"
+            android:maxLines="1"
+            android:paddingLeft="15dp"
+            android:paddingEnd="10dp"
+            android:singleLine="true"
+            android:textColor="@color/c666"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/ln" />
+
+        <TextView
+            android:id="@+id/fn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="10dp"
+            android:text="City"
+            android:textColor="@color/c555"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/city"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_brd_small"
+            android:drawableEnd="@drawable/ic_arrow_drop_down_white_24dp"
+            android:drawableTint="#999"
+            android:gravity="center_vertical"
+            android:hint="@string/enter_city"
+            android:imeOptions="actionNext"
+            android:maxLines="1"
+            android:paddingLeft="15dp"
+            android:paddingEnd="10dp"
+            android:singleLine="true"
+            android:textColor="@color/c666"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fn" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/area"
+            android:textColor="@color/c555"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/area"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/input_brd_small"
+            android:drawableEnd="@drawable/ic_arrow_drop_down_white_24dp"
+            android:drawableTint="#999"
+            android:gravity="center_vertical"
+            android:hint="@string/enter_area"
+            android:maxLines="1"
+            android:paddingStart="15dp"
+            android:paddingEnd="10dp"
+            android:textColor="@color/c666"
+            android:textSize="16sp" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
@@ -108,124 +201,18 @@
             android:textSize="16sp" />
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="3dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/area"
-            android:textColor="@color/c555"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/area"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/input_brd_small"
-            android:gravity="top"
-            android:hint="@string/enter_area"
-            android:imeOptions="actionNext"
-            android:inputType="textPostalAddress"
-            android:maxLines="1"
-            android:paddingLeft="15dp"
-            android:paddingTop="10dp"
-            android:textColor="@color/c666"
-            android:textSize="16sp" />
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/fn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:text="City"
-                android:textColor="@color/c555"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/city"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/input_brd_small"
-                android:hint="@string/enter_city"
-                android:imeOptions="actionNext"
-                android:maxLines="1"
-                android:paddingLeft="15dp"
-                android:singleLine="true"
-                android:textColor="@color/c666"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline2"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fn" />
-
-
-            <TextView
-                android:id="@+id/ln"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:text="@string/region"
-                android:textColor="@color/c555"
-                app:layout_constraintStart_toStartOf="@id/region"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/region"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/input_brd_small"
-                android:hint="@string/enter_region"
-                android:imeOptions="actionDone"
-                android:maxLines="1"
-                android:paddingLeft="15dp"
-                android:singleLine="true"
-                android:textColor="@color/c666"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toBottomOf="@id/ln" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintGuide_begin="190dp"
-                app:layout_constraintStart_toStartOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
         <Button
             android:id="@+id/save"
+            style="@style/DefaultButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             android:layout_marginTop="15dp"
-            app:backgroundTint="@null"
             android:background="@drawable/input_btn_bg_small"
             android:elevation="0dp"
             android:stateListAnimator="@null"
-            style="@style/DefaultButtonStyle"
             android:text="@string/save_address"
-            android:textColor="@color/fffh" />
+            android:textColor="@color/fffh"
+            app:backgroundTint="@null" />
 
     </LinearLayout>
 </layout>

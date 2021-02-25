@@ -72,6 +72,7 @@ import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
+import bd.com.evaly.evalyshop.models.profile.AddressWholeResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
@@ -100,7 +101,7 @@ import retrofit2.http.Url;
 
 public interface IApiClient {
 
-    @POST(UrlUtils.BASE_CATALOG + "locations")
+    @GET(UrlUtils.BASE_CATALOG + "locations")
     Call<CommonDataResponse<List<LocationResponse>>> getLocations(@Query("parent") String parent1);
 
     @GET(UrlUtils.BASE_CART + "carts/users/evaly")
@@ -300,23 +301,23 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL_AUTH + "user-info-details/")
     Call<CommonDataResponse<UserInfoResponse>> getUserInfo(@Header("Authorization") String token);
 
-    @GET(UrlUtils.BASE_URL_AUTH + "/api/v1/address/get-addresses")
-    Call<CommonDataResponse<List<AddressResponse>>> getAddressList(@Header("Authorization") String token);
+    @GET(UrlUtils.BASE_URL_ADDRESS + "get-addresses")
+    Call<CommonDataResponse<AddressWholeResponse>> getAddressList(@Header("Authorization") String token);
 
-    @PATCH(UrlUtils.BASE_URL_AUTH + "/api/v1/address/update-address/{id}")
+    @PATCH(UrlUtils.BASE_URL_ADDRESS + "update-address/{id}")
     Call<CommonDataResponse<AddressResponse>> updateAddress(@Header("Authorization") String token,
                                                             @Path("id") String id,
                                                             @Body AddressRequest body);
 
-    @POST(UrlUtils.BASE_URL_AUTH + "/api/v1/address/add-user-address")
+    @POST(UrlUtils.BASE_URL_ADDRESS + "add-new-address")
     Call<CommonDataResponse<AddressResponse>> addAddress(@Header("Authorization") String token,
                                                          @Body AddressRequest body);
 
-    @DELETE(UrlUtils.BASE_URL_AUTH + "/api/v1/address/set-primary-address/{id}")
+    @DELETE(UrlUtils.BASE_URL_ADDRESS + "set-primary-address/{id}")
     Call<CommonDataResponse> setPrimaryAddress(@Header("Authorization") String token,
                                                @Path("id") int id);
 
-    @DELETE(UrlUtils.BASE_URL_AUTH + "/api/v1/address/remove-address/{id}")
+    @DELETE(UrlUtils.BASE_URL_ADDRESS + "remove-address/{id}")
     Call<CommonDataResponse> removeAddress(@Header("Authorization") String token,
                                            @Path("id") String id);
 
