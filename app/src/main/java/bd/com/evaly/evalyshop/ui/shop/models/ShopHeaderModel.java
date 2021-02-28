@@ -172,8 +172,12 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
 
             viewModel.loadRatings();
 
+            if (shopInfo.isCodAllowed()) {
+                binding.tvOffer.setVisibility(View.VISIBLE);
+                binding.tvOffer.setText("COD");
+            } else
+                binding.tvOffer.setVisibility(View.GONE);
+
         }
-
     }
-
 }

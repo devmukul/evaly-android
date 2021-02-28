@@ -45,6 +45,7 @@
             android:paddingLeft="15dp"
             android:paddingTop="10dp"
             android:singleLine="true"
+            android:maxLength="50"
             android:textColor="@color/c666"
             android:textSize="16sp" />
 
@@ -66,6 +67,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
             android:layout_weight="1"
+            android:maxLength="11"
             android:background="@drawable/input_brd_small"
             android:gravity="top"
             android:hint="@string/enter_contact_number"
@@ -191,11 +193,12 @@
             android:background="@drawable/input_brd_small"
             android:gravity="top"
             android:hint="@string/enter_road_no_block_sector"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionDone"
             android:inputType="textPostalAddress"
             android:maxLines="1"
             android:paddingLeft="15dp"
             android:paddingTop="10dp"
+            android:maxLength="180"
             android:singleLine="true"
             android:textColor="@color/c666"
             android:textSize="16sp" />

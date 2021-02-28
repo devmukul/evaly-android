@@ -60,8 +60,8 @@
                         android:paddingTop="15dp"
                         android:paddingBottom="10dp"
                         android:text="@string/change_cap"
-                        android:visibility="gone"
-                        android:textColor="#EA1E1E" />
+                        android:textColor="#EA1E1E"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -103,9 +103,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:layout_weight="1"
+                            android:text="No address provided"
                             android:textColor="@color/c444"
-                            android:textSize="14sp"
-                            tools:text="349/A, Road 9, Block C\nBashundhara R/A" />
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
@@ -445,8 +445,8 @@
                 android:background="@drawable/black_btn"
                 android:stateListAnimator="@null"
                 android:text="@string/place_order"
-                app:backgroundTint="@null"
-                android:textColor="@color/fffh" />
+                android:textColor="@color/fffh"
+                app:backgroundTint="@null" />
 
         </LinearLayout>
 

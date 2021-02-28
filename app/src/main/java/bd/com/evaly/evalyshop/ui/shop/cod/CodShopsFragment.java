@@ -36,11 +36,17 @@ public class CodShopsFragment extends BaseFragment<FragmentCodShopsBinding, CodS
 
         @Override
         public void afterTextChanged(Editable editable) {
+
             String search = binding.search.getText().toString().trim();
             viewModel.setSearch(search.isEmpty() ? null : search);
             viewModel.clearAndLoad();
             controller.setLoading(true);
             isLoading = true;
+
+            if (search.length() > 0)
+                binding.clear.setVisibility(View.VISIBLE);
+            else
+                binding.clear.setVisibility(View.GONE);
         }
     };
 
@@ -50,8 +56,10 @@ public class CodShopsFragment extends BaseFragment<FragmentCodShopsBinding, CodS
 
     @Override
     protected void initViews() {
-
-
+        if (binding.search.getText().toString().trim().length() > 0)
+            binding.clear.setVisibility(View.VISIBLE);
+        else
+            binding.clear.setVisibility(View.GONE);
     }
 
     @Override
@@ -80,6 +88,9 @@ public class CodShopsFragment extends BaseFragment<FragmentCodShopsBinding, CodS
     @Override
     protected void clickListeners() {
         binding.toolbar.setNavigationOnClickListener(backPressClickListener);
+        binding.clear.setOnClickListener(view -> {
+            binding.search.setText("");
+        });
     }
 
     @Override
@@ -99,6 +110,7 @@ public class CodShopsFragment extends BaseFragment<FragmentCodShopsBinding, CodS
             @Override
             public void loadMoreItem() {
                 if (!isLoading) {
+                    isLoading = true;
                     viewModel.loadCodShops();
                     controller.setLoading(true);
                 }

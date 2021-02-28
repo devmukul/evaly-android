@@ -20,6 +20,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.catalog.location.LocationResponse;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.util.ToastUtils;
+import bd.com.evaly.evalyshop.util.Utils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -50,11 +51,15 @@ public class AddAddressBottomSheet extends BottomSheetDialogFragment {
         binding.city.setOnClickListener(view1 -> {
             if (viewModel.cityLiveData.getValue() != null)
                 showSingleChoiceDialog(viewModel.cityLiveData.getValue(), "City");
+            else
+                ToastUtils.show("Please select division first");
         });
 
         binding.area.setOnClickListener(view1 -> {
             if (viewModel.areaLiveData.getValue() != null)
                 showSingleChoiceDialog(viewModel.areaLiveData.getValue(), "Area");
+            else
+                ToastUtils.show("Please select city first");
         });
 
         binding.save.setOnClickListener(view2 -> {
@@ -76,6 +81,8 @@ public class AddAddressBottomSheet extends BottomSheetDialogFragment {
                 error = "Please enter city";
             else if (phoneNumber.equals(""))
                 error = "Please enter phone number";
+            else  if (!Utils.isValidNumber(phoneNumber))
+                error = "Please enter valid phone number";
             else if (fullName.equals(""))
                 error = "Please enter full name";
 
@@ -136,14 +143,17 @@ public class AddAddressBottomSheet extends BottomSheetDialogFragment {
 
     private void liveEvents() {
         viewModel.dismissBottomSheet.observe(getViewLifecycleOwner(), aVoid -> dismissAllowingStateLoss());
+
         viewModel.selectedDivisionLiveData.observe(getViewLifecycleOwner(), model -> {
             if (model == null)
                 binding.region.setText("Select division");
             else {
-                binding.region.setText(model.getName());
-                viewModel.loadLocationList(model.getSlug(), "city");
                 viewModel.selectedCityLiveData.setValue(null);
                 viewModel.selectedAreaLiveData.setValue(null);
+                viewModel.cityLiveData.setValue(null);
+                viewModel.areaLiveData.setValue(null);
+                binding.region.setText(model.getName());
+                viewModel.loadLocationList(model.getSlug(), "city");
             }
         });
 
@@ -152,8 +162,9 @@ public class AddAddressBottomSheet extends BottomSheetDialogFragment {
                 binding.city.setText("Select city");
             else {
                 binding.city.setText(model.getName());
-                viewModel.loadLocationList(model.getSlug(), "area");
                 viewModel.selectedAreaLiveData.setValue(null);
+                viewModel.areaLiveData.setValue(null);
+                viewModel.loadLocationList(model.getSlug(), "area");
             }
         });
 
@@ -182,7 +193,6 @@ public class AddAddressBottomSheet extends BottomSheetDialogFragment {
                 viewModel.selectedDivisionLiveData.setValue(new LocationResponse(model.getRegion(), model.getRegionSlug()));
                 viewModel.selectedCityLiveData.setValue(new LocationResponse(model.getCity(), model.getCitySlug()));
                 viewModel.selectedAreaLiveData.setValue(new LocationResponse(model.getArea(), model.getAreaSlug()));
-
             }
         });
     }

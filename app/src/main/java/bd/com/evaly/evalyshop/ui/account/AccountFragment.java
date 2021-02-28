@@ -197,10 +197,10 @@ public class AccountFragment extends Fragment {
         super.onResume();
 
         if (CredentialManager.getUserData() != null) {
-            if (CredentialManager.getUserData().getImageSm() != null) {
+            if (CredentialManager.getUserData().getProfilePicUrl() != null) {
                 Glide.with(this)
                         .asBitmap()
-                        .load(CredentialManager.getUserData().getImageSm())
+                        .load(CredentialManager.getUserData().getProfilePicUrl())
                         .skipMemoryCache(true)
                         .fitCenter()
                         .placeholder(R.drawable.user_image)

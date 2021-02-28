@@ -55,6 +55,17 @@ public class ShopDetailsResponse {
     @SerializedName("description")
     private String description;
 
+    @SerializedName("is_cod_allowed")
+    private boolean isCodAllowed;
+
+    public void setCodAllowed(boolean codAllowed) {
+        isCodAllowed = codAllowed;
+    }
+
+    public boolean isCodAllowed() {
+        return isCodAllowed;
+    }
+
     public String getDescription() {
         return description;
     }

@@ -21,30 +21,33 @@ public class CodShopsViewModel extends BaseViewModel {
     private String search = null;
     protected List<ShopListResponse> arrayList = new ArrayList<>();
     protected MutableLiveData<List<ShopListResponse>> liveList = new MutableLiveData<>();
+    private boolean isLoading;
 
     @Inject
-    public CodShopsViewModel(){
+    public CodShopsViewModel() {
+        page = 1;
+        isLoading = false;
         loadCodShops();
-    }
-
-    public void setPage(int page) {
-        this.page = page;
     }
 
     public void setSearch(String search) {
         this.search = search;
     }
 
-    public void clearAndLoad(){
+    public void clearAndLoad() {
         page = 1;
         arrayList.clear();
         loadCodShops();
     }
 
     public void loadCodShops() {
+        if (isLoading)
+            return;
+        isLoading = true;
         ProductApiHelper.getShops(null, search, page, "cod", new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
+                isLoading = false;
                 arrayList.addAll(response.getData());
                 liveList.setValue(arrayList);
                 page++;

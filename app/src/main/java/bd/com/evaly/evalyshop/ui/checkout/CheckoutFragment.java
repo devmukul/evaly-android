@@ -371,6 +371,7 @@ public class CheckoutFragment extends DialogFragment {
                 addressModel = addressResponse;
                 binding.address.setText(addressResponse.getFullAddressLine());
                 binding.userName.setText(addressResponse.getFullName());
+                binding.contact.setText(addressResponse.getPhoneNumber());
             }
         });
 

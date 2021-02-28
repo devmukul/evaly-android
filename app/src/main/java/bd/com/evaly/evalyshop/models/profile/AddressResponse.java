@@ -150,7 +150,7 @@ public class AddressResponse implements Serializable {
     }
 
     public String getFullAddressWithName() {
-        return fullName + ", " + phoneNumber + ", " + address + ", " + area + ", " + city + ", " + region;
+        return fullName + ", " + address + ", " + area + ", " + city + ", " + region;
     }
 
     public String getFullAddressLine() {
