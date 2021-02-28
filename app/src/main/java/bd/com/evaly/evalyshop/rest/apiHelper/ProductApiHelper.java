@@ -28,8 +28,8 @@ public class ProductApiHelper extends BaseApiHelper {
         getiApiClient().getBrands(categorySlug, search, page, 20).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getShops(String categorySlug, String search, int page, ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String> listener) {
-        getiApiClient().getShops(categorySlug, search, page, 20).enqueue(getResponseCallBackDefault(listener));
+    public static void getShops(String categorySlug, String search, int page, String paymentType, ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String> listener) {
+        getiApiClient().getShops(categorySlug, search, page, 20, paymentType).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void getShopProducts(String shopSlug, int page, int limit, String categorySlug, String campaignSlug, String search, ResponseListenerAuth<JsonObject, String> listener) {

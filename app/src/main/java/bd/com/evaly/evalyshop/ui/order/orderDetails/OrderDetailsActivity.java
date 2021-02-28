@@ -535,6 +535,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         inflateMenu();
         updateProducts();
         initAttachments();
+        if (orderDetailsModel.getPaymentMethod().contains("cod"))
+            binding.stickyButtons.setVisibility(View.GONE);
     }
 
     private void updateProducts() {

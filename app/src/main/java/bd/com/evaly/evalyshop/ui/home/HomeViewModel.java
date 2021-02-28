@@ -24,6 +24,7 @@ import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
+import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
@@ -45,6 +46,7 @@ public class HomeViewModel extends ViewModel {
     protected MutableLiveData<List<CampaignProductResponse>> flashSaleProductList = new MutableLiveData<>();
     protected MutableLiveData<List<CampaignBrandResponse>> flashSaleBrandList = new MutableLiveData<>();
     protected MutableLiveData<List<CampaignShopResponse>> flashSaleShopList = new MutableLiveData<>();
+    protected MutableLiveData<List<ShopListResponse>> codShopList = new MutableLiveData<>();
     private int tabPosition = -1;
     private MutableLiveData<List<CampaignCategoryResponse>> categoryLiveList = new MutableLiveData<>();
     private MutableLiveData<List<ProductItem>> productListLive = new MutableLiveData<>();
@@ -73,6 +75,7 @@ public class HomeViewModel extends ViewModel {
         loadFlashSaleProductList();
         loadFlashSaleBrandsList();
         loadFlashSaleShopList();
+        loadCodShops();
     }
 
     @Override
@@ -93,6 +96,26 @@ public class HomeViewModel extends ViewModel {
         loadFlashSaleProductList();
         loadFlashSaleBrandsList();
         loadFlashSaleShopList();
+        loadCodShops();
+    }
+
+    public void loadCodShops() {
+        ProductApiHelper.getShops(null, null, 1, "cod", new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
+                codShopList.setValue(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public int getTabPosition() {

@@ -417,7 +417,8 @@ public interface IApiClient {
     Call<CommonDataResponse<List<ShopListResponse>>> getShops(@Query("category_slug") String categorySlug,
                                                               @Query("search") String search,
                                                               @Query("page") int page,
-                                                              @Query("limit") int limit);
+                                                              @Query("limit") int limit,
+                                                              @Query("payment_type") String paymentType);
 
     @GET(UrlUtils.BASE_CATALOG + "products")
     Call<CommonResultResponse<List<ProductItem>>> getCategoryBrandProducts(@Query("page") int page,

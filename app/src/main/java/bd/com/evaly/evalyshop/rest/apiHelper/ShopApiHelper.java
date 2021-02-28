@@ -26,8 +26,8 @@ public class ShopApiHelper extends BaseApiHelper {
         getiApiClient().getShopDetails(token, shopSlug, page, limit, categorySlug, search).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getShops(String categorySlug, String search, int page, ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String> listener) {
-        getiApiClient().getShops(categorySlug, search, page, 20).enqueue(getResponseCallBackDefault(listener));
+    public static void getShops(String categorySlug, String search, int page, String paymentType, ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String> listener) {
+        getiApiClient().getShops(categorySlug, search, page, 20, paymentType).enqueue(getResponseCallBackDefault(listener));
     }
 
 

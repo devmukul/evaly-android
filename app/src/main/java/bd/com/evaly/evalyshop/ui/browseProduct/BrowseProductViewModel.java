@@ -51,7 +51,7 @@ public class BrowseProductViewModel extends ViewModel {
         loadFromApi();
     }
 
-    public void clear(){
+    public void clear() {
         currentPage = 1;
         arrayList.clear();
     }
@@ -162,7 +162,7 @@ public class BrowseProductViewModel extends ViewModel {
 
 
     public void getShops() {
-        ProductApiHelper.getShops(categorySlug, null, currentPage, new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
+        ProductApiHelper.getShops(categorySlug, null, currentPage, null, new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());

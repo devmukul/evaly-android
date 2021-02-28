@@ -749,7 +749,7 @@ public class GlobalSearchActivity extends BaseActivity {
         if (!searchText.getText().toString().equals(""))
             query = searchText.getText().toString();
 
-        ShopApiHelper.getShops(null, query, p, new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
+        ShopApiHelper.getShops(null, query, p, null, new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
                 for (ShopListResponse item : response.getData()) {
