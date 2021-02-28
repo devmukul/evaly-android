@@ -88,7 +88,6 @@ public class CampaignController extends EpoxyController {
                     .clickListener((model, parentView, clickedView, position) -> {
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("model", rootItem);
-                        bundle.putBoolean("open_filter", true);
                         navController.navigate(R.id.campaignDetails, bundle);
                     })
                     .addIf(rootItem.getCampaigns().size() > 0 && viewModel.getSearch() == null, this);

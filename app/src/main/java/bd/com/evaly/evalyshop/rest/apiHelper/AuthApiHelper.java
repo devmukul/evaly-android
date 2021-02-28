@@ -26,6 +26,7 @@ import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
+import bd.com.evaly.evalyshop.models.profile.AddressWholeResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.models.user.UserModel;
@@ -370,7 +371,7 @@ public class AuthApiHelper extends BaseApiHelper {
         getiApiClient().forgetPassword(body).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getUserAddress(ResponseListenerAuth<CommonDataResponse<List<AddressResponse>>, String> listener) {
+    public static void getUserAddress(ResponseListenerAuth<CommonDataResponse<AddressWholeResponse>, String> listener) {
         getiApiClient().getAddressList(CredentialManager.getToken()).enqueue(getResponseCallBackDefault(listener));
     }
 
@@ -378,7 +379,11 @@ public class AuthApiHelper extends BaseApiHelper {
         getiApiClient().addAddress(CredentialManager.getToken(), body).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void removeAddress(int id, ResponseListenerAuth<CommonDataResponse, String> listener) {
+    public static void updateAddress(String id, AddressRequest body, ResponseListenerAuth<CommonDataResponse<AddressResponse>, String> listener) {
+        getiApiClient().updateAddress(CredentialManager.getToken(), id, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void removeAddress(String id, ResponseListenerAuth<CommonDataResponse, String> listener) {
         getiApiClient().removeAddress(CredentialManager.getToken(), id).enqueue(getResponseCallBackDefault(listener));
     }
 

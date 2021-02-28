@@ -63,7 +63,7 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
         if (model.getAuthorFullName().trim().equals(""))
             myViewHolder.userNameView.setText("User");
 
-        myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", model.getUpdatedAt())));
+        myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("gmt","yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", model.getUpdatedAt())));
         myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(model.getBody(), 180, "... <b>Show more</b>")));
 
         myViewHolder.statusView.setOnClickListener(view -> {

@@ -74,12 +74,14 @@ public class TextBottomSheetFragment extends BottomSheetDialogFragment {
                 binding.recyclerView.setAdapter(controller.getAdapter());
 
                 List<String> list = new ArrayList<>();
-                for (int i=0; i<jsonArray.size(); i++)
-                    list.add( jsonArray.get(i).getAsString());
+                for (int i = 0; i < jsonArray.size(); i++)
+                    list.add(jsonArray.get(i).getAsString());
                 controller.setList(list);
 
             } catch (Exception e) {
-                binding.text.setText(Html.fromHtml(text));
+                if (text == null)
+                    text = "";
+                binding.text.setText(Html.fromHtml(text.replace("\n", "<br/>")));
                 binding.text.setVisibility(View.VISIBLE);
                 binding.recyclerView.setVisibility(View.GONE);
             }
@@ -89,8 +91,7 @@ public class TextBottomSheetFragment extends BottomSheetDialogFragment {
         if (getArguments() != null && getArguments().containsKey("title")) {
             binding.title.setVisibility(View.VISIBLE);
             binding.title.setText(getArguments().getString("title"));
-        }
-        else
+        } else
             binding.title.setVisibility(View.GONE);
 
     }

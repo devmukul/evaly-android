@@ -80,7 +80,9 @@ public class OrderDetailsModel {
     @SerializedName("attachments")
     private List<String> attachments;
 
-    public ArrayList<String> getAllowed_payment_methods() {
+    public ArrayList<String> getAllowedPaymentMethods() {
+        if (allowed_payment_methods == null)
+            return new ArrayList<>();
         return allowed_payment_methods;
     }
 

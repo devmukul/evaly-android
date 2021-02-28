@@ -544,7 +544,10 @@ public class Utils {
 
     public static String formattedDateFromString(String inputFormat, String outputFormat, String inputDate) {
         if (inputFormat.equals("")) { // if inputFormat = "", set a default input format.
-            inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+            if (inputDate.contains("."))
+                inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+            else
+                inputFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
         }
         if (outputFormat.equals("")) {
             outputFormat = "EEEE d',' MMMM  yyyy"; // if inputFormat = "", set a default output format.
@@ -677,6 +680,33 @@ public class Utils {
         // You can set a different Locale, This example set a locale of Country Mexico.
         //SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, new Locale("es", "MX"));
         //SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, new Locale("es", "MX"));
+
+        try {
+            parsed = df_input.parse(inputDate);
+            outputDate = parsed.getTime();
+        } catch (Exception e) {
+            Log.e("formattedDateFromString", "Exception in formateDateFromstring(): " + e.getMessage());
+        }
+        return outputDate;
+
+    }
+
+
+    public static long formattedDateFromStringTimestamp(String inputTimezone, String inputFormat, String outputFormat, String inputDate) {
+        if (inputFormat.equals(""))  // if inputFormat = "", set a default input format.
+            inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
+        if (outputFormat.equals(""))
+            outputFormat = "EEEE d',' MMMM  yyyy"; // if inputFormat = "", set a default output format.
+
+        Date parsed = null;
+        long outputDate = 0;
+
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
+        df_input.setTimeZone(TimeZone.getTimeZone(inputTimezone));
+
+        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.getDefault());
+        df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
 
         try {
             parsed = df_input.parse(inputDate);

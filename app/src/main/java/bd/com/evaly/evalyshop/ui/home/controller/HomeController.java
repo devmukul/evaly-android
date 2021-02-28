@@ -24,6 +24,7 @@ import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
+import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.database.table.RsEntity;
@@ -90,6 +91,8 @@ public class HomeController extends EpoxyController {
     HomeExpressHeaderModel_ flashSaleHeaderModel_;
 
     @AutoModel
+    HomeExpressHeaderModel_ codHeaderModel_;
+    @AutoModel
     HomeExpressHeaderModel_ categoryHeaderModel_;
     @AutoModel
     HomeExpressHeaderModel_ shopsHeaderModel_;
@@ -106,6 +109,7 @@ public class HomeController extends EpoxyController {
     private List<CampaignBrandResponse> flashSaleBrands = new ArrayList<>();
     private List<CampaignShopResponse> flashSaleShops = new ArrayList<>();
     private List<ExpressServiceModel> itemsExpress = new ArrayList<>();
+    private List<ShopListResponse> codSaleShops = new ArrayList<>();
     private List<BannerItem> bannerList = new ArrayList<>();
     private List<CampaignCategoryResponse> campaignCategoryList = new ArrayList<>();
     private List<RsEntity> rsBrandList = new ArrayList<>();
@@ -156,6 +160,8 @@ public class HomeController extends EpoxyController {
 
         initExpressCarousel();
 
+        initCodShopsCarousel();
+
         initCategoryCarousel();
 
         initBrandsCarousel();
@@ -191,6 +197,40 @@ public class HomeController extends EpoxyController {
                     })
                     .addTo(this);
         }
+    }
+
+
+    private void initCodShopsCarousel() {
+
+        codHeaderModel_
+                .showMore(true)
+                .title("Shops - Cash on Delivery")
+                .transparentBackground(true)
+                .clickListener((model, parentView, clickedView, position) -> {
+                     clickListener.onShowCodShopsClick();
+                })
+                .addIf(codSaleShops.size() > 0, this);
+
+        List<DataBindingEpoxyModel> models = new ArrayList<>();
+
+        for (ShopListResponse item : codSaleShops) {
+            models.add(new HomeRsGridModel_()
+                    .id("rs_Category", item.getSlug() + "shops")
+                    .title(item.getShopName())
+                    .image(item.getShopImage())
+                    .slug(item.getSlug())
+                    .type("shop")
+                    .color("#175A82D3")
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        clickListener.onShopClick(model.slug(), model.title());
+                    }));
+        }
+
+        new HomeRsCarouselModel()
+                .id("cod_shops_carousel")
+                .models(models)
+                .padding(Carousel.Padding.dp(12, 12, 10, 10, 10))
+                .addIf(codSaleShops.size() > 0, this);
     }
 
     private void initCategoryCarousel() {
@@ -601,6 +641,8 @@ public class HomeController extends EpoxyController {
 
         void onShowMoreCategoryClick();
 
+        void onShowCodShopsClick();
+
         void onShowMoreShopClick();
 
         void onShowMoreBrandClick();
@@ -614,6 +656,10 @@ public class HomeController extends EpoxyController {
         void onCampaignBrandClick(CampaignBrandResponse model);
 
         void onCampaignShopClick(CampaignShopResponse model);
+    }
+
+    public void setCodSaleShops(List<ShopListResponse> codSaleShops) {
+        this.codSaleShops = codSaleShops;
     }
 }
 

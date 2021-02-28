@@ -115,11 +115,7 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
             itemList.clear();
             itemList.addAll(issueCategoryModels);
             for (IssueCategoryModel item : issueCategoryModels) {
-                if (orderStatus.equals("pending")) {
-                    if (item.getName().equals("Bank Payment") || item.getName().equals("Payment"))
-                        options.add(item.getName());
-                } else
-                    options.add(item.getName());
+                options.add(item.getName());
             }
             adapter.notifyDataSetChanged();
             updateViews();
@@ -145,11 +141,13 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                 if (paymentType.equals("Balance Refund") || paymentType.equals("Card Refund")) {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
-                } else if (paymentType.equals("bKash Refund") || paymentType.equals("Nagad Refund")) {
+                    binding.descriptionHolder.setVisibility(View.GONE);
+                    binding.etDescription.setText("Invoice: " + invoice + "\nPhone number: " + CredentialManager.getUserName());
+                } else if (paymentType.equals("bKash Refund") || paymentType.equals("bKash Payment") || paymentType.equals("Nagad Refund") || paymentType.equals("Nagad Payment")) {
                     binding.llBkashHolder.setVisibility(View.VISIBLE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
                     binding.descriptionHolder.setVisibility(View.GONE);
-                } else if (paymentType.equals("Bank Refund")) {
+                } else if (paymentType.equals("Bank Refund") || paymentType.equals("Bank Payment")) {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.VISIBLE);
                     binding.descriptionHolder.setVisibility(View.GONE);
@@ -157,6 +155,7 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
                     binding.descriptionHolder.setVisibility(View.VISIBLE);
+                    binding.etDescription.setText("");
                 }
             }
 
@@ -172,7 +171,7 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
         binding.btnSubmit.setOnClickListener(view -> {
 
             model.setChannel("customer_app");
-            model.setContext("order");
+            model.setContext("evaly_order");
             model.setCustomer(CredentialManager.getUserName());
             model.setInvoiceNumber(invoice);
             model.setSeller(seller);
@@ -238,8 +237,13 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                         "Bank Name: " + bankName + "\n" +
                         "Branch Name: " + branchName + "\n" +
                         "Routing Number: " + routingNumber;
-            } else
+            } else {
                 description = binding.etDescription.getText().toString();
+                if (description.isEmpty()) {
+                    ToastUtils.show("Please enter description.");
+                    return;
+                }
+            }
 
             model.setAdditionalInfo(description);
             viewModel.submitIssue(model);
@@ -318,7 +322,7 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         try {
             startActivityForResult(intent, 1001);
-        } catch (Exception e){
+        } catch (Exception e) {
             ToastUtils.show("Can't open image picker");
         }
     }

@@ -50,7 +50,6 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
-import bd.com.evaly.evalyshop.databinding.BottomSheetAddAddressBinding;
 import bd.com.evaly.evalyshop.databinding.BottomSheetCheckoutContactBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentCheckoutBinding;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
@@ -58,7 +57,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.AttachmentCheckResponse;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
-import bd.com.evaly.evalyshop.models.user.AddressItem;
+import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.address.AddressFragment;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
@@ -90,7 +89,7 @@ public class CheckoutFragment extends DialogFragment {
     private double deliveryChargeAmount = 0;
     private NavController navController;
     private CheckoutProductController controller;
-    private AddressItem addressModel = null;
+    private AddressResponse addressModel = null;
     private int minPrice = 0;
     private ViewDialog dialog;
     private double totalDeliveryCharge;
@@ -144,14 +143,14 @@ public class CheckoutFragment extends DialogFragment {
         UserModel userModel = CredentialManager.getUserData();
         binding.userName.setText(userModel.getFullName());
         binding.contact.setText(userModel.getUsername());
-
-        if (userModel.getAddresses() != null &&
-                userModel.getAddresses().getData() != null &&
-                userModel.getAddresses().getData().size() > 0) {
-            addressModel = userModel.getAddresses().getData().get(0);
-            binding.address.setText(addressModel.getFullAddressLine());
-        } else
-            binding.address.setText("No address provided");
+//
+//        if (userModel.getAddresses() != null &&
+//                userModel.getAddresses().getData() != null &&
+//                userModel.getAddresses().getData().size() > 0) {
+//            addressModel = userModel.getAddresses().getData().get(0);
+//            binding.address.setText(addressModel.getFullAddressLine());
+//        } else
+//            binding.address.setText("No address provided");
     }
 
     private void setupRecycler() {
@@ -172,12 +171,12 @@ public class CheckoutFragment extends DialogFragment {
         });
 
         binding.btnEditAddress.setOnClickListener(v -> {
-            editAddress(addressModel);
-        });
-
-        binding.changeAddress.setOnClickListener(v -> {
             openLocationSelector();
         });
+
+//        binding.changeAddress.setOnClickListener(v -> {
+//            openLocationSelector();
+//        });
 
         binding.btnPlaceOrder.setOnClickListener(view -> {
             if (CredentialManager.getToken().equals("")) {
@@ -364,6 +363,18 @@ public class CheckoutFragment extends DialogFragment {
     }
 
     private void liveEvents() {
+
+        viewModel.selectedAddress.observe(getViewLifecycleOwner(), addressResponse -> {
+            if (addressResponse == null)
+                binding.address.setText("No address provided");
+            else {
+                addressModel = addressResponse;
+                binding.address.setText(addressResponse.getFullAddressLine());
+                binding.userName.setText(addressResponse.getFullName());
+                binding.contact.setText(addressResponse.getPhoneNumber());
+            }
+        });
+
         viewModel.deliveryChargeLiveData.observe(getViewLifecycleOwner(), deliveryCharge -> {
             dialog.hideDialog();
             if (deliveryCharge == null)
@@ -403,8 +414,8 @@ public class CheckoutFragment extends DialogFragment {
         });
 
         sharedObservers.onAddressChanged.observe(getViewLifecycleOwner(), addressItem -> {
+            viewModel.selectedAddress.setValue(addressItem);
             addressModel = addressItem;
-            binding.address.setText(addressItem.getFullAddressLine());
         });
 
         viewModel.errorOrder.observe(getViewLifecycleOwner(), aBoolean -> {
@@ -460,69 +471,6 @@ public class CheckoutFragment extends DialogFragment {
         });
     }
 
-    public void editAddress(AddressItem model) {
-        BottomSheetDialog dialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogTheme);
-        final BottomSheetAddAddressBinding dialogBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
-                R.layout.bottom_sheet_add_address, null, false);
-
-        dialogBinding.fullName.setVisibility(View.GONE);
-        dialogBinding.fullNameTitle.setVisibility(View.GONE);
-        dialogBinding.contactNumber.setVisibility(View.GONE);
-        dialogBinding.contactTitle.setVisibility(View.GONE);
-
-        if (model != null) {
-            dialogBinding.address.setText(model.getAddress());
-            dialogBinding.area.setText(model.getArea());
-            dialogBinding.city.setText(model.getCity());
-            dialogBinding.region.setText(model.getRegion());
-            if (model.getFullName() == null || model.getFullName().equals(""))
-                dialogBinding.fullName.setText(CredentialManager.getUserData().getFullName());
-            else
-                dialogBinding.fullName.setText(model.getFullName());
-            if (model.getPhoneNumber() == null || model.getPhoneNumber().equals(""))
-                dialogBinding.contactNumber.setText(CredentialManager.getUserData().getContact());
-            else
-                dialogBinding.contactNumber.setText(model.getPhoneNumber());
-        } else {
-            dialogBinding.fullName.setText(CredentialManager.getUserData().getFullName());
-            dialogBinding.contactNumber.setText(CredentialManager.getUserData().getContact());
-        }
-
-        dialogBinding.save.setOnClickListener(view -> {
-            String address = dialogBinding.address.getText().toString().trim();
-            String area = dialogBinding.area.getText().toString().trim();
-            String city = dialogBinding.city.getText().toString().trim();
-            String region = dialogBinding.region.getText().toString().trim();
-
-            String error = null;
-            if (address.isEmpty())
-                error = "Please enter address line 1";
-            else if (area.isEmpty())
-                error = "Please enter area";
-            else if (city.isEmpty())
-                error = "Please enter city";
-
-            if (error != null) {
-                ToastUtils.show(error);
-                return;
-            }
-
-            AddressItem body = new AddressItem();
-            body.setAddress(address);
-            body.setArea(area);
-            body.setCity(city);
-            body.setRegion(region);
-            addressModel = body;
-
-            binding.address.setText(body.getFullAddressLine());
-            dialog.cancel();
-        });
-
-        Objects.requireNonNull(dialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        dialog.setContentView(dialogBinding.getRoot());
-        dialog.show();
-    }
-
 
     public void editContact() {
         BottomSheetDialog dialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogTheme);
@@ -558,7 +506,7 @@ public class CheckoutFragment extends DialogFragment {
         PlaceOrderItem orderObject = new PlaceOrderItem();
 
         orderObject.setContactNumber(binding.contact.getText().toString());
-        orderObject.setCustomerAddress(addressModel.getFullAddress());
+        orderObject.setCustomerAddress(addressModel.getFullAddressWithName());
         orderObject.setOrderOrigin("app");
 
         if (CredentialManager.getLatitude() != null && CredentialManager.getLongitude() != null) {

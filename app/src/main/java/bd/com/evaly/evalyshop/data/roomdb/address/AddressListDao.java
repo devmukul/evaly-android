@@ -11,6 +11,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import io.reactivex.Completable;
+import io.reactivex.Single;
 
 @Dao
 public interface AddressListDao {
@@ -31,10 +32,16 @@ public interface AddressListDao {
     Completable deleteById(int id);
 
     @Query("DELETE FROM address_list_table WHERE id NOT IN (:id)")
-    Completable deleteByIds(List<Integer> id);
+    Completable deleteByIds(List<String> id);
 
     @Query("SELECT * FROM address_list_table")
     LiveData<List<AddressResponse>> getAllLive();
+
+    @Query("SELECT * FROM address_list_table ORDER BY `primary`")
+    LiveData<List<AddressResponse>> getAllPrimaryLive();
+
+    @Query("SELECT * FROM address_list_table ORDER BY `primary`")
+    Single<List<AddressResponse>> getAllPrimary();
 
     @Query("SELECT COUNT(id) FROM address_list_table")
     int getCount();

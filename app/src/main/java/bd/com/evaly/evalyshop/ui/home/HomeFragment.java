@@ -3,8 +3,6 @@ package bd.com.evaly.evalyshop.ui.home;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +17,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.airbnb.epoxy.EpoxyController;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import java.util.Random;
@@ -37,7 +34,6 @@ import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
-import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
@@ -183,6 +179,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void liveEventObservers() {
+
+        viewModel.codShopList.observe(getViewLifecycleOwner(), shopListResponses -> {
+            homeController.setCodSaleShops(shopListResponses);
+            if (shopListResponses.size() > 0)
+                requestModelBuild();
+        });
 
         recommenderViewModel.getRsBrandLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
             homeController.setRsBrandList(rsEntities);
@@ -346,6 +348,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onShowMoreCategoryClick() {
         navController.navigate(R.id.categoryFragment);
+    }
+
+    @Override
+    public void onShowCodShopsClick() {
+        navController.navigate(R.id.codShopsFragment);
     }
 
     @Override

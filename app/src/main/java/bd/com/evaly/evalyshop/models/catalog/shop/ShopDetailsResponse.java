@@ -52,7 +52,29 @@ public class ShopDetailsResponse {
     @SerializedName("subscriber_count")
     private int subscriberCount;
 
-    @SerializedName("shop_address")
+    @SerializedName("description")
+    private String description;
+
+    @SerializedName("is_cod_allowed")
+    private boolean isCodAllowed;
+
+    public void setCodAllowed(boolean codAllowed) {
+        isCodAllowed = codAllowed;
+    }
+
+    public boolean isCodAllowed() {
+        return isCodAllowed;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @SerializedName(value = "shop_address", alternate = "address")
     private String shopAddress;
 
     public int getCashbackPercentage() {

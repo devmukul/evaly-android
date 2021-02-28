@@ -125,14 +125,15 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
         });
 
         viewModel.getCommentCreatedLiveData().observe(getViewLifecycleOwner(), response -> {
+            binding.commentInput.setEnabled(true);
+            binding.submitComment.setEnabled(true);
             if (response.has("data")) {
                 reloadRecycler();
                 binding.commentInput.setText("");
-                binding.commentInput.setEnabled(true);
-                binding.submitComment.setEnabled(true);
                 binding.not.setVisibility(View.GONE);
-            } else
+            } else {
                 Toast.makeText(getContext(), "Couldn't create comment", Toast.LENGTH_SHORT).show();
+            }
         });
 
         if (newsfeedPostModel.getAttachment() != null)
@@ -176,9 +177,10 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
 
             if (!isVisible())
                 return;
-            else if (binding.commentInput.getText().toString().trim().equals(""))
+            else if (binding.commentInput.getText().toString().trim().equals("")) {
                 Toast.makeText(getContext(), "Write something first before posting comment.", Toast.LENGTH_SHORT).show();
-
+                return;
+            }
 
             binding.commentInput.setEnabled(false);
             binding.submitComment.setEnabled(false);
@@ -190,8 +192,6 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
             parametersPost.add("comment", parameters);
 
             viewModel.createComment(parametersPost, newsfeedPostModel.getSlug());
-
-
         });
 
 
@@ -260,7 +260,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
             binding.userName.setText(postModel.getAuthorFullName());
             binding.text.setText(postModel.getBody());
 
-            String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", postModel.getCreatedAt()));
+            String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("gmt", "yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", postModel.getCreatedAt()));
             binding.date.setText(timeAgo);
 
             if (postModel.getAuthorIsAdmin() == 1) {

@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.BuildConfig;
-import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
@@ -40,6 +39,7 @@ import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandCatResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
 import bd.com.evaly.evalyshop.models.catalog.category.ChildCategoryResponse;
+import bd.com.evaly.evalyshop.models.catalog.location.LocationResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
@@ -72,6 +72,7 @@ import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
+import bd.com.evaly.evalyshop.models.profile.AddressWholeResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
@@ -100,14 +101,15 @@ import retrofit2.http.Url;
 
 public interface IApiClient {
 
+    @GET(UrlUtils.BASE_CATALOG + "locations")
+    Call<CommonDataResponse<List<LocationResponse>>> getLocations(@Query("parent") String parent1);
+
     @GET(UrlUtils.BASE_CART + "carts/users/evaly")
     Call<CommonDataResponse<CartHolderModel>> getCartList(@Header("Authorization") String token);
 
     @POST(UrlUtils.BASE_CART + "carts")
     Call<CommonDataResponse<CartHolderModel>> syncCartList(@Header("Authorization") String token,
-                                                            @Body CartHolderModel body);
-
-
+                                                           @Body CartHolderModel body);
 
     @POST(UrlUtils.BASE_CATALOG + "orders/checkout/buckets")
     Call<CommonDataResponse<List<AttachmentCheckResponse>>> isAttachmentRequired(@Header("Authorization") String token,
@@ -229,6 +231,7 @@ public interface IApiClient {
     @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/categories/customer")
     Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Header("Authorization") String token,
                                                                               @Query("order_status") String orderStatus,
+                                                                              @Query("context") String context,
                                                                               @Query("limit") int limit);
 
     @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/evaly")
@@ -299,17 +302,25 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL_AUTH + "user-info-details/")
     Call<CommonDataResponse<UserInfoResponse>> getUserInfo(@Header("Authorization") String token);
 
-    @GET(UrlUtils.BASE_URL_AUTH + "user-address/list/")
-    Call<CommonDataResponse<List<AddressResponse>>> getAddressList(@Header("Authorization") String token);
+    @GET(UrlUtils.BASE_URL_ADDRESS + "get-addresses")
+    Call<CommonDataResponse<AddressWholeResponse>> getAddressList(@Header("Authorization") String token);
 
-    @POST(UrlUtils.BASE_URL_AUTH + "add-user-address/")
+    @PATCH(UrlUtils.BASE_URL_ADDRESS + "update-address/{id}")
+    Call<CommonDataResponse<AddressResponse>> updateAddress(@Header("Authorization") String token,
+                                                            @Path("id") String id,
+                                                            @Body AddressRequest body);
+
+    @POST(UrlUtils.BASE_URL_ADDRESS + "add-new-address")
     Call<CommonDataResponse<AddressResponse>> addAddress(@Header("Authorization") String token,
                                                          @Body AddressRequest body);
 
-    @DELETE(UrlUtils.BASE_URL_AUTH + "remove-user-address/{id}")
-    Call<CommonDataResponse> removeAddress(@Header("Authorization") String token,
-                                           @Path("id") int id);
+    @DELETE(UrlUtils.BASE_URL_ADDRESS + "set-primary-address/{id}")
+    Call<CommonDataResponse> setPrimaryAddress(@Header("Authorization") String token,
+                                               @Path("id") int id);
 
+    @DELETE(UrlUtils.BASE_URL_ADDRESS + "remove-address/{id}")
+    Call<CommonDataResponse> removeAddress(@Header("Authorization") String token,
+                                           @Path("id") String id);
 
     @POST(UrlUtils.UPDATE_VCARD)
     Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);
@@ -407,7 +418,8 @@ public interface IApiClient {
     Call<CommonDataResponse<List<ShopListResponse>>> getShops(@Query("category_slug") String categorySlug,
                                                               @Query("search") String search,
                                                               @Query("page") int page,
-                                                              @Query("limit") int limit);
+                                                              @Query("limit") int limit,
+                                                              @Query("payment_type") String paymentType);
 
     @GET(UrlUtils.BASE_CATALOG + "products")
     Call<CommonResultResponse<List<ProductItem>>> getCategoryBrandProducts(@Query("page") int page,
