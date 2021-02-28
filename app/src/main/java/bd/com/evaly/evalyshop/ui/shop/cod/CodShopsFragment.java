@@ -56,16 +56,17 @@ public class CodShopsFragment extends BaseFragment<FragmentCodShopsBinding, CodS
 
     @Override
     protected void initViews() {
-        if (binding.search.getText().toString().trim().length() > 0)
-            binding.clear.setVisibility(View.VISIBLE);
-        else
-            binding.clear.setVisibility(View.GONE);
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         binding.search.addTextChangedListener(textWatcher);
+        if (binding.search.getText().toString().trim().length() > 0)
+            binding.clear.setVisibility(View.VISIBLE);
+        else
+            binding.clear.setVisibility(View.GONE);
     }
 
     @Override
