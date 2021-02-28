@@ -222,7 +222,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
             binding.postImage.setVisibility(View.GONE);
 
         binding.text.setText(postModel.getAdditionalInfo());
-        binding.date.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMTIssue("yyyy-MM-dd HH:mm:ss.SSS", "", postModel.getCreatedAt())));
+        binding.date.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMTIssue("", "", postModel.getCreatedAt())));
 
         String orderStatus = postModel.getStatus();
 

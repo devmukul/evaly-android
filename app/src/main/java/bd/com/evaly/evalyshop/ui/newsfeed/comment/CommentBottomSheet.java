@@ -260,7 +260,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
             binding.userName.setText(postModel.getAuthorFullName());
             binding.text.setText(postModel.getBody());
 
-            String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", postModel.getCreatedAt()));
+            String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("gmt", "yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", postModel.getCreatedAt()));
             binding.date.setText(timeAgo);
 
             if (postModel.getAuthorIsAdmin() == 1) {

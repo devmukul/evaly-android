@@ -19,7 +19,10 @@ import bd.com.evaly.evalyshop.models.profile.AddressWholeResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.LocationApiHelper;
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 @HiltViewModel
@@ -77,7 +80,23 @@ public class AddressViewModel extends ViewModel {
                 if (response.getData().getAddresses() != null)
                     compositeDisposable.add(addressListDao.insertAll(response.getData().getAddresses())
                             .subscribeOn(Schedulers.io())
-                            .subscribe());
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(new DisposableCompletableObserver() {
+                                @Override
+                                public void onComplete() {
+                                    List<String> list = new ArrayList<>();
+                                    if (response.getData() != null && response.getData().getAddresses() != null) {
+                                        for (AddressResponse item : response.getData().getAddresses())
+                                            list.add(item.getId());
+                                        removeOldAddresses(list);
+                                    }
+                                }
+
+                                @Override
+                                public void onError(@NonNull Throwable e) {
+
+                                }
+                            }));
             }
 
             @Override
@@ -90,6 +109,22 @@ public class AddressViewModel extends ViewModel {
 
             }
         });
+    }
+
+    private void removeOldAddresses(List<String> list) {
+        compositeDisposable.add(addressListDao.deleteByIds(list)
+                .subscribeOn(Schedulers.io())
+                .subscribeWith(new DisposableCompletableObserver() {
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+                }));
     }
 
     public void addAddress(AddressRequest item) {

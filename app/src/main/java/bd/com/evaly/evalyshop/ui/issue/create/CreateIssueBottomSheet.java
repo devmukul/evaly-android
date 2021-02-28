@@ -143,11 +143,11 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                     binding.llBankInfoHolder.setVisibility(View.GONE);
                     binding.descriptionHolder.setVisibility(View.GONE);
                     binding.etDescription.setText("Invoice: " + invoice + "\nPhone number: " + CredentialManager.getUserName());
-                } else if (paymentType.equals("bKash Refund") || paymentType.equals("Nagad Refund")) {
+                } else if (paymentType.equals("bKash Refund") || paymentType.equals("bKash Payment") || paymentType.equals("Nagad Refund") || paymentType.equals("Nagad Payment")) {
                     binding.llBkashHolder.setVisibility(View.VISIBLE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
                     binding.descriptionHolder.setVisibility(View.GONE);
-                } else if (paymentType.equals("Bank Refund")) {
+                } else if (paymentType.equals("Bank Refund") || paymentType.equals("Bank Payment")) {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.VISIBLE);
                     binding.descriptionHolder.setVisibility(View.GONE);

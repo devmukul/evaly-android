@@ -231,6 +231,7 @@ public interface IApiClient {
     @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/categories/customer")
     Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Header("Authorization") String token,
                                                                               @Query("order_status") String orderStatus,
+                                                                              @Query("context") String context,
                                                                               @Query("limit") int limit);
 
     @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/evaly")

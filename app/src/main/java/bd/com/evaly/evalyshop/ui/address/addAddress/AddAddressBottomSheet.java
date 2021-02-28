@@ -183,9 +183,6 @@ public class AddAddressBottomSheet extends BottomSheetDialogFragment {
                 viewModel.selectedCityLiveData.setValue(new LocationResponse(model.getCity(), model.getCitySlug()));
                 viewModel.selectedAreaLiveData.setValue(new LocationResponse(model.getArea(), model.getAreaSlug()));
 
-            } else {
-                binding.fullName.setText(CredentialManager.getUserData().getFullName());
-                binding.contactNumber.setText(CredentialManager.getUserData().getContact());
             }
         });
     }
