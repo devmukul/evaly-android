@@ -204,10 +204,10 @@ public class HomeController extends EpoxyController {
 
         codHeaderModel_
                 .showMore(true)
-                .title("COD Shops")
+                .title("Shops - Cash on Delivery")
                 .transparentBackground(true)
                 .clickListener((model, parentView, clickedView, position) -> {
-                    // clickListener.onShowMoreCategoryClick();
+                     clickListener.onShowCodShopsClick();
                 })
                 .addIf(codSaleShops.size() > 0, this);
 
@@ -640,6 +640,8 @@ public class HomeController extends EpoxyController {
         void onExpressClick(ExpressServiceModel model);
 
         void onShowMoreCategoryClick();
+
+        void onShowCodShopsClick();
 
         void onShowMoreShopClick();
 

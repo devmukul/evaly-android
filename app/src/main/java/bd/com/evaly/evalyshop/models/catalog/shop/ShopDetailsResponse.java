@@ -52,6 +52,17 @@ public class ShopDetailsResponse {
     @SerializedName("subscriber_count")
     private int subscriberCount;
 
+    @SerializedName("description")
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @SerializedName(value = "shop_address", alternate = "address")
     private String shopAddress;
 

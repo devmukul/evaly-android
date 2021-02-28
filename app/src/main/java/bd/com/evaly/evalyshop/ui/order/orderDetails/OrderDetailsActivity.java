@@ -206,14 +206,14 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         });
 
         binding.makePayment.setOnClickListener(v -> {
-            if (orderDetailsModel == null || orderDetailsModel.getAllowed_payment_methods() == null) {
+            if (orderDetailsModel == null || orderDetailsModel.getAllowedPaymentMethods() == null) {
                 ToastUtils.show("Cash on delivery only");
                 return;
             }
             PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoiceNo,
                     totalAmount,
                     paidAmount,
-                    orderDetailsModel.getAllowed_payment_methods(),
+                    orderDetailsModel.getAllowedPaymentMethods(),
                     orderDetailsModel.isApplyDeliveryCharge(),
                     orderDetailsModel.getDeliveryCharge(), this);
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
@@ -464,11 +464,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             hidePaymentButtons();
         } else {
             binding.confirmOrder.setVisibility(View.GONE);
-            if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().size() > 0) {
+            if (response.getAllowedPaymentMethods() != null && response.getAllowedPaymentMethods().size() > 0) {
                 showPaymentButtons();
                 binding.payViaGiftCard.setVisibility(View.GONE);
-                for (int i = 0; i < response.getAllowed_payment_methods().size(); i++) {
-                    if (response.getAllowed_payment_methods().get(i).equalsIgnoreCase("gift_code")) {
+                for (int i = 0; i < response.getAllowedPaymentMethods().size(); i++) {
+                    if (response.getAllowedPaymentMethods().get(i).equalsIgnoreCase("gift_code")) {
                         binding.payViaGiftCard.setVisibility(View.VISIBLE);
                         break;
                     }
@@ -535,7 +535,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         inflateMenu();
         updateProducts();
         initAttachments();
-        if (orderDetailsModel.getPaymentMethod().contains("cod"))
+        if (orderDetailsModel.getAllowedPaymentMethods().size() == 1 &&
+                orderDetailsModel.getAllowedPaymentMethods().get(0).equals("cod"))
             binding.stickyButtons.setVisibility(View.GONE);
     }
 

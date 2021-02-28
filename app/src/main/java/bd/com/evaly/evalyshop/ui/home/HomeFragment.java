@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -20,7 +19,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
-import java.util.List;
 import java.util.Random;
 
 import javax.inject.Inject;
@@ -33,7 +31,6 @@ import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
-import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
@@ -351,6 +348,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onShowMoreCategoryClick() {
         navController.navigate(R.id.categoryFragment);
+    }
+
+    @Override
+    public void onShowCodShopsClick() {
+        navController.navigate(R.id.codShopsFragment);
     }
 
     @Override
