@@ -196,11 +196,11 @@ public class CampaignDetailsFragment extends Fragment {
     private void initTabs() {
         String type = viewModel.getType();
         if (type != null) {
-            if (type.equals("shop"))
+            if (type.equals("product"))
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0));
-            else if (type.equals("brand"))
+            else if (type.equals("shop"))
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
-            else if (type.equals("product"))
+            else if (type.equals("brand"))
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(2));
         }
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -214,21 +214,20 @@ public class CampaignDetailsFragment extends Fragment {
 
                 switch (tab.getPosition()) {
                     case 0:
+                        viewModel.setType("product");
+                        binding.sortHolder.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
                         viewModel.setType("shop");
                         binding.sortHolder.setVisibility(View.GONE);
                         break;
-                    case 1:
+                    case 2:
                         viewModel.setType("brand");
                         binding.sortHolder.setVisibility(View.GONE);
-                        break;
-                    case 2:
-                        viewModel.setType("product");
-                        binding.sortHolder.setVisibility(View.VISIBLE);
                         break;
                 }
 
                 viewModel.loadListFromApi();
-
             }
 
             @Override
@@ -284,7 +283,6 @@ public class CampaignDetailsFragment extends Fragment {
 
     }
 
-
     private void showSortDialog() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -318,7 +316,6 @@ public class CampaignDetailsFragment extends Fragment {
 
     }
 
-
     private void openFilterModal() {
         if (viewModel.getCampaignCategoryLiveData() != null && viewModel.getCampaignCategoryLiveData().getValue() != null) {
             Bundle bundle = new Bundle();
@@ -335,16 +332,17 @@ public class CampaignDetailsFragment extends Fragment {
         viewModel.openFilterModal.observe(getViewLifecycleOwner(), aVoid -> openFilterModal());
 
         viewModel.productCategoriesLiveData.observe(getViewLifecycleOwner(), campaignProductCategoryResponses -> {
+            controller.setCategoryLoading(false);
             controller.setCategoryList(campaignProductCategoryResponses);
             controller.requestModelBuild();
         });
 
         viewModel.switchTab.observe(getViewLifecycleOwner(), s -> {
-            if (s.contains("shop") || s.contains("supplier"))
+            if (s.contains("product"))
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0));
-            else if (s.contains("brand"))
+            else if (s.contains("shop") || s.contains("supplier"))
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
-            else if (s.contains("product"))
+            else if (s.contains("brand"))
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(2));
         });
 

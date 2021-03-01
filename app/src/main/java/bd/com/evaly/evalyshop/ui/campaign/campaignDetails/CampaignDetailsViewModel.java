@@ -37,7 +37,7 @@ public class CampaignDetailsViewModel extends ViewModel {
     private int currentPage = 1;
     private int totalCount = 0;
     private String search = null;
-    private String type = "shop";
+    private String type = "product";
     private String campaign = null;
     private String selectTypeAfterLoading = null;
     private String sort = null;

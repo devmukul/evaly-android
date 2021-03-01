@@ -25,6 +25,7 @@ import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.CampaignDetailsViewModel;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryCarouselModel_;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryModel_;
+import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategorySkeletonModel_;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryTitleModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBrandModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
@@ -37,6 +38,10 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 
 public class CampaignCategoryController extends EpoxyController {
 
+    @AutoModel
+    ProductCategoryCarouselModel_ categoryCarousel;
+
+    private boolean isCategoryLoading = true;
     private List<CampaignParentModel> list = new ArrayList<>();
     private NavController navController;
     private boolean isLoading = true;
@@ -44,9 +49,6 @@ public class CampaignCategoryController extends EpoxyController {
     private MainViewModel mainViewModel;
     private AppCompatActivity activity;
     private List<CampaignProductCategoryResponse> categoryList = new ArrayList<>();
-
-    @AutoModel
-    ProductCategoryCarouselModel_ categoryCarousel;
 
     public CampaignCategoryController() {
         setFilterDuplicates(true);
@@ -64,6 +66,12 @@ public class CampaignCategoryController extends EpoxyController {
                     viewModel.openFilterModal.call();
                 })
                 .addIf(viewModel.getType().contains("product"), this);
+
+
+        List<ProductCategorySkeletonModel_> categorySkeletonModels = new ArrayList<>();
+        for (int i = 0; i < 3; i++)
+            categorySkeletonModels.add(new ProductCategorySkeletonModel_()
+                    .id("cat_sk_" + i));
 
         List<ProductCategoryModel_> categoryModels = new ArrayList<>();
         for (CampaignProductCategoryResponse item : categoryList) {
@@ -83,8 +91,8 @@ public class CampaignCategoryController extends EpoxyController {
         }
 
         categoryCarousel
-                .models(categoryModels)
-                .padding(Carousel.Padding.dp(10, 0, 10, 5, 10))
+                .models(isCategoryLoading ? categorySkeletonModels : categoryModels)
+                .padding(Carousel.Padding.dp(10, 0, 10, 5, 0))
                 .addIf(viewModel.getType().contains("product"), this);
 
         String campaignTitle = null;
@@ -194,6 +202,11 @@ public class CampaignCategoryController extends EpoxyController {
         new LoadingModel_()
                 .id("bottom_loading_model")
                 .addIf(isLoading, this);
+    }
+
+
+    public void setCategoryLoading(boolean categoryLoading) {
+        isCategoryLoading = categoryLoading;
     }
 
     private String getEmptyText() {
