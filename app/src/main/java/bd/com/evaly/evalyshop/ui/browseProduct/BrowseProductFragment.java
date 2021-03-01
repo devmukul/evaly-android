@@ -2,16 +2,8 @@ package bd.com.evaly.evalyshop.ui.browseProduct;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -23,6 +15,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentProductBrowseBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.browseProduct.controller.BrowseProductController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
@@ -33,48 +26,38 @@ import bd.com.evaly.evalyshop.views.RecyclerSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class BrowseProductFragment extends Fragment implements BrowseProductController.ClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class BrowseProductFragment extends BaseFragment<FragmentProductBrowseBinding, BrowseProductViewModel> implements BrowseProductController.ClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private FragmentProductBrowseBinding binding;
-    private BrowseProductViewModel viewModel;
     private BrowseProductController controller;
     private RecyclerView.LayoutManager layoutManager;
     private PaginationScrollListener paginationScrollListener;
-    private NavController navController;
     private RecyclerSpacingItemDecoration recyclerSpacingItemDecoration;
     private boolean isTabSwitched = false;
     private MainViewModel mainViewModel;
     private boolean isLoading = true;
 
+    public BrowseProductFragment() {
+        super(BrowseProductViewModel.class, R.layout.fragment_product_browse);
+    }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(BrowseProductViewModel.class);
+    protected void initViews() {
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentProductBrowseBinding.inflate(inflater);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        navController = NavHostFragment.findNavController(this);
-        updateViews();
+        binding.swipeRefresh.setOnRefreshListener(this);
         initHeader();
         setupTabs();
-        clickListeners();
-        setupRecycler();
-        liveEvents();
     }
 
-    private void updateViews() {
-        binding.swipeRefresh.setOnRefreshListener(this);
+    @Override
+    protected void liveEventsObservers() {
+        viewModel.liveList.observe(getViewLifecycleOwner(), baseModels -> {
+            if (isTabSwitched)
+                setLayoutManager(viewModel.getSelectedType());
+            controller.setList(baseModels);
+            controller.setLoadingMore(false);
+            controller.requestModelBuild();
+            isLoading = false;
+        });
     }
 
     private void initHeader() {
@@ -82,7 +65,8 @@ public class BrowseProductFragment extends Fragment implements BrowseProductCont
         binding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
     }
 
-    private void setupRecycler() {
+    @Override
+    protected void setupRecycler() {
         if (controller == null)
             controller = new BrowseProductController();
         controller.setFilterDuplicates(true);
@@ -169,19 +153,9 @@ public class BrowseProductFragment extends Fragment implements BrowseProductCont
         });
     }
 
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
 
-    }
-
-    private void liveEvents() {
-        viewModel.liveList.observe(getViewLifecycleOwner(), baseModels -> {
-            if (isTabSwitched)
-                setLayoutManager(viewModel.getSelectedType());
-            controller.setList(baseModels);
-            controller.setLoadingMore(false);
-            controller.requestModelBuild();
-            isLoading = false;
-        });
     }
 
     @Override

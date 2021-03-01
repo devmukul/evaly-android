@@ -2,60 +2,46 @@ package bd.com.evaly.evalyshop.ui.account;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 
-import java.util.Calendar;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentAccountBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.user.UserModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity;
 import bd.com.evaly.evalyshop.ui.balance.BalanceFragment;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class AccountFragment extends Fragment {
+public class AccountFragment extends BaseFragment<FragmentAccountBinding, AccountViewModel> {
 
-    private FragmentAccountBinding binding;
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentAccountBinding.inflate(inflater);
-        return binding.getRoot();
+    public AccountFragment() {
+        super(AccountViewModel.class, R.layout.fragment_account);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    protected void initViews() {
         updateViews();
-        clickListeners();
-        getMessageCount();
-        updateUserDetails();
+    }
+
+    @Override
+    protected void liveEventsObservers() {
+        viewModel.messageCount.observe(getViewLifecycleOwner(), integer -> {
+            updateHotCount(integer);
+        });
     }
 
     private void updateViews() {
@@ -64,8 +50,8 @@ public class AccountFragment extends Fragment {
         }
     }
 
-
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
 
         binding.llAppointment.setOnClickListener(v -> {
             NavHostFragment.findNavController(this).navigate(R.id.appointmentFragment);
@@ -195,7 +181,6 @@ public class AccountFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         if (CredentialManager.getUserData() != null) {
             if (CredentialManager.getUserData().getProfilePicUrl() != null) {
                 Glide.with(this)
@@ -213,59 +198,8 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    private void getMessageCount() {
-
-        if (Calendar.getInstance().getTimeInMillis() - CredentialManager.getMessageCounterLastUpdated() < 600000) {
-            updateHotCount(CredentialManager.getMessageCount());
-            return;
-        }
-
-        ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
-                updateHotCount(response.getCount());
-                CredentialManager.setMessageCounterLastUpdated();
-                CredentialManager.setMessageCount(response.getCount());
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
-    }
-
-    private void updateUserDetails() {
-
-        AuthApiHelper.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
-                if (response.getData() != null)
-                    CredentialManager.saveUserData(response.getData());
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
-
-    }
-
-    private void updateHotCount(int count) {
-        if (count > 0) {
+    private void updateHotCount(Integer count) {
+        if (count != null && count > 0) {
             binding.messageCount.setVisibility(View.VISIBLE);
             binding.messageCount.setText(String.format("%d", count));
         } else
