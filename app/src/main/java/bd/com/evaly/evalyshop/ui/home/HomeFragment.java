@@ -3,23 +3,13 @@ package bd.com.evaly.evalyshop.ui.home;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-
-import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -34,6 +24,7 @@ import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
@@ -47,7 +38,8 @@ import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, HomeController.ClickListener {
+public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel>
+        implements SwipeRefreshLayout.OnRefreshListener, HomeController.ClickListener {
 
     @Inject
     RecommenderViewModel recommenderViewModel;
@@ -56,23 +48,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     FirebaseRemoteConfig firebaseRemoteConfig;
 
     private boolean isLoading = true;
-    private FragmentHomeBinding binding;
-    private NavController navController;
     private HomeController homeController;
-    private HomeViewModel viewModel;
     private MainViewModel mainViewModel;
 
     public HomeFragment() {
-
-    }
-
-    public static HomeFragment newInstance() {
-        return new HomeFragment();
-    }
-
-    public static int randInt(int min, int max) {
-        Random rand = new Random();
-        return rand.nextInt((max - min) + 1) + min;
+        super(HomeViewModel.class, R.layout.fragment_home);
     }
 
     @Override
@@ -82,25 +62,76 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+    protected void initViews() {
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-        return binding.getRoot();
+        binding.swipeRefresh.setOnRefreshListener(this);
+        initAppHeader();
+        networkCheck();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        networkCheck();
-        navController = NavHostFragment.findNavController(this);
-        binding.swipeRefresh.setOnRefreshListener(this);
+    protected void liveEventsObservers() {
+        viewModel.codShopList.observe(getViewLifecycleOwner(), shopListResponses -> {
+            homeController.setCodSaleShops(shopListResponses);
+            if (shopListResponses.size() > 0)
+                requestModelBuild();
+        });
 
-        initAppHeader();
-        setupRecycler();
-        liveEventObservers();
+        recommenderViewModel.getRsBrandLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
+            homeController.setRsBrandList(rsEntities);
+            if (rsEntities.size() > 0)
+                requestModelBuild();
+        });
+
+        recommenderViewModel.getRsCategoryLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
+            homeController.setRsCategoryList(rsEntities);
+            if (rsEntities.size() > 0)
+                requestModelBuild();
+        });
+
+        viewModel.getProductListLive().observe(getViewLifecycleOwner(), list -> {
+            isLoading = false;
+            homeController.setLoadingMore(false);
+            homeController.setProductData(list);
+            requestModelBuild();
+        });
+
+        viewModel.getExpressListLive().observe(getViewLifecycleOwner(), expressServiceModels -> {
+            homeController.setExpressLoading(false);
+            homeController.setExpressData(expressServiceModels);
+            requestModelBuild();
+        });
+
+        viewModel.getCampaignCategoryLiveList().observe(getViewLifecycleOwner(), campaignCategoryResponses -> {
+            homeController.setCampaignLoading(false);
+            homeController.setCampaignCategoryList(campaignCategoryResponses);
+            requestModelBuild();
+        });
+
+        viewModel.getFlashSaleProductList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
+            homeController.setFlashSaleProducts(campaignProductResponses);
+            requestModelBuild();
+        });
+
+        viewModel.flashSaleBrandList.observe(getViewLifecycleOwner(), campaignBrandResponses -> {
+            homeController.setFlashSaleBrands(campaignBrandResponses);
+            requestModelBuild();
+        });
+
+        viewModel.flashSaleShopList.observe(getViewLifecycleOwner(), campaignShopResponses -> {
+            homeController.setFlashSaleShops(campaignShopResponses);
+            requestModelBuild();
+        });
+
+        viewModel.getBannerListLive().observe(getViewLifecycleOwner(), bannerItems -> {
+            homeController.setBannerList(bannerItems);
+            requestModelBuild();
+        });
+    }
+
+    @Override
+    protected void clickListeners() {
+
     }
 
     private void networkCheck() {
@@ -129,10 +160,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         viewModel.reload();
     }
 
-    private void setupRecycler() {
+    @Override
+    protected void setupRecycler() {
 
-        if (homeController == null || homeController.getAdapter() == null)
+        if (homeController == null)
             homeController = new HomeController();
+        else
+            homeController.getAdapter();
 
         homeController.setFilterDuplicates(true);
         homeController.setActivity((AppCompatActivity) getActivity());
@@ -174,76 +208,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private void requestModelBuild() {
         if (!binding.recyclerView.isComputingLayout())
             homeController.requestModelBuild();
-        //if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
-        //homeController.requestDelayedModelBuild(randInt(100, 200));
     }
 
-    private void liveEventObservers() {
-
-        viewModel.codShopList.observe(getViewLifecycleOwner(), shopListResponses -> {
-            homeController.setCodSaleShops(shopListResponses);
-            if (shopListResponses.size() > 0)
-                requestModelBuild();
-        });
-
-        recommenderViewModel.getRsBrandLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
-            homeController.setRsBrandList(rsEntities);
-            if (rsEntities.size() > 0)
-                requestModelBuild();
-        });
-
-        recommenderViewModel.getRsCategoryLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
-            homeController.setRsCategoryList(rsEntities);
-            if (rsEntities.size() > 0)
-                requestModelBuild();
-        });
-
-//        recommenderViewModel.getRsShopLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
-//            homeController.setRsShopList(rsEntities);
-//            if (rsEntities.size() > 0)
-//                requestModelBuild();
-//        });
-
-        viewModel.getProductListLive().observe(getViewLifecycleOwner(), list -> {
-            isLoading = false;
-            homeController.setLoadingMore(false);
-            homeController.setProductData(list);
-            requestModelBuild();
-        });
-
-        viewModel.getExpressListLive().observe(getViewLifecycleOwner(), expressServiceModels -> {
-            homeController.setExpressLoading(false);
-            homeController.setExpressData(expressServiceModels);
-            requestModelBuild();
-        });
-
-        viewModel.getCampaignCategoryLiveList().observe(getViewLifecycleOwner(), campaignCategoryResponses -> {
-            homeController.setCampaignLoading(false);
-            homeController.setCampaignCategoryList(campaignCategoryResponses);
-            requestModelBuild();
-        });
-
-        viewModel.getFlashSaleProductList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
-            homeController.setFlashSaleProducts(campaignProductResponses);
-            requestModelBuild();
-        });
-
-        viewModel.flashSaleBrandList.observe(getViewLifecycleOwner(), campaignBrandResponses -> {
-            homeController.setFlashSaleBrands(campaignBrandResponses);
-            requestModelBuild();
-        });
-
-        viewModel.flashSaleShopList.observe(getViewLifecycleOwner(), campaignShopResponses -> {
-            homeController.setFlashSaleShops(campaignShopResponses);
-            requestModelBuild();
-        });
-
-        viewModel.getBannerListLive().observe(getViewLifecycleOwner(), bannerItems -> {
-            homeController.setBannerList(bannerItems);
-            requestModelBuild();
-        });
-
-    }
 
     @Override
     public void onProductClick(ProductItem item) {
