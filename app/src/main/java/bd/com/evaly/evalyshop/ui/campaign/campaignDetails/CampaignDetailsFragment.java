@@ -6,23 +6,17 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.ViewCompat;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -36,6 +30,7 @@ import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller.CampaignCategoryController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
@@ -45,15 +40,16 @@ import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 
-public class CampaignDetailsFragment extends Fragment {
+public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetailsBinding, CampaignDetailsViewModel> {
 
-    private FragmentCampaignDetailsBinding binding;
-    private CampaignDetailsViewModel viewModel;
     private MainViewModel mainViewModel;
     private CampaignCategoryController controller;
-    private NavController navController;
     private boolean isLoading = true;
     private ViewDialog progressDialog;
+
+    public CampaignDetailsFragment() {
+        super(CampaignDetailsViewModel.class, R.layout.fragment_campaign_details);
+    }
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
         Window win = activity.getWindow();
@@ -66,21 +62,14 @@ public class CampaignDetailsFragment extends Fragment {
         win.setAttributes(winParams);
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentCampaignDetailsBinding.inflate(inflater);
-        navController = NavHostFragment.findNavController(this);
-        return binding.getRoot();
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-        viewModel = new ViewModelProvider(this).get(CampaignDetailsViewModel.class);
         progressDialog = new ViewDialog(getActivity());
+    }
 
+    private void checkArguments(){
         if (getArguments() != null && getArguments().containsKey("sub_model") && getArguments().getSerializable("sub_model") != null) {
             SubCampaignResponse subCampaignResponse = (SubCampaignResponse) getArguments().getSerializable("sub_model");
             mainViewModel.selectedCampaignModel = subCampaignResponse;
@@ -126,18 +115,16 @@ public class CampaignDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void initViews() {
+        checkArguments();
         setStatusBarColor();
         initToolbar();
-        liveEventObservers();
-        clickListeners();
-        initRecycler();
         initTabs();
         initSearch();
         if (getArguments() != null && getArguments().containsKey("open_filter"))
             openFilterModal();
     }
+
 
     private void initToolbar() {
         Rect rectangle = new Rect();
@@ -242,7 +229,9 @@ public class CampaignDetailsFragment extends Fragment {
         });
     }
 
-    private void initRecycler() {
+    @Override
+    protected void setupRecycler() {
+
         if (controller == null)
             controller = new CampaignCategoryController();
         controller.setNavController(navController);
@@ -270,7 +259,8 @@ public class CampaignDetailsFragment extends Fragment {
         controller.requestModelBuild();
     }
 
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
 
         binding.sortBtn.setOnClickListener(v -> {
             showSortDialog();
@@ -327,7 +317,8 @@ public class CampaignDetailsFragment extends Fragment {
         }
     }
 
-    private void liveEventObservers() {
+    @Override
+    protected void liveEventsObservers() {
 
         viewModel.openFilterModal.observe(getViewLifecycleOwner(), aVoid -> openFilterModal());
 

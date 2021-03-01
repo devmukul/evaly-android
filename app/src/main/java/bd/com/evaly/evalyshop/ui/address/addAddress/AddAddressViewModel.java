@@ -32,7 +32,6 @@ public class AddAddressViewModel extends ViewModel {
     MutableLiveData<List<LocationResponse>> cityLiveData = new MutableLiveData<>();
     MutableLiveData<List<LocationResponse>> areaLiveData = new MutableLiveData<>();
     MutableLiveData<AddressResponse> modelLiveData = new MutableLiveData<>();
-
     MutableLiveData<LocationResponse> selectedDivisionLiveData = new MutableLiveData<>();
     MutableLiveData<LocationResponse> selectedCityLiveData = new MutableLiveData<>();
     MutableLiveData<LocationResponse> selectedAreaLiveData = new MutableLiveData<>();
