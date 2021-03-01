@@ -15,6 +15,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.ViewCompat;
@@ -118,7 +119,6 @@ public class CampaignDetailsFragment extends Fragment {
         viewModel.loadProductCategories();
     }
 
-
     private boolean checkArg(String key) {
         if (getArguments() == null)
             return false;
@@ -147,6 +147,15 @@ public class CampaignDetailsFragment extends Fragment {
             binding.filterIndicator.setVisibility(View.GONE);
         else
             binding.filterIndicator.setVisibility(View.VISIBLE);
+
+        updateSortIndicator();
+    }
+
+    private void updateSortIndicator() {
+        if (viewModel.getSort() == null)
+            binding.sortIndicator.setVisibility(View.GONE);
+        else
+            binding.sortIndicator.setVisibility(View.VISIBLE);
     }
 
     private void initSearch() {
@@ -206,12 +215,15 @@ public class CampaignDetailsFragment extends Fragment {
                 switch (tab.getPosition()) {
                     case 0:
                         viewModel.setType("shop");
+                        binding.sortHolder.setVisibility(View.GONE);
                         break;
                     case 1:
                         viewModel.setType("brand");
+                        binding.sortHolder.setVisibility(View.GONE);
                         break;
                     case 2:
                         viewModel.setType("product");
+                        binding.sortHolder.setVisibility(View.VISIBLE);
                         break;
                 }
 
@@ -260,11 +272,52 @@ public class CampaignDetailsFragment extends Fragment {
     }
 
     private void clickListeners() {
+
+        binding.sortBtn.setOnClickListener(v -> {
+            showSortDialog();
+        });
+
         binding.filterBtn.setOnClickListener(view -> {
             openFilterModal();
         });
         binding.backArrow.setOnClickListener(v -> requireActivity().onBackPressed());
+
     }
+
+
+    private void showSortDialog() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Sort Products By\n");
+        final String[] a = {"Latest", "Price: low to high", "Price: high to low"};
+
+        int checkItem = 0;
+
+        if (viewModel.getSort() != null) {
+            if (viewModel.getSort().equals("asc"))
+                checkItem = 1;
+            else if (viewModel.getSort().equals("desc"))
+                checkItem = 2;
+        }
+
+        builder.setSingleChoiceItems(a, checkItem, (dialogInterface, i) -> {
+            if (i == 0)
+                viewModel.setSort(null);
+            else if (i == 1)
+                viewModel.setSort("asc");
+            else if (i == 2)
+                viewModel.setSort("desc");
+
+            viewModel.clear();
+            viewModel.loadListFromApi();
+            updateSortIndicator();
+            dialogInterface.dismiss();
+        });
+        builder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
+        builder.show();
+
+    }
+
 
     private void openFilterModal() {
         if (viewModel.getCampaignCategoryLiveData() != null && viewModel.getCampaignCategoryLiveData().getValue() != null) {
@@ -285,6 +338,7 @@ public class CampaignDetailsFragment extends Fragment {
             controller.setCategoryList(campaignProductCategoryResponses);
             controller.requestModelBuild();
         });
+
         viewModel.switchTab.observe(getViewLifecycleOwner(), s -> {
             if (s.contains("shop") || s.contains("supplier"))
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0));

@@ -24,10 +24,12 @@ import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class CampaignDetailsViewModel extends ViewModel {
+    public SingleLiveEvent<Void> openFilterModal = new SingleLiveEvent<>();
     protected SingleLiveEvent<Boolean> hideProgressDialog = new SingleLiveEvent<>();
     protected MutableLiveData<SubCampaignResponse> subCampaignLiveData = new MutableLiveData<>();
     protected SingleLiveEvent<String> switchTab = new SingleLiveEvent<>();
-    public SingleLiveEvent<Void> openFilterModal = new SingleLiveEvent<>();
+    protected List<CampaignProductCategoryResponse> productCategoriesList = new ArrayList<>();
+    protected MutableLiveData<List<CampaignProductCategoryResponse>> productCategoriesLiveData = new MutableLiveData<>();
     private MutableLiveData<CampaignCategoryResponse> campaignCategoryLiveData = new MutableLiveData<>();
     private MutableLiveData<List<CampaignParentModel>> liveList = new MutableLiveData<>();
     private SingleLiveEvent<Boolean> hideLoadingBar = new SingleLiveEvent<>();
@@ -38,10 +40,9 @@ public class CampaignDetailsViewModel extends ViewModel {
     private String type = "shop";
     private String campaign = null;
     private String selectTypeAfterLoading = null;
+    private String sort = null;
     private SingleLiveEvent<CampaignProductResponse> buyNowClick = new SingleLiveEvent<>();
     private CampaignProductCategoryResponse selectedCategoryModel;
-    protected List<CampaignProductCategoryResponse> productCategoriesList = new ArrayList<>();
-    protected MutableLiveData<List<CampaignProductCategoryResponse>> productCategoriesLiveData = new MutableLiveData<>();
     private int productCategoryPage = 1;
     private boolean isProductCategoryLoading = false;
 
@@ -55,6 +56,10 @@ public class CampaignDetailsViewModel extends ViewModel {
 
     public CampaignProductCategoryResponse getSelectedCategoryModel() {
         return selectedCategoryModel;
+    }
+
+    public void setSelectedCategoryModel(CampaignProductCategoryResponse selectedCategoryModel) {
+        this.selectedCategoryModel = selectedCategoryModel;
     }
 
     public String getSelectedCategorySlug() {
@@ -206,7 +211,7 @@ public class CampaignDetailsViewModel extends ViewModel {
 
     public void loadProductList() {
 
-        CampaignApiHelper.getCampaignCategoryProducts(currentPage, 20, search, getCategorySlug(), campaign, getSelectedCategorySlug(),
+        CampaignApiHelper.getCampaignCategoryProducts(currentPage, 20, search, getCategorySlug(), campaign, getSelectedCategorySlug(), sort,
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
@@ -226,7 +231,6 @@ public class CampaignDetailsViewModel extends ViewModel {
                     }
                 });
     }
-
 
     public void loadBrandList() {
         CampaignApiHelper.getCampaignCategoryBrands(currentPage, 20, search, getCategorySlug(), campaign,
@@ -249,7 +253,6 @@ public class CampaignDetailsViewModel extends ViewModel {
                     }
                 });
     }
-
 
     public void loadShopList() {
         CampaignApiHelper.getCampaignCategoryShops(currentPage, 20, search, getCategorySlug(), campaign,
@@ -281,10 +284,6 @@ public class CampaignDetailsViewModel extends ViewModel {
 
     public boolean isProductCategoryLoading() {
         return isProductCategoryLoading;
-    }
-
-    public void setSelectedCategoryModel(CampaignProductCategoryResponse selectedCategoryModel) {
-        this.selectedCategoryModel = selectedCategoryModel;
     }
 
     private String getCategorySlug() {
@@ -319,6 +318,14 @@ public class CampaignDetailsViewModel extends ViewModel {
                 selectTypeAfterLoading = null;
             }
         }
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
     }
 
     public String getCampaign() {

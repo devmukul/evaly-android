@@ -191,7 +191,8 @@ public interface IApiClient {
                                                                                         @Query("search") String search,
                                                                                         @Query("category") String category,
                                                                                         @Query("campaign") String campaign,
-                                                                                        @Query("product_category") String productCategory);
+                                                                                        @Query("product_category") String productCategory,
+                                                                                        @Query("price") String priceSort);
 
     @GET(UrlUtils.BASE_CATALOG + "campaign")
     Call<CommonDataResponse<List<SubCampaignResponse>>> getCampaignCategoryCampaigns(@Query("page") int page,

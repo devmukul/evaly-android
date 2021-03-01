@@ -230,6 +230,41 @@
                     </com.google.android.material.tabs.TabLayout>
 
                     <FrameLayout
+                        android:id="@+id/sortHolder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+
+                        <ImageView
+                            android:id="@+id/sortBtn"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginEnd="7dp"
+                            android:background="@drawable/circle_bg"
+                            android:clickable="true"
+                            android:paddingHorizontal="9dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:src="@drawable/ic_sort_new"
+                            app:tint="@color/black" />
+
+                        <View
+                            android:id="@+id/sortIndicator"
+                            android:layout_width="9dp"
+                            android:layout_height="9dp"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="9dp"
+                            android:layout_marginEnd="13dp"
+                            android:background="@drawable/circle_bg"
+                            android:backgroundTint="#FF3D00"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+
+                    </FrameLayout>
+
+                    <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="7dp">
@@ -249,19 +284,18 @@
 
                         <View
                             android:id="@+id/filterIndicator"
-                            android:layout_width="8dp"
-                            android:layout_height="8dp"
+                            android:layout_width="9dp"
+                            android:layout_height="9dp"
                             android:layout_gravity="end"
                             android:layout_marginTop="9dp"
-                            android:layout_marginEnd="14dp"
+                            android:layout_marginEnd="13dp"
                             android:background="@drawable/circle_bg"
-                            android:backgroundTint="#999"
+                            android:backgroundTint="#FF3D00"
                             android:visibility="gone"
                             tools:visibility="visible" />
 
                     </FrameLayout>
                 </LinearLayout>
-
 
             </com.google.android.material.appbar.AppBarLayout>
 
