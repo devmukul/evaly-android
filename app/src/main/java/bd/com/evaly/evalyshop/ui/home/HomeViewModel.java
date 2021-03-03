@@ -26,7 +26,6 @@ import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
-import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
@@ -49,8 +48,8 @@ public class HomeViewModel extends ViewModel {
     protected MutableLiveData<List<ShopListResponse>> codShopList = new MutableLiveData<>();
     private int tabPosition = -1;
     private MutableLiveData<List<CampaignCategoryResponse>> categoryLiveList = new MutableLiveData<>();
-    private MutableLiveData<List<ProductItem>> productListLive = new MutableLiveData<>();
-    private List<ProductItem> productArrayList = new ArrayList<>();
+    private MutableLiveData<List<CampaignProductResponse>> productListLive = new MutableLiveData<>();
+    private List<CampaignProductResponse> productArrayList = new ArrayList<>();
     private LiveData<List<BannerItem>> bannerListLive;
     private MutableLiveData<List<ExpressServiceModel>> expressListLive = new MutableLiveData<>();
     private MutableLiveData<List<CategoryEntity>> categoryListLive = new MutableLiveData<>();
@@ -305,9 +304,9 @@ public class HomeViewModel extends ViewModel {
 
     public void loadProducts() {
 
-        ProductApiHelper.getCategoryBrandProducts(currentPageProducts, "root", null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
+        CampaignApiHelper.getCampaignAllProducts(currentPageProducts, 20, null, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
             @Override
-            public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
                 productArrayList.addAll(response.getData());
                 productListLive.setValue(productArrayList);
                 currentPageProducts++;
@@ -323,85 +322,19 @@ public class HomeViewModel extends ViewModel {
 
             }
         });
+
     }
 
-    public MutableLiveData<List<ProductItem>> getProductListLive() {
+    public MutableLiveData<List<CampaignProductResponse>> getProductListLive() {
         return productListLive;
-    }
-
-    public void setProductListLive(MutableLiveData<List<ProductItem>> productListLive) {
-        this.productListLive = productListLive;
-    }
-
-    public List<ProductItem> getProductArrayList() {
-        return productArrayList;
-    }
-
-    public void setProductArrayList(List<ProductItem> productArrayList) {
-        this.productArrayList = productArrayList;
     }
 
     public LiveData<List<BannerItem>> getBannerListLive() {
         return bannerListLive;
     }
 
-    public void setBannerListLive(MutableLiveData<List<BannerItem>> bannerListLive) {
-        this.bannerListLive = bannerListLive;
-    }
-
     public MutableLiveData<List<ExpressServiceModel>> getExpressListLive() {
         return expressListLive;
     }
 
-    public void setExpressListLive(MutableLiveData<List<ExpressServiceModel>> expressListLive) {
-        this.expressListLive = expressListLive;
-    }
-
-    public MutableLiveData<List<CategoryEntity>> getCategoryListLive() {
-        return categoryListLive;
-    }
-
-    public void setCategoryListLive(MutableLiveData<List<CategoryEntity>> categoryListLive) {
-        this.categoryListLive = categoryListLive;
-    }
-
-    public MutableLiveData<List<TabsItem>> getBrandListLive() {
-        return brandListLive;
-    }
-
-    public void setBrandListLive(MutableLiveData<List<TabsItem>> brandListLive) {
-        this.brandListLive = brandListLive;
-    }
-
-    public List<TabsItem> getBrandArrayList() {
-        return brandArrayList;
-    }
-
-    public void setBrandArrayList(List<TabsItem> brandArrayList) {
-        this.brandArrayList = brandArrayList;
-    }
-
-    public MutableLiveData<List<TabsItem>> getShopListLive() {
-        return shopListLive;
-    }
-
-    public void setShopListLive(MutableLiveData<List<TabsItem>> shopListLive) {
-        this.shopListLive = shopListLive;
-    }
-
-    public List<TabItem> getShopArrayList() {
-        return shopArrayList;
-    }
-
-    public void setShopArrayList(List<TabItem> shopArrayList) {
-        this.shopArrayList = shopArrayList;
-    }
-
-    public int getCurrentPageProducts() {
-        return currentPageProducts;
-    }
-
-    public void setCurrentPageProducts(int currentPageProducts) {
-        this.currentPageProducts = currentPageProducts;
-    }
 }

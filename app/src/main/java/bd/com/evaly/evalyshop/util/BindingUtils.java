@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 
 import java.nio.charset.StandardCharsets;
 
@@ -128,6 +129,7 @@ public class BindingUtils {
         }
 
         String base64 = Base64.encodeToString(data, Base64.NO_WRAP);
+        Logger.e("https://df17fp68uwcso.cloudfront.net/" + base64);
         return "https://df17fp68uwcso.cloudfront.net/" + base64;
     }
 }

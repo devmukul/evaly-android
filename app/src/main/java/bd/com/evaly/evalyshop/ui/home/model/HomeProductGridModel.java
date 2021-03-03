@@ -1,26 +1,22 @@
 package bd.com.evaly.evalyshop.ui.home.model;
 
 import android.graphics.Paint;
-import android.text.Html;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.ViewDataBinding;
 
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.HomeModelProductGridBinding;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.util.BindingUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
@@ -55,15 +51,7 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
 
         binding.title.setText(model.getName());
 
-        if (binding.getRoot().getContext() != null)
-            Glide.with(binding.getRoot())
-                    .asBitmap()
-                    .skipMemoryCache(true)
-                    .apply(new RequestOptions().override(300, 300))
-                    .load(model.getFirstImage())
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
-                    .into(binding.image);
+        BindingUtils.setImage(binding.image, model.getFirstImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300, false);
 
         if (cashbackRate == 0)
             binding.tvCashback.setVisibility(View.GONE);

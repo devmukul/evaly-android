@@ -22,7 +22,6 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
-import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
@@ -212,13 +211,15 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
 
     @Override
-    public void onProductClick(ProductItem item) {
+    public void onProductClick(CampaignProductResponse item1) {
         Intent intent = new Intent(getContext(), ViewProductActivity.class);
-        intent.putExtra("product_slug", item.getSlug());
-        intent.putExtra("product_name", item.getName());
-        intent.putExtra("product_price", item.getMaxPrice());
-        if (item.getImageUrls() != null && item.getImageUrls().size() > 0)
-            intent.putExtra("product_image", item.getImageUrls().get(0));
+        intent.putExtra("product_slug", item1.getSlug());
+        intent.putExtra("product_name", item1.getName());
+        intent.putExtra("product_price", item1.getPrice());
+        if (item1.getShopSlug() != null)
+            intent.putExtra("shop_slug", item1.getShopSlug());
+        intent.putExtra("product_image", item1.getImage());
+        intent.putExtra("cashback_text", item1.getCashbackText());
         getContext().startActivity(intent);
     }
 
