@@ -45,6 +45,7 @@ public class CampaignDetailsViewModel extends ViewModel {
     private CampaignProductCategoryResponse selectedCategoryModel;
     private int productCategoryPage = 1;
     private boolean isProductCategoryLoading = false;
+    protected SingleLiveEvent<CampaignProductCategoryResponse> onCategoryChanged = new SingleLiveEvent<>();
 
     public CampaignDetailsViewModel() {
         loadListFromApi();
@@ -60,6 +61,7 @@ public class CampaignDetailsViewModel extends ViewModel {
 
     public void setSelectedCategoryModel(CampaignProductCategoryResponse selectedCategoryModel) {
         this.selectedCategoryModel = selectedCategoryModel;
+        onCategoryChanged.setValue(selectedCategoryModel);
     }
 
     public String getSelectedCategorySlug() {

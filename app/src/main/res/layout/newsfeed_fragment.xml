@@ -26,6 +26,7 @@
                 android:fitsSystemWindows="true"
                 app:contentScrim="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll"
+                app:statusBarScrim="@color/transparent"
                 app:titleEnabled="false">
 
                 <androidx.appcompat.widget.Toolbar

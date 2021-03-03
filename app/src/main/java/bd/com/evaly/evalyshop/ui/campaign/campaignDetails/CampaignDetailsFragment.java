@@ -69,7 +69,7 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
         progressDialog = new ViewDialog(getActivity());
     }
 
-    private void checkArguments(){
+    private void checkArguments() {
         if (getArguments() != null && getArguments().containsKey("sub_model") && getArguments().getSerializable("sub_model") != null) {
             SubCampaignResponse subCampaignResponse = (SubCampaignResponse) getArguments().getSerializable("sub_model");
             mainViewModel.selectedCampaignModel = subCampaignResponse;
@@ -113,6 +113,7 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
             return false;
         return requireArguments().containsKey(key);
     }
+
 
     @Override
     protected void initViews() {
@@ -320,12 +321,22 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
     @Override
     protected void liveEventsObservers() {
 
+        viewModel.onCategoryChanged.observe(getViewLifecycleOwner(), model -> {
+            if (model == null && mainViewModel.selectedCampaignModel == null)
+                binding.filterIndicator.setVisibility(View.GONE);
+            else
+                binding.filterIndicator.setVisibility(View.VISIBLE);
+        });
+
         viewModel.openFilterModal.observe(getViewLifecycleOwner(), aVoid -> openFilterModal());
 
         viewModel.productCategoriesLiveData.observe(getViewLifecycleOwner(), campaignProductCategoryResponses -> {
             controller.setCategoryLoading(false);
             controller.setCategoryList(campaignProductCategoryResponses);
             controller.requestModelBuild();
+            if (viewModel.getCurrentPage() <= 2) {
+                binding.recyclerView.postDelayed(() -> binding.recyclerView.smoothScrollToPosition(0), 200);
+            }
         });
 
         viewModel.switchTab.observe(getViewLifecycleOwner(), s -> {
@@ -422,6 +433,8 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
     public void onDestroyView() {
         super.onDestroyView();
         if (getActivity() != null) {
+            mainViewModel.selectedCampaignModel = null;
+            mainViewModel.selectedCampaignProductCategoryModel = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (CredentialManager.isDarkMode())
                     getActivity().getWindow().getDecorView().setSystemUiVisibility(0);

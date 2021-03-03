@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/cardView"
         android:layout_width="match_parent"
@@ -52,8 +51,8 @@
                             android:layout_marginTop="1dp"
                             android:layout_weight="0"
                             android:paddingLeft="2dp"
-                            android:tint="@color/c555"
-                            app:srcCompat="@drawable/ic_menu_store" />
+                            app:srcCompat="@drawable/ic_shop_filled_2"
+                            app:tint="@color/c666" />
 
                         <TextView
                             android:id="@+id/shopName"
@@ -65,7 +64,7 @@
                             android:paddingRight="15dp"
                             android:text="@string/seller_unknown"
                             android:textColor="@color/c555"
-                            android:textSize="16sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/variation"
@@ -214,7 +213,7 @@
                             android:text="Product Title"
                             android:textColor="@color/c444"
                             android:textIsSelectable="false"
-                            android:textSize="16sp" />
+                            android:textSize="15sp" />
 
 
                         <TextView

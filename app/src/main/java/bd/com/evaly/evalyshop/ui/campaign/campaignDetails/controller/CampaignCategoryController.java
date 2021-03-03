@@ -27,6 +27,7 @@ import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryC
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryModel_;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategorySkeletonModel_;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryTitleModel_;
+import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryTitleSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBrandModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignShopModel_;
@@ -57,6 +58,10 @@ public class CampaignCategoryController extends EpoxyController {
     @Override
     protected void buildModels() {
 
+        new ProductCategoryTitleSkeletonModel_()
+                .id("title_category_skeleton")
+                .addIf(viewModel.getType().contains("product") && categoryList.size() == 0 && isCategoryLoading, this);
+
         new ProductCategoryTitleModel_()
                 .id("title_category")
                 .title("Categories")
@@ -65,8 +70,7 @@ public class CampaignCategoryController extends EpoxyController {
                 .clickListener((model, parentView, clickedView, position) -> {
                     viewModel.openFilterModal.call();
                 })
-                .addIf(viewModel.getType().contains("product"), this);
-
+                .addIf(viewModel.getType().contains("product") && categoryList.size() > 0 && !isCategoryLoading, this);
 
         List<ProductCategorySkeletonModel_> categorySkeletonModels = new ArrayList<>();
         for (int i = 0; i < 3; i++)
@@ -204,6 +208,10 @@ public class CampaignCategoryController extends EpoxyController {
                 .addIf(isLoading, this);
     }
 
+
+    public int getProductListSize(){
+        return list.size();
+    }
 
     public void setCategoryLoading(boolean categoryLoading) {
         isCategoryLoading = categoryLoading;
