@@ -76,6 +76,8 @@ import bd.com.evaly.evalyshop.models.profile.AddressWholeResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
+import bd.com.evaly.evalyshop.models.search.product.SearchRequest;
+import bd.com.evaly.evalyshop.models.search.product.response.ProductSearchResponse;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
@@ -100,6 +102,9 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface IApiClient {
+
+    @POST(UrlUtils.BASE_SEARCH + "product/search")
+    Call<CommonDataResponse<ProductSearchResponse>> searchProducts(@Body SearchRequest body, @Query("page") int page);
 
     @GET(UrlUtils.BASE_CATALOG + "locations")
     Call<CommonDataResponse<List<LocationResponse>>> getLocations(@Query("parent") String parent1);

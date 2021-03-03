@@ -60,7 +60,6 @@ public class GlobalSearchFragment extends Fragment {
         });
     }
 
-
     private void initSearchViews() {
 
         binding.searchClear.setOnClickListener(v -> {

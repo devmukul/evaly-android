@@ -150,7 +150,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     private void initAppHeader() {
         new InitializeActionBar(binding.header.headerLogo, getActivity(), "home", mainViewModel);
-        binding.header.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
+        binding.header.homeSearch.setOnClickListener(view1 -> {
+            navController.navigate(R.id.globalSearchFragment);
+            // startActivity(new Intent(getContext(), GlobalSearchActivity.class));
+        });
     }
 
     @Override

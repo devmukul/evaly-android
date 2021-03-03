@@ -5,17 +5,8 @@ import android.annotation.SuppressLint;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -25,9 +16,10 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.search.AlgoliaParams;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
 import bd.com.evaly.evalyshop.models.search.RequestsItem;
-import bd.com.evaly.evalyshop.models.search.SearchHitResponse;
 import bd.com.evaly.evalyshop.models.search.filter.FilterRootItem;
 import bd.com.evaly.evalyshop.models.search.filter.FilterSubItem;
+import bd.com.evaly.evalyshop.models.search.product.SearchRequest;
+import bd.com.evaly.evalyshop.models.search.product.response.ProductSearchResponse;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.SearchApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
@@ -38,6 +30,7 @@ public class GlobalSearchViewModel {
     private AlgoliaRequest algoliaRequest;
     private AlgoliaParams searchParams;
     private List<BaseModel> productList = new ArrayList<>();
+
     private MutableLiveData<List<FilterRootItem>> filterRootLiveList = new MutableLiveData<>();
     private MutableLiveData<List<FilterSubItem>> filterSubLiveList = new MutableLiveData<>();
     private MutableLiveData<List<BaseModel>> productListLive = new MutableLiveData<>();
@@ -60,12 +53,12 @@ public class GlobalSearchViewModel {
         searchOnAlogia();
     }
 
-    public void setSelectedFilterRoot(String selectedFilterRoot) {
-        this.selectedFilterRoot = selectedFilterRoot;
-    }
-
     public String getSelectedFilterRoot() {
         return selectedFilterRoot;
+    }
+
+    public void setSelectedFilterRoot(String selectedFilterRoot) {
+        this.selectedFilterRoot = selectedFilterRoot;
     }
 
     public void setReloadFilters() {
@@ -114,51 +107,18 @@ public class GlobalSearchViewModel {
 
     public void searchOnAlogia() {
 
-        searchParams.setQuery(query);
-        requestsItem.setParams(searchParams.getParams());
-        algoliaRequest = new AlgoliaRequest();
-        algoliaRequest.addRequest(requestsItem);
-        searchParams.setPage(page);
+        SearchRequest body = new SearchRequest();
+        body.setTerm(query);
+        body.setBucketSize(10);
+        body.setFrom(0);
+        body.setSize(20);
 
-        SearchApiHelper.algoliaSearch(algoliaRequest, new ResponseListenerAuth<JsonObject, String>() {
+        SearchApiHelper.searchProducts(body, page, new ResponseListenerAuth<CommonDataResponse<ProductSearchResponse>, String>() {
             @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
-                JsonObject rootResponse = response.getAsJsonArray("results").get(0).getAsJsonObject();
-                JsonArray jsonArray = response.getAsJsonArray("results").get(0).getAsJsonObject().getAsJsonArray("hits");
-                Type listType = new TypeToken<List<SearchHitResponse>>() {
-                }.getType();
-                productList.addAll(new Gson().fromJson(jsonArray, listType));
+            public void onDataFetched(CommonDataResponse<ProductSearchResponse> response, int statusCode) {
+                productList.addAll(response.getData().getProducts());
                 productListLive.setValue(productList);
                 page++;
-
-                JsonObject filterJson = rootResponse.getAsJsonObject("facets");
-
-                List<FilterRootItem> filterRootItems = new ArrayList<>();
-                filterRootItems.add(new FilterRootItem("Sort by_name", false));
-                List<FilterSubItem> filterSubItems = new ArrayList<>();
-                filterSubItems.add(new FilterSubItem("Relevance", null, "Sort by_name", false));
-                filterSubItems.add(new FilterSubItem("Price: low to high", null, "Sort by_name", false));
-                filterSubItems.add(new FilterSubItem("Price: high to low", null, "Sort by_name", false));
-
-                Set<Map.Entry<String, JsonElement>> entries = filterJson.entrySet();
-
-                for (Map.Entry<String, JsonElement> entry : entries) {
-
-                    filterRootItems.add(new FilterRootItem(entry.getKey(), false));
-                    Set<Map.Entry<String, JsonElement>> subEntries = entry.getValue().getAsJsonObject().entrySet();
-
-                    for (Map.Entry<String, JsonElement> subEntry : subEntries) {
-                        filterSubItems.add(
-                                new FilterSubItem(subEntry.getKey(),
-                                        subEntry.getValue().getAsString(),
-                                        entry.getKey(), false));
-                    }
-                }
-
-                filterRootLiveList.setValue(filterRootItems);
-                filterSubLiveList.setValue(filterSubItems);
-
             }
 
             @Override
