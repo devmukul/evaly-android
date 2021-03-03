@@ -1,12 +1,12 @@
-package bd.evaly.evalypaymentlibrary.builder;
+package bd.com.evaly.evalyshop.ui.payment.builder;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import bd.evaly.evalypaymentlibrary.activity.PaymentWebActivity;
-import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
-import bd.evaly.evalypaymentlibrary.model.PurchaseRequestInfo;
+import bd.com.evaly.evalyshop.ui.payment.activity.PaymentWebActivity;
+import bd.com.evaly.evalyshop.ui.payment.listener.PaymentListener;
+import bd.com.evaly.evalyshop.ui.payment.model.PurchaseRequestInfo;
 
 
 public class PaymentWebBuilder {

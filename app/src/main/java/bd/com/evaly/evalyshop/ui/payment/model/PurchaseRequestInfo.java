@@ -1,4 +1,4 @@
-package bd.evaly.evalypaymentlibrary.model;
+package bd.com.evaly.evalyshop.ui.payment.model;
 
 public final class PurchaseRequestInfo {
     private String authToken;

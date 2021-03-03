@@ -57,11 +57,11 @@ import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.followedShops.FollowedShopActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
+import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
+import bd.com.evaly.evalyshop.ui.payment.listener.PaymentListener;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
-import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
-import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
 import dagger.hilt.android.AndroidEntryPoint;
 
 import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;

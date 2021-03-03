@@ -48,14 +48,14 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
+import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
+import bd.com.evaly.evalyshop.ui.payment.listener.PaymentListener;
+import bd.com.evaly.evalyshop.ui.payment.model.PurchaseRequestInfo;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
-import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
-import bd.evaly.evalypaymentlibrary.model.PurchaseRequestInfo;
 import dagger.hilt.android.AndroidEntryPoint;
 
 import static android.app.Activity.RESULT_OK;

@@ -179,6 +179,8 @@
                     android:scheme="deeplink" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.payment.activity.PaymentWebActivity"/>
         <activity
             android:name=".ui.auth.SignInActivity"
             android:theme="@style/AppTheme.NoActionBar"

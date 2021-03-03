@@ -1,4 +1,4 @@
-package bd.evaly.evalypaymentlibrary.activity;
+package bd.com.evaly.evalyshop.ui.payment.activity;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -12,8 +12,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import bd.evaly.evalypaymentlibrary.R;
-import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
+import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
 import im.delight.android.webview.AdvancedWebView;
 
 public final class PaymentWebActivity extends AppCompatActivity implements AdvancedWebView.Listener {

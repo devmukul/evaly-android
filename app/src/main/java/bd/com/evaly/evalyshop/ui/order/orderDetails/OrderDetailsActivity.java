@@ -66,15 +66,15 @@ import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.controller.OrderAttachmentController;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.refund.RefundBottomSheet;
 import bd.com.evaly.evalyshop.ui.payment.bottomsheet.PaymentBottomSheet;
+import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
 import bd.com.evaly.evalyshop.ui.payment.giftcard.GiftCardPaymentBottomSheet;
+import bd.com.evaly.evalyshop.ui.payment.listener.PaymentListener;
+import bd.com.evaly.evalyshop.ui.payment.model.PurchaseRequestInfo;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
-import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
-import bd.evaly.evalypaymentlibrary.model.PurchaseRequestInfo;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
