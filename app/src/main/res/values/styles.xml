@@ -24,6 +24,7 @@
         <item name="buttonBarNeutralButtonStyle">@style/Alert.Button.Neutral</item>
     </style>
 
+
     <style name="DatePickerStyle" parent="@android:style/Widget.Material.Light.DatePicker">
         <item name="android:headerBackground">@color/colorAccent</item>
         <item name="android:yearListSelectorColor">@color/c333</item>
@@ -198,8 +199,14 @@
     <style name="NavigationDrawerStyle">
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textColor">@color/c444</item>
     </style>
 
+    <style name="NavDrawerTextStyle" parent="Base.TextAppearance.AppCompat">
+        <item name="android:textColor">@color/c444</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
 
     <style name="WideDialog" parent="android:Theme.Material.Light.Dialog.NoActionBar">
         <item name="android:windowMinWidthMajor">95%</item>
@@ -207,18 +214,15 @@
 
     </style>
 
-
     <style name="TransparentDialog" parent="Base.Theme.AppCompat.Light.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowMinWidthMajor">100%</item>
         <item name="android:windowMinWidthMinor">100%</item>
         <item name="android:windowSwipeToDismiss">true</item>
-
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
-
     </style>
 
 

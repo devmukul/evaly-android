@@ -24,7 +24,7 @@
                 android:clickable="false"
                 android:elevation="0dp"
                 android:fitsSystemWindows="true"
-                app:contentScrim="?attr/colorPrimary"
+                app:contentScrim="@null"
                 app:layout_scrollFlags="scroll"
                 app:statusBarScrim="@color/transparent"
                 app:titleEnabled="false">

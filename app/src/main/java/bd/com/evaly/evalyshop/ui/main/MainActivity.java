@@ -499,16 +499,16 @@ public class MainActivity extends BaseActivity {
             phoneNavHeader.setText(CredentialManager.getUserName());
 
             ImageView profilePicNav = binding.navView.getHeaderView(0).findViewById(R.id.profilePicNav);
-            if (CredentialManager.getUserData().getImageSm() != null)
-                Glide.with(this)
-                        .asBitmap()
-                        .load(CredentialManager.getUserData().getImageSm())
-                        .skipMemoryCache(true)
-                        .placeholder(R.drawable.user_image)
-                        .fitCenter()
-                        .centerCrop()
-                        .apply(new RequestOptions().override(200, 200))
-                        .into(profilePicNav);
+
+            Glide.with(this)
+                    .asBitmap()
+                    .load(CredentialManager.getUserData().getProfilePicUrl())
+                    .skipMemoryCache(true)
+                    .placeholder(R.drawable.user_image)
+                    .fitCenter()
+                    .centerCrop()
+                    .apply(new RequestOptions().override(200, 200))
+                    .into(profilePicNav);
 
             TextView tvMessageCount = binding.navView.getMenu().findItem(R.id.nav_messages).getActionView().findViewById(R.id.count);
             getMessageCount(tvMessageCount);

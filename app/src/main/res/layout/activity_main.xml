@@ -74,7 +74,6 @@
                     app:menu="@menu/bottom_nav_menu" />
             </FrameLayout>
 
-
         </FrameLayout>
 
         <com.google.android.material.navigation.NavigationView
@@ -84,7 +83,8 @@
             android:layout_gravity="start"
             android:background="@color/white"
             android:fitsSystemWindows="false"
-            android:theme="@style/NavigationDrawerStyle"
+            app:theme="@style/NavigationDrawerStyle"
+            app:itemTextAppearance="@style/NavDrawerTextStyle"
             app:headerLayout="@layout/nav_header_main"
             app:menu="@menu/activity_main_drawer" />
 
@@ -95,7 +95,8 @@
             android:layout_gravity="start"
             android:background="@color/white"
             android:fitsSystemWindows="false"
-            android:theme="@style/NavigationDrawerStyle"
+            app:theme="@style/NavigationDrawerStyle"
+            app:itemTextAppearance="@style/NavDrawerTextStyle"
             app:headerLayout="@layout/not_login_nav_header"
             app:menu="@menu/not_logged_in_main_drawer" />
 
