@@ -33,6 +33,13 @@ public class GlobalSearchViewModel {
 
     private MutableLiveData<List<FilterRootItem>> filterRootLiveList = new MutableLiveData<>();
     private MutableLiveData<List<FilterSubItem>> filterSubLiveList = new MutableLiveData<>();
+
+
+    private MutableLiveData<List<FilterSubItem>> filterBrandsLiveList = new MutableLiveData<>();
+    private MutableLiveData<List<FilterSubItem>> filterCategoriesLiveList = new MutableLiveData<>();
+    private MutableLiveData<List<FilterSubItem>> filterShopsLiveList = new MutableLiveData<>();
+    private MutableLiveData<List<FilterSubItem>> filterColorsLiveList = new MutableLiveData<>();
+
     private MutableLiveData<List<BaseModel>> productListLive = new MutableLiveData<>();
     private SingleLiveEvent<Void> reloadFilters = new SingleLiveEvent<>();
     private int page;
@@ -119,6 +126,11 @@ public class GlobalSearchViewModel {
                 productList.addAll(response.getData().getProducts());
                 productListLive.setValue(productList);
                 page++;
+
+                filterBrandsLiveList.setValue(response.getData().getFacets().getBrands());
+                filterCategoriesLiveList.setValue(response.getData().getFacets().getCategories());
+                filterShopsLiveList.setValue(response.getData().getFacets().getShops());
+                // filterColorsLiveList.setValue(response.getData().getFacets().getColors());
             }
 
             @Override

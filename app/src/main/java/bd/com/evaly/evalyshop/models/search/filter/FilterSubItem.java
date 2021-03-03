@@ -1,10 +1,19 @@
 package bd.com.evaly.evalyshop.models.search.filter;
 
-public class FilterSubItem {
+import com.google.gson.annotations.SerializedName;
 
+import bd.com.evaly.evalyshop.models.BaseModel;
+
+public class FilterSubItem extends BaseModel {
+
+    @SerializedName("key")
     private String name;
+
+    @SerializedName("doc_count")
     private String count;
+
     private String root;
+
     private boolean selected;
 
     public FilterSubItem(String name, String count, String root, boolean selected) {

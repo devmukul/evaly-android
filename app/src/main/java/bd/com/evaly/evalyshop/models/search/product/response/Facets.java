@@ -4,41 +4,43 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import bd.com.evaly.evalyshop.models.search.filter.FilterSubItem;
+
 public class Facets{
 
 	@SerializedName("brands")
-	private List<FacetsItem> brands;
+	private List<FilterSubItem> brands;
 
 	@SerializedName("shops")
-	private List<FacetsItem> shops;
+	private List<FilterSubItem> shops;
 
 	@SerializedName("categories")
-	private List<FacetsItem> categories;
+	private List<FilterSubItem> categories;
 
 	@SerializedName("colors")
 	private List<Object> colors;
 
-	public void setBrands(List<FacetsItem> brands){
+	public void setBrands(List<FilterSubItem> brands){
 		this.brands = brands;
 	}
 
-	public List<FacetsItem> getBrands(){
+	public List<FilterSubItem> getBrands(){
 		return brands;
 	}
 
-	public void setShops(List<FacetsItem> shops){
+	public void setShops(List<FilterSubItem> shops){
 		this.shops = shops;
 	}
 
-	public List<FacetsItem> getShops(){
+	public List<FilterSubItem> getShops(){
 		return shops;
 	}
 
-	public void setCategories(List<FacetsItem> categories){
+	public void setCategories(List<FilterSubItem> categories){
 		this.categories = categories;
 	}
 
-	public List<FacetsItem> getCategories(){
+	public List<FilterSubItem> getCategories(){
 		return categories;
 	}
 
