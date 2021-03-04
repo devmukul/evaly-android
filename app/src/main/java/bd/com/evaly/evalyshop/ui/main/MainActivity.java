@@ -205,8 +205,8 @@ public class MainActivity extends BaseActivity {
                 });
 
         binding.fabCreate.setOnClickListener(view -> {
-            // navController.navigate(R.id.action_expressFragment_Pop);
-            navController.navigate(Uri.parse("https://evaly.com.bd/campaign/products/hotel-tours-284a2941"));
+            navController.navigate(R.id.action_expressFragment_Pop);
+            //navController.navigate(Uri.parse("https://evaly.com.bd/campaign/products/hotel-tours-284a2941"));
         });
 
         BadgeDrawable wishListBadge = binding.bottomNavigationView.getOrCreateBadge(R.id.wishListFragment);
