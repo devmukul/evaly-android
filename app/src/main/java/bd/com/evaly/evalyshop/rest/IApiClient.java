@@ -161,12 +161,12 @@ public interface IApiClient {
 
     //TabsItem
 
-    @GET(UrlUtils.BASE_URL + "public/brands/")
+    @GET(UrlUtils.BASE_SEARCH + "brand")
     Call<CommonDataResponse<List<TabsItem>>> searchBrands(@Query("page") int page,
                                                           @Query("limit") int limit,
                                                           @Query("search") String search);
 
-    @GET(UrlUtils.BASE_URL + "custom/shops/")
+    @GET(UrlUtils.BASE_SEARCH + "shop")
     Call<CommonDataResponse<List<TabsItem>>> searchShop(@Query("page") int page,
                                                         @Query("limit") int limit,
                                                         @Query("search") String search);

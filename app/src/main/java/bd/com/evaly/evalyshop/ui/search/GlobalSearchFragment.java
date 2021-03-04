@@ -4,9 +4,12 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import bd.com.evaly.evalyshop.R;
@@ -14,7 +17,6 @@ import bd.com.evaly.evalyshop.databinding.FragmentGlobalSearchBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.search.controller.GlobalSearchController;
-import bd.com.evaly.evalyshop.ui.search.filter.SearchFilterBottomSheet;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import bd.com.evaly.evalyshop.views.behaviors.TopSheetBehavior;
@@ -25,6 +27,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
     private GlobalSearchController controller;
     private boolean isLoading = false;
+    private TopSheetBehavior filterTopSheetBehavior;
 
     public GlobalSearchFragment() {
         super(GlobalSearchViewModel.class, R.layout.fragment_global_search);
@@ -33,18 +36,68 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
     @Override
     protected void initViews() {
         initSearchViews();
+        initFilterTopSheet();
+    }
+
+    private void initFilterTopSheet() {
+
+        binding.filterTypeRadioGroup.setOnCheckedChangeListener((radioGroup, i) -> {
+            if (i == 0) {
+                viewModel.setType("product");
+            } else if (i == 1) {
+                viewModel.setType("shop");
+            } else if (i == 2) {
+                viewModel.setType("brand");
+            }
+            viewModel.performSearch();
+            hideFilterSheet();
+        });
+
+        filterTopSheetBehavior = TopSheetBehavior.from(binding.filterSheet);
+        filterTopSheetBehavior.setTopSheetCallback(new TopSheetBehavior.TopSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View topSheet, int newState) {
+                if (newState == TopSheetBehavior.STATE_HIDDEN || newState == TopSheetBehavior.STATE_COLLAPSED) {
+                    hideFilterSheetBgOverlay();
+                } else if (newState == TopSheetBehavior.STATE_EXPANDED) {
+                    showFilterSheetBgOverlay();
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View topSheet, float slideOffset, @Nullable Boolean isOpening) {
+
+            }
+        });
     }
 
     @Override
     protected void clickListeners() {
+        binding.bgOverlay.setOnClickListener(view -> {
+            hideFilterSheetBgOverlay();
+            hideFilterSheet();
+        });
         binding.filerSearchType.setOnClickListener(view -> {
-            TopSheetBehavior.from(binding.filterSheet).setState(TopSheetBehavior.STATE_EXPANDED);
+            showFilterSheetBgOverlay();
+            filterTopSheetBehavior.setState(TopSheetBehavior.STATE_EXPANDED);
         });
+    }
 
-        binding.filter.setOnClickListener(view -> {
-            SearchFilterBottomSheet bottomSheet = new SearchFilterBottomSheet();
-            bottomSheet.show(getParentFragmentManager(), "filter");
-        });
+    private void hideFilterSheet() {
+        filterTopSheetBehavior.setState(TopSheetBehavior.STATE_COLLAPSED);
+        hideFilterSheetBgOverlay();
+    }
+
+    private void showFilterSheetBgOverlay() {
+        binding.bgOverlay.setVisibility(View.VISIBLE);
+        binding.bgOverlay.animate().alpha(1f);
+    }
+
+    private void hideFilterSheetBgOverlay() {
+        binding.bgOverlay
+                .animate()
+                .alpha(0.0f)
+                .withEndAction(() -> binding.bgOverlay.setVisibility(View.GONE));
     }
 
     private void initSearchViews() {

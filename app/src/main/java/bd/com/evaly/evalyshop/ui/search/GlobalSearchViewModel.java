@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +63,10 @@ public class GlobalSearchViewModel extends BaseViewModel {
 
     public void setSelectedFilterRoot(String selectedFilterRoot) {
         this.selectedFilterRoot = selectedFilterRoot;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void setReloadFilters() {

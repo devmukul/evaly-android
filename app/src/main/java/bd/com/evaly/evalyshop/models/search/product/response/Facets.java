@@ -6,60 +6,82 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.models.search.filter.FilterSubItem;
 
-public class Facets{
+public class Facets {
 
-	@SerializedName("brands")
-	private List<FilterSubItem> brands;
+    @SerializedName("brands")
+    private List<FilterSubItem> brands;
 
-	@SerializedName("shops")
-	private List<FilterSubItem> shops;
+    @SerializedName("shops")
+    private List<FilterSubItem> shops;
 
-	@SerializedName("categories")
-	private List<FilterSubItem> categories;
+    @SerializedName("categories")
+    private List<FilterSubItem> categories;
 
-	@SerializedName("colors")
-	private List<Object> colors;
+    @SerializedName("colors")
+    private List<Object> colors;
 
-	public void setBrands(List<FilterSubItem> brands){
-		this.brands = brands;
-	}
+    @SerializedName("max_price")
+    private double maxPrice;
 
-	public List<FilterSubItem> getBrands(){
-		return brands;
-	}
+    @SerializedName("min_price")
+    private double minPrice;
 
-	public void setShops(List<FilterSubItem> shops){
-		this.shops = shops;
-	}
+    public void setMaxPrice(double maxPrice) {
+        this.maxPrice = maxPrice;
+    }
 
-	public List<FilterSubItem> getShops(){
-		return shops;
-	}
+    public double getMaxPrice() {
+        return maxPrice;
+    }
 
-	public void setCategories(List<FilterSubItem> categories){
-		this.categories = categories;
-	}
+    public void setMinPrice(double minPrice) {
+        this.minPrice = minPrice;
+    }
 
-	public List<FilterSubItem> getCategories(){
-		return categories;
-	}
+    public double getMinPrice() {
+        return minPrice;
+    }
 
-	public void setColors(List<Object> colors){
-		this.colors = colors;
-	}
+    public void setBrands(List<FilterSubItem> brands) {
+        this.brands = brands;
+    }
 
-	public List<Object> getColors(){
-		return colors;
-	}
+    public List<FilterSubItem> getBrands() {
+        return brands;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"Facets{" + 
-			"brands = '" + brands + '\'' + 
-			",shops = '" + shops + '\'' + 
-			",categories = '" + categories + '\'' + 
-			",colors = '" + colors + '\'' + 
-			"}";
-		}
+    public void setShops(List<FilterSubItem> shops) {
+        this.shops = shops;
+    }
+
+    public List<FilterSubItem> getShops() {
+        return shops;
+    }
+
+    public void setCategories(List<FilterSubItem> categories) {
+        this.categories = categories;
+    }
+
+    public List<FilterSubItem> getCategories() {
+        return categories;
+    }
+
+    public void setColors(List<Object> colors) {
+        this.colors = colors;
+    }
+
+    public List<Object> getColors() {
+        return colors;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "Facets{" +
+                        "brands = '" + brands + '\'' +
+                        ",shops = '" + shops + '\'' +
+                        ",categories = '" + categories + '\'' +
+                        ",colors = '" + colors + '\'' +
+                        "}";
+    }
 }
