@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.search;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -7,10 +8,13 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
+import com.google.android.material.slider.RangeSlider;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentGlobalSearchBinding;
@@ -71,16 +75,49 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         });
     }
 
+    @SuppressLint("SetTextI18n")
+    private void showFilerByPrice() {
+        toggleFilterHolderVisibility(binding.holderFilterPrice);
+        binding.filterPriceRangeSlider.setLabelFormatter(value -> (int) value + "");
+        binding.filterPriceRangeSlider.addOnChangeListener((slider, value, fromUser) -> {
+            binding.filterPriceMax.setText("Maximum: " + binding.filterPriceRangeSlider.getValues().get(1).intValue());
+            binding.filterPriceMin.setText("Minimum: " + binding.filterPriceRangeSlider.getValues().get(0).intValue());
+        });
+
+        showFilterSheet();
+    }
+
+    private void showFilerSearchType() {
+        toggleFilterHolderVisibility(binding.holderFilterType);
+        binding.filterPriceRangeSlider.setLabelFormatter(value -> (int) value + "");
+        showFilterSheet();
+    }
+
+    private void toggleFilterHolderVisibility(LinearLayout selected) {
+        binding.holderFilterType.setVisibility(selected == binding.holderFilterType ? View.VISIBLE : View.GONE);
+        binding.holderFilterPrice.setVisibility(selected == binding.holderFilterPrice ? View.VISIBLE : View.GONE);
+        binding.filterActionButtonHolder.setVisibility(selected == binding.holderFilterType ? View.GONE : View.VISIBLE);
+    }
+
     @Override
     protected void clickListeners() {
         binding.bgOverlay.setOnClickListener(view -> {
             hideFilterSheetBgOverlay();
             hideFilterSheet();
         });
+
         binding.filerSearchType.setOnClickListener(view -> {
-            showFilterSheetBgOverlay();
-            filterTopSheetBehavior.setState(TopSheetBehavior.STATE_EXPANDED);
+            showFilerSearchType();
         });
+
+        binding.filterPrice.setOnClickListener(view -> {
+            showFilerByPrice();
+        });
+    }
+
+    private void showFilterSheet() {
+        filterTopSheetBehavior.setState(TopSheetBehavior.STATE_EXPANDED);
+        showFilterSheetBgOverlay();
     }
 
     private void hideFilterSheet() {
