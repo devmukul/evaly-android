@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,24 +23,21 @@ import bd.com.evaly.evalyshop.models.search.product.SearchRequest;
 import bd.com.evaly.evalyshop.models.search.product.response.ProductSearchResponse;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.SearchApiHelper;
+import bd.com.evaly.evalyshop.ui.base.BaseViewModel;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
-public class GlobalSearchViewModel {
+public class GlobalSearchViewModel extends BaseViewModel {
 
     private RequestsItem requestsItem;
     private AlgoliaRequest algoliaRequest;
     private AlgoliaParams searchParams;
     private List<BaseModel> productList = new ArrayList<>();
-
     private MutableLiveData<List<FilterRootItem>> filterRootLiveList = new MutableLiveData<>();
     private MutableLiveData<List<FilterSubItem>> filterSubLiveList = new MutableLiveData<>();
-
-
     private MutableLiveData<List<FilterSubItem>> filterBrandsLiveList = new MutableLiveData<>();
     private MutableLiveData<List<FilterSubItem>> filterCategoriesLiveList = new MutableLiveData<>();
     private MutableLiveData<List<FilterSubItem>> filterShopsLiveList = new MutableLiveData<>();
     private MutableLiveData<List<FilterSubItem>> filterColorsLiveList = new MutableLiveData<>();
-
     private MutableLiveData<List<BaseModel>> productListLive = new MutableLiveData<>();
     private SingleLiveEvent<Void> reloadFilters = new SingleLiveEvent<>();
     private int page;

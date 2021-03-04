@@ -1,26 +1,18 @@
 package bd.com.evaly.evalyshop.ui.search;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
-import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentGlobalSearchBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.search.controller.GlobalSearchController;
 import bd.com.evaly.evalyshop.ui.search.filter.SearchFilterBottomSheet;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -28,32 +20,22 @@ import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class GlobalSearchFragment extends Fragment {
+public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBinding, GlobalSearchViewModel> {
 
-    @Inject
-    GlobalSearchViewModel viewModel;
-    private FragmentGlobalSearchBinding binding;
     private GlobalSearchController controller;
     private boolean isLoading = false;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentGlobalSearchBinding.inflate(inflater);
-        return binding.getRoot();
+    public GlobalSearchFragment() {
+        super(GlobalSearchViewModel.class, R.layout.fragment_global_search);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initViews();
+    protected void initViews() {
         initSearchViews();
-        intRecyclerView();
-        clickListeners();
-        liveEventObservers();
     }
 
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
         binding.filter.setOnClickListener(view -> {
             SearchFilterBottomSheet bottomSheet = new SearchFilterBottomSheet();
             bottomSheet.show(getParentFragmentManager(), "filter");
@@ -105,11 +87,10 @@ public class GlobalSearchFragment extends Fragment {
 
     }
 
-    private void initViews() {
 
-    }
+    @Override
+    protected void liveEventsObservers() {
 
-    private void liveEventObservers() {
         viewModel.getProductList().observe(getViewLifecycleOwner(), searchHitResponses -> {
             isLoading = false;
             controller.setLoadingMore(false);
@@ -119,7 +100,9 @@ public class GlobalSearchFragment extends Fragment {
 
     }
 
-    private void intRecyclerView() {
+    @Override
+    protected void setupRecycler() {
+
         if (controller == null)
             controller = new GlobalSearchController();
 
