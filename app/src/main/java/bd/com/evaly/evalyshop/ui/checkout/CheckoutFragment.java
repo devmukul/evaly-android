@@ -485,6 +485,8 @@ public class CheckoutFragment extends DialogFragment {
 
             if (phoneNumber.equals(""))
                 error = "Please enter phone number";
+            else if (!Utils.isValidNumber(phoneNumber))
+                error = "Please enter a valid phone number";
 
             if (error != null) {
                 ToastUtils.show(error);

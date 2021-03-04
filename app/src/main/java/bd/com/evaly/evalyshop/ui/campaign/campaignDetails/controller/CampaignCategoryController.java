@@ -118,7 +118,7 @@ public class CampaignCategoryController extends EpoxyController {
         new ProductCategoryTitleModel_()
                 .id("title_cc")
                 .title(campaignTitle)
-                .title2("Clear Filter")
+                .title2("Clear Category")
                 .clickListener((model, parentView, clickedView, position) -> {
                     setLoading(true);
                     viewModel.setSelectedCategoryModel(null);

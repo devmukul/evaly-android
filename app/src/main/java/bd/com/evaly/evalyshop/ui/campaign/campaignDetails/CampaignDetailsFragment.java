@@ -85,7 +85,7 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
             viewModel.findCampaignCategoryDetails(requireArguments()
                     .getString("category_slug"));
         else if (checkArg("category_slug_suppliers")) {
-            // viewModel.setSelectTypeAfterLoading("shop");
+            viewModel.setSelectTypeAfterLoading("shop");
             viewModel.findCampaignCategoryDetails(requireArguments()
                     .getString("category_slug_suppliers"));
         } else if (checkArg("category_slug_brands")) {
@@ -93,7 +93,7 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
             viewModel.findCampaignCategoryDetails(requireArguments()
                     .getString("category_slug_brands"));
         } else if (checkArg("category_slug_products")) {
-            viewModel.setSelectTypeAfterLoading("product");
+            // viewModel.setSelectTypeAfterLoading("product");
             viewModel.findCampaignCategoryDetails(requireArguments()
                     .getString("category_slug_products"));
         } else if (checkArg("category_slug") && requireArguments().containsKey("campaign_slug"))
@@ -101,6 +101,7 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
                     .getString("campaign_slug"));
         if (checkArg("type") && requireArguments().getString("type") != null) {
             String type = requireArguments().getString("type");
+            assert type != null;
             if (!type.contains("shop") && !type.contains("supplier"))
                 viewModel.setSelectTypeAfterLoading(requireArguments().getString("type"));
         }
