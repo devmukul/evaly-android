@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:paddingLeft="15dp"
-                android:paddingTop="1dp"
+                android:paddingTop="2dp"
                 android:paddingRight="15dp"
                 android:paddingBottom="3dp"
                 android:scrollbarSize="2dp"
@@ -266,11 +266,12 @@
 
         </LinearLayout>
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="105dp"
             android:layout_weight="0"
             android:background="@color/app_bg"
             android:clipToPadding="false"
@@ -282,6 +283,52 @@
             app:spanCount="2"
             tools:listitem="@layout/home_model_product_grid" />
 
+        <LinearLayout
+            android:id="@+id/filterSheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="105dp"
+            android:background="@color/transparent"
+            app:layout_behavior=".views.behaviors.TopSheetBehavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="105dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_round_bottom"
+                android:elevation="8dp"
+                android:paddingStart="15dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp">
+
+                <RadioGroup
+                    android:id="@+id/filterTypeRadioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/filterTypeProducts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Products" />
+
+                    <RadioButton
+                        android:id="@+id/filterTypeShops"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Shops" />
+
+                    <RadioButton
+                        android:id="@+id/filterTypeBrands"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Brands" />
+                </RadioGroup>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

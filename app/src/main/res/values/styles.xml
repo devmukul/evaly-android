@@ -16,6 +16,18 @@
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
     </style>
 
+    <style name="Animation.Design.TopSheetDialog" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/top_sheet_slide_in</item>
+        <item name="android:windowExitAnimation">@anim/top_sheet_slide_out</item>
+    </style>
+
+    <style name="Widget.Design.TopSheet.Modal" parent="android:Widget">
+        <item name="android:background">?android:attr/colorBackground</item>
+        <item name="android:elevation">16dp</item>
+        <item name="behavior_peekHeight">256dp</item>
+        <item name="behavior_hideable">true</item>
+    </style>
+
     <style name="DatePicker" parent="ThemeOverlay.MaterialComponents.Dialog">
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:datePickerStyle">@style/DatePickerStyle</item>

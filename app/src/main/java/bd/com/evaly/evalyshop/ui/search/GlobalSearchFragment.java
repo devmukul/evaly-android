@@ -17,6 +17,7 @@ import bd.com.evaly.evalyshop.ui.search.controller.GlobalSearchController;
 import bd.com.evaly.evalyshop.ui.search.filter.SearchFilterBottomSheet;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
+import bd.com.evaly.evalyshop.views.behaviors.TopSheetBehavior;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -36,6 +37,10 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
     @Override
     protected void clickListeners() {
+        binding.filerSearchType.setOnClickListener(view -> {
+            TopSheetBehavior.from(binding.filterSheet).setState(TopSheetBehavior.STATE_EXPANDED);
+        });
+
         binding.filter.setOnClickListener(view -> {
             SearchFilterBottomSheet bottomSheet = new SearchFilterBottomSheet();
             bottomSheet.show(getParentFragmentManager(), "filter");
