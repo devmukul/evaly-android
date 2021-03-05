@@ -71,8 +71,10 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         filterTopSheetBehavior.setTopSheetCallback(new TopSheetBehavior.TopSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View topSheet, int newState) {
-                if (newState == TopSheetBehavior.STATE_HIDDEN || newState == TopSheetBehavior.STATE_COLLAPSED) {
-                    hideFilterSheetBgOverlay();
+                if (newState == TopSheetBehavior.STATE_HIDDEN ||
+                        newState == TopSheetBehavior.STATE_COLLAPSED) {
+                    hideFilterSheetBgOverlay(true);
+                    hideAllFilterHolders();
                 } else if (newState == TopSheetBehavior.STATE_EXPANDED) {
                     showFilterSheetBgOverlay();
                 }
@@ -80,7 +82,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
             @Override
             public void onSlide(@NonNull View topSheet, float slideOffset, @Nullable Boolean isOpening) {
-
+                binding.bgOverlay.setAlpha(slideOffset);
             }
         });
     }
@@ -93,22 +95,24 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
             binding.filterPriceMax.setText("Maximum: " + binding.filterPriceRangeSlider.getValues().get(1).intValue());
             binding.filterPriceMin.setText("Minimum: " + binding.filterPriceRangeSlider.getValues().get(0).intValue());
         });
-
-        showFilterSheet();
     }
 
     private void showFilerSearchType() {
         toggleFilterHolderVisibility(binding.holderFilterType);
         binding.filterPriceRangeSlider.setLabelFormatter(value -> (int) value + "");
-        showFilterSheet();
     }
 
     private void showFilerSortBy() {
         toggleFilterHolderVisibility(binding.holderFilterSort);
-        showFilterSheet();
     }
 
     private void toggleFilterHolderVisibility(LinearLayout selected) {
+        if (getCurrentVisibleFilterHolderId() == selected) {
+            hideFilterSheet();
+            return;
+        } else
+            showFilterSheet();
+
         binding.holderFilterType.setVisibility(selected == binding.holderFilterType ? View.VISIBLE : View.GONE);
         binding.holderFilterPrice.setVisibility(selected == binding.holderFilterPrice ? View.VISIBLE : View.GONE);
         binding.holderFilterSort.setVisibility(selected == binding.holderFilterSort ? View.VISIBLE : View.GONE);
@@ -116,10 +120,28 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         binding.filterActionButtonHolder.setVisibility(selected == binding.holderFilterType || selected == binding.holderFilterSort ? View.GONE : View.VISIBLE);
     }
 
+    private void hideAllFilterHolders() {
+        binding.holderFilterType.setVisibility(View.GONE);
+        binding.holderFilterPrice.setVisibility(View.GONE);
+        binding.holderFilterSort.setVisibility(View.GONE);
+        binding.filterActionButtonHolder.setVisibility(View.GONE);
+    }
+
+    private LinearLayout getCurrentVisibleFilterHolderId() {
+        if (binding.holderFilterType.getVisibility() == View.VISIBLE)
+            return binding.holderFilterType;
+        else if (binding.holderFilterPrice.getVisibility() == View.VISIBLE)
+            return binding.holderFilterPrice;
+        else if (binding.holderFilterSort.getVisibility() == View.VISIBLE)
+            return binding.holderFilterSort;
+        else
+            return new LinearLayout(getContext());
+    }
+
     @Override
     protected void clickListeners() {
         binding.bgOverlay.setOnClickListener(view -> {
-            hideFilterSheetBgOverlay();
+            hideFilterSheetBgOverlay(false);
             hideFilterSheet();
         });
 
@@ -143,7 +165,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
     private void hideFilterSheet() {
         filterTopSheetBehavior.setState(TopSheetBehavior.STATE_COLLAPSED);
-        hideFilterSheetBgOverlay();
+        hideFilterSheetBgOverlay(false);
     }
 
     private void showFilterSheetBgOverlay() {
@@ -151,10 +173,11 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         binding.bgOverlay.animate().alpha(1f);
     }
 
-    private void hideFilterSheetBgOverlay() {
+    private void hideFilterSheetBgOverlay(boolean isFast) {
         binding.bgOverlay
                 .animate()
                 .alpha(0.0f)
+                .setDuration(isFast ? 150 : 500)
                 .withEndAction(() -> binding.bgOverlay.setVisibility(View.GONE));
     }
 

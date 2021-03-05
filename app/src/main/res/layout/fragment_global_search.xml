@@ -255,7 +255,8 @@
                     <RadioGroup
                         android:id="@+id/filterTypeRadioGroup"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp">
 
                         <RadioButton
                             android:id="@+id/filterTypeProducts"
@@ -285,10 +286,21 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Sort By"
+                        android:textColor="@color/c333"
+                        android:textSize="14sp" />
+
                     <RadioGroup
                         android:id="@+id/filterSortRadioGroup"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp">
 
                         <RadioButton
                             android:id="@+id/filterSortRelevance"
