@@ -371,6 +371,36 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/holderFilterDynamicList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/filterDynamicTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Filter by Categories"
+                        android:textColor="@color/c333"
+                        android:textSize="14sp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/filterDynamicRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:spanCount="1"
+                        tools:listitem="@layout/item_filter_sub" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
                     android:id="@+id/filterActionButtonHolder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -116,6 +116,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         binding.holderFilterType.setVisibility(selected == binding.holderFilterType ? View.VISIBLE : View.GONE);
         binding.holderFilterPrice.setVisibility(selected == binding.holderFilterPrice ? View.VISIBLE : View.GONE);
         binding.holderFilterSort.setVisibility(selected == binding.holderFilterSort ? View.VISIBLE : View.GONE);
+        binding.holderFilterDynamicList.setVisibility(selected == binding.holderFilterDynamicList ? View.VISIBLE : View.GONE);
 
         binding.filterActionButtonHolder.setVisibility(selected == binding.holderFilterType || selected == binding.holderFilterSort ? View.GONE : View.VISIBLE);
     }
@@ -134,6 +135,8 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
             return binding.holderFilterPrice;
         else if (binding.holderFilterSort.getVisibility() == View.VISIBLE)
             return binding.holderFilterSort;
+        else if (binding.holderFilterDynamicList.getVisibility() == View.VISIBLE)
+            return binding.holderFilterDynamicList;
         else
             return new LinearLayout(getContext());
     }
@@ -156,6 +159,23 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         binding.filterPrice.setOnClickListener(view -> {
             showFilerByPrice();
         });
+
+        binding.filterCategory.setOnClickListener(view -> {
+            showFilerDynamic("categories");
+        });
+
+        binding.filterCategory.setOnClickListener(view -> {
+            showFilerDynamic("shops");
+        });
+
+        binding.filterCategory.setOnClickListener(view -> {
+            showFilerDynamic("brands");
+        });
+    }
+
+    private void showFilerDynamic(String type) {
+        toggleFilterHolderVisibility(binding.holderFilterDynamicList);
+        binding.filterDynamicTitle.setText("Filter by " + Utils.toFirstCharUpperAll(type));
     }
 
     private void showFilterSheet() {
@@ -177,7 +197,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         binding.bgOverlay
                 .animate()
                 .alpha(0.0f)
-                .setDuration(isFast ? 150 : 500)
+                .setDuration(isFast ? 150 : 400)
                 .withEndAction(() -> binding.bgOverlay.setVisibility(View.GONE));
     }
 
