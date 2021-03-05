@@ -277,11 +277,45 @@
                     </RadioGroup>
                 </LinearLayout>
 
+
+                <LinearLayout
+                    android:id="@+id/holderFilterSort"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <RadioGroup
+                        android:id="@+id/filterSortRadioGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/filterSortRelevance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Relevance" />
+
+                        <RadioButton
+                            android:id="@+id/filterSortPriceLowToHigh"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Price: low to high" />
+
+                        <RadioButton
+                            android:id="@+id/filterSortPriceHighToLow"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Price: high to low" />
+                    </RadioGroup>
+                </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/holderFilterPrice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    tools:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"

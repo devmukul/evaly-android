@@ -14,8 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.google.android.material.slider.RangeSlider;
-
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentGlobalSearchBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
@@ -45,13 +43,25 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
     private void initFilterTopSheet() {
 
-        binding.filterTypeRadioGroup.setOnCheckedChangeListener((radioGroup, i) -> {
-            if (i == 0) {
+        binding.filterTypeRadioGroup.setOnCheckedChangeListener((radioGroup, id) -> {
+            if (id == R.id.filterTypeProducts) {
                 viewModel.setType("product");
-            } else if (i == 1) {
+            } else if (id == R.id.filterTypeShops) {
                 viewModel.setType("shop");
-            } else if (i == 2) {
+            } else if (id == R.id.filterTypeBrands) {
                 viewModel.setType("brand");
+            }
+            viewModel.performSearch();
+            hideFilterSheet();
+        });
+
+        binding.filterSortRadioGroup.setOnCheckedChangeListener((radioGroup, id) -> {
+            if (id == R.id.filterSortRelevance) {
+                viewModel.setSortBy(null);
+            } else if (id == R.id.filterSortPriceHighToLow) {
+                viewModel.setSortBy("desc");
+            } else if (id == R.id.filterSortPriceLowToHigh) {
+                viewModel.setSortBy("asc");
             }
             viewModel.performSearch();
             hideFilterSheet();
@@ -93,10 +103,17 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         showFilterSheet();
     }
 
+    private void showFilerSortBy() {
+        toggleFilterHolderVisibility(binding.holderFilterSort);
+        showFilterSheet();
+    }
+
     private void toggleFilterHolderVisibility(LinearLayout selected) {
         binding.holderFilterType.setVisibility(selected == binding.holderFilterType ? View.VISIBLE : View.GONE);
         binding.holderFilterPrice.setVisibility(selected == binding.holderFilterPrice ? View.VISIBLE : View.GONE);
-        binding.filterActionButtonHolder.setVisibility(selected == binding.holderFilterType ? View.GONE : View.VISIBLE);
+        binding.holderFilterSort.setVisibility(selected == binding.holderFilterSort ? View.VISIBLE : View.GONE);
+
+        binding.filterActionButtonHolder.setVisibility(selected == binding.holderFilterType || selected == binding.holderFilterSort ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -108,6 +125,10 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
         binding.filerSearchType.setOnClickListener(view -> {
             showFilerSearchType();
+        });
+
+        binding.filterSort.setOnClickListener(view -> {
+            showFilerSortBy();
         });
 
         binding.filterPrice.setOnClickListener(view -> {
@@ -185,14 +206,12 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
     @Override
     protected void liveEventsObservers() {
-
         viewModel.getProductList().observe(getViewLifecycleOwner(), searchHitResponses -> {
             isLoading = false;
             controller.setLoadingMore(false);
             controller.setList(searchHitResponses);
             controller.requestModelBuild();
         });
-
     }
 
     @Override
@@ -218,13 +237,11 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
                 if (!isLoading) {
                     controller.setLoadingMore(true);
                     controller.requestModelBuild();
-                    viewModel.searchOnAlogia();
+                    viewModel.searchProducts();
                     isLoading = true;
                 }
             }
         });
 
     }
-
-
 }

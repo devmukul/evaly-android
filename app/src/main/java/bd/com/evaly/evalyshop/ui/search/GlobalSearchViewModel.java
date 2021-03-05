@@ -19,11 +19,13 @@ import bd.com.evaly.evalyshop.models.search.RequestsItem;
 import bd.com.evaly.evalyshop.models.search.filter.FilterRootItem;
 import bd.com.evaly.evalyshop.models.search.filter.FilterSubItem;
 import bd.com.evaly.evalyshop.models.search.product.SearchRequest;
+import bd.com.evaly.evalyshop.models.search.product.SortItem;
 import bd.com.evaly.evalyshop.models.search.product.response.ProductSearchResponse;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.SearchApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseViewModel;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class GlobalSearchViewModel extends BaseViewModel {
 
@@ -43,6 +45,7 @@ public class GlobalSearchViewModel extends BaseViewModel {
     private String type;
     private String query = "";
     private String selectedFilterRoot;
+    private String sortBy = null;
 
     @SuppressLint("DefaultLocale")
     @Inject
@@ -54,7 +57,15 @@ public class GlobalSearchViewModel extends BaseViewModel {
         requestsItem.setIndexName("products");
         page = 1;
         type = "product";
-        searchOnAlogia();
+        searchProducts();
+    }
+
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
+    }
+
+    public String getSortBy() {
+        return sortBy;
     }
 
     public String getSelectedFilterRoot() {
@@ -105,7 +116,7 @@ public class GlobalSearchViewModel extends BaseViewModel {
         page = 1;
         productList.clear();
         if (type.equals("product"))
-            searchOnAlogia();
+            searchProducts();
         else if (type.equals("brand"))
             getBrands();
         else if (type.equals("shop"))
@@ -113,13 +124,22 @@ public class GlobalSearchViewModel extends BaseViewModel {
     }
 
 
-    public void searchOnAlogia() {
+    public void searchProducts() {
 
         SearchRequest body = new SearchRequest();
         body.setTerm(query);
         body.setBucketSize(10);
         body.setFrom(0);
         body.setSize(20);
+
+        if (sortBy != null) {
+            SortItem sortItem = new SortItem();
+            sortItem.setFieldName("price");
+            sortItem.setOrder(sortBy);
+            List<SortItem> sortList = new ArrayList<>();
+            sortList.add(sortItem);
+            body.setSort(sortList);
+        }
 
         SearchApiHelper.searchProducts(body, page, new ResponseListenerAuth<CommonDataResponse<ProductSearchResponse>, String>() {
             @Override
