@@ -36,6 +36,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
     private GlobalSearchController controller;
     private boolean isLoading = false;
     private TopSheetBehavior filterTopSheetBehavior;
+    private FilterSubController filterController;
 
     public GlobalSearchFragment() {
         super(GlobalSearchViewModel.class, R.layout.fragment_global_search);
@@ -162,6 +163,17 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
     @Override
     protected void clickListeners() {
 
+        binding.filterApply.setOnClickListener(view -> {
+            if (filterController.getType().contains("categor"))
+                viewModel.selectedFilterCategoriesList = filterController.getSelectedValues();
+            else if (filterController.getType().contains("brand"))
+                viewModel.selectedFilterBrandsList = filterController.getSelectedValues();
+            else if (filterController.getType().contains("shop"))
+                viewModel.selectedFilterShopsList = filterController.getSelectedValues();
+
+            viewModel.performSearch();
+        });
+
         binding.back.setOnClickListener(backPressClickListener);
 
         binding.bgOverlay.setOnClickListener(view -> {
@@ -197,9 +209,11 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
     private void showFilerDynamic(String type) {
         toggleFilterHolderVisibility(binding.holderFilterDynamicList, type);
         binding.filterDynamicTitle.setText("Filter by " + Utils.toFirstCharUpperAll(type));
-        FilterSubController filterController = new FilterSubController();
+        if (filterController == null)
+            filterController = new FilterSubController();
         filterController.setViewModel(viewModel);
         filterController.setFilterDuplicates(true);
+        filterController.setType(type);
         binding.filterDynamicRecyclerView.setAdapter(filterController.getAdapter());
         if (type.equals("brands"))
             filterController.setList(viewModel.filterBrandsList);

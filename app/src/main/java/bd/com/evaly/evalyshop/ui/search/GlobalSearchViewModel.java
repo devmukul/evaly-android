@@ -41,10 +41,10 @@ public class GlobalSearchViewModel extends BaseViewModel {
     protected List<FilterSubItem> filterShopsList = new ArrayList<>();
     protected List<FilterSubItem> filterColorsList = new ArrayList<>();
 
-    protected List<String> selectedFilterBrandsList = new ArrayList<>();
-    protected List<String> selectedFilterCategoriesList = new ArrayList<>();
-    protected List<String> selectedFilterShopsList = new ArrayList<>();
-    protected List<String> selectedFilterColorsList = new ArrayList<>();
+    public List<String> selectedFilterBrandsList = new ArrayList<>();
+    public List<String> selectedFilterCategoriesList = new ArrayList<>();
+    public List<String> selectedFilterShopsList = new ArrayList<>();
+    public List<String> selectedFilterColorsList = new ArrayList<>();
 
     private MutableLiveData<List<BaseModel>> productListLive = new MutableLiveData<>();
     private SingleLiveEvent<Void> reloadFilters = new SingleLiveEvent<>();
@@ -139,6 +139,11 @@ public class GlobalSearchViewModel extends BaseViewModel {
             sortList.add(sortItem);
             body.setSort(sortList);
         }
+
+        body.setBrandFilters(selectedFilterBrandsList);
+        body.setShopFilters(selectedFilterShopsList);
+        body.setCategoryFilters(selectedFilterCategoriesList);
+        body.setColorFilters(selectedFilterColorsList);
 
         SearchApiHelper.searchProducts(body, page, new ResponseListenerAuth<CommonDataResponse<ProductSearchResponse>, String>() {
             @Override
