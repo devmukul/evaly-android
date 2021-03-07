@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.ui.brand;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.Intent;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +19,6 @@ import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.brand.controller.BrandController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
@@ -54,9 +52,7 @@ public class BrandFragment extends BaseFragment<FragmentBrandBinding, BrandViewM
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         new InitializeActionBar(binding.header.headerLogo, getActivity(), "brand", mainViewModel);
         binding.header.homeSearch.setOnClickListener(view1 -> {
-            Intent intent = new Intent(getContext(), GlobalSearchActivity.class);
-            intent.putExtra("type", 1);
-            startActivity(intent);
+            navController.navigate(R.id.globalSearchFragment);
         });
     }
 

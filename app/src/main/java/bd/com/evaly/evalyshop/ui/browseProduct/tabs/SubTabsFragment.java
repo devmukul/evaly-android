@@ -3,7 +3,6 @@ package bd.com.evaly.evalyshop.ui.browseProduct.tabs;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +26,6 @@ import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
-import bd.com.evaly.evalyshop.ui.search.SearchCategory;
 
 public class SubTabsFragment extends Fragment {
 
@@ -102,15 +99,6 @@ public class SubTabsFragment extends Fragment {
 
         binding.searchBtnTabs.setOnClickListener(v -> {
 
-            if (type == 1) {
-                Intent intent = new Intent(context, SearchCategory.class);
-                intent.putExtra("type", type);
-                context.startActivity(intent);
-            } else {
-                Intent intent = new Intent(context, GlobalSearchActivity.class);
-                intent.putExtra("type", type);
-                context.startActivity(intent);
-            }
         });
 
 

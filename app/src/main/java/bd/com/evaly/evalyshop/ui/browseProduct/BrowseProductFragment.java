@@ -19,7 +19,6 @@ import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.browseProduct.controller.BrowseProductController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.RecyclerSpacingItemDecoration;
@@ -62,7 +61,7 @@ public class BrowseProductFragment extends BaseFragment<FragmentProductBrowseBin
 
     private void initHeader() {
         new InitializeActionBar(binding.headerLogo, getActivity(), "browse", mainViewModel);
-        binding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
+        binding.homeSearch.setOnClickListener(view1 -> navController.navigate(R.id.globalSearchFragment));
     }
 
     @Override

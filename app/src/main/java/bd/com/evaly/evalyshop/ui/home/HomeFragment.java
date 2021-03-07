@@ -28,7 +28,6 @@ import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -327,16 +326,16 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     @Override
     public void onShowMoreShopClick() {
-        Intent intent = new Intent(getContext(), GlobalSearchActivity.class);
-        intent.putExtra("type", 3);
-        getContext().startActivity(intent);
+        Bundle bundle = new Bundle();
+        bundle.putString("type", "shop");
+        navController.navigate(R.id.globalSearchFragment, bundle);
     }
 
     @Override
     public void onShowMoreBrandClick() {
-        Intent intent = new Intent(getContext(), GlobalSearchActivity.class);
-        intent.putExtra("type", 2);
-        getContext().startActivity(intent);
+        Bundle bundle = new Bundle();
+        bundle.putString("type", "brand");
+        navController.navigate(R.id.globalSearchFragment, bundle);
     }
 
     @Override

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -49,6 +50,19 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
     protected void initViews() {
         initSearchViews();
         initFilterTopSheet();
+        handleArguments();
+    }
+
+    private void handleArguments() {
+        if (getArguments() != null && getArguments().containsKey("type")) {
+            String type = getArguments().getString("type");
+            if (type != null) {
+                if (type.contains("brand"))
+                    binding.filterTypeRadioGroup.check(R.id.filterTypeBrands);
+                else if (type.contains("shop"))
+                    binding.filterTypeRadioGroup.check(R.id.filterTypeShops);
+            }
+        }
     }
 
     private void initFilterTopSheet() {
@@ -172,6 +186,27 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
     @Override
     protected void clickListeners() {
+
+        binding.priceFilterUnder1k.setOnClickListener(view -> {
+            viewModel.setMaxPrice(1000);
+            viewModel.setMinPrice(0);
+            viewModel.performSearch();
+            hideFilterSheet();
+        });
+
+        binding.priceFilter1kTo5k.setOnClickListener(view -> {
+            viewModel.setMinPrice(1000);
+            viewModel.setMaxPrice(5000);
+            viewModel.performSearch();
+            hideFilterSheet();
+        });
+
+        binding.priceFilterAbove10k.setOnClickListener(view -> {
+            viewModel.setMinPrice(10000);
+            viewModel.setMaxPrice(null);
+            viewModel.performSearch();
+            hideFilterSheet();
+        });
 
         binding.filterApply.setOnClickListener(view -> {
 
@@ -336,9 +371,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
                 return false;
             }
         });
-
     }
-
 
     @Override
     protected void liveEventsObservers() {
@@ -351,8 +384,8 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
                 binding.filterPriceRangeSlider.setValueTo(facets.getMaxPrice().floatValue() + 1);
                 binding.filterPriceRangeSlider.setValues(facets.getMaxPrice().floatValue(), facets.getMinPrice().floatValue());
 
-                binding.filterPriceMin.setText(Utils.formatPriceSymbol(facets.getMinPrice()));
-                binding.filterPriceMax.setText(Utils.formatPriceSymbol(facets.getMaxPrice()));
+                binding.filterPriceMin.setText("Minimum: " + Utils.formatPriceSymbol(facets.getMinPrice().intValue()));
+                binding.filterPriceMax.setText("Maximum: " + Utils.formatPriceSymbol(facets.getMaxPrice().intValue()));
             }
         });
 
@@ -364,13 +397,22 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         });
 
         viewModel.updateButtonHighlights.observe(getViewLifecycleOwner(), aVoid -> {
-            updateFilterButton(binding.filterBrand, viewModel.selectedFilterBrandsList.size() > 0);
-            updateFilterButton(binding.filterCategory, viewModel.selectedFilterCategoriesList.size() > 0);
-            updateFilterButton(binding.filterShop, viewModel.selectedFilterShopsList.size() > 0);
+            updateFilterButton(binding.filterBrand, R.string.brand, viewModel.selectedFilterBrandsList.size());
+            updateFilterButton(binding.filterCategory, R.string.category, viewModel.selectedFilterCategoriesList.size());
+            updateFilterButton(binding.filterShop, R.string.shop, viewModel.selectedFilterShopsList.size());
+
             updateFilterButton(binding.filterSort, viewModel.getSortBy() != null);
             updateFilterButton(binding.filterPrice, viewModel.isPriceRangeSelected());
         });
 
+    }
+
+    private void updateFilterButton(TextView button, @StringRes int name, int count) {
+        if (count > 0)
+            button.setText(String.format("%s (%d)", getString(name), count));
+        else
+            button.setText(name);
+        updateFilterButton(button, count > 0);
     }
 
     private void updateFilterButton(TextView button, boolean select) {

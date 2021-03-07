@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,13 +61,15 @@ public class GlobalSearchViewModel extends BaseViewModel {
 
     @SuppressLint("DefaultLocale")
     @Inject
-    public GlobalSearchViewModel() {
+    public GlobalSearchViewModel(SavedStateHandle bundle) {
         searchParams = new AlgoliaParams();
         searchParams.setPage(page);
         requestsItem = new RequestsItem();
         requestsItem.setIndexName("products");
         page = 1;
         type = "product";
+        if (bundle.contains("type"))
+            type = bundle.get("type");
         searchProducts();
     }
 

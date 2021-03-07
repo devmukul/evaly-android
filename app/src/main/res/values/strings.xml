@@ -190,6 +190,8 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="orders">Orders</string>
     <string name="brands">Brands</string>
     <string name="shops">Shops</string>
+    <string name="brand">Brand</string>
+    <string name="shop">Shop</string>
     <string name="home">Home</string>
     <string name="cart">Cart</string>
     <string name="dashboard">Dashboard</string>

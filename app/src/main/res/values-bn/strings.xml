@@ -173,6 +173,8 @@
     <string name="recent_products">সাম্প্রতিক পণ্য</string>
     <string name="brands">ব্র্যান্ড</string>
     <string name="shops">দোকান</string>
+    <string name="brand">ব্র্যান্ড</string>
+    <string name="shop">দোকান</string>
     <string name="home">হোম</string>
     <string name="cart">কার্ট</string>
     <string name="dashboard">ড্যাশবোর্ড</string>

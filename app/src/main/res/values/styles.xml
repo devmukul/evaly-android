@@ -29,11 +29,11 @@
 
     <style name="Widget.App.Tooltip" parent="Widget.MaterialComponents.Tooltip">
         <item name="android:textAppearance">@style/TextAppearance.App.Tooltip</item>
-        <item name="backgroundTint">@color/f1f3f4</item>
+<!--        <item name="backgroundTint">@color/f1f3f4</item>-->
     </style>
 
     <style name="TextAppearance.App.Tooltip" parent="TextAppearance.MaterialComponents.Tooltip">
-        <item name="android:textColor">@color/c333</item>
+        <item name="android:textColor">@color/fffh</item>
     </style>
 
     <style name="Animation.Design.TopSheetDialog" parent="Animation.AppCompat.Dialog">

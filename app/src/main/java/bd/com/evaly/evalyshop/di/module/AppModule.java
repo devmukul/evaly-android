@@ -57,12 +57,6 @@ public class AppModule {
 
     @Provides
     @Singleton
-    GlobalSearchViewModel provideGlobalSearchViewModel() {
-        return new GlobalSearchViewModel();
-    }
-
-    @Provides
-    @Singleton
     SharedObservers sharedObservers() {
         return new SharedObservers();
     }

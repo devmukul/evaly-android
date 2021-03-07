@@ -94,9 +94,6 @@
         <activity
             android:name=".ui.voucher.VoucherActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.search.SearchCategory"
-            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.shop.search.ShopSearchActivity"
@@ -131,10 +128,6 @@
             android:name=".ui.auth.password.PasswordActivity"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".ui.search.GlobalSearchActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.auth.ForgotPasswordActivity"
             android:theme="@style/AppTheme.NoActionBar"
