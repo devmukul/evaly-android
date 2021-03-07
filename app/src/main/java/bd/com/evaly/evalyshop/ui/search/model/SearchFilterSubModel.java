@@ -40,8 +40,9 @@ public abstract class SearchFilterSubModel extends DataBindingEpoxyModel {
         binding.value.setText(value);
         binding.count.setText(count);
 
-        binding.checkBox.setSelected(selected);
         binding.checkBox.setClickable(false);
+
+        binding.checkBox.setChecked(selected);
 
         binding.holder.setOnClickListener(view -> {
             binding.checkBox.toggleAnimated();

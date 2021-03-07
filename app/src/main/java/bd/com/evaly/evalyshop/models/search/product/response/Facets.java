@@ -21,24 +21,24 @@ public class Facets {
     private List<Object> colors;
 
     @SerializedName("max_price")
-    private double maxPrice;
+    private Double maxPrice;
 
     @SerializedName("min_price")
-    private double minPrice;
+    private Double minPrice;
 
-    public void setMaxPrice(double maxPrice) {
+    public void setMaxPrice(Double maxPrice) {
         this.maxPrice = maxPrice;
     }
 
-    public double getMaxPrice() {
+    public Double getMaxPrice() {
         return maxPrice;
     }
 
-    public void setMinPrice(double minPrice) {
+    public void setMinPrice(Double minPrice) {
         this.minPrice = minPrice;
     }
 
-    public double getMinPrice() {
+    public Double getMinPrice() {
         return minPrice;
     }
 

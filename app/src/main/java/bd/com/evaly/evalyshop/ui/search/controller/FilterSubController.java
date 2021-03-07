@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.ui.search.controller;
 
 import com.airbnb.epoxy.EpoxyController;
+import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +46,13 @@ public class FilterSubController extends EpoxyController {
             else if (type.contains("shop"))
                 selectedList = viewModel.selectedFilterShopsList;
 
+            isSelected = selectedList.contains(item.getName());
+
             new SearchFilterSubModel_()
                     .id("root_filter", item.getName())
                     .value(item.getName())
                     .count(item.getCount())
-                    .selected(selectedList.contains(item.getName()))
+                    .selected(isSelected)
                     .checkedListener((checkBox, isChecked, value) -> {
                         item.setSelected(isChecked);
                     })

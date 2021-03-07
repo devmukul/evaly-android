@@ -1,124 +1,148 @@
 package bd.com.evaly.evalyshop.models.search.product;
 
+import android.content.Intent;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 
-public class SearchRequest{
+public class SearchRequest {
 
-	@SerializedName("color_filters")
-	private List<String> colorFilters;
+    @SerializedName("color_filters")
+    private List<String> colorFilters;
 
-	@SerializedName("size")
-	private int size;
+    @SerializedName("size")
+    private int size;
 
-	@SerializedName("brand_filters")
-	private List<String> brandFilters;
+    @SerializedName("brand_filters")
+    private List<String> brandFilters;
 
-	@SerializedName("category_filters")
-	private List<String> categoryFilters;
+    @SerializedName("category_filters")
+    private List<String> categoryFilters;
 
-	@SerializedName("term")
-	private String term;
+    @SerializedName("term")
+    private String term;
 
-	@SerializedName("from")
-	private int from;
+    @SerializedName("from")
+    private int from;
 
-	@SerializedName("sort")
-	private List<SortItem> sort;
+    @SerializedName("sort")
+    private List<SortItem> sort;
 
-	@SerializedName("shop_filters")
-	private List<String> shopFilters;
+    @SerializedName("shop_filters")
+    private List<String> shopFilters;
 
-	@SerializedName("bucket_size")
-	private int bucketSize;
+    @SerializedName("bucket_size")
+    private int bucketSize;
 
-	public void setColorFilters(List<String> colorFilters){
-		this.colorFilters = colorFilters;
-	}
+    @SerializedName("max_price")
+    private Integer maxPrice;
 
-	public List<String> getColorFilters(){
-		return colorFilters;
-	}
+    @SerializedName("min_price")
+    private Integer minPrice;
 
-	public void setSize(int size){
-		this.size = size;
-	}
+    public void setMaxPrice(Integer maxPrice) {
+        this.maxPrice = maxPrice;
+    }
 
-	public int getSize(){
-		return size;
-	}
+    public Integer getMaxPrice() {
+        return maxPrice;
+    }
 
-	public void setBrandFilters(List<String> brandFilters){
-		this.brandFilters = brandFilters;
-	}
+    public void setMinPrice(Integer minPrice) {
+        this.minPrice = minPrice;
+    }
 
-	public List<String> getBrandFilters(){
-		return brandFilters;
-	}
+    public Integer getMinPrice() {
+        return minPrice;
+    }
 
-	public void setCategoryFilters(List<String> categoryFilters){
-		this.categoryFilters = categoryFilters;
-	}
+    public void setColorFilters(List<String> colorFilters) {
+        this.colorFilters = colorFilters;
+    }
 
-	public List<String> getCategoryFilters(){
-		return categoryFilters;
-	}
+    public List<String> getColorFilters() {
+        return colorFilters;
+    }
 
-	public void setTerm(String term){
-		this.term = term;
-	}
+    public void setSize(int size) {
+        this.size = size;
+    }
 
-	public String getTerm(){
-		return term;
-	}
+    public int getSize() {
+        return size;
+    }
 
-	public void setFrom(int from){
-		this.from = from;
-	}
+    public void setBrandFilters(List<String> brandFilters) {
+        this.brandFilters = brandFilters;
+    }
 
-	public int getFrom(){
-		return from;
-	}
+    public List<String> getBrandFilters() {
+        return brandFilters;
+    }
 
-	public void setSort(List<SortItem> sort){
-		this.sort = sort;
-	}
+    public void setCategoryFilters(List<String> categoryFilters) {
+        this.categoryFilters = categoryFilters;
+    }
 
-	public List<SortItem> getSort(){
-		return sort;
-	}
+    public List<String> getCategoryFilters() {
+        return categoryFilters;
+    }
 
-	public void setShopFilters(List<String> shopFilters){
-		this.shopFilters = shopFilters;
-	}
+    public void setTerm(String term) {
+        this.term = term;
+    }
 
-	public List<String> getShopFilters(){
-		return shopFilters;
-	}
+    public String getTerm() {
+        return term;
+    }
 
-	public void setBucketSize(int bucketSize){
-		this.bucketSize = bucketSize;
-	}
+    public void setFrom(int from) {
+        this.from = from;
+    }
 
-	public int getBucketSize(){
-		return bucketSize;
-	}
+    public int getFrom() {
+        return from;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"SearchRequest{" + 
-			"color_filters = '" + colorFilters + '\'' + 
-			",size = '" + size + '\'' + 
-			",brand_filters = '" + brandFilters + '\'' + 
-			",category_filters = '" + categoryFilters + '\'' + 
-			",term = '" + term + '\'' + 
-			",from = '" + from + '\'' + 
-			",sort = '" + sort + '\'' + 
-			",shop_filters = '" + shopFilters + '\'' + 
-			",bucket_size = '" + bucketSize + '\'' + 
-			"}";
-		}
+    public void setSort(List<SortItem> sort) {
+        this.sort = sort;
+    }
+
+    public List<SortItem> getSort() {
+        return sort;
+    }
+
+    public void setShopFilters(List<String> shopFilters) {
+        this.shopFilters = shopFilters;
+    }
+
+    public List<String> getShopFilters() {
+        return shopFilters;
+    }
+
+    public void setBucketSize(int bucketSize) {
+        this.bucketSize = bucketSize;
+    }
+
+    public int getBucketSize() {
+        return bucketSize;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "SearchRequest{" +
+                        "color_filters = '" + colorFilters + '\'' +
+                        ",size = '" + size + '\'' +
+                        ",brand_filters = '" + brandFilters + '\'' +
+                        ",category_filters = '" + categoryFilters + '\'' +
+                        ",term = '" + term + '\'' +
+                        ",from = '" + from + '\'' +
+                        ",sort = '" + sort + '\'' +
+                        ",shop_filters = '" + shopFilters + '\'' +
+                        ",bucket_size = '" + bucketSize + '\'' +
+                        "}";
+    }
 }

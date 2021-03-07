@@ -6,12 +6,12 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/app_bg"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:translationZ="1dp">
 
@@ -35,14 +35,14 @@
                     android:paddingHorizontal="12dp"
                     app:srcCompat="@drawable/ic_arrow_back" />
 
-                <AutoCompleteTextView
+                <EditText
                     android:id="@+id/search_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/white"
                     android:hint="What are you looking for?"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:maxLines="1"
                     android:paddingTop="10dp"
@@ -204,7 +204,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="105dp"
-            android:layout_weight="0"
+            android:layout_weight="1"
             android:background="@color/app_bg"
             android:clipToPadding="false"
             android:paddingLeft="5dp"
@@ -213,6 +213,7 @@
             android:paddingBottom="50dp"
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:spanCount="2"
+            tools:itemCount="2"
             tools:listitem="@layout/home_model_product_grid" />
 
         <View
@@ -221,7 +222,7 @@
             android:layout_height="match_parent"
             android:alpha="0"
             android:background="#9C000000"
-            tools:alpha="1" />
+            tools:alpha="0" />
 
         <LinearLayout
             android:id="@+id/filterSheet"
@@ -230,7 +231,8 @@
             android:background="@color/transparent"
             android:clickable="true"
             app:layout_behavior=".views.behaviors.TopSheetBehavior"
-            tools:layout_behavior="">
+            tools:layout_behavior=""
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -338,7 +340,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:visibility="gone"
-                    tools:visibility="gone">
+                    tools:visibility="visible">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -352,11 +354,11 @@
 
                     <com.google.android.material.slider.RangeSlider
                         android:id="@+id/filterPriceRangeSlider"
+                        style="@style/Widget.App.Slider"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:valueFrom="0.0"
-                        android:valueTo="100.0"
-                        app:values="@array/initial_slider_values" />
+                        android:backgroundTint="@color/eee"
+                        app:thumbColor="@color/black" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

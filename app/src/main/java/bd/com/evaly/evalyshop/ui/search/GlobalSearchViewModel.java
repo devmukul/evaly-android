@@ -20,6 +20,7 @@ import bd.com.evaly.evalyshop.models.search.filter.FilterRootItem;
 import bd.com.evaly.evalyshop.models.search.filter.FilterSubItem;
 import bd.com.evaly.evalyshop.models.search.product.SearchRequest;
 import bd.com.evaly.evalyshop.models.search.product.SortItem;
+import bd.com.evaly.evalyshop.models.search.product.response.Facets;
 import bd.com.evaly.evalyshop.models.search.product.response.ProductSearchResponse;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.SearchApiHelper;
@@ -35,6 +36,7 @@ public class GlobalSearchViewModel extends BaseViewModel {
     protected SingleLiveEvent<Void> updateButtonHighlights = new SingleLiveEvent<>();
     private MutableLiveData<List<FilterRootItem>> filterRootLiveList = new MutableLiveData<>();
     private MutableLiveData<List<FilterSubItem>> filterSubLiveList = new MutableLiveData<>();
+    protected MutableLiveData<Facets> facetsMutableLiveData = new MutableLiveData<>();
 
     protected List<FilterSubItem> filterBrandsList = new ArrayList<>();
     protected List<FilterSubItem> filterCategoriesList = new ArrayList<>();
@@ -52,7 +54,9 @@ public class GlobalSearchViewModel extends BaseViewModel {
     private String type;
     private String query = "";
     private String sortBy = null;
-    protected boolean isPriceRangeSelected = false;
+    private Integer minPrice = null;
+    private Integer maxPrice = null;
+    private boolean isPriceRangeSelected = false;
 
     @SuppressLint("DefaultLocale")
     @Inject
@@ -64,6 +68,14 @@ public class GlobalSearchViewModel extends BaseViewModel {
         page = 1;
         type = "product";
         searchProducts();
+    }
+
+    public void setPriceRangeSelected(boolean priceRangeSelected) {
+        isPriceRangeSelected = priceRangeSelected;
+    }
+
+    public boolean isPriceRangeSelected() {
+        return isPriceRangeSelected;
     }
 
     public void setSortBy(String sortBy) {
@@ -111,6 +123,22 @@ public class GlobalSearchViewModel extends BaseViewModel {
         this.page = page;
     }
 
+    public void setMinPrice(Integer minPrice) {
+        this.minPrice = minPrice;
+    }
+
+    public Integer getMinPrice() {
+        return minPrice;
+    }
+
+    public void setMaxPrice(Integer maxPrice) {
+        this.maxPrice = maxPrice;
+    }
+
+    public Integer getMaxPrice() {
+        return maxPrice;
+    }
+
     public void performSearch() {
         page = 1;
         productList.clear();
@@ -144,6 +172,8 @@ public class GlobalSearchViewModel extends BaseViewModel {
         body.setShopFilters(selectedFilterShopsList);
         body.setCategoryFilters(selectedFilterCategoriesList);
         body.setColorFilters(selectedFilterColorsList);
+        body.setMinPrice(minPrice);
+        body.setMaxPrice(maxPrice);
 
         SearchApiHelper.searchProducts(body, page, new ResponseListenerAuth<CommonDataResponse<ProductSearchResponse>, String>() {
             @Override
@@ -155,6 +185,7 @@ public class GlobalSearchViewModel extends BaseViewModel {
                 filterBrandsList = response.getData().getFacets().getBrands();
                 filterCategoriesList = response.getData().getFacets().getCategories();
                 filterShopsList = response.getData().getFacets().getShops();
+                facetsMutableLiveData.setValue(response.getData().getFacets());
                 // filterColorsLiveList.setValue(response.getData().getFacets().getColors());
             }
 

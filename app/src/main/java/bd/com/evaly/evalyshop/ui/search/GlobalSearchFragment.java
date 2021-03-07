@@ -16,8 +16,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
+import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentGlobalSearchBinding;
@@ -86,6 +89,10 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
                     hideFilterSheetBgOverlay(true);
                     hideAllFilterHolders();
                     viewModel.updateButtonHighlights.call();
+                    if (filterController != null) {
+                        filterController.setList(new ArrayList<>());
+                        filterController.requestModelBuild();
+                    }
                 } else if (newState == TopSheetBehavior.STATE_EXPANDED) {
                     showFilterSheetBgOverlay();
                 }
@@ -102,9 +109,12 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
     private void showFilerByPrice() {
         toggleFilterHolderVisibility(binding.holderFilterPrice, "");
         binding.filterPriceRangeSlider.setLabelFormatter(value -> (int) value + "");
+
+        binding.filterPriceRangeSlider.setLabelFormatter(value -> Utils.formatPriceSymbol((int) value));
+
         binding.filterPriceRangeSlider.addOnChangeListener((slider, value, fromUser) -> {
-            binding.filterPriceMax.setText("Maximum: " + binding.filterPriceRangeSlider.getValues().get(1).intValue());
-            binding.filterPriceMin.setText("Minimum: " + binding.filterPriceRangeSlider.getValues().get(0).intValue());
+            binding.filterPriceMax.setText("Maximum: " + Utils.formatPriceSymbol(binding.filterPriceRangeSlider.getValues().get(1).intValue()));
+            binding.filterPriceMin.setText("Minimum: " + Utils.formatPriceSymbol(binding.filterPriceRangeSlider.getValues().get(0).intValue()));
         });
     }
 
@@ -164,14 +174,45 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
     protected void clickListeners() {
 
         binding.filterApply.setOnClickListener(view -> {
-            if (filterController.getType().contains("categor"))
-                viewModel.selectedFilterCategoriesList = filterController.getSelectedValues();
-            else if (filterController.getType().contains("brand"))
-                viewModel.selectedFilterBrandsList = filterController.getSelectedValues();
-            else if (filterController.getType().contains("shop"))
-                viewModel.selectedFilterShopsList = filterController.getSelectedValues();
+
+            if (binding.holderFilterDynamicList.getVisibility() == View.VISIBLE) {
+                if (filterController.getType().contains("categor"))
+                    viewModel.selectedFilterCategoriesList = filterController.getSelectedValues();
+                else if (filterController.getType().contains("brand"))
+                    viewModel.selectedFilterBrandsList = filterController.getSelectedValues();
+                else if (filterController.getType().contains("shop"))
+                    viewModel.selectedFilterShopsList = filterController.getSelectedValues();
+            } else if (binding.holderFilterPrice.getVisibility() == View.VISIBLE) {
+                int val0 = binding.filterPriceRangeSlider.getValues().get(0).intValue();
+                int val1 = binding.filterPriceRangeSlider.getValues().get(1).intValue();
+
+                viewModel.setMinPrice(Math.min(val0, val1));
+                viewModel.setMaxPrice(Math.max(val0, val1));
+                viewModel.setPriceRangeSelected(true);
+            }
 
             viewModel.performSearch();
+            hideFilterSheet();
+        });
+
+        binding.filterReset.setOnClickListener(view -> {
+            if (binding.holderFilterDynamicList.getVisibility() == View.VISIBLE) {
+                if (filterController != null) {
+                    if (filterController.getType().contains("categor"))
+                        viewModel.selectedFilterCategoriesList = new ArrayList<>();
+                    else if (filterController.getType().contains("brand"))
+                        viewModel.selectedFilterBrandsList = new ArrayList<>();
+                    else if (filterController.getType().contains("shop"))
+                        viewModel.selectedFilterShopsList = new ArrayList<>();
+                }
+            } else if (binding.holderFilterPrice.getVisibility() == View.VISIBLE) {
+                viewModel.setMinPrice(null);
+                viewModel.setMaxPrice(null);
+                viewModel.setPriceRangeSelected(false);
+            }
+
+            viewModel.performSearch();
+            hideFilterSheet();
         });
 
         binding.back.setOnClickListener(backPressClickListener);
@@ -275,8 +316,14 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
             }
         });
 
+        binding.searchText.setOnFocusChangeListener((view, b) -> {
+            if (b)
+                hideFilterSheet();
+        });
+
         binding.searchText.setOnEditorActionListener((v, actionId, event) -> {
             if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
+                hideFilterSheet();
                 viewModel.setPage(1);
                 viewModel.setSearchQuery(binding.searchText.getText().toString().trim());
                 viewModel.performSearch();
@@ -295,6 +342,20 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
     @Override
     protected void liveEventsObservers() {
+
+        viewModel.facetsMutableLiveData.observe(getViewLifecycleOwner(), facets -> {
+            if (facets != null &&
+                    facets.getMaxPrice() != null && facets.getMinPrice() != null &&
+                    facets.getMaxPrice() > 0 && facets.getMinPrice() > 0) {
+                binding.filterPriceRangeSlider.setValueFrom(facets.getMinPrice().floatValue());
+                binding.filterPriceRangeSlider.setValueTo(facets.getMaxPrice().floatValue() + 1);
+                binding.filterPriceRangeSlider.setValues(facets.getMaxPrice().floatValue(), facets.getMinPrice().floatValue());
+
+                binding.filterPriceMin.setText(Utils.formatPriceSymbol(facets.getMinPrice()));
+                binding.filterPriceMax.setText(Utils.formatPriceSymbol(facets.getMaxPrice()));
+            }
+        });
+
         viewModel.getProductList().observe(getViewLifecycleOwner(), searchHitResponses -> {
             isLoading = false;
             controller.setLoadingMore(false);
@@ -307,18 +368,18 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
             updateFilterButton(binding.filterCategory, viewModel.selectedFilterCategoriesList.size() > 0);
             updateFilterButton(binding.filterShop, viewModel.selectedFilterShopsList.size() > 0);
             updateFilterButton(binding.filterSort, viewModel.getSortBy() != null);
-            updateFilterButton(binding.filterPrice, viewModel.isPriceRangeSelected);
+            updateFilterButton(binding.filterPrice, viewModel.isPriceRangeSelected());
         });
 
     }
 
     private void updateFilterButton(TextView button, boolean select) {
         if (select) {
-            button.setBackground(getResources().getDrawable(R.drawable.btn_search_chip_selected));
+            button.setBackground(AppCompatResources.getDrawable(getContext(), R.drawable.btn_search_chip_selected));
             button.setTextColor(getResources().getColor(R.color.fff));
             setTextViewDrawableColor(button, R.color.fff);
         } else {
-            button.setBackground(getResources().getDrawable(R.drawable.btn_search_chip));
+            button.setBackground(AppCompatResources.getDrawable(getContext(), R.drawable.btn_search_chip));
             button.setTextColor(getResources().getColor(R.color.c444));
             setTextViewDrawableColor(button, R.color.c888);
         }
