@@ -2,9 +2,11 @@ package bd.com.evaly.evalyshop.ui.search;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -26,7 +28,9 @@ import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentGlobalSearchBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.models.search.product.response.ProductsItem;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.search.controller.FilterSubController;
 import bd.com.evaly.evalyshop.ui.search.controller.GlobalSearchController;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -35,12 +39,36 @@ import bd.com.evaly.evalyshop.views.behaviors.TopSheetBehavior;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBinding, GlobalSearchViewModel> {
+public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBinding, GlobalSearchViewModel> implements GlobalSearchController.ClickListener {
 
     private GlobalSearchController controller;
     private boolean isLoading = false;
     private TopSheetBehavior filterTopSheetBehavior;
     private FilterSubController filterController;
+    private StaggeredGridLayoutManager layoutManager;
+    private StaggeredSpacingItemDecoration recyclerDecoration;
+    private TextWatcher searchTextWatcher = new TextWatcher() {
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.length() != 0) {
+                binding.searchClear.setImageDrawable(getResources().getDrawable(R.drawable.ic_close_smallest));
+                binding.searchClear.setTag("clear");
+            } else {
+                binding.searchClear.setImageDrawable(getResources().getDrawable(R.drawable.ic_search));
+                binding.searchClear.setTag("search");
+                viewModel.setSearchQuery(null);
+                viewModel.performSearch();
+            }
+        }
+    };
 
     public GlobalSearchFragment() {
         super(GlobalSearchViewModel.class, R.layout.fragment_global_search);
@@ -67,6 +95,13 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
     private void initFilterTopSheet() {
 
+        if (viewModel.getType().contains("product"))
+            binding.filterTypeProducts.setChecked(true);
+        else if (viewModel.getType().contains("brand"))
+            binding.filterTypeBrands.setChecked(true);
+        else if (viewModel.getType().contains("shop"))
+            binding.filterTypeShops.setChecked(true);
+
         binding.filterTypeRadioGroup.setOnCheckedChangeListener((radioGroup, id) -> {
             if (id == R.id.filterTypeProducts) {
                 viewModel.setType("product");
@@ -78,9 +113,18 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
                 viewModel.setType("brand");
                 binding.filterSearchType.setText(R.string.brands);
             }
+            updateFilterButtonsVisibility();
             viewModel.performSearch();
+            updateRecyclerViewSpan();
             hideFilterSheet();
         });
+
+        if (viewModel.getSortBy() == null)
+            binding.filterSortRelevance.setChecked(true);
+        else if (viewModel.getSortBy().equals("asc"))
+            binding.filterSortPriceLowToHigh.setChecked(true);
+        else if (viewModel.getSortBy().equals("desc"))
+            binding.filterSortPriceHighToLow.setChecked(true);
 
         binding.filterSortRadioGroup.setOnCheckedChangeListener((radioGroup, id) -> {
             if (id == R.id.filterSortRelevance) {
@@ -330,27 +374,6 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
                 binding.searchText.setText("");
         });
 
-        binding.searchText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() != 0) {
-                    binding.searchClear.setImageDrawable(getResources().getDrawable(R.drawable.ic_close_smallest));
-                    binding.searchClear.setTag("clear");
-                } else {
-                    binding.searchClear.setImageDrawable(getResources().getDrawable(R.drawable.ic_search));
-                    binding.searchClear.setTag("search");
-                }
-            }
-        });
-
         binding.searchText.setOnFocusChangeListener((view, b) -> {
             if (b)
                 hideFilterSheet();
@@ -371,6 +394,32 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
                 return false;
             }
         });
+
+        updateFilterButtonsVisibility();
+
+    }
+
+    private void updateFilterButtonsVisibility() {
+        if (viewModel.getType() != null && !viewModel.getType().isEmpty()) {
+            boolean show = viewModel.getType().equals("product");
+            binding.filterSort.setVisibility(show ? View.VISIBLE : View.GONE);
+            binding.filterPrice.setVisibility(show ? View.VISIBLE : View.GONE);
+            binding.filterCategory.setVisibility(show ? View.VISIBLE : View.GONE);
+            binding.filterBrand.setVisibility(show ? View.VISIBLE : View.GONE);
+            binding.filterShop.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        binding.searchText.removeTextChangedListener(searchTextWatcher);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.searchText.addTextChangedListener(searchTextWatcher);
     }
 
     @Override
@@ -435,6 +484,21 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         }
     }
 
+    private int updateRecyclerViewSpan() {
+        if (viewModel.getType().contains("product")) {
+            if (layoutManager != null)
+                layoutManager.setSpanCount(2);
+            if (recyclerDecoration != null)
+                recyclerDecoration.setSpanCount(2);
+            return 2;
+        } else {
+            if (layoutManager != null)
+                layoutManager.setSpanCount(3);
+            if (recyclerDecoration != null)
+                recyclerDecoration.setSpanCount(3);
+            return 3;
+        }
+    }
 
     @Override
     protected void setupRecycler() {
@@ -443,14 +507,19 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
             controller = new GlobalSearchController();
 
         controller.setFilterDuplicates(true);
+        controller.setClickListener(this);
         binding.recyclerView.setAdapter(controller.getAdapter());
 
-        int spanCount = 2;
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        int spanCount = updateRecyclerViewSpan();
+        int spacing = (int) Utils.convertDpToPixel(10, getContext());
+
+        layoutManager = new StaggeredGridLayoutManager(updateRecyclerViewSpan(), StaggeredGridLayoutManager.VERTICAL);
+        recyclerDecoration = new StaggeredSpacingItemDecoration(spanCount, spacing, true);
+
+        updateRecyclerViewSpan();
         controller.setSpanCount(spanCount);
 
-        int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(spanCount, spacing, true));
+        binding.recyclerView.addItemDecoration(recyclerDecoration);
         binding.recyclerView.setLayoutManager(layoutManager);
 
         binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
@@ -459,11 +528,34 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
                 if (!isLoading) {
                     controller.setLoadingMore(true);
                     controller.requestModelBuild();
-                    viewModel.searchProducts();
+                    viewModel.loadMore();
                     isLoading = true;
                 }
             }
         });
 
+    }
+
+    @Override
+    public void onProductClick(ProductsItem model) {
+        Intent intent = new Intent(getContext(), ViewProductActivity.class);
+        intent.putExtra("product_slug", model.getSlug());
+        intent.putExtra("product_name", model.getName());
+        intent.putExtra("product_price", model.getPrice());
+        intent.putExtra("product_image", model.getProductImage());
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onGridItemClick(String type, String title, String image, String slug) {
+        Bundle bundle = new Bundle();
+        bundle.putString("title", title);
+        if (type.equals("shop")) {
+            bundle.putString("shop_slug", slug);
+            navController.navigate(R.id.shopFragment, bundle);
+        } else if (type.equals("brand")) {
+            bundle.putString("brand_slug", slug);
+            navController.navigate(R.id.brandFragment, bundle);
+        }
     }
 }

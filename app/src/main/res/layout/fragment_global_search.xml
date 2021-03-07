@@ -275,7 +275,6 @@
                             android:id="@+id/filterTypeProducts"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:checked="true"
                             android:text="Products" />
 
                         <RadioButton
@@ -289,6 +288,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Brands" />
+
                     </RadioGroup>
                 </LinearLayout>
 
@@ -320,7 +320,6 @@
                             android:id="@+id/filterSortRelevance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:checked="true"
                             android:text="Relevance" />
 
                         <RadioButton

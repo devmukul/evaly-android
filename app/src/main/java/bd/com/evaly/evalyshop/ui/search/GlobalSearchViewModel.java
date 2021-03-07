@@ -14,25 +14,22 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.BaseModel;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.search.AlgoliaParams;
-import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
-import bd.com.evaly.evalyshop.models.search.RequestsItem;
+import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
+import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.search.filter.FilterRootItem;
 import bd.com.evaly.evalyshop.models.search.filter.FilterSubItem;
 import bd.com.evaly.evalyshop.models.search.product.SearchRequest;
 import bd.com.evaly.evalyshop.models.search.product.SortItem;
 import bd.com.evaly.evalyshop.models.search.product.response.Facets;
 import bd.com.evaly.evalyshop.models.search.product.response.ProductSearchResponse;
-import bd.com.evaly.evalyshop.models.tabs.TabsItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.SearchApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseViewModel;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class GlobalSearchViewModel extends BaseViewModel {
 
-    private RequestsItem requestsItem;
-    private AlgoliaRequest algoliaRequest;
-    private AlgoliaParams searchParams;
+
     private List<BaseModel> productList = new ArrayList<>();
     protected SingleLiveEvent<Void> updateButtonHighlights = new SingleLiveEvent<>();
     private MutableLiveData<List<FilterRootItem>> filterRootLiveList = new MutableLiveData<>();
@@ -62,15 +59,15 @@ public class GlobalSearchViewModel extends BaseViewModel {
     @SuppressLint("DefaultLocale")
     @Inject
     public GlobalSearchViewModel(SavedStateHandle bundle) {
-        searchParams = new AlgoliaParams();
-        searchParams.setPage(page);
-        requestsItem = new RequestsItem();
-        requestsItem.setIndexName("products");
         page = 1;
         type = "product";
         if (bundle.contains("type"))
             type = bundle.get("type");
-        searchProducts();
+        performSearch();
+    }
+
+    public String getType() {
+        return type;
     }
 
     public void setPriceRangeSelected(boolean priceRangeSelected) {
@@ -89,7 +86,6 @@ public class GlobalSearchViewModel extends BaseViewModel {
         return sortBy;
     }
 
-
     public void setType(String type) {
         this.type = type;
     }
@@ -102,20 +98,8 @@ public class GlobalSearchViewModel extends BaseViewModel {
         return reloadFilters;
     }
 
-    public AlgoliaParams getSearchParams() {
-        return searchParams;
-    }
-
-    public void setSearchParams(AlgoliaParams searchParams) {
-        this.searchParams = searchParams;
-    }
-
     public void setSearchQuery(String query) {
         this.query = query;
-    }
-
-    public void setIndex(String index) {
-        requestsItem.setIndexName(index);
     }
 
     public int getPage() {
@@ -145,6 +129,15 @@ public class GlobalSearchViewModel extends BaseViewModel {
     public void performSearch() {
         page = 1;
         productList.clear();
+        if (type.equals("product"))
+            searchProducts();
+        else if (type.equals("brand"))
+            getBrands();
+        else if (type.equals("shop"))
+            getShops();
+    }
+
+    public void loadMore() {
         if (type.equals("product"))
             searchProducts();
         else if (type.equals("brand"))
@@ -206,9 +199,10 @@ public class GlobalSearchViewModel extends BaseViewModel {
 
 
     public void getShops() {
-        SearchApiHelper.searchShops(page, query, new ResponseListenerAuth<CommonDataResponse<List<TabsItem>>, String>() {
+
+        ProductApiHelper.getShops(null, query, page, null, new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<List<TabsItem>> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
                 productList.addAll(response.getData());
                 productListLive.setValue(productList);
                 page++;
@@ -227,9 +221,9 @@ public class GlobalSearchViewModel extends BaseViewModel {
     }
 
     public void getBrands() {
-        SearchApiHelper.searchBrands(page, query, new ResponseListenerAuth<CommonDataResponse<List<TabsItem>>, String>() {
+        ProductApiHelper.getBrands(null, query, page, new ResponseListenerAuth<CommonDataResponse<List<BrandResponse>>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<List<TabsItem>> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<List<BrandResponse>> response, int statusCode) {
                 productList.addAll(response.getData());
                 productListLive.setValue(productList);
                 page++;
@@ -251,11 +245,4 @@ public class GlobalSearchViewModel extends BaseViewModel {
         return productListLive;
     }
 
-    public LiveData<List<FilterRootItem>> getFilterRootLiveList() {
-        return filterRootLiveList;
-    }
-
-    public LiveData<List<FilterSubItem>> getFilterSubLiveList() {
-        return filterSubLiveList;
-    }
 }
