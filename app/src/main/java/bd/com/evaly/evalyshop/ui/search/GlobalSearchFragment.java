@@ -2,6 +2,9 @@ package bd.com.evaly.evalyshop.ui.search;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -9,15 +12,18 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentGlobalSearchBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
+import bd.com.evaly.evalyshop.ui.search.controller.FilterSubController;
 import bd.com.evaly.evalyshop.ui.search.controller.GlobalSearchController;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
@@ -46,10 +52,13 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         binding.filterTypeRadioGroup.setOnCheckedChangeListener((radioGroup, id) -> {
             if (id == R.id.filterTypeProducts) {
                 viewModel.setType("product");
+                binding.filterSearchType.setText(R.string.products);
             } else if (id == R.id.filterTypeShops) {
                 viewModel.setType("shop");
+                binding.filterSearchType.setText(R.string.shops);
             } else if (id == R.id.filterTypeBrands) {
                 viewModel.setType("brand");
+                binding.filterSearchType.setText(R.string.brands);
             }
             viewModel.performSearch();
             hideFilterSheet();
@@ -75,6 +84,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
                         newState == TopSheetBehavior.STATE_COLLAPSED) {
                     hideFilterSheetBgOverlay(true);
                     hideAllFilterHolders();
+                    viewModel.updateButtonHighlights.call();
                 } else if (newState == TopSheetBehavior.STATE_EXPANDED) {
                     showFilterSheetBgOverlay();
                 }
@@ -89,7 +99,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
     @SuppressLint("SetTextI18n")
     private void showFilerByPrice() {
-        toggleFilterHolderVisibility(binding.holderFilterPrice);
+        toggleFilterHolderVisibility(binding.holderFilterPrice, "");
         binding.filterPriceRangeSlider.setLabelFormatter(value -> (int) value + "");
         binding.filterPriceRangeSlider.addOnChangeListener((slider, value, fromUser) -> {
             binding.filterPriceMax.setText("Maximum: " + binding.filterPriceRangeSlider.getValues().get(1).intValue());
@@ -98,16 +108,22 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
     }
 
     private void showFilerSearchType() {
-        toggleFilterHolderVisibility(binding.holderFilterType);
+        toggleFilterHolderVisibility(binding.holderFilterType, "");
         binding.filterPriceRangeSlider.setLabelFormatter(value -> (int) value + "");
     }
 
     private void showFilerSortBy() {
-        toggleFilterHolderVisibility(binding.holderFilterSort);
+        toggleFilterHolderVisibility(binding.holderFilterSort, "");
     }
 
-    private void toggleFilterHolderVisibility(LinearLayout selected) {
-        if (getCurrentVisibleFilterHolderId() == selected) {
+    private void toggleFilterHolderVisibility(LinearLayout selected, String type) {
+        if (binding.filterDynamicTitle.getText().toString().length() > 0 && type.length() > 0) {
+            if (binding.filterDynamicTitle.getText().toString().toLowerCase().contains(type.toLowerCase()) && getCurrentVisibleFilterHolderId() == selected) {
+                hideFilterSheet();
+                return;
+            } else
+                showFilterSheet();
+        } else if (getCurrentVisibleFilterHolderId() == selected) {
             hideFilterSheet();
             return;
         } else
@@ -125,7 +141,9 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         binding.holderFilterType.setVisibility(View.GONE);
         binding.holderFilterPrice.setVisibility(View.GONE);
         binding.holderFilterSort.setVisibility(View.GONE);
+        binding.holderFilterDynamicList.setVisibility(View.GONE);
         binding.filterActionButtonHolder.setVisibility(View.GONE);
+        binding.filterDynamicTitle.setText("");
     }
 
     private LinearLayout getCurrentVisibleFilterHolderId() {
@@ -143,12 +161,15 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
     @Override
     protected void clickListeners() {
+
+        binding.back.setOnClickListener(backPressClickListener);
+
         binding.bgOverlay.setOnClickListener(view -> {
             hideFilterSheetBgOverlay(false);
             hideFilterSheet();
         });
 
-        binding.filerSearchType.setOnClickListener(view -> {
+        binding.filterSearchType.setOnClickListener(view -> {
             showFilerSearchType();
         });
 
@@ -164,18 +185,29 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
             showFilerDynamic("categories");
         });
 
-        binding.filterCategory.setOnClickListener(view -> {
+        binding.filterShop.setOnClickListener(view -> {
             showFilerDynamic("shops");
         });
 
-        binding.filterCategory.setOnClickListener(view -> {
+        binding.filterBrand.setOnClickListener(view -> {
             showFilerDynamic("brands");
         });
     }
 
     private void showFilerDynamic(String type) {
-        toggleFilterHolderVisibility(binding.holderFilterDynamicList);
+        toggleFilterHolderVisibility(binding.holderFilterDynamicList, type);
         binding.filterDynamicTitle.setText("Filter by " + Utils.toFirstCharUpperAll(type));
+        FilterSubController filterController = new FilterSubController();
+        filterController.setViewModel(viewModel);
+        filterController.setFilterDuplicates(true);
+        binding.filterDynamicRecyclerView.setAdapter(filterController.getAdapter());
+        if (type.equals("brands"))
+            filterController.setList(viewModel.filterBrandsList);
+        else if (type.equals("shops"))
+            filterController.setList(viewModel.filterShopsList);
+        else if (type.equals("categories"))
+            filterController.setList(viewModel.filterCategoriesList);
+        filterController.requestModelBuild();
     }
 
     private void showFilterSheet() {
@@ -255,7 +287,37 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
             controller.setList(searchHitResponses);
             controller.requestModelBuild();
         });
+
+        viewModel.updateButtonHighlights.observe(getViewLifecycleOwner(), aVoid -> {
+            updateFilterButton(binding.filterBrand, viewModel.selectedFilterBrandsList.size() > 0);
+            updateFilterButton(binding.filterCategory, viewModel.selectedFilterCategoriesList.size() > 0);
+            updateFilterButton(binding.filterShop, viewModel.selectedFilterShopsList.size() > 0);
+            updateFilterButton(binding.filterSort, viewModel.getSortBy() != null);
+            updateFilterButton(binding.filterPrice, viewModel.isPriceRangeSelected);
+        });
+
     }
+
+    private void updateFilterButton(TextView button, boolean select) {
+        if (select) {
+            button.setBackground(getResources().getDrawable(R.drawable.btn_search_chip_selected));
+            button.setTextColor(getResources().getColor(R.color.fff));
+            setTextViewDrawableColor(button, R.color.fff);
+        } else {
+            button.setBackground(getResources().getDrawable(R.drawable.btn_search_chip));
+            button.setTextColor(getResources().getColor(R.color.c444));
+            setTextViewDrawableColor(button, R.color.c888);
+        }
+    }
+
+    private void setTextViewDrawableColor(TextView textView, int color) {
+        for (Drawable drawable : textView.getCompoundDrawables()) {
+            if (drawable != null) {
+                drawable.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(textView.getContext(), color), PorterDuff.Mode.SRC_IN));
+            }
+        }
+    }
+
 
     @Override
     protected void setupRecycler() {

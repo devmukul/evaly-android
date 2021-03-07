@@ -34,7 +34,7 @@ public class FilterSubController extends EpoxyController {
                     .clickListener((model, parentView, clickedView, position) -> {
 
                     })
-                    .addIf(viewModel.getSelectedFilterRoot().equals(item.getRoot()), this);
+                    .addTo(this);
         }
     }
 

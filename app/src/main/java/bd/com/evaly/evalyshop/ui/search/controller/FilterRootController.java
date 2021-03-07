@@ -31,7 +31,7 @@ public class FilterRootController extends EpoxyController {
                     .name(item.getName())
                     .selected(item.isSelected())
                     .clickListener((model, parentView, clickedView, position) -> {
-                        viewModel.setSelectedFilterRoot(model.name());
+                        // viewModel.setSelectedFilterRoot(model.name());
                         viewModel.setReloadFilters();
                     })
                     .addTo(this);
