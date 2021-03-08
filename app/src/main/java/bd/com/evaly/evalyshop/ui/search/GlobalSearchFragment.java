@@ -234,6 +234,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         binding.priceFilterUnder1k.setOnClickListener(view -> {
             viewModel.setMaxPrice(1000);
             viewModel.setMinPrice(0);
+            viewModel.setPriceRangeSelected(true);
             viewModel.performSearch();
             hideFilterSheet();
         });
@@ -241,6 +242,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         binding.priceFilter1kTo5k.setOnClickListener(view -> {
             viewModel.setMinPrice(1000);
             viewModel.setMaxPrice(5000);
+            viewModel.setPriceRangeSelected(true);
             viewModel.performSearch();
             hideFilterSheet();
         });
@@ -248,6 +250,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         binding.priceFilterAbove10k.setOnClickListener(view -> {
             viewModel.setMinPrice(10000);
             viewModel.setMaxPrice(null);
+            viewModel.setPriceRangeSelected(true);
             viewModel.performSearch();
             hideFilterSheet();
         });
@@ -533,7 +536,6 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
                 }
             }
         });
-
     }
 
     @Override
