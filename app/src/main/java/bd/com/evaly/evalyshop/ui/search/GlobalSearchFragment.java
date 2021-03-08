@@ -33,6 +33,7 @@ import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.search.controller.FilterSubController;
 import bd.com.evaly.evalyshop.ui.search.controller.GlobalSearchController;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import bd.com.evaly.evalyshop.views.behaviors.TopSheetBehavior;
@@ -326,18 +327,34 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         });
 
         binding.filterPrice.setOnClickListener(view -> {
+            if (viewModel.facetsMutableLiveData.getValue() == null) {
+                ToastUtils.show("Try after page has loaded");
+                return;
+            }
             showFilerByPrice();
         });
 
         binding.filterCategory.setOnClickListener(view -> {
+            if (viewModel.facetsMutableLiveData.getValue() == null) {
+                ToastUtils.show("Try after page has loaded");
+                return;
+            }
             showFilerDynamic("categories");
         });
 
         binding.filterShop.setOnClickListener(view -> {
+            if (viewModel.facetsMutableLiveData.getValue() == null) {
+                ToastUtils.show("Try after page has loaded");
+                return;
+            }
             showFilerDynamic("shops");
         });
 
         binding.filterBrand.setOnClickListener(view -> {
+            if (viewModel.facetsMutableLiveData.getValue() == null) {
+                ToastUtils.show("Try after page has loaded");
+                return;
+            }
             showFilerDynamic("brands");
         });
     }

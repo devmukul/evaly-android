@@ -157,7 +157,7 @@ public class GlobalSearchViewModel extends BaseViewModel {
 
         if (sortBy != null) {
             SortItem sortItem = new SortItem();
-            sortItem.setFieldName("price");
+            sortItem.setFieldName("discounted_price");
             sortItem.setOrder(sortBy);
             List<SortItem> sortList = new ArrayList<>();
             sortList.add(sortItem);
