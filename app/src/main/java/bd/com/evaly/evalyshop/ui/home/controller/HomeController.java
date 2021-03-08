@@ -153,9 +153,12 @@ public class HomeController extends EpoxyController {
                 .activity(activity)
                 .addTo(this);
 
+
         initCampaignCarousel();
 
         initFlashSaleCarousel();
+
+        initCycloneCarousel();
 
         initExpressCarousel();
 
@@ -446,7 +449,6 @@ public class HomeController extends EpoxyController {
                 .padding(Carousel.Padding.dp(15, 12, 10, 10, 10))
                 .addIf(!isCycloneOngoing && flashSaleModels.size() > 0, this);
 
-        initCycloneCarousel();
     }
 
     private void initCycloneCarousel() {
@@ -476,7 +478,6 @@ public class HomeController extends EpoxyController {
                     }));
         }
 
-
         new CycloneCarouselModel()
                 .id("flashSaleProductsCarousel")
                 .models(flashSaleProductModels)
@@ -491,7 +492,7 @@ public class HomeController extends EpoxyController {
                 .clickListener((model, parentView, clickedView, position) -> {
                     clickListener.navigateToUrl("https://evaly.com.bd/campaign/brands/" + Constants.FLASH_SALE_SLUG);
                 })
-                .addIf(isCycloneOngoing && flashSaleBrands.size() > 0, this);
+                .addIf(isCycloneOngoing && flashSaleBrands.size() > 0 && flashSaleProductModels.size() > 0, this);
 
         List<DataBindingEpoxyModel> flashSaleBrandsModels = new ArrayList<>();
 
@@ -508,7 +509,7 @@ public class HomeController extends EpoxyController {
                 .id("flashSaleBrandsCarousel")
                 .models(flashSaleBrandsModels)
                 .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
-                .addIf(isCycloneOngoing && flashSaleBrandsModels.size() > 0, this);
+                .addIf(isCycloneOngoing && flashSaleBrandsModels.size() > 0 && flashSaleProductModels.size() > 0, this);
 
         // shops
         flashSaleShopTitle
@@ -517,7 +518,7 @@ public class HomeController extends EpoxyController {
                 .clickListener((model, parentView, clickedView, position) -> {
                     clickListener.navigateToUrl("https://evaly.com.bd/campaign/suppliers/" + Constants.FLASH_SALE_SLUG);
                 })
-                .addIf(isCycloneOngoing && flashSaleShops.size() > 0, this);
+                .addIf(isCycloneOngoing && flashSaleShops.size() > 0 && flashSaleBrandsModels.size() > 0 && flashSaleProductModels.size() > 0, this);
 
         List<DataBindingEpoxyModel> flashSaleShopModels = new ArrayList<>();
 
@@ -534,10 +535,10 @@ public class HomeController extends EpoxyController {
                 .id("flashSaleShopCarousel")
                 .models(flashSaleShopModels)
                 .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
-                .addIf(isCycloneOngoing && flashSaleShopModels.size() > 0, this);
+                .addIf(isCycloneOngoing && flashSaleShopModels.size() > 0 && flashSaleBrandsModels.size() > 0 && flashSaleProductModels.size() > 0, this);
 
         cycloneBottomBarModel
-                .addIf(isCycloneOngoing && (flashSaleProductModels.size() > 0 || flashSaleBrandsModels.size() > 0 || flashSaleShopModels.size() > 0), this);
+                .addIf(isCycloneOngoing && (flashSaleProductModels.size() > 0 && flashSaleBrandsModels.size() > 0 && flashSaleShopModels.size() > 0), this);
     }
 
     public void setCycloneBanner(String cycloneBanner) {
