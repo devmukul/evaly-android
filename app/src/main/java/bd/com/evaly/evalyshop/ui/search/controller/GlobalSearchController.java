@@ -12,6 +12,7 @@ import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.search.product.response.ProductsItem;
 import bd.com.evaly.evalyshop.ui.browseProduct.model.GridItemModel_;
+import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
@@ -29,12 +30,6 @@ public class GlobalSearchController extends EpoxyController {
 
     public void setClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
-    }
-
-    public interface ClickListener {
-        void onProductClick(ProductsItem item);
-
-        void onGridItemClick(String type, String title, String image, String slug);
     }
 
     public void setViewModel(GlobalSearchViewModel viewModel) {
@@ -76,6 +71,11 @@ public class GlobalSearchController extends EpoxyController {
             }
         }
 
+        new EmptySpaceModel_()
+                .id("empty_space_id")
+                .height(200)
+                .addIf(isLoadingMore && viewModel.getPage() < 2, this);
+
         loaderBottom.addIf(isLoadingMore, this);
 
         new NoItemModel_()
@@ -93,5 +93,11 @@ public class GlobalSearchController extends EpoxyController {
 
     public void setList(List<BaseModel> list) {
         this.list = list;
+    }
+
+    public interface ClickListener {
+        void onProductClick(ProductsItem item);
+
+        void onGridItemClick(String type, String title, String image, String slug);
     }
 }

@@ -93,6 +93,13 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         }
     }
 
+    private void resetListController() {
+        viewModel.setPage(1);
+        controller.setList(new ArrayList<>());
+        controller.setLoadingMore(true);
+        controller.requestModelBuild();
+    }
+
     private void initFilterTopSheet() {
 
         if (viewModel.getType().contains("product"))
@@ -114,6 +121,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
                 binding.filterSearchType.setText(R.string.brands);
             }
             updateFilterButtonsVisibility();
+            resetListController();
             viewModel.performSearch();
             updateRecyclerViewSpan();
             hideFilterSheet();
@@ -134,6 +142,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
             } else if (id == R.id.filterSortPriceLowToHigh) {
                 viewModel.setSortBy("asc");
             }
+            resetListController();
             viewModel.performSearch();
             hideFilterSheet();
         });
@@ -167,9 +176,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
     private void showFilerByPrice() {
         toggleFilterHolderVisibility(binding.holderFilterPrice, "");
         binding.filterPriceRangeSlider.setLabelFormatter(value -> (int) value + "");
-
         binding.filterPriceRangeSlider.setLabelFormatter(value -> Utils.formatPriceSymbol((int) value));
-
         binding.filterPriceRangeSlider.addOnChangeListener((slider, value, fromUser) -> {
             binding.filterPriceMax.setText("Maximum: " + Utils.formatPriceSymbol(binding.filterPriceRangeSlider.getValues().get(1).intValue()));
             binding.filterPriceMin.setText("Minimum: " + Utils.formatPriceSymbol(binding.filterPriceRangeSlider.getValues().get(0).intValue()));
@@ -232,6 +239,8 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
     protected void clickListeners() {
 
         binding.priceFilterUnder1k.setOnClickListener(view -> {
+            binding.filterPriceRangeSlider.setValues(Math.min(binding.filterPriceRangeSlider.getValueTo(), 1000f),
+                    Math.max(binding.filterPriceRangeSlider.getValueFrom(), 0));
             viewModel.setMaxPrice(1000);
             viewModel.setMinPrice(0);
             viewModel.setPriceRangeSelected(true);
@@ -240,6 +249,8 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         });
 
         binding.priceFilter1kTo5k.setOnClickListener(view -> {
+            binding.filterPriceRangeSlider.setValues(Math.min(binding.filterPriceRangeSlider.getValueTo(), 5000f),
+                    Math.max(binding.filterPriceRangeSlider.getValueFrom(), 1000f));
             viewModel.setMinPrice(1000);
             viewModel.setMaxPrice(5000);
             viewModel.setPriceRangeSelected(true);
@@ -248,6 +259,8 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         });
 
         binding.priceFilterAbove10k.setOnClickListener(view -> {
+            binding.filterPriceRangeSlider.setValues(binding.filterPriceRangeSlider.getValueTo(),
+                    Math.max(binding.filterPriceRangeSlider.getValueFrom(), 10000f));
             viewModel.setMinPrice(10000);
             viewModel.setMaxPrice(null);
             viewModel.setPriceRangeSelected(true);
@@ -431,7 +444,9 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
         viewModel.facetsMutableLiveData.observe(getViewLifecycleOwner(), facets -> {
             if (facets != null &&
                     facets.getMaxPrice() != null && facets.getMinPrice() != null &&
-                    facets.getMaxPrice() > 0 && facets.getMinPrice() > 0) {
+                    facets.getMaxPrice() > 0 && facets.getMinPrice() > 0 &&
+                    viewModel.getMaxPrice() == null && viewModel.getMinPrice() == null) {
+
                 binding.filterPriceRangeSlider.setValueFrom(facets.getMinPrice().floatValue());
                 binding.filterPriceRangeSlider.setValueTo(facets.getMaxPrice().floatValue() + 1);
                 binding.filterPriceRangeSlider.setValues(facets.getMaxPrice().floatValue(), facets.getMinPrice().floatValue());
@@ -511,6 +526,7 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
         controller.setFilterDuplicates(true);
         controller.setClickListener(this);
+        controller.setViewModel(viewModel);
         binding.recyclerView.setAdapter(controller.getAdapter());
 
         int spanCount = updateRecyclerViewSpan();
@@ -536,6 +552,8 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
                 }
             }
         });
+
+        controller.requestModelBuild();
     }
 
     @Override
