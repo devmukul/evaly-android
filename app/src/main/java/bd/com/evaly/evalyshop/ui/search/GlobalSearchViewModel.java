@@ -66,6 +66,16 @@ public class GlobalSearchViewModel extends BaseViewModel {
         performSearch();
     }
 
+    public void clearFilters() {
+        selectedFilterBrandsList.clear();
+        selectedFilterCategoriesList.clear();
+        selectedFilterShopsList.clear();
+        selectedFilterColorsList.clear();
+        minPrice = null;
+        maxPrice = null;
+        isPriceRangeSelected = false;
+    }
+
     public String getType() {
         return type;
     }

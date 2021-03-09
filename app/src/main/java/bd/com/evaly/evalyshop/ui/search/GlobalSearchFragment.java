@@ -66,6 +66,8 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
                 binding.searchClear.setImageDrawable(getResources().getDrawable(R.drawable.ic_search));
                 binding.searchClear.setTag("search");
                 viewModel.setSearchQuery(null);
+                viewModel.clearFilters();
+                viewModel.updateButtonHighlights.call();
                 viewModel.performSearch();
             }
         }
