@@ -314,7 +314,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             dismissProgressBar();
             if (response != null) {
                 ToastUtils.show(response.getMessage());
-                if (response.getSuccess() && confirmDeliveryDialog.isShowing()) {
+                if (response.getSuccess() && confirmDeliveryDialog != null && confirmDeliveryDialog.isShowing()) {
                     confirmDeliveryDialog.dismiss();
                 }
             }

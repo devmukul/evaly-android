@@ -75,10 +75,12 @@ public class AddAddressBottomSheet extends BottomSheetDialogFragment {
 
             if (address.isEmpty())
                 error = "Please enter address line 1";
-            else if (area.isEmpty())
+            else if (area == null || area.isEmpty())
                 error = "Please enter area";
-            else if (city.isEmpty())
+            else if (city == null || city.isEmpty())
                 error = "Please enter city";
+            else if (region == null || region.isEmpty())
+                error = "Please enter region";
             else if (phoneNumber.equals(""))
                 error = "Please enter phone number";
             else  if (!Utils.isValidNumber(phoneNumber))

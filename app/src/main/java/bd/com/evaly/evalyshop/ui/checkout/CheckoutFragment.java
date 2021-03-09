@@ -141,16 +141,10 @@ public class CheckoutFragment extends DialogFragment {
 
     private void updateInfo() {
         UserModel userModel = CredentialManager.getUserData();
-        binding.userName.setText(userModel.getFullName());
-        binding.contact.setText(userModel.getUsername());
-//
-//        if (userModel.getAddresses() != null &&
-//                userModel.getAddresses().getData() != null &&
-//                userModel.getAddresses().getData().size() > 0) {
-//            addressModel = userModel.getAddresses().getData().get(0);
-//            binding.address.setText(addressModel.getFullAddressLine());
-//        } else
-//            binding.address.setText("No address provided");
+        if (userModel != null) {
+            binding.userName.setText(userModel.getFullName());
+            binding.contact.setText(userModel.getUsername());
+        }
     }
 
     private void setupRecycler() {
@@ -508,7 +502,11 @@ public class CheckoutFragment extends DialogFragment {
         PlaceOrderItem orderObject = new PlaceOrderItem();
 
         orderObject.setContactNumber(binding.contact.getText().toString());
-        orderObject.setCustomerAddress(addressModel.getFullAddressWithName());
+        if (!binding.userName.getText().toString().equals(CredentialManager.getUserData().getFullName()))
+            orderObject.setCustomerAddress(addressModel.getFullAddressWithName());
+        else
+            orderObject.setCustomerAddress(addressModel.getFullAddress());
+
         orderObject.setOrderOrigin("app");
 
         if (CredentialManager.getLatitude() != null && CredentialManager.getLongitude() != null) {

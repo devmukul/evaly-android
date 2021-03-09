@@ -70,6 +70,9 @@ public class NewsfeedNotificationAdapter extends RecyclerView.Adapter<NewsfeedNo
 
             JsonObject metaData = new Gson().fromJson(notifications.get(i).getMetaData(), JsonObject.class);
 
+            if (metaData == null || !metaData.has("post_slug"))
+                return;
+
             String postSlug = metaData.get("post_slug").getAsString();
 
             if (metaData.has("reply_id")) {

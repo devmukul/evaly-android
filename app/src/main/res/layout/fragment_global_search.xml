@@ -222,8 +222,8 @@
             android:layout_height="match_parent"
             android:alpha="0"
             android:background="#9C000000"
-            tools:alpha="0"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            tools:alpha="0" />
 
         <LinearLayout
             android:id="@+id/filterSheet"
@@ -385,52 +385,59 @@
                     </LinearLayout>
 
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        android:orientation="horizontal">
+                        android:scrollbars="none">
 
-                        <TextView
-                            android:id="@+id/priceFilterUnder1k"
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/brd_filter_price"
-                            android:clickable="true"
-                            android:paddingHorizontal="8dp"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="6dp"
-                            android:text="Under ৳ 1000"
-                            android:textColor="@color/c666" />
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/priceFilter1kTo5k"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:background="@drawable/brd_filter_price"
-                            android:clickable="true"
-                            android:paddingHorizontal="8dp"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="6dp"
-                            android:text="৳ 1000 to ৳ 5000"
-                            android:textColor="@color/c666" />
+                            <TextView
+                                android:id="@+id/priceFilterUnder1k"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/brd_filter_price"
+                                android:clickable="true"
+                                android:paddingHorizontal="8dp"
+                                android:paddingTop="5dp"
+                                android:paddingBottom="6dp"
+                                android:text="Under ৳ 1000"
+                                android:textColor="@color/c666" />
 
-                        <TextView
-                            android:id="@+id/priceFilterAbove10k"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:background="@drawable/brd_filter_price"
-                            android:clickable="true"
-                            android:paddingHorizontal="8dp"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="6dp"
-                            android:text="Above ৳ 10K"
-                            android:textColor="@color/c666" />
+                            <TextView
+                                android:id="@+id/priceFilter1kTo5k"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:background="@drawable/brd_filter_price"
+                                android:clickable="true"
+                                android:paddingHorizontal="8dp"
+                                android:paddingTop="5dp"
+                                android:paddingBottom="6dp"
+                                android:text="৳ 1000 to ৳ 5000"
+                                android:textColor="@color/c666" />
 
-                    </LinearLayout>
+                            <TextView
+                                android:id="@+id/priceFilterAbove10k"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:background="@drawable/brd_filter_price"
+                                android:clickable="true"
+                                android:paddingHorizontal="8dp"
+                                android:paddingTop="5dp"
+                                android:paddingBottom="6dp"
+                                android:text="Above ৳ 10K"
+                                android:textColor="@color/c666" />
+
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
 
                 </LinearLayout>
 
