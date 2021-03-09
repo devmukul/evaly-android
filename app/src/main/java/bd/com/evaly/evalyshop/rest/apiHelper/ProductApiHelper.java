@@ -62,6 +62,23 @@ public class ProductApiHelper extends BaseApiHelper {
     }
 
 
+    public static void getCampaignBrandProducts(int page, String category, String brands, String campaign, ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String> listener) {
+
+        if (category != null)
+            if (category.equals("root"))
+                category = null;
+
+        int limit = 48;
+        if (page == 1)
+            limit = 21;
+
+        if (campaign == null)
+            getiApiClient().getCategoryBrandProducts(page, category, brands, limit).enqueue(getResponseCallBackDefault(listener));
+        else
+            getiApiClient().getCampaignBrandProducts(brands, campaign, page, category, limit).enqueue(getResponseCallBackDefault(listener));
+    }
+
+
     public static void getSubCategories(String slug, ResponseListenerAuth<JsonArray, String> listener) {
 
         IApiClient iApiClient = getiApiClient();

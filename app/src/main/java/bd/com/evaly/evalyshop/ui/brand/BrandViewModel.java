@@ -31,6 +31,7 @@ public class BrandViewModel extends ViewModel {
     private List<ProductItem> arrayList = new ArrayList<>();
     private String slug;
     private String categorySlug = null;
+    private String campaignSlug = null;
     private int currentPage = 1;
     private boolean isCategoryLoading;
     private List<TabsItem> categoryArrayList = new ArrayList<>();
@@ -42,6 +43,8 @@ public class BrandViewModel extends ViewModel {
         this.slug = savedStateHandle.get("brand_slug");
         if (savedStateHandle.contains("category_slug"))
             this.categorySlug = savedStateHandle.get("category_slug");
+        if (savedStateHandle.contains("campaign_slug"))
+            this.campaignSlug = savedStateHandle.get("campaign_slug");
         getProducts();
         loadCategories();
     }
@@ -80,7 +83,7 @@ public class BrandViewModel extends ViewModel {
 
     public void getProducts() {
 
-        ProductApiHelper.getCategoryBrandProducts(currentPage, categorySlug, slug, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
+        ProductApiHelper.getCampaignBrandProducts(currentPage, categorySlug, slug, campaignSlug, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
                 arrayList.addAll(response.getData());

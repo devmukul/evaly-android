@@ -433,6 +433,12 @@ public interface IApiClient {
                                                                            @Query("brand") String brand,
                                                                            @Query("limit") int limit);
 
+    @GET(UrlUtils.BASE_CATALOG + "campaign/{campaign_slug}/brand/{brand_slug}/products?category=fff")
+    Call<CommonResultResponse<List<ProductItem>>> getCampaignBrandProducts(@Path("brand_slug") String brand,
+                                                                           @Path("campaign_slug") String campaignSlug, @Query("page") int page,
+                                                                           @Query("category") String category,
+                                                                           @Query("limit") int limit);
+
     @GET(UrlUtils.BASE_URL + "public/shops/items/{shopSlug}/")
     Call<JsonObject> getShopProducts(@Path("shopSlug") String shopSlug,
                                      @Query("page") int page,

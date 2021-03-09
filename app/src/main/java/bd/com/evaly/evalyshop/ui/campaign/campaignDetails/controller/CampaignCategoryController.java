@@ -162,13 +162,11 @@ public class CampaignCategoryController extends EpoxyController {
                         .clickListener((model, parentView, clickedView, position) -> {
                             Bundle bundle = new Bundle();
                             bundle.putInt("type", 1);
-                            bundle.putString("shop_name", model.model().getName());
+                            bundle.putString("brand_name", model.model().getName());
                             bundle.putString("logo_image", model.model().getImage());
-                            bundle.putString("shop_slug", model.model().getShopSlug());
-                            bundle.putString("category", "root");
                             bundle.putString("brand_slug", model.model().getSlug());
                             bundle.putString("campaign_slug", model.model().getCampaignSlug());
-                            navController.navigate(R.id.shopFragment, bundle);
+                            navController.navigate(R.id.brandFragment, bundle);
                         })
                         .addTo(this);
             else if (item instanceof CampaignShopResponse)
@@ -209,7 +207,7 @@ public class CampaignCategoryController extends EpoxyController {
     }
 
 
-    public int getProductListSize(){
+    public int getProductListSize() {
         return list.size();
     }
 
