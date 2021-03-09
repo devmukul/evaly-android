@@ -49,6 +49,10 @@ public class BrandViewModel extends ViewModel {
         loadCategories();
     }
 
+    public String getCampaignSlug() {
+        return campaignSlug;
+    }
+
     public void clearProductList() {
         arrayList.clear();
     }

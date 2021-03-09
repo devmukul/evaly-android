@@ -113,7 +113,8 @@ public class BrandController extends EpoxyController {
                 })
                 .addTo(this);
 
-        initCategory();
+        if (viewModel.getCampaignSlug() == null)
+            initCategory();
 
         productTitleModel
                 .title(categoryTitle)
@@ -187,12 +188,7 @@ public class BrandController extends EpoxyController {
                     params.setFullSpan(true);
                     view.setLayoutParams(params);
                 })
-                .padding(new Carousel.Padding(
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(5, activity),
-                        50,
-                        (int) Utils.convertDpToPixel(5, activity),
-                        0))
+                .padding(Carousel.Padding.dp(10, 5, 50, 0, 0))
                 .models(categoryModelList)
                 .addTo(this);
     }

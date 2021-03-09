@@ -222,7 +222,8 @@
             android:layout_height="match_parent"
             android:alpha="0"
             android:background="#9C000000"
-            tools:alpha="0" />
+            tools:alpha="0"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/filterSheet"
