@@ -69,17 +69,17 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
         } else if (model.getMinDiscountedPriceD() != 0) {
             binding.price.setVisibility(View.VISIBLE);
             if (model.getMinDiscountedPriceD() < model.getMinPriceD()) {
-                binding.priceDiscount.setText(Utils.formatPriceSymbol(model.getMinPrice()));
+                binding.priceDiscount.setText(Utils.formatPriceSymbol(model.getMinPriceD()));
                 binding.priceDiscount.setVisibility(View.VISIBLE);
                 binding.priceDiscount.setPaintFlags(binding.priceDiscount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 binding.price.setText(Utils.formatPriceSymbol(model.getMinDiscountedPrice()));
             } else {
                 binding.priceDiscount.setVisibility(View.GONE);
-                binding.price.setText(Utils.formatPriceSymbol(model.getMinPrice()));
+                binding.price.setText(Utils.formatPriceSymbol(model.getMinPriceD()));
             }
         } else {
             binding.price.setVisibility(View.VISIBLE);
-            binding.price.setText(Utils.formatPriceSymbol(model.getMinPrice()));
+            binding.price.setText(Utils.formatPriceSymbol(model.getMinPriceD()));
         }
 
         binding.getRoot().setOnClickListener(clickListener);

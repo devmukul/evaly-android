@@ -13,10 +13,10 @@ public class CategoriesItem{
 	@SerializedName("approved")
 	private boolean approved;
 
-	@SerializedName("image_url")
+	@SerializedName(value = "image_url", alternate = "category_image")
 	private String imageUrl;
 
-	@SerializedName("name")
+	@SerializedName(value = "name", alternate = "category_name")
 	private String name;
 
 	@SerializedName("description")
@@ -25,7 +25,7 @@ public class CategoriesItem{
 	@SerializedName("id")
 	private int id;
 
-	@SerializedName("slug")
+	@SerializedName(value = "slug", alternate = "category_slug")
 	private String slug;
 
 	@SerializedName("status")

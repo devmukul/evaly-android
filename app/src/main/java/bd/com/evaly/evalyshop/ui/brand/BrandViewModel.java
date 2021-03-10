@@ -109,14 +109,14 @@ public class BrandViewModel extends ViewModel {
 
     }
 
-    public void loadCategories() {
-        isCategoryLoading = true;
-        BrandApiHelper.getCategories(slug, categoryCurrentPage, new ResponseListenerAuth<CommonDataResponse<BrandCatResponse>, String>() {
+    public void loadCampaignCategories() {
+        if (campaignSlug == null)
+            return;
+        BrandApiHelper.getCampaignCategories(slug, campaignSlug, categoryCurrentPage, new ResponseListenerAuth<CommonDataResponse<List<CategoriesItem>>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<BrandCatResponse> response, int statusCode) {
-                detailsLive.setValue(response.getData());
+            public void onDataFetched(CommonDataResponse<List<CategoriesItem>> response, int statusCode) {
                 isCategoryLoading = false;
-                for (CategoriesItem item : response.getData().getCategories()) {
+                for (CategoriesItem item : response.getData()) {
                     TabsItem tabsItem = new TabsItem();
                     tabsItem.setTitle(item.getName());
                     tabsItem.setImage(item.getImageUrl());
@@ -125,6 +125,39 @@ public class BrandViewModel extends ViewModel {
                 }
                 categoryListLiveData.setValue(categoryArrayList);
                 categoryCurrentPage++;
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
+    public void loadCategories() {
+        isCategoryLoading = true;
+        loadCampaignCategories();
+        BrandApiHelper.getCategories(slug, categoryCurrentPage, new ResponseListenerAuth<CommonDataResponse<BrandCatResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<BrandCatResponse> response, int statusCode) {
+                detailsLive.setValue(response.getData());
+                if (campaignSlug == null) {
+                    isCategoryLoading = false;
+                    for (CategoriesItem item : response.getData().getCategories()) {
+                        TabsItem tabsItem = new TabsItem();
+                        tabsItem.setTitle(item.getName());
+                        tabsItem.setImage(item.getImageUrl());
+                        tabsItem.setSlug(item.getSlug());
+                        categoryArrayList.add(tabsItem);
+                    }
+                    categoryListLiveData.setValue(categoryArrayList);
+                    categoryCurrentPage++;
+                }
             }
 
             @Override

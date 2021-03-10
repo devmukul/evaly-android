@@ -10,11 +10,14 @@ import bd.com.evaly.evalyshop.models.BaseModel;
 
 public class ProductItem extends BaseModel {
 
-    @SerializedName("max_price")
+    @SerializedName(value = "max_price")
     private String maxPrice;
 
-    @SerializedName("min_price")
+    @SerializedName(value = "min_price")
     private String minPrice;
+
+    @SerializedName(value = "price")
+    private double price;
 
     @SerializedName("name")
     private String name;
@@ -22,13 +25,16 @@ public class ProductItem extends BaseModel {
     @SerializedName("image_urls")
     private List<String> imageUrls;
 
+    @SerializedName("image")
+    private String singleImage;
+
     @SerializedName("price_type")
     private String priceType;
 
     @SerializedName("slug")
     private String slug;
 
-    @SerializedName("min_discounted_price")
+    @SerializedName(value = "min_discounted_price", alternate = "discounted_price")
     private String minDiscountedPrice;
 
     @SerializedName("shop_slug")
@@ -90,6 +96,8 @@ public class ProductItem extends BaseModel {
     }
 
     public String getFirstImage() {
+        if (singleImage != null && !singleImage.isEmpty())
+            return singleImage;
         if (imageUrls == null || imageUrls.size() == 0)
             return "";
         else
@@ -124,7 +132,10 @@ public class ProductItem extends BaseModel {
         try {
             return Math.round(Double.parseDouble(maxPrice));
         } catch (Exception e) {
-            return 0.0;
+            if (price == 0)
+                return 0.0;
+            else
+                return price;
         }
     }
 
@@ -132,7 +143,10 @@ public class ProductItem extends BaseModel {
         try {
             return Math.round(Double.parseDouble(minPrice));
         } catch (Exception e) {
-            return 0.0;
+            if (price == 0)
+                return 0.0;
+            else
+                return price;
         }
     }
 

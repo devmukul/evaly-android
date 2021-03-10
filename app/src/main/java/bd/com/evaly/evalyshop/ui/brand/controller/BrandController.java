@@ -113,8 +113,7 @@ public class BrandController extends EpoxyController {
                 })
                 .addTo(this);
 
-        if (viewModel.getCampaignSlug() == null)
-            initCategory();
+        initCategory();
 
         productTitleModel
                 .title(categoryTitle)
