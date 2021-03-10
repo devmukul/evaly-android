@@ -472,6 +472,10 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
                 binding.filterPriceMin.setText("Minimum: " + Utils.formatPriceSymbol(facets.getMinPrice().intValue()));
                 binding.filterPriceMax.setText("Maximum: " + Utils.formatPriceSymbol(facets.getMaxPrice().intValue()));
+
+                binding.priceFilterUnder1k.setVisibility(facets.getMinPrice() < 1000 && facets.getMaxPrice() > 1000 ? View.VISIBLE : View.GONE);
+                binding.priceFilterAbove10k.setVisibility(facets.getMaxPrice().intValue() > 10000 && facets.getMinPrice() < 10000 ? View.VISIBLE : View.GONE);
+                binding.priceFilter1kTo5k.setVisibility(facets.getMinPrice() < 1000 && facets.getMaxPrice() > 5000 ? View.VISIBLE : View.GONE);
             }
         });
 

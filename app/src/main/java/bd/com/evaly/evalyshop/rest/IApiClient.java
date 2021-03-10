@@ -529,11 +529,11 @@ public interface IApiClient {
                                           @Query("limit") int limit);
 
 
-    @GET(UrlUtils.BASE_CATALOG + "/shop-items/{shopSlug}/categories")
+    @GET(UrlUtils.BASE_CATALOG + "shop-items/{shopSlug}/categories")
     Call<JsonObject> getCategoriesofShop(@Path("shopSlug") String shopSlug,
                                          @Query("page") int page);
 
-    @GET(UrlUtils.BASE_CATALOG + "/brands/{slug}/categories")
+    @GET(UrlUtils.BASE_CATALOG + "brands/{slug}/categories")
     Call<CommonDataResponse<BrandCatResponse>> getCategoriesOfBrand(@Path("slug") String slug,
                                                                     @Query("page") int page);
 
@@ -541,12 +541,6 @@ public interface IApiClient {
     Call<CommonDataResponse<List<CategoriesItem>>> getCategoriesOfBrand(@Path("brand_slug") String brandSlug,
                                                                        @Path("campaign_slug") String campaignSlug,
                                                                        @Query("page") int page);
-
-    @GET(UrlUtils.CAMPAIGNS + "/{campaignSlug}/shops/{shopSlug}/categories")
-    Call<JsonObject> getCategoriesOfCampaignShop(@Path("campaignSlug") String campaignSlug,
-                                                 @Path("shopSlug") String shopSlug,
-                                                 @Query("page") int page);
-
 
     // campaign APIs
 
@@ -566,8 +560,6 @@ public interface IApiClient {
                                                                   @Query("limit") int limit,
                                                                   @Query("area") String area,
                                                                   @Query("search") String search);
-
-
     // Root Category
 
     @GET(UrlUtils.BASE_CATALOG + "categories")

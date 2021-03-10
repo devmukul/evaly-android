@@ -31,6 +31,7 @@ import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 
 @EpoxyModelClass(layout = R.layout.shop_model_header)
 public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderModel.ShopHeaderHolder> {
@@ -128,13 +129,11 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
             });
 
 
-            if (shopInfo.getDescription() == null) {
+            if (shopInfo.getDescription() == null || shopInfo.getDescription().isEmpty()) {
                 binding.btn3Title.setText("Delivery");
                 binding.btn3Image.setImageDrawable(AppController.getmContext().getResources().getDrawable(R.drawable.ic_delivery));
                 binding.btn3Image.setOnClickListener(v -> {
-//                DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopInfo.getShopDeliveryOptions());
-//                deliveryBottomSheetFragment.show(fragment.getParentFragmentManager(), "delivery option");
-//                });
+                    ToastUtils.show("Delivery information is not provided");
                 });
             } else {
                 binding.btn3Title.setText("T&C");
@@ -147,7 +146,6 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
                     textBottomSheetFragment.show(fragment.getParentFragmentManager(), "tc");
                 });
             }
-
 
             binding.btn4Image.setOnClickListener(v -> {
                 Intent intent = new Intent(activity, ReviewsActivity.class);
