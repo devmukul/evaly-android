@@ -46,6 +46,7 @@ public class HomeViewModel extends ViewModel {
     protected MutableLiveData<List<CampaignBrandResponse>> flashSaleBrandList = new MutableLiveData<>();
     protected MutableLiveData<List<CampaignShopResponse>> flashSaleShopList = new MutableLiveData<>();
     protected MutableLiveData<List<ShopListResponse>> codShopList = new MutableLiveData<>();
+    protected MutableLiveData<List<CampaignCategoryResponse>> topCampaignProductsLiveList = new MutableLiveData<>();
     private int tabPosition = -1;
     private MutableLiveData<List<CampaignCategoryResponse>> categoryLiveList = new MutableLiveData<>();
     private MutableLiveData<List<CampaignProductResponse>> productListLive = new MutableLiveData<>();
@@ -75,6 +76,7 @@ public class HomeViewModel extends ViewModel {
         loadFlashSaleBrandsList();
         loadFlashSaleShopList();
         loadCodShops();
+        loadCampaignTopProducts();
     }
 
     @Override
@@ -96,6 +98,26 @@ public class HomeViewModel extends ViewModel {
         loadFlashSaleBrandsList();
         loadFlashSaleShopList();
         loadCodShops();
+        loadCampaignTopProducts();
+    }
+
+    public void loadCampaignTopProducts(){
+        CampaignApiHelper.getCampaignCategoryTopProducts(new ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<CampaignCategoryResponse>> response, int statusCode) {
+                topCampaignProductsLiveList.setValue(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void loadCodShops() {

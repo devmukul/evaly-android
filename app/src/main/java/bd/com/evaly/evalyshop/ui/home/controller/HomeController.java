@@ -1,11 +1,15 @@
 package bd.com.evaly.evalyshop.ui.home.controller;
 
 
+import android.os.Bundle;
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
@@ -24,13 +28,16 @@ import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
+import bd.com.evaly.evalyshop.models.campaign.topProducts.CampaignTopProductResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.recommender.database.table.RsEntity;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerSkeletonModel_;
+import bd.com.evaly.evalyshop.ui.campaign.model.CampaignHeaderModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSmallProductModel_;
+import bd.com.evaly.evalyshop.ui.campaign.model.CategoryCarouselModel_;
 import bd.com.evaly.evalyshop.ui.epoxy.EpoxyDividerModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
@@ -53,6 +60,7 @@ import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneSectionTitleModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneShopModel_;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class HomeController extends EpoxyController {
 
@@ -103,6 +111,7 @@ public class HomeController extends EpoxyController {
     private AppCompatActivity activity;
     private Fragment fragment;
     private HomeViewModel homeViewModel;
+    private List<CampaignTopProductResponse> campaignTopProductList = new ArrayList<>();
     private List<CampaignProductResponse> items = new ArrayList<>();
     private List<CampaignProductResponse> flashSaleProducts = new ArrayList<>();
     private List<CampaignBrandResponse> flashSaleBrands = new ArrayList<>();
@@ -154,6 +163,8 @@ public class HomeController extends EpoxyController {
                 .addTo(this);
 
 
+        initCampaignTopProducts();
+
         initCampaignCarousel();
 
         initFlashSaleCarousel();
@@ -172,6 +183,59 @@ public class HomeController extends EpoxyController {
 
         // bottom loading bar
         loader.addIf(loadingMore, this);
+    }
+
+    private void initCampaignTopProducts() {
+        for (CampaignTopProductResponse rootItem : campaignTopProductList) {
+            new CampaignHeaderModel_()
+                    .id("cam_header", rootItem.getSlug())
+                    .isStaggered(true)
+                    .headerText(rootItem.getBannerHeaderText())
+                    .subText(rootItem.getBannerSubText())
+                    .primaryColor(rootItem.getBannerPrimaryBgColor())
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("model", rootItem);
+                        //navController.navigate(R.id.campaignDetails, bundle);
+                    })
+                    .addIf(rootItem.getProducts().size() > 0, this);
+
+            List<DataBindingEpoxyModel> modelList = new ArrayList<>();
+//            for (ProductItem item : rootItem.getProducts())
+//                modelList.add(new CampaignCarouselModel_()
+//                        .id("sub_cam", item.getSlug())
+//                        .isStaggered(false)
+//                        .clickListener((model, parentView, clickedView, position) -> {
+//                            Bundle bundle = new Bundle();
+//                            bundle.putSerializable("model", rootItem);
+//                            bundle.putSerializable("sub_model", model.model());
+//                            //navController.navigate(R.id.campaignDetails, bundle);
+//                        })
+//                        .model(item));
+
+            new CategoryCarouselModel_()
+                    .id("caro", rootItem.getSlug())
+                    .models(modelList)
+                    .onBind((model, view, position) -> {
+                        StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT
+                        );
+                        params.setFullSpan(true);
+                        view.setLayoutParams(params);
+                    })
+                    .padding(new Carousel.Padding(
+                            Utils.convertDpToPixel(15),
+                            Utils.convertDpToPixel(10),
+                            Utils.convertDpToPixel(15),
+                            Utils.convertDpToPixel(20),
+                            Utils.convertDpToPixel(10)))
+                    .addIf(rootItem.getProducts().size() > 0, this);
+        }
+    }
+
+    public void setCampaignTopProductList(List<CampaignTopProductResponse> campaignTopProductList) {
+        this.campaignTopProductList = campaignTopProductList;
     }
 
     @Override

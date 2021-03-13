@@ -35,6 +35,7 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryRe
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
+import bd.com.evaly.evalyshop.models.campaign.topProducts.CampaignTopProductResponse;
 import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandCatResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
@@ -227,6 +228,9 @@ public interface IApiClient {
 
     @GET(UrlUtils.BASE_CATALOG + "campaign/category/campaigns")
     Call<CommonDataResponse<List<CampaignCategoryResponse>>> getCampaignCategory();
+
+    @GET(UrlUtils.BASE_CATALOG + "campaign/category/top-products")
+    Call<CommonDataResponse<List<CampaignTopProductResponse>>> getCampaignCategoryTopProducts();
 
     // chat
 
