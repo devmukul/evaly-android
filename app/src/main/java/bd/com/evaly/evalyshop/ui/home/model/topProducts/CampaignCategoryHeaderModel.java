@@ -9,17 +9,17 @@ import androidx.core.view.ViewCompat;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.ItemCampaignHeaderBinding;
+import bd.com.evaly.evalyshop.databinding.ItemCampaignHeaderNewBinding;
+import bd.com.evaly.evalyshop.ui.epoxy.BaseDataBindingEpoxyModel;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
 @EpoxyModelClass(layout = R.layout.item_campaign_header_new)
-public abstract class CampaignCategoryHeaderModel extends DataBindingEpoxyModel {
+public abstract class CampaignCategoryHeaderModel extends BaseDataBindingEpoxyModel {
 
     @EpoxyAttribute
     public boolean isStaggered = true;
@@ -40,36 +40,35 @@ public abstract class CampaignCategoryHeaderModel extends DataBindingEpoxyModel 
     View.OnClickListener clickListener;
 
     @Override
-    public void bind(@NonNull DataBindingHolder holder) {
-        super.bind(holder);
-
-        ItemCampaignHeaderBinding binding = (ItemCampaignHeaderBinding) holder.getDataBinding();
-
+    public void preBind(ViewDataBinding baseBinding) {
+        super.preBind(baseBinding);
+        ItemCampaignHeaderNewBinding binding = (ItemCampaignHeaderNewBinding) baseBinding;
         if (isStaggered) {
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
             params.setFullSpan(true);
         }
+    }
+
+    @Override
+    public void bind(@NonNull DataBindingHolder holder) {
+        super.bind(holder);
+
+        ItemCampaignHeaderNewBinding binding = (ItemCampaignHeaderNewBinding) holder.getDataBinding();
 
         binding.headerText.setText(headerText);
         binding.subText.setText(subText.replace(".00", ""));
 
         ViewCompat.setBackgroundTintList(
-                binding.holder,
+                binding.indicatorColored,
                 ColorStateList.valueOf(Color.parseColor(primaryColor)));
 
-        binding.holder.setOnClickListener(clickListener);
+        binding.showMore.setOnClickListener(clickListener);
 
     }
 
     @Override
     protected void setDataBindingVariables(ViewDataBinding binding) {
 
-    }
-
-    @Override
-    public void unbind(@NonNull DataBindingHolder holder) {
-        super.unbind(holder);
-        holder.getDataBinding().unbind();
     }
 
 }

@@ -24,6 +24,7 @@ import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
+import bd.com.evaly.evalyshop.models.campaign.topProducts.CampaignTopProductResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
@@ -46,7 +47,7 @@ public class HomeViewModel extends ViewModel {
     protected MutableLiveData<List<CampaignBrandResponse>> flashSaleBrandList = new MutableLiveData<>();
     protected MutableLiveData<List<CampaignShopResponse>> flashSaleShopList = new MutableLiveData<>();
     protected MutableLiveData<List<ShopListResponse>> codShopList = new MutableLiveData<>();
-    protected MutableLiveData<List<CampaignCategoryResponse>> topCampaignProductsLiveList = new MutableLiveData<>();
+    protected MutableLiveData<List<CampaignTopProductResponse>> topCampaignProductsLiveList = new MutableLiveData<>();
     private int tabPosition = -1;
     private MutableLiveData<List<CampaignCategoryResponse>> categoryLiveList = new MutableLiveData<>();
     private MutableLiveData<List<CampaignProductResponse>> productListLive = new MutableLiveData<>();
@@ -102,9 +103,9 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void loadCampaignTopProducts(){
-        CampaignApiHelper.getCampaignCategoryTopProducts(new ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {
+        CampaignApiHelper.getCampaignCategoryTopProducts(new ResponseListenerAuth<CommonDataResponse<List<CampaignTopProductResponse>>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<List<CampaignCategoryResponse>> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<List<CampaignTopProductResponse>> response, int statusCode) {
                 topCampaignProductsLiveList.setValue(response.getData());
             }
 

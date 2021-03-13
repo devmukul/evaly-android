@@ -15,6 +15,7 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryRe
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
+import bd.com.evaly.evalyshop.models.campaign.topProducts.CampaignTopProductResponse;
 
 public class CampaignApiHelper extends BaseApiHelper {
 
@@ -58,8 +59,8 @@ public class CampaignApiHelper extends BaseApiHelper {
         getiApiClient().getCampaignCategory().enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getCampaignCategoryTopProducts(ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String> listener) {
-        getiApiClient().getCampaignCategory().enqueue(getResponseCallBackDefault(listener));
+    public static void getCampaignCategoryTopProducts(ResponseListenerAuth<CommonDataResponse<List<CampaignTopProductResponse>>, String> listener) {
+        getiApiClient().getCampaignCategoryTopProducts().enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void getCampaigns(int page, String search, ResponseListenerAuth<CommonDataResponse<List<CampaignItem>>, String> listener) {

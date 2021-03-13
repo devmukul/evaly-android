@@ -69,6 +69,12 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     @Override
     protected void liveEventsObservers() {
+
+        viewModel.topCampaignProductsLiveList.observe(getViewLifecycleOwner(), campaignCategoryResponses -> {
+            homeController.setCampaignTopProductList(campaignCategoryResponses);
+            requestModelBuild();
+        });
+
         viewModel.codShopList.observe(getViewLifecycleOwner(), shopListResponses -> {
             homeController.setCodSaleShops(shopListResponses);
             if (shopListResponses.size() > 0)
@@ -179,7 +185,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
         homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
 
-       // homeController.setCycloneOngoing(true); // demo mode for dev env
+        // homeController.setCycloneOngoing(true); // demo mode for dev env
 
         binding.recyclerView.setAdapter(homeController.getAdapter());
 

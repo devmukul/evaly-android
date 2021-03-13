@@ -2,13 +2,14 @@ package bd.com.evaly.evalyshop.models.product;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.models.BaseModel;
 
 
-public class ProductItem extends BaseModel {
+public class ProductItem extends BaseModel implements Serializable {
 
     @SerializedName(value = "max_price")
     private String maxPrice;
