@@ -13,6 +13,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
@@ -185,7 +186,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
         homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
 
-        // homeController.setCycloneOngoing(true); // demo mode for dev env
+        if (BuildConfig.DEBUG)
+            homeController.setCycloneOngoing(true); // demo mode for dev env
 
         binding.recyclerView.setAdapter(homeController.getAdapter());
 

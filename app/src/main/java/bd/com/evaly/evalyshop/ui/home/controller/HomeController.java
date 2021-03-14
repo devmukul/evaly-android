@@ -158,11 +158,9 @@ public class HomeController extends EpoxyController {
                 .addTo(this);
 
 
-        initCampaignTopProducts();
-
-        initFlashSaleCarousel();
-
         initCycloneCarousel();
+
+        initCampaignTopProducts();
 
         initExpressCarousel();
 
@@ -181,6 +179,12 @@ public class HomeController extends EpoxyController {
     private void initCampaignTopProducts() {
         int count = 0;
         for (CampaignTopProductResponse rootItem : campaignTopProductList) {
+            if (rootItem.getSlug().equals(Constants.FLASH_SALE_SLUG) && isCycloneOngoing) {
+                if (count == 0)
+                    count++;
+                continue;
+            }
+
             new CampaignCategoryHeaderModel_()
                     .id("cam_header", rootItem.getSlug())
                     .isStaggered(true)
@@ -207,7 +211,7 @@ public class HomeController extends EpoxyController {
             new TopProductsCarouselModel()
                     .id("caro", rootItem.getSlug())
                     .models(modelList)
-                    .padding(Carousel.Padding.dp(15, 5, 15, 18, 10))
+                    .padding(Carousel.Padding.dp(12, 5, 12, 18, 10))
                     .addIf(rootItem.getProducts().size() > 0, this);
 
             new TopProductsDividerModel_()
@@ -505,6 +509,13 @@ public class HomeController extends EpoxyController {
 
     private void initCycloneCarousel() {
 
+        for (CampaignTopProductResponse rootItem : campaignTopProductList) {
+            if (rootItem.getSlug().equals(Constants.FLASH_SALE_SLUG) && isCycloneOngoing) {
+                flashSaleProducts = rootItem.getProducts();
+                break;
+            }
+        }
+
         cycloneBannerModel
                 .image(cycloneBanner)
                 .clickListener((model, parentView, clickedView, position) -> clickListener.navigateToUrl("https://evaly.com.bd/campaign/products/" + Constants.FLASH_SALE_SLUG))
@@ -533,7 +544,7 @@ public class HomeController extends EpoxyController {
         new CycloneCarouselModel()
                 .id("flashSaleProductsCarousel")
                 .models(flashSaleProductModels)
-                .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
+                .padding(Carousel.Padding.dp(12, 12, 12, 15, 10))
                 .addIf(isCycloneOngoing && flashSaleProductModels.size() > 0, this);
 
         // brands
@@ -560,7 +571,7 @@ public class HomeController extends EpoxyController {
         new CycloneCarouselModel()
                 .id("flashSaleBrandsCarousel")
                 .models(flashSaleBrandsModels)
-                .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
+                .padding(Carousel.Padding.dp(12, 12, 12, 15, 10))
                 .addIf(isCycloneOngoing && flashSaleBrandsModels.size() > 0 && flashSaleProductModels.size() > 0, this);
 
         // shops
@@ -586,7 +597,7 @@ public class HomeController extends EpoxyController {
         new CycloneCarouselModel()
                 .id("flashSaleShopCarousel")
                 .models(flashSaleShopModels)
-                .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
+                .padding(Carousel.Padding.dp(12, 12, 12, 15, 10))
                 .addIf(isCycloneOngoing && flashSaleShopModels.size() > 0 && flashSaleBrandsModels.size() > 0 && flashSaleProductModels.size() > 0, this);
 
         cycloneBottomBarModel

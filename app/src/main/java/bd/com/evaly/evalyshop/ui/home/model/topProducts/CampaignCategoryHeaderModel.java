@@ -50,7 +50,7 @@ public abstract class CampaignCategoryHeaderModel extends BaseDataBindingEpoxyMo
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
             params.setFullSpan(true);
         }
-         }
+    }
 
     @Override
     public void bind(@NonNull DataBindingHolder holder) {

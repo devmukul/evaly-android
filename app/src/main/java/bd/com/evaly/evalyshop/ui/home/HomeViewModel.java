@@ -73,7 +73,6 @@ public class HomeViewModel extends ViewModel {
         loadCampaignTopProducts();
         loadProducts();
         loadExpressServices();
-        loadFlashSaleProductList();
         loadFlashSaleBrandsList();
         loadFlashSaleShopList();
         loadCodShops();
@@ -101,7 +100,7 @@ public class HomeViewModel extends ViewModel {
         loadCampaignTopProducts();
     }
 
-    public void loadCampaignTopProducts(){
+    public void loadCampaignTopProducts() {
         CampaignApiHelper.getCampaignCategoryTopProducts(new ResponseListenerAuth<CommonDataResponse<List<CampaignTopProductResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignTopProductResponse>> response, int statusCode) {
