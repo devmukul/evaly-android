@@ -15,9 +15,10 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/expressProductSearchFragment"
-        android:title=""
-        android:enabled="false"
+        android:id="@+id/campaignFragment"
+        android:title="@string/campaigns"
+        android:enabled="true"
+        android:icon="@drawable/ic_campaign_line"
         app:showAsAction="ifRoom" />
 
     <item

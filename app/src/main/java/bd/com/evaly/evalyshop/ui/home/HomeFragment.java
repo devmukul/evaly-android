@@ -187,7 +187,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
 
         if (BuildConfig.DEBUG)
-            homeController.setCycloneOngoing(true); // demo mode for dev env
+            homeController.setCycloneOngoing(false); // demo mode for dev env
 
         binding.recyclerView.setAdapter(homeController.getAdapter());
 

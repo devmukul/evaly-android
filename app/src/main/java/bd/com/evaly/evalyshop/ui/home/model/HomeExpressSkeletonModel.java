@@ -11,7 +11,6 @@ import bd.com.evaly.evalyshop.R;
 @EpoxyModelClass(layout = R.layout.home_model_express_skeleton)
 public abstract class HomeExpressSkeletonModel extends DataBindingEpoxyModel {
 
-
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
