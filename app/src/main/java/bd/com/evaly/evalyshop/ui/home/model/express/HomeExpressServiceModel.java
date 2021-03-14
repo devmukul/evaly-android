@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.home.model;
+package bd.com.evaly.evalyshop.ui.home.model.express;
 
 import android.util.TypedValue;
 import android.view.View;

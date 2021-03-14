@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.home.model;
+package bd.com.evaly.evalyshop.ui.home.model.express;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ViewDataBinding;

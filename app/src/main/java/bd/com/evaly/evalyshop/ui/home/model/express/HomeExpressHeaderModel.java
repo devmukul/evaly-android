@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.home.model;
+package bd.com.evaly.evalyshop.ui.home.model.express;
 
 import android.graphics.Color;
 import android.view.View;
