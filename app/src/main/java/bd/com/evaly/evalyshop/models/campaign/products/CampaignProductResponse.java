@@ -2,9 +2,11 @@ package bd.com.evaly.evalyshop.models.campaign.products;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 
-public class CampaignProductResponse extends CampaignParentModel {
+public class CampaignProductResponse extends CampaignParentModel implements Serializable {
 
     @SerializedName(value = "cashback_text", alternate = "badge_text_2")
     private String cashbackText;
@@ -18,7 +20,7 @@ public class CampaignProductResponse extends CampaignParentModel {
     @SerializedName(value = "bottom_text", alternate = "shop_name")
     private String bottomText;
 
-    @SerializedName("price")
+    @SerializedName(value = "price", alternate = "max_price")
     private double price;
 
     @SerializedName("name")
@@ -27,82 +29,82 @@ public class CampaignProductResponse extends CampaignParentModel {
     @SerializedName("slug")
     private String slug;
 
-    @SerializedName("discounted_price")
+    @SerializedName(value = "discounted_price", alternate = "min_discounted_price")
     private double discountedPrice;
 
     @SerializedName("shop_slug")
     private String shopSlug;
 
-    public void setShopSlug(String shopSlug) {
-        this.shopSlug = shopSlug;
-    }
-
     public String getShopSlug() {
         return shopSlug;
     }
 
-    public void setCashbackText(String cashbackText) {
-        this.cashbackText = cashbackText;
+    public void setShopSlug(String shopSlug) {
+        this.shopSlug = shopSlug;
     }
 
     public String getCashbackText() {
         return cashbackText;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setCashbackText(String cashbackText) {
+        this.cashbackText = cashbackText;
     }
 
     public String getImage() {
         return image;
     }
 
-    public void setBadgeText(String badgeText) {
-        this.badgeText = badgeText;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getBadgeText() {
         return badgeText;
     }
 
-    public void setBottomText(String bottomText) {
-        this.bottomText = bottomText;
+    public void setBadgeText(String badgeText) {
+        this.badgeText = badgeText;
     }
 
     public String getBottomText() {
         return bottomText;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setBottomText(String bottomText) {
+        this.bottomText = bottomText;
     }
 
     public double getPrice() {
         return price;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setSlug(String slug) {
-        this.slug = slug;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSlug() {
         return slug;
     }
 
-    public void setDiscountedPrice(double discountedPrice) {
-        this.discountedPrice = discountedPrice;
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public double getDiscountedPrice() {
         return discountedPrice;
+    }
+
+    public void setDiscountedPrice(double discountedPrice) {
+        this.discountedPrice = discountedPrice;
     }
 
     @Override

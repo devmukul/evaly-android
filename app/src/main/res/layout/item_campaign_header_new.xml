@@ -3,92 +3,102 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/holder"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/bg_top_product_header"
-        android:clickable="true"
-        android:focusable="true"
-        android:paddingVertical="10dp"
-        android:paddingRight="10dp">
+        android:background="@color/fff">
 
-        <View
-            android:id="@+id/indicatorColored"
-            android:layout_width="5dp"
-            android:layout_height="30dp"
-            android:background="@drawable/bg_left_indicator"
-            app:layout_constraintBottom_toBottomOf="@id/subText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/headerText" />
-
-        <TextView
-            android:id="@+id/headerText"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/holder"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:clickable="false"
-            android:paddingRight="10dp"
-            android:textColor="@color/c333"
-            android:textIsSelectable="false"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/showMore"
-            app:layout_constraintStart_toEndOf="@id/indicatorColored"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="HOT DEALS" />
-
-        <TextView
-            android:id="@+id/subText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:clickable="false"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:paddingRight="10dp"
-            android:singleLine="true"
-            android:textColor="@color/c333"
-            android:textIsSelectable="false"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@+id/showMore"
-            app:layout_constraintStart_toEndOf="@id/indicatorColored"
-            app:layout_constraintTop_toBottomOf="@id/headerText"
-            tools:text="Upto 25% Discount &amp; 70% Cashback" />
-
-        <LinearLayout
-            android:id="@+id/showMore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/btn_show_more"
+            android:background="@drawable/bg_top_product_header_top"
             android:clickable="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="13dp"
-            android:paddingTop="5dp"
-            android:paddingEnd="2dp"
-            android:paddingBottom="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:focusable="true"
+            android:paddingVertical="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp">
+
+            <View
+                android:id="@+id/indicatorColored"
+                android:layout_width="9dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_left_indicator"
+                app:layout_constraintBottom_toBottomOf="@id/subText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/headerText" />
 
             <TextView
+                android:id="@+id/headerText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="5dp"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/showMore"
+                app:layout_constraintStart_toEndOf="@id/indicatorColored"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="HOT DEALS" />
+
+            <TextView
+                android:id="@+id/subText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:textColor="@color/c333"
+                android:textIsSelectable="false"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@+id/showMore"
+                app:layout_constraintStart_toEndOf="@id/indicatorColored"
+                app:layout_constraintTop_toBottomOf="@id/headerText"
+                tools:text="Upto 25% Discount &amp; 70% Cashback" />
+
+            <LinearLayout
+                android:id="@+id/showMore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Show More"
-                android:textColor="@color/c666"
-                android:textSize="13sp" />
+                android:layout_marginRight="3dp"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/btn_show_more"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="13dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="2dp"
+                android:paddingBottom="5dp"
+                app:layout_constraintBottom_toBottomOf="@+id/subText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/headerText">
 
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="20dp"
-                android:paddingTop="3dp"
-                android:paddingRight="3dp"
-                android:paddingBottom="3dp"
-                android:src="@drawable/ic_keyboard_arrow_right"
-                app:tint="@color/c666" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="2dp"
+                    android:text="@string/show_more_n"
+                    android:textColor="@color/c666"
+                    android:textSize="14sp" />
 
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="20dp"
+                    android:paddingRight="3dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/c666" />
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>

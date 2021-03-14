@@ -70,14 +70,13 @@ public class HomeViewModel extends ViewModel {
         compositeDisposable = new CompositeDisposable();
         currentPageProducts = 1;
         loadBanners();
+        loadCampaignTopProducts();
         loadProducts();
         loadExpressServices();
-        loadCampaignCategory();
         loadFlashSaleProductList();
         loadFlashSaleBrandsList();
         loadFlashSaleShopList();
         loadCodShops();
-        loadCampaignTopProducts();
     }
 
     @Override

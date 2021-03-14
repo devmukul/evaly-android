@@ -1,8 +1,6 @@
 package bd.com.evaly.evalyshop.ui.home.controller;
 
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,7 +27,6 @@ import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.topProducts.CampaignTopProductResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
-import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.database.table.RsEntity;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerSkeletonModel_;
@@ -57,8 +54,8 @@ import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneSectionTitleModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneShopModel_;
 import bd.com.evaly.evalyshop.ui.home.model.topProducts.CampaignCategoryHeaderModel_;
-import bd.com.evaly.evalyshop.ui.home.model.topProducts.TopProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.topProducts.TopProductsCarouselModel;
+import bd.com.evaly.evalyshop.ui.home.model.topProducts.TopProductsDividerModel_;
 import bd.com.evaly.evalyshop.util.Constants;
 
 public class HomeController extends EpoxyController {
@@ -163,8 +160,6 @@ public class HomeController extends EpoxyController {
 
         initCampaignTopProducts();
 
-        initCampaignCarousel();
-
         initFlashSaleCarousel();
 
         initCycloneCarousel();
@@ -184,37 +179,40 @@ public class HomeController extends EpoxyController {
     }
 
     private void initCampaignTopProducts() {
+        int count = 0;
         for (CampaignTopProductResponse rootItem : campaignTopProductList) {
             new CampaignCategoryHeaderModel_()
                     .id("cam_header", rootItem.getSlug())
                     .isStaggered(true)
+                    .isTop(count == 0)
                     .headerText(rootItem.getBannerHeaderText())
                     .subText(rootItem.getBannerSubText())
                     .primaryColor(rootItem.getBannerPrimaryBgColor())
                     .clickListener((model, parentView, clickedView, position) -> {
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("model", rootItem);
-                        //navController.navigate(R.id.campaignDetails, bundle);
+                        clickListener.onCampaignCategoryClick(rootItem);
                     })
                     .addIf(rootItem.getProducts().size() > 0, this);
 
+            count++;
+
             List<DataBindingEpoxyModel> modelList = new ArrayList<>();
-            for (ProductItem item : rootItem.getProducts())
-                modelList.add(new TopProductModel_()
+            for (CampaignProductResponse item : rootItem.getProducts())
+                modelList.add(new CycloneProductModel_()
                         .id("sub_cam", item.getSlug())
                         .clickListener((model, parentView, clickedView, position) -> {
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("model", rootItem);
-                            bundle.putSerializable("sub_model", model.model());
-                            //navController.navigate(R.id.campaignDetails, bundle);
+                            clickListener.onCampaignProductClick(model.model());
                         })
                         .model(item));
 
             new TopProductsCarouselModel()
                     .id("caro", rootItem.getSlug())
                     .models(modelList)
-                    .padding(Carousel.Padding.dp(15, 0, 15, 10, 10))
+                    .padding(Carousel.Padding.dp(15, 5, 15, 18, 10))
                     .addIf(rootItem.getProducts().size() > 0, this);
+
+            new TopProductsDividerModel_()
+                    .id("top_product_divider", rootItem.getSlug())
+                    .addTo(this);
         }
     }
 
@@ -425,6 +423,12 @@ public class HomeController extends EpoxyController {
 
     private void initExpressCarousel() {
         //express services carousel
+
+        new EmptySpaceModel_()
+                .id("express_top_space")
+                .height(10)
+                .addTo(this);
+
         expressHeaderModel_
                 .showMore(true)
                 .title("Evaly Express")

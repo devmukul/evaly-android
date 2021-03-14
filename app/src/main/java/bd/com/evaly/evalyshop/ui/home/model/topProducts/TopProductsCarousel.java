@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.ModelView;
 
-import bd.com.evaly.evalyshop.ui.home.model.EpoxyModelStaggeredGrid;
+import bd.com.evaly.evalyshop.R;
 
 @ModelView(saveViewState = true, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT)
 public class TopProductsCarousel extends Carousel {
@@ -25,6 +25,7 @@ public class TopProductsCarousel extends Carousel {
 
         params.setFullSpan(true);
         setLayoutParams(params);
+        setBackgroundColor(getResources().getColor(R.color.f9f9f9));
     }
 
     @Nullable

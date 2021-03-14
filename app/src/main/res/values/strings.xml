@@ -156,6 +156,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="seller_unknown">Seller: Unknown</string>
     <string name="shopping_cart">Shopping Cart</string>
     <string name="show_more">SHOW MORE</string>
+    <string name="show_more_n">Show More</string>
     <string name="no_post_yet">No post yet</string>
     <string name="no_orders_found">No orders found</string>
     <string name="call">Call</string>

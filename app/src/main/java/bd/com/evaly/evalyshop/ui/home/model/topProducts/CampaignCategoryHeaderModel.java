@@ -22,6 +22,9 @@ import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 public abstract class CampaignCategoryHeaderModel extends BaseDataBindingEpoxyModel {
 
     @EpoxyAttribute
+    public boolean isTop = true;
+
+    @EpoxyAttribute
     public boolean isStaggered = true;
 
     @NonNull
@@ -47,7 +50,7 @@ public abstract class CampaignCategoryHeaderModel extends BaseDataBindingEpoxyMo
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
             params.setFullSpan(true);
         }
-    }
+         }
 
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
@@ -57,12 +60,13 @@ public abstract class CampaignCategoryHeaderModel extends BaseDataBindingEpoxyMo
 
         binding.headerText.setText(headerText);
         binding.subText.setText(subText.replace(".00", ""));
+        binding.holder.setBackground(binding.holder.getResources().getDrawable(isTop ? R.drawable.bg_top_product_header_top : R.drawable.bg_top_product_header));
 
         ViewCompat.setBackgroundTintList(
                 binding.indicatorColored,
                 ColorStateList.valueOf(Color.parseColor(primaryColor)));
 
-        binding.showMore.setOnClickListener(clickListener);
+        binding.holder.setOnClickListener(clickListener);
 
     }
 

@@ -8,7 +8,7 @@
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/whiteBut"
-        app:cardCornerRadius="6dp"
+        app:cardCornerRadius="8dp"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="false"
@@ -45,7 +45,7 @@
                 android:paddingRight="10dp"
                 android:textAlignment="textStart"
                 android:textColor="@color/c444"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image"
                 tools:text="This is the product title" />
