@@ -72,6 +72,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     protected void liveEventsObservers() {
 
         viewModel.topCampaignProductsLiveList.observe(getViewLifecycleOwner(), campaignCategoryResponses -> {
+            homeController.setTopProductsLoading(false);
             homeController.setCampaignTopProductList(campaignCategoryResponses);
             requestModelBuild();
         });

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/fff">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_top_product_header_top"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingVertical="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp">
+
+            <View
+                android:id="@+id/indicatorColored"
+                android:layout_width="9dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_left_indicator"
+                android:backgroundTint="@color/eee"
+                app:layout_constraintBottom_toBottomOf="@id/subText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/headerText" />
+
+            <TextView
+                android:id="@+id/headerText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="80dp"
+                android:background="@color/eee"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:text="HOT DEALS MORE"
+                android:textColor="@color/eee"
+                android:textIsSelectable="false"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/showMore"
+                app:layout_constraintStart_toEndOf="@id/indicatorColored"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/subText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:background="@color/eee"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:text="Upto 25% Discount Cashback"
+                android:textColor="@color/eee"
+                android:textIsSelectable="false"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toStartOf="@+id/showMore"
+                app:layout_constraintStart_toEndOf="@id/indicatorColored"
+                app:layout_constraintTop_toBottomOf="@id/headerText" />
+
+            <LinearLayout
+                android:id="@+id/showMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="3dp"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/btn_show_more"
+                android:backgroundTint="@color/eee"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="13dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="2dp"
+                android:paddingBottom="5dp"
+                app:layout_constraintBottom_toBottomOf="@+id/subText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/headerText">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="2dp"
+                    android:text="@string/show_more_n"
+                    android:textColor="@color/eee"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="20dp"
+                    android:paddingRight="3dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/eee" />
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</layout>

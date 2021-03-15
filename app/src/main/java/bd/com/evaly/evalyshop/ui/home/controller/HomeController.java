@@ -54,6 +54,8 @@ import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressServiceModel_;
 import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressServiceSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.topProducts.CampaignCategoryHeaderModel_;
+import bd.com.evaly.evalyshop.ui.home.model.topProducts.CampaignCategoryHeaderSkeletonModel_;
+import bd.com.evaly.evalyshop.ui.home.model.topProducts.TopProductSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.topProducts.TopProductsCarouselModel;
 import bd.com.evaly.evalyshop.ui.home.model.topProducts.TopProductsDividerModel_;
 import bd.com.evaly.evalyshop.util.Constants;
@@ -120,6 +122,7 @@ public class HomeController extends EpoxyController {
     private List<RsEntity> rsShopList = new ArrayList<>();
     private boolean loadingMore = true;
     private boolean isExpressLoading = true;
+    private boolean isTopProductsLoading = true;
     private boolean isCampaignLoading = true;
     private boolean isCycloneOngoing = false;
     private String cycloneBanner = "https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/images/cyclone1.gif";
@@ -136,6 +139,10 @@ public class HomeController extends EpoxyController {
 
     public void setClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
+    }
+
+    public void setTopProductsLoading(boolean topProductsLoading) {
+        isTopProductsLoading = topProductsLoading;
     }
 
     @Override
@@ -157,7 +164,6 @@ public class HomeController extends EpoxyController {
                 .activity(activity)
                 .addTo(this);
 
-
         initCycloneCarousel();
 
         initCampaignTopProducts();
@@ -177,6 +183,27 @@ public class HomeController extends EpoxyController {
     }
 
     private void initCampaignTopProducts() {
+
+        new CampaignCategoryHeaderSkeletonModel_()
+                .id("campaign_cat_header_skeleton", 1)
+                .addIf(isTopProductsLoading, this);
+
+        List<DataBindingEpoxyModel> skeletonModelList = new ArrayList<>();
+        for (int j = 0; j < 5; j++)
+            skeletonModelList.add(new TopProductSkeletonModel_()
+                    .id("sub_cam_skeleton", j));
+
+        new TopProductsCarouselModel()
+                .id("top_product_caro_skeleton", 1)
+                .models(skeletonModelList)
+                .padding(Carousel.Padding.dp(12, 3, 12, 18, 10))
+                .addIf(isTopProductsLoading, this);
+
+        new TopProductsDividerModel_()
+                .id("top_product_divider_skeleton", 1)
+                .addIf(isTopProductsLoading, this);
+
+
         int count = 0;
         for (CampaignTopProductResponse rootItem : campaignTopProductList) {
             if (rootItem.getSlug().equals(Constants.FLASH_SALE_SLUG) && isCycloneOngoing) {
