@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/cardView"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/fff"
+        app:cardBackgroundColor="@color/transparent"
         app:cardCornerRadius="8dp"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="true"
@@ -18,70 +17,68 @@
             android:id="@+id/android_custom_gridview_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
             android:gravity="top|center_horizontal"
             android:paddingBottom="10dp">
-
 
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/eee"
+                android:padding="10dp"
                 android:scaleType="fitCenter"
+                android:src="@drawable/bg_fafafa_round"
                 app:layout_constraintDimensionRatio="H,1:1"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/f4f4f4" />
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginRight="10dp"
-                android:background="@color/eee"
+                android:background="@drawable/bg_fafafa_round"
+                android:backgroundTint="@color/f4f4f4"
                 android:ellipsize="end"
                 android:maxLines="2"
+                android:text="This is is the product title"
                 android:textAlignment="textStart"
-                android:textColor="@color/eee"
+                android:textColor="@color/f4f4f4"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image"
-                tools:text="This is the product title" />
+                app:layout_constraintTop_toBottomOf="@+id/image" />
 
             <TextView
                 android:id="@+id/priceDiscount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="6dp"
                 android:layout_marginRight="2dp"
-                android:background="@color/eee"
+                android:background="@drawable/bg_fafafa_round"
+                android:backgroundTint="@color/f4f4f4"
                 android:text="$ 5000"
-                android:textColor="@color/eee"
+                android:textColor="@color/f4f4f4"
                 android:textSize="12sp"
-                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title"
                 tools:visibility="visible" />
-
 
             <TextView
                 android:id="@+id/price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="6dp"
                 android:layout_marginRight="40dp"
-                android:background="@color/eee"
-                android:text="$ 5000"
-                android:textColor="@color/eee"
+                android:background="@drawable/bg_fafafa_round"
+                android:backgroundTint="@color/f4f4f4"
+                android:text="$ 50000"
+                android:textColor="@color/f4f4f4"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -97,7 +94,7 @@
                 android:paddingTop="2dp"
                 android:paddingRight="6dp"
                 android:paddingBottom="2dp"
-                android:textColor="@color/eee"
+                android:textColor="@color/f4f4f4"
                 android:textSize="9sp"
                 android:visibility="gone"
                 app:layout_constraintRight_toRightOf="parent"

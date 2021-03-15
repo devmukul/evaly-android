@@ -15,6 +15,9 @@ import bd.com.evaly.evalyshop.ui.epoxy.BaseDataBindingEpoxyModel;
 public abstract class CampaignCategoryHeaderSkeletonModel extends BaseDataBindingEpoxyModel {
 
     @EpoxyAttribute
+    public boolean isTop = true;
+
+    @EpoxyAttribute
     public boolean isStaggered = true;
 
     @Override
@@ -30,7 +33,8 @@ public abstract class CampaignCategoryHeaderSkeletonModel extends BaseDataBindin
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
-
+        ItemCampaignHeaderNewSkeletonBinding binding = (ItemCampaignHeaderNewSkeletonBinding) holder.getDataBinding();
+        binding.holder.setBackground(binding.holder.getResources().getDrawable(isTop ? R.drawable.bg_top_product_header_top : R.drawable.bg_top_product_header));
     }
 
     @Override

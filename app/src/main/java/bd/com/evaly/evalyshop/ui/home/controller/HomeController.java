@@ -184,25 +184,27 @@ public class HomeController extends EpoxyController {
 
     private void initCampaignTopProducts() {
 
-        new CampaignCategoryHeaderSkeletonModel_()
-                .id("campaign_cat_header_skeleton", 1)
-                .addIf(isTopProductsLoading, this);
+        for (int i = 0; i < 2; i++) {
+            new CampaignCategoryHeaderSkeletonModel_()
+                    .id("campaign_cat_header_skeleton", i)
+                    .isTop( i == 0)
+                    .addIf(isTopProductsLoading, this);
 
-        List<DataBindingEpoxyModel> skeletonModelList = new ArrayList<>();
-        for (int j = 0; j < 5; j++)
-            skeletonModelList.add(new TopProductSkeletonModel_()
-                    .id("sub_cam_skeleton", j));
+            List<DataBindingEpoxyModel> skeletonModelList = new ArrayList<>();
+            for (int j = 0; j < 5; j++)
+                skeletonModelList.add(new TopProductSkeletonModel_()
+                        .id("sub_cam_skeleton", i + " " + j));
 
-        new TopProductsCarouselModel()
-                .id("top_product_caro_skeleton", 1)
-                .models(skeletonModelList)
-                .padding(Carousel.Padding.dp(12, 3, 12, 18, 10))
-                .addIf(isTopProductsLoading, this);
+            new TopProductsCarouselModel()
+                    .id("top_product_caro_skeleton", i)
+                    .models(skeletonModelList)
+                    .padding(Carousel.Padding.dp(12, 3, 12, 18, 10))
+                    .addIf(isTopProductsLoading, this);
 
-        new TopProductsDividerModel_()
-                .id("top_product_divider_skeleton", 1)
-                .addIf(isTopProductsLoading, this);
-
+            new TopProductsDividerModel_()
+                    .id("top_product_divider_skeleton", i)
+                    .addIf(isTopProductsLoading, this);
+        }
 
         int count = 0;
         for (CampaignTopProductResponse rootItem : campaignTopProductList) {
