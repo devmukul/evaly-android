@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ShopModelTitleCategoryBinding;
@@ -39,7 +40,6 @@ import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryItemModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryTitleModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopHeaderModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopProductTitleModel_;
-import bd.com.evaly.evalyshop.util.Utils;
 
 public class ShopController extends EpoxyController {
 
@@ -69,6 +69,21 @@ public class ShopController extends EpoxyController {
     private boolean emptyPage = false;
     private boolean categoriesLoading = false;
     private String categoryTitle = null;
+    private String description = null;
+    private boolean isSubscribed = false;
+    private int subscriberCount = 0;
+
+    public void setSubscribed(boolean subscribed) {
+        isSubscribed = subscribed;
+    }
+
+    public void setSubscriberCount(int subscriberCount) {
+        this.subscriberCount = subscriberCount;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public ShopController() {
         setDebugLoggingEnabled(true);
@@ -104,16 +119,28 @@ public class ShopController extends EpoxyController {
                 .activity(activity)
                 .fragment(fragment)
                 .shopInfo(shopInfo)
+                .description(description)
+                .subCount(subscriberCount)
+                .isSubscribed(isSubscribed)
                 .onBind((model, view, position) -> {
                     if (shopInfo != null) {
                         TextView name = view.itemView.findViewById(R.id.name);
+                        TextView followText = view.itemView.findViewById(R.id.follow_text);
                         ImageView image = view.itemView.findViewById(R.id.logo);
                         name.setText(shopInfo.getShopName());
+
+                        if (isSubscribed)
+                            followText.setText(String.format(Locale.ENGLISH, "Unfollow (%d)", subscriberCount));
+                        else
+                            followText.setText(String.format(Locale.ENGLISH, "Follow (%d)", subscriberCount));
+
                         Glide.with(image)
                                 .load(shopInfo.getShopImage())
                                 .skipMemoryCache(true)
                                 .placeholder(ContextCompat.getDrawable(activity, R.drawable.ic_evaly_placeholder))
                                 .into(image);
+
+
                     }
                 })
                 .viewModel(viewModel)
@@ -184,7 +211,7 @@ public class ShopController extends EpoxyController {
                     params.setFullSpan(true);
                     view.setLayoutParams(params);
                 })
-                .padding(Carousel.Padding.dp(10, 5, 50, 0,0))
+                .padding(Carousel.Padding.dp(10, 5, 50, 0, 0))
                 .models(categoryModelList)
                 .addTo(this);
 

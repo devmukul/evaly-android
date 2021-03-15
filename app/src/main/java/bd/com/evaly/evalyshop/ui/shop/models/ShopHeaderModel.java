@@ -38,13 +38,25 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
 
     @EpoxyAttribute
     public AppCompatActivity activity;
+
     @EpoxyAttribute
     public Fragment fragment;
+
     @EpoxyAttribute
     ShopDetailsResponse shopInfo;
+
     @EpoxyAttribute
     ShopViewModel viewModel;
+
+    @EpoxyAttribute
+    String description;
+
+    @EpoxyAttribute
+    boolean isSubscribed = false;
+
+    @EpoxyAttribute
     int subCount = 0;
+
     private String ratingJson = "{}";
 
     @Override
@@ -75,9 +87,7 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
                     .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
                     .into(binding.logo);
 
-            subCount = shopInfo.getSubscriberCount();
-
-            if (shopInfo.isSubscribed())
+            if (isSubscribed)
                 binding.followText.setText(String.format(Locale.ENGLISH, "Unfollow (%d)", subCount));
             else
                 binding.followText.setText(String.format(Locale.ENGLISH, "Follow (%d)", subCount));
@@ -128,8 +138,7 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
                 snackBar.show();
             });
 
-
-            if (shopInfo.getDescription() == null || shopInfo.getDescription().isEmpty()) {
+            if (description == null) {
                 binding.btn3Title.setText("Delivery");
                 binding.btn3Image.setImageDrawable(AppController.getmContext().getResources().getDrawable(R.drawable.ic_delivery));
                 binding.btn3Image.setOnClickListener(v -> {
@@ -139,7 +148,6 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
                 binding.btn3Title.setText("T&C");
                 binding.btn3Image.setImageDrawable(AppController.getmContext().getResources().getDrawable(R.drawable.ic_terms_and_conditions));
                 binding.btn3Image.setOnClickListener(v -> {
-                    String description = shopInfo.getDescription();
                     if (description == null)
                         description = "Not available now";
                     TextBottomSheetFragment textBottomSheetFragment = TextBottomSheetFragment.newInstance("Terms & Conditions", description);

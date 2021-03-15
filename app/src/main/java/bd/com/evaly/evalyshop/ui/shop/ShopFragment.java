@@ -93,7 +93,6 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
 
         networkCheck();
         initHeader();
-        viewModelLiveDataObservers();
         binding.shimmer.startShimmer();
     }
 
@@ -132,63 +131,18 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
     @Override
     protected void liveEventsObservers() {
 
-    }
-
-    @Override
-    protected void clickListeners() {
-
-    }
-
-    @Override
-    protected void setupRecycler() {
-        controller = new ShopController();
-        controller.setActivity((AppCompatActivity) getActivity());
-        controller.setFragment(this);
-        controller.setViewModel(viewModel);
-        controller.setCampaignSlug(campaign_slug);
-        controller.setFilterDuplicates(true);
-
-        if (fullShopDetailsModel != null)
-            controller.setAttr(shopDetailsModel);
-
-        int spanCount = 2;
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        controller.setSpanCount(spanCount);
-
-        int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(spanCount, spacing, true));
-        binding.recyclerView.setLayoutManager(layoutManager);
-        binding.recyclerView.setAdapter(controller.getAdapter());
-        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
-            @Override
-            public void loadMoreItem() {
-                if (!isLoading) {
-                    controller.setLoadingMore(true);
-                    viewModel.loadShopProducts();
-                    isLoading = true;
-                }
-            }
+        viewModel.shopDetailsModelLiveData.observe(getViewLifecycleOwner(), shopDetailsModel -> {
+            controller.setSubscribed(shopDetailsModel.getData().isSubscribed());
+            controller.setSubscriberCount(shopDetailsModel.getData().getSubscriberCount());
+            if (controller.getShopInfo() != null)
+                controller.requestModelBuild();
         });
-    }
 
-    private void initRecommender() {
-        recommenderViewModel.insert("shop",
-                shopDetailsModel.getSlug(),
-                shopDetailsModel.getShopName(),
-                shopDetailsModel.getShopImage());
-    }
-
-    private void updateRecommender() {
-        if (shopDetailsModel == null)
-            return;
-        long endTime = System.currentTimeMillis();
-        long diff = endTime - startTime;
-        recommenderViewModel.updateSpentTime("shop",
-                shopDetailsModel.getSlug(),
-                diff);
-    }
-
-    private void viewModelLiveDataObservers() {
+        viewModel.campaignDetailsLiveData.observe(getViewLifecycleOwner(), subCampaignDetailsResponse -> {
+            controller.setDescription(subCampaignDetailsResponse.getDescription());
+            if (controller.getShopInfo() != null)
+                controller.requestModelBuild();
+        });
 
         viewModel.shopDetailsLive.observe(getViewLifecycleOwner(), response -> {
             shopDetailsModel = response;
@@ -296,6 +250,61 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
         });
 
     }
+
+    @Override
+    protected void clickListeners() {
+
+    }
+
+    @Override
+    protected void setupRecycler() {
+        controller = new ShopController();
+        controller.setActivity((AppCompatActivity) getActivity());
+        controller.setFragment(this);
+        controller.setViewModel(viewModel);
+        controller.setCampaignSlug(campaign_slug);
+        controller.setFilterDuplicates(true);
+
+        if (fullShopDetailsModel != null)
+            controller.setAttr(shopDetailsModel);
+
+        int spanCount = 2;
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        controller.setSpanCount(spanCount);
+
+        int spacing = (int) Utils.convertDpToPixel(10, getActivity());
+        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(spanCount, spacing, true));
+        binding.recyclerView.setLayoutManager(layoutManager);
+        binding.recyclerView.setAdapter(controller.getAdapter());
+        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
+            @Override
+            public void loadMoreItem() {
+                if (!isLoading) {
+                    controller.setLoadingMore(true);
+                    viewModel.loadShopProducts();
+                    isLoading = true;
+                }
+            }
+        });
+    }
+
+    private void initRecommender() {
+        recommenderViewModel.insert("shop",
+                shopDetailsModel.getSlug(),
+                shopDetailsModel.getShopName(),
+                shopDetailsModel.getShopImage());
+    }
+
+    private void updateRecommender() {
+        if (shopDetailsModel == null)
+            return;
+        long endTime = System.currentTimeMillis();
+        long diff = endTime - startTime;
+        recommenderViewModel.updateSpentTime("shop",
+                shopDetailsModel.getSlug(),
+                diff);
+    }
+
 
     private void setUpXmpp() {
 

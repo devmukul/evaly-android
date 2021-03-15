@@ -16,10 +16,12 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
@@ -52,6 +54,8 @@ public class ShopViewModel extends ViewModel {
     private List<TabsItem> categoryArrayList = new ArrayList<>();
     private List<ItemsItem> productArrayList = new ArrayList<>();
     private boolean isShop = true;
+    protected MutableLiveData<ShopDetailsModel> shopDetailsModelLiveData = new MutableLiveData<>();
+    protected MutableLiveData<SubCampaignDetailsResponse> campaignDetailsLiveData = new MutableLiveData<>();
 
 
     @Inject
@@ -65,9 +69,32 @@ public class ShopViewModel extends ViewModel {
         currentPage = 1;
         categoryCurrentPage = 1;
 
+        loadCampaignDetails();
         loadShopDetails();
         loadShopProducts();
         loadShopCategories();
+    }
+
+    private void loadCampaignDetails() {
+        if (campaignSlug == null)
+            return;
+
+        CampaignApiHelper.getSubCampaignDetails(campaignSlug, new ResponseListenerAuth<CommonDataResponse<SubCampaignDetailsResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<SubCampaignDetailsResponse> response, int statusCode) {
+                campaignDetailsLiveData.setValue(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void clear() {
@@ -262,6 +289,7 @@ public class ShopViewModel extends ViewModel {
         ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
+                shopDetailsModelLiveData.setValue(response);
                 productArrayList.addAll(response.getData().getItems());
                 productListLiveData.setValue(productArrayList);
                 currentPage++;
