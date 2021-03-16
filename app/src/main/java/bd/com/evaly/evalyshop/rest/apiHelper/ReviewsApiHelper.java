@@ -4,12 +4,20 @@ import com.google.gson.JsonObject;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 
 public class ReviewsApiHelper extends BaseApiHelper {
 
     public static void getReviewSummary(String token, String slug, boolean isShop, ResponseListenerAuth<JsonObject, String> listener) {
 //        if (isShop)
         getiApiClient().getShopReviews(token, slug).enqueue(getResponseCallBackDefault(listener));
+//        else
+//            getiApiClient().getProductReviewSummary(token, slug).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getReviewSummary(String token, String slug, ResponseListenerAuth<CommonDataResponse<ReviewSummaryModel>, String> listener) {
+//        if (isShop)
+        getiApiClient().getReviews(token, slug).enqueue(getResponseCallBackDefault(listener));
 //        else
 //            getiApiClient().getProductReviewSummary(token, slug).enqueue(getResponseCallBackDefault(listener));
     }

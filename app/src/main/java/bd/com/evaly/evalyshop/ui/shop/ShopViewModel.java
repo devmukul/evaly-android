@@ -18,6 +18,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
+import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
@@ -36,7 +37,7 @@ public class ShopViewModel extends ViewModel {
     private MutableLiveData<Boolean> onChatClickLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> onFollowClickLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> onResetLiveData = new MutableLiveData<>();
-    private MutableLiveData<JsonObject> ratingSummary = new MutableLiveData<>();
+    private MutableLiveData<ReviewSummaryModel> ratingSummary = new MutableLiveData<>();
     private MutableLiveData<ShopDetailsModel> shopDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<TabsItem>> shopCategoryListLiveData = new MutableLiveData<>();
     private MutableLiveData<List<ItemsItem>> productListLiveData = new MutableLiveData<>();
@@ -110,6 +111,7 @@ public class ShopViewModel extends ViewModel {
         loadShopDetails();
         loadShopProducts();
         loadShopCategories();
+        loadRatings();
     }
 
     public void setSearch(String search) {
@@ -164,7 +166,7 @@ public class ShopViewModel extends ViewModel {
         this.currentPage = currentPage;
     }
 
-    public LiveData<JsonObject> getRatingSummary() {
+    public LiveData<ReviewSummaryModel> getRatingSummary() {
         return ratingSummary;
     }
 
@@ -245,10 +247,10 @@ public class ShopViewModel extends ViewModel {
 
     public void loadRatings() {
 
-        ReviewsApiHelper.getReviewSummary(CredentialManager.getToken(), shopSlug, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        ReviewsApiHelper.getReviewSummary(CredentialManager.getToken(), shopSlug, new ResponseListenerAuth<CommonDataResponse<ReviewSummaryModel>, String>() {
             @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-                ratingSummary.setValue(response);
+            public void onDataFetched(CommonDataResponse<ReviewSummaryModel> response, int statusCode) {
+                ratingSummary.setValue(response.getData());
             }
 
             @Override
@@ -258,11 +260,10 @@ public class ShopViewModel extends ViewModel {
 
             @Override
             public void onAuthError(boolean logout) {
-                if (!logout)
-                    loadRatings();
 
             }
         });
+
     }
 
     public void loadShopDetails() {

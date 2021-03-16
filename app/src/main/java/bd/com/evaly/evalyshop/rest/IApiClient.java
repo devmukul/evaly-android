@@ -77,6 +77,7 @@ import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.profile.AddressWholeResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
+import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
 import bd.com.evaly.evalyshop.models.search.product.SearchRequest;
 import bd.com.evaly.evalyshop.models.search.product.response.ProductSearchResponse;
@@ -543,8 +544,8 @@ public interface IApiClient {
 
     @GET(UrlUtils.BASE_CATALOG + "campaign/{campaign_slug}/brand/{brand_slug}/categories")
     Call<CommonDataResponse<List<CategoriesItem>>> getCategoriesOfBrand(@Path("brand_slug") String brandSlug,
-                                                                       @Path("campaign_slug") String campaignSlug,
-                                                                       @Query("page") int page);
+                                                                        @Path("campaign_slug") String campaignSlug,
+                                                                        @Query("page") int page);
 
     // campaign APIs
 
@@ -622,6 +623,10 @@ public interface IApiClient {
     @GET(UrlUtils.DOMAIN + "ratings/api/v1/public/overview")
     Call<JsonObject> getShopReviews(@Header("Authorization") String token,
                                     @Query("slug") String slug);
+
+    @GET(UrlUtils.DOMAIN + "ratings/api/v1/public/overview")
+    Call<CommonDataResponse<ReviewSummaryModel>> getReviews(@Header("Authorization") String token,
+                                                            @Query("slug") String slug);
 
     @GET(UrlUtils.BASE_URL + "shop-subscriptions")
     Call<JsonObject> getFollowedShops(@Header("Authorization") String token);
