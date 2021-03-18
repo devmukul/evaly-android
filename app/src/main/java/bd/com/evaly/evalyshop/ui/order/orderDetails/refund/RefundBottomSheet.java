@@ -282,7 +282,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 Logger.d(statusCode);
                 dialog.hideDialog();
-                if (statusCode == 202) {
+                if (statusCode == 202 && getActivity() != null) {
                     if (otpAlert == null || !otpAlert.isShowing()) {
                         otpAlert = new Dialog(getActivity(), R.style.FullWidthTransparentDialog);
                         otpAlert.requestWindowFeature(Window.FEATURE_NO_TITLE);

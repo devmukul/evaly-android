@@ -97,7 +97,7 @@ public class CampaignFragment extends BaseFragment<FragmentCampaignBinding, Camp
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStatusBarColor();
+        // setStatusBarColor();
     }
 
     @Override
@@ -248,7 +248,6 @@ public class CampaignFragment extends BaseFragment<FragmentCampaignBinding, Camp
                     getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
                 }
             }
-
             binding.buttonRight.setColorFilter(getResources().getColor(R.color.fff), PorterDuff.Mode.SRC_ATOP);
             binding.backArrow.setColorFilter(getResources().getColor(R.color.fff), PorterDuff.Mode.SRC_ATOP);
             binding.clearSearch.setColorFilter(getResources().getColor(R.color.fff), PorterDuff.Mode.SRC_ATOP);
@@ -354,7 +353,6 @@ public class CampaignFragment extends BaseFragment<FragmentCampaignBinding, Camp
                 .into(binding.coverImage);
     }
 
-
     @Override
     public void onListLoaded(List<CampaignItem> list) {
 
@@ -365,14 +363,6 @@ public class CampaignFragment extends BaseFragment<FragmentCampaignBinding, Camp
         if (getActivity() == null || getActivity().isFinishing() || binding == null)
             return;
         ToastUtils.show("Error occurred!");
-    }
-
-    private void setStatusBarColor() {
-        if (getActivity() != null && getActivity().getWindow() != null && Build.VERSION.SDK_INT > 23) {
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-            setWindowFlag(getActivity(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
     }
 
     private void darkStatusBar() {
@@ -389,10 +379,5 @@ public class CampaignFragment extends BaseFragment<FragmentCampaignBinding, Camp
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        darkStatusBar();
-    }
 }
 

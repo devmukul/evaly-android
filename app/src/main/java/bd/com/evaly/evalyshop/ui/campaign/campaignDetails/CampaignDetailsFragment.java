@@ -119,7 +119,6 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
     @Override
     protected void initViews() {
         checkArguments();
-        setStatusBarColor();
         initToolbar();
         initTabs();
         initSearch();
@@ -420,34 +419,6 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
         BindingUtils.setImage(binding.bannerImage, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460, false);
         binding.title.setText(model.getName());
         viewModel.loadProductCategories();
-    }
-
-    private void setStatusBarColor() {
-        if (getActivity() != null && getActivity().getWindow() != null) {
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-            setWindowFlag(getActivity(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (getActivity() != null) {
-            mainViewModel.selectedCampaignModel = null;
-            mainViewModel.selectedCampaignProductCategoryModel = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (CredentialManager.isDarkMode())
-                    getActivity().getWindow().getDecorView().setSystemUiVisibility(0);
-                else
-                    getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.fff));
-            } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                getActivity().getWindow().getDecorView().setSystemUiVisibility(0);
-                setWindowFlag(getActivity(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.black));
-            }
-        }
     }
 
 }

@@ -187,7 +187,7 @@ public class HomeController extends EpoxyController {
         for (int i = 0; i < 2; i++) {
             new CampaignCategoryHeaderSkeletonModel_()
                     .id("campaign_cat_header_skeleton", i)
-                    .isTop( i == 0)
+                    .isTop(i == 0)
                     .addIf(isTopProductsLoading, this);
 
             List<DataBindingEpoxyModel> skeletonModelList = new ArrayList<>();
@@ -208,9 +208,12 @@ public class HomeController extends EpoxyController {
 
         int count = 0;
         for (CampaignTopProductResponse rootItem : campaignTopProductList) {
-            if (rootItem.getSlug().equals(Constants.FLASH_SALE_SLUG) && isCycloneOngoing) {
-                if (count == 0)
-                    count++;
+
+            if (rootItem.getProducts().size() == 0)
+                continue;
+
+            if (rootItem.getSlug().equals(Constants.FLASH_SALE_SLUG) && isCycloneOngoing && count == 0) {
+                count++;
                 continue;
             }
 
@@ -225,8 +228,6 @@ public class HomeController extends EpoxyController {
                         clickListener.onCampaignCategoryClick(rootItem);
                     })
                     .addIf(rootItem.getProducts().size() > 0, this);
-
-            count++;
 
             List<DataBindingEpoxyModel> modelList = new ArrayList<>();
             for (CampaignProductResponse item : rootItem.getProducts())
@@ -246,6 +247,8 @@ public class HomeController extends EpoxyController {
             new TopProductsDividerModel_()
                     .id("top_product_divider", rootItem.getSlug())
                     .addTo(this);
+
+            count++;
         }
     }
 

@@ -67,7 +67,6 @@ public abstract class CampaignCategoryHeaderModel extends BaseDataBindingEpoxyMo
                 ColorStateList.valueOf(Color.parseColor(primaryColor)));
 
         binding.holder.setOnClickListener(clickListener);
-
     }
 
     @Override

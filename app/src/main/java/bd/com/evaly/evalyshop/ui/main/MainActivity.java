@@ -3,10 +3,12 @@ package bd.com.evaly.evalyshop.ui.main;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -114,6 +116,28 @@ public class MainActivity extends BaseActivity {
         setupDialogs();
         handleNotificationNavigation(getIntent());
         handleOtherIntent();
+    }
+
+    private void transparentStatusBarColor() {
+        if (getWindow() != null && Build.VERSION.SDK_INT > 23) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            //  getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
+    private void resetStatusBarColor() {
+        if (getWindow() != null) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                int flags = getWindow().getDecorView().getSystemUiVisibility();
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                if (CredentialManager.isDarkMode())
+                    getWindow().getDecorView().setSystemUiVisibility(0);
+                else
+                    getWindow().getDecorView().setSystemUiVisibility(flags);
+                getWindow().setStatusBarColor(getColor(R.color.fff));
+            }
+        }
     }
 
     private void setupDialogs() {
@@ -303,7 +327,10 @@ public class MainActivity extends BaseActivity {
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         navController.createDeepLink();
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-
+            if (destination.getId() == R.id.campaignFragment || destination.getId() == R.id.campaignDetails)
+                transparentStatusBarColor();
+            else
+                resetStatusBarColor();
         });
     }
 

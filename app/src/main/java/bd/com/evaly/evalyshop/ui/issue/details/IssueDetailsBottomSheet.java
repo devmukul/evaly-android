@@ -171,11 +171,12 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
 
             }
         });
-
     }
 
-
     private void resolveIssue() {
+
+        if (getContext() == null)
+            return;
 
         ProgressDialog dialog = new ProgressDialog(getContext());
         dialog.show();
