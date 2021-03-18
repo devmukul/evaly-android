@@ -74,6 +74,7 @@ public class ShopViewModel extends ViewModel {
         loadShopDetails();
         loadShopProducts();
         loadShopCategories();
+        loadRatings();
     }
 
     private void loadCampaignDetails() {

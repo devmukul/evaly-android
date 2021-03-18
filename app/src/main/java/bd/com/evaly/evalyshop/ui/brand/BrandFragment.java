@@ -48,7 +48,6 @@ public class BrandFragment extends BaseFragment<FragmentBrandBinding, BrandViewM
     protected void initViews() {
         startTime = System.currentTimeMillis();
         binding.swipeRefresh.setOnRefreshListener(this);
-
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         new InitializeActionBar(binding.header.headerLogo, getActivity(), "brand", mainViewModel);
         binding.header.homeSearch.setOnClickListener(view1 -> {
@@ -56,8 +55,19 @@ public class BrandFragment extends BaseFragment<FragmentBrandBinding, BrandViewM
         });
     }
 
+    private void updateBrandInfoFromArguments() {
+        if (getArguments() != null && getArguments().containsKey("brand_name") && getArguments().containsKey("logo_image")) {
+            controller.setAttr(
+                    getArguments().getString("brand_name"),
+                    getArguments().getString("logo_image"),
+                    Utils.capitalize("General")
+            );
+        }
+    }
+
     @Override
     protected void liveEventsObservers() {
+
         viewModel.getSelectedCategoryLiveData().observe(getViewLifecycleOwner(), tabsItem -> {
             ApiClient.getUnsafeOkHttpClient().dispatcher().cancelAll();
             viewModel.clearProductList();
@@ -85,7 +95,6 @@ public class BrandFragment extends BaseFragment<FragmentBrandBinding, BrandViewM
                 viewModel.getProducts();
             }
         });
-
 
         viewModel.categoryListLiveData.observe(getViewLifecycleOwner(), tabsItems -> {
             controller.setCategoriesLoading(false);
@@ -119,7 +128,9 @@ public class BrandFragment extends BaseFragment<FragmentBrandBinding, BrandViewM
     @Override
     protected void setupRecycler() {
 
-        controller = new BrandController();
+        if (controller == null)
+            controller = new BrandController();
+        updateBrandInfoFromArguments();
         controller.setFilterDuplicates(true);
         controller.setViewModel(viewModel);
         controller.setActivity((AppCompatActivity) getActivity());
