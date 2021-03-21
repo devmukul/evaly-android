@@ -34,6 +34,8 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
@@ -95,6 +97,7 @@ public class CheckoutFragment extends DialogFragment {
     private double totalDeliveryCharge;
     private ProgressDialog progressDialog;
     private List<Uri> selectedImagesList;
+    private HashMap<String, Integer> minOrderAmountMap;
     private double totalAmount = 0;
 
     public CheckoutFragment() {
@@ -121,6 +124,7 @@ public class CheckoutFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(CheckoutFragment.this);
+        minOrderAmountMap = new HashMap<>();
         dialog = new ViewDialog(getActivity());
         dialog.showDialog();
         progressDialog = new ProgressDialog(getActivity());
@@ -205,6 +209,15 @@ public class CheckoutFragment extends DialogFragment {
     private void checkRemoteConfig() {
         deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
         deliveryChargeAmount = mFirebaseRemoteConfig.getDouble("delivery_charge_amount");
+
+        JsonArray shopListConditions = new Gson().fromJson(mFirebaseRemoteConfig.getString("shop_conditions"), JsonArray.class);
+        if (shopListConditions != null) {
+            for (int i = 0; i < shopListConditions.size(); i++) {
+                JsonObject obj = shopListConditions.get(i).getAsJsonObject();
+                if (obj != null)
+                    minOrderAmountMap.put(obj.get("slug").getAsString(), obj.get("min_amount").getAsInt());
+            }
+        }
     }
 
     private void updateViews() {
@@ -225,6 +238,7 @@ public class CheckoutFragment extends DialogFragment {
 
         if (itemList == null)
             itemList = new ArrayList<>();
+
         for (int i = 0; i < itemList.size(); i++) {
             CartEntity cartItem = itemList.get(i);
             if (Utils.isNumeric(cartItem.getProductID()))
@@ -234,9 +248,9 @@ public class CheckoutFragment extends DialogFragment {
                 Integer am = shopAmountMap.get(ss);
 
                 if (shopAmountMap.containsKey(ss) && am != null)
-                    shopAmountMap.put(ss, am + cartItem.getPriceInt() * cartItem.getQuantity());
+                    shopAmountMap.put(ss, (int) (am + cartItem.getDiscountedPriceD() * cartItem.getQuantity()));
                 else
-                    shopAmountMap.put(ss, cartItem.getPriceInt() * cartItem.getQuantity());
+                    shopAmountMap.put(ss, (int) cartItem.getDiscountedPriceD() * cartItem.getQuantity());
 
                 if (cartItem.isExpressShop()) {
                     isExpress = true;
@@ -252,14 +266,15 @@ public class CheckoutFragment extends DialogFragment {
         viewModel.checkAttachmentRequirements(productIdList);
 
         for (String key : shopAmountMap.keySet()) {
-            Integer am = shopAmountMap.get(key);
+            Integer totalAmount = shopAmountMap.get(key);
             Boolean express = shopExpressMap.get(key);
-
             int minAmount = 500;
             if (express && key.contains("food"))
                 minAmount = 300;
+            else if (minOrderAmountMap.containsKey(key) && minOrderAmountMap.get(key) != null)
+                minAmount = minOrderAmountMap.get(key);
 
-            if (!key.equals("evaly-amol-1") && am != null && am < minAmount) {
+            if (!key.equals("evaly-amol-1") && totalAmount != null && totalAmount < minAmount) {
                 minPrice = minAmount;
             }
         }
@@ -271,7 +286,6 @@ public class CheckoutFragment extends DialogFragment {
         } else {
             binding.deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
         }
-
     }
 
     private void checkLocationPermission() {
