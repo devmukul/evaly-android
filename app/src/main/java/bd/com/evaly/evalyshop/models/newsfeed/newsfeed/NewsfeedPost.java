@@ -65,6 +65,8 @@ public class NewsfeedPost implements Serializable {
 	}
 
 	public String getAuthorCompressedImage(){
+		if (authorCompressedImage == null)
+			return "";
 		return authorCompressedImage.replace("\n", "");
 	}
 

@@ -2,19 +2,10 @@ package bd.com.evaly.evalyshop.ui.brand;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -25,69 +16,57 @@ import bd.com.evaly.evalyshop.databinding.FragmentBrandBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.brand.controller.BrandController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class BrandFragment extends BaseFragment<FragmentBrandBinding, BrandViewModel> implements SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     RecommenderViewModel recommenderViewModel;
     long startTime = 0;
-    private BrandViewModel viewModel;
     private boolean isLoading = false;
-    private FragmentBrandBinding binding;
     private BrandController controller;
     private boolean clickFromCategory = false;
 
     public BrandFragment() {
-
+        super(BrandViewModel.class, R.layout.fragment_brand);
     }
 
     private void refreshFragment() {
-        binding.getRoot().post(() -> NavHostFragment.findNavController(BrandFragment.this).navigate(R.id.brandFragment, getArguments()));
+        binding.getRoot().post(() -> {
+            navController.navigate(R.id.brandFragment, getArguments());
+        });
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(BrandViewModel.class);
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentBrandBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    protected void initViews() {
         startTime = System.currentTimeMillis();
         binding.swipeRefresh.setOnRefreshListener(this);
-
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-
-        new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "brand", mainViewModel);
-
-        LinearLayout homeSearch = view.findViewById(R.id.home_search);
-        homeSearch.setOnClickListener(view1 -> {
-            Intent intent = new Intent(getContext(), GlobalSearchActivity.class);
-            intent.putExtra("type", 1);
-            startActivity(intent);
+        new InitializeActionBar(binding.header.headerLogo, getActivity(), "brand", mainViewModel);
+        binding.header.homeSearch.setOnClickListener(view1 -> {
+            navController.navigate(R.id.globalSearchFragment);
         });
-
-        setupRecycler();
-        liveEvents();
     }
 
-    private void liveEvents() {
+    private void updateBrandInfoFromArguments() {
+        if (getArguments() != null && getArguments().containsKey("brand_name") && getArguments().containsKey("logo_image")) {
+            controller.setAttr(
+                    getArguments().getString("brand_name"),
+                    getArguments().getString("logo_image"),
+                    Utils.capitalize("General")
+            );
+        }
+    }
+
+    @Override
+    protected void liveEventsObservers() {
 
         viewModel.getSelectedCategoryLiveData().observe(getViewLifecycleOwner(), tabsItem -> {
             ApiClient.getUnsafeOkHttpClient().dispatcher().cancelAll();
@@ -117,7 +96,6 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             }
         });
 
-
         viewModel.categoryListLiveData.observe(getViewLifecycleOwner(), tabsItems -> {
             controller.setCategoriesLoading(false);
             controller.setCategoryItems(tabsItems);
@@ -142,9 +120,17 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         });
     }
 
-    private void setupRecycler() {
+    @Override
+    protected void clickListeners() {
 
-        controller = new BrandController();
+    }
+
+    @Override
+    protected void setupRecycler() {
+
+        if (controller == null)
+            controller = new BrandController();
+        updateBrandInfoFromArguments();
         controller.setFilterDuplicates(true);
         controller.setViewModel(viewModel);
         controller.setActivity((AppCompatActivity) getActivity());
@@ -170,7 +156,6 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 }
             }
         });
-
     }
 
     private void updateRecommender() {

@@ -156,6 +156,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="seller_unknown">Seller: Unknown</string>
     <string name="shopping_cart">Shopping Cart</string>
     <string name="show_more">SHOW MORE</string>
+    <string name="show_more_n">Show More</string>
     <string name="no_post_yet">No post yet</string>
     <string name="no_orders_found">No orders found</string>
     <string name="call">Call</string>
@@ -190,6 +191,8 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="orders">Orders</string>
     <string name="brands">Brands</string>
     <string name="shops">Shops</string>
+    <string name="brand">Brand</string>
+    <string name="shop">Shop</string>
     <string name="home">Home</string>
     <string name="cart">Cart</string>
     <string name="dashboard">Dashboard</string>
@@ -234,6 +237,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="show_previous">Show previous</string>
     <string name="more_replies">more replies</string>
     <string name="evaly_express">Evaly Express</string>
+    <string name="express">Express</string>
     <string name="total">Total</string>
     <string name="subtotal">Subtotal</string>
     <string name="paid_amount">Paid Amount</string>
@@ -352,6 +356,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
         <item>Tangail</item>
         <item>Thakurgaon</item>
     </string-array>
+
 
     <string name="asset_statements" translatable="false">[{\"include\": \"https://evaly.com.bd/.well-known/assetlinks.json\"}]</string>
     <string name="also_available_at">Also available at</string>

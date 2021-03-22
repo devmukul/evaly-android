@@ -3,10 +3,12 @@ package bd.com.evaly.evalyshop.ui.main;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -57,11 +59,11 @@ import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.followedShops.FollowedShopActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
+import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
+import bd.com.evaly.evalyshop.ui.payment.listener.PaymentListener;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
-import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
-import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
 import dagger.hilt.android.AndroidEntryPoint;
 
 import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
@@ -114,6 +116,28 @@ public class MainActivity extends BaseActivity {
         setupDialogs();
         handleNotificationNavigation(getIntent());
         handleOtherIntent();
+    }
+
+    private void transparentStatusBarColor() {
+        if (getWindow() != null && Build.VERSION.SDK_INT > 23) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            //  getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
+    private void resetStatusBarColor() {
+        if (getWindow() != null) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                int flags = getWindow().getDecorView().getSystemUiVisibility();
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                if (CredentialManager.isDarkMode())
+                    getWindow().getDecorView().setSystemUiVisibility(0);
+                else
+                    getWindow().getDecorView().setSystemUiVisibility(flags);
+                getWindow().setStatusBarColor(getColor(R.color.fff));
+            }
+        }
     }
 
     private void setupDialogs() {
@@ -203,11 +227,6 @@ public class MainActivity extends BaseActivity {
                     } else
                         return onNavDestinationSelected(item, navController);
                 });
-
-        binding.fabCreate.setOnClickListener(view -> {
-            navController.navigate(R.id.action_expressFragment_Pop);
-            // navController.navigate(Uri.parse("https://beta.evaly.com.bd/campaign/campaigns/mr-quick-deal-1d2de849/thunderstorm-744dc7?type=suppliers"));
-        });
 
         BadgeDrawable wishListBadge = binding.bottomNavigationView.getOrCreateBadge(R.id.wishListFragment);
         if (wishListBadge != null)
@@ -308,7 +327,10 @@ public class MainActivity extends BaseActivity {
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         navController.createDeepLink();
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-
+            if (destination.getId() == R.id.campaignFragment || destination.getId() == R.id.campaignDetails)
+                transparentStatusBarColor();
+            else
+                resetStatusBarColor();
         });
     }
 
@@ -499,16 +521,16 @@ public class MainActivity extends BaseActivity {
             phoneNavHeader.setText(CredentialManager.getUserName());
 
             ImageView profilePicNav = binding.navView.getHeaderView(0).findViewById(R.id.profilePicNav);
-            if (CredentialManager.getUserData().getImageSm() != null)
-                Glide.with(this)
-                        .asBitmap()
-                        .load(CredentialManager.getUserData().getImageSm())
-                        .skipMemoryCache(true)
-                        .placeholder(R.drawable.user_image)
-                        .fitCenter()
-                        .centerCrop()
-                        .apply(new RequestOptions().override(200, 200))
-                        .into(profilePicNav);
+
+            Glide.with(this)
+                    .asBitmap()
+                    .load(CredentialManager.getUserData().getProfilePicUrl())
+                    .skipMemoryCache(true)
+                    .placeholder(R.drawable.user_image)
+                    .fitCenter()
+                    .centerCrop()
+                    .apply(new RequestOptions().override(200, 200))
+                    .into(profilePicNav);
 
             TextView tvMessageCount = binding.navView.getMenu().findItem(R.id.nav_messages).getActionView().findViewById(R.id.count);
             getMessageCount(tvMessageCount);

@@ -16,6 +16,38 @@
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
     </style>
 
+    <style name="Widget.App.Slider" parent="Widget.MaterialComponents.Slider">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Slider</item>
+        <item name="labelStyle">@style/Widget.App.Tooltip</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Slider" parent="">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnSurface">@color/f1f3f4</item>
+    </style>
+
+    <style name="Widget.App.Tooltip" parent="Widget.MaterialComponents.Tooltip">
+        <item name="android:textAppearance">@style/TextAppearance.App.Tooltip</item>
+<!--        <item name="backgroundTint">@color/f1f3f4</item>-->
+    </style>
+
+    <style name="TextAppearance.App.Tooltip" parent="TextAppearance.MaterialComponents.Tooltip">
+        <item name="android:textColor">@color/fffh</item>
+    </style>
+
+    <style name="Animation.Design.TopSheetDialog" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/top_sheet_slide_in</item>
+        <item name="android:windowExitAnimation">@anim/top_sheet_slide_out</item>
+    </style>
+
+    <style name="Widget.Design.TopSheet.Modal" parent="android:Widget">
+        <item name="android:background">?android:attr/colorBackground</item>
+        <item name="android:elevation">16dp</item>
+        <item name="behavior_peekHeight">256dp</item>
+        <item name="behavior_hideable">true</item>
+    </style>
+
     <style name="DatePicker" parent="ThemeOverlay.MaterialComponents.Dialog">
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:datePickerStyle">@style/DatePickerStyle</item>
@@ -31,8 +63,8 @@
     </style>
 
     <style name="AlertDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
-        <item name="android:colorAccent">@color/colorAccent</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorAccent">@color/black</item>
+        <item name="colorAccent">@color/black</item>
         <item name="buttonBarPositiveButtonStyle">@style/Alert.Button.Positive</item>
         <item name="buttonBarNegativeButtonStyle">@style/Alert.Button.Neutral</item>
         <item name="buttonBarNeutralButtonStyle">@style/Alert.Button.Neutral</item>
@@ -40,8 +72,8 @@
 
     <style name="Alert.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="backgroundTint">@color/transparent</item>
-        <item name="rippleColor">@color/colorAccent</item>
-        <item name="android:textColor">#333</item>
+        <item name="rippleColor">@color/black</item>
+        <item name="android:textColor">@color/c333</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:letterSpacing">0</item>
@@ -198,8 +230,14 @@
     <style name="NavigationDrawerStyle">
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textColor">@color/c444</item>
     </style>
 
+    <style name="NavDrawerTextStyle" parent="Base.TextAppearance.AppCompat">
+        <item name="android:textColor">@color/c444</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
 
     <style name="WideDialog" parent="android:Theme.Material.Light.Dialog.NoActionBar">
         <item name="android:windowMinWidthMajor">95%</item>
@@ -207,18 +245,15 @@
 
     </style>
 
-
     <style name="TransparentDialog" parent="Base.Theme.AppCompat.Light.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowMinWidthMajor">100%</item>
         <item name="android:windowMinWidthMinor">100%</item>
         <item name="android:windowSwipeToDismiss">true</item>
-
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
-
     </style>
 
 

@@ -27,6 +27,17 @@ public class AttachmentCheckResponse {
     @SerializedName("delivery_charge")
     private double deliveryCharge;
 
+    @SerializedName("minimum_order_amount")
+    private int minOrderAmount;
+
+    public int getMinOrderAmount() {
+        return minOrderAmount;
+    }
+
+    public void setMinOrderAmount(int minOrderAmount) {
+        this.minOrderAmount = minOrderAmount;
+    }
+
     public boolean isApplyDeliveryCharge() {
         return applyDeliveryCharge;
     }

@@ -6,15 +6,14 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
-        android:background="#222">
+        android:layout_marginHorizontal="0dp"
+        android:background="#000">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="5dp"
             android:fontFamily="sans-serif-medium"
             android:text="Flash Sale"
             android:textColor="@color/fffh"
@@ -26,15 +25,16 @@
 
         <TextView
             android:id="@+id/showMore"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
-            android:paddingTop="5dp"
             android:paddingEnd="20dp"
             android:text="Show All"
-            android:textColor="@color/eee"
+            android:textAlignment="textEnd"
+            android:textColor="#eee"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/title"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

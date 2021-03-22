@@ -31,6 +31,7 @@ public class BrandViewModel extends ViewModel {
     private List<ProductItem> arrayList = new ArrayList<>();
     private String slug;
     private String categorySlug = null;
+    private String campaignSlug = null;
     private int currentPage = 1;
     private boolean isCategoryLoading;
     private List<TabsItem> categoryArrayList = new ArrayList<>();
@@ -42,8 +43,14 @@ public class BrandViewModel extends ViewModel {
         this.slug = savedStateHandle.get("brand_slug");
         if (savedStateHandle.contains("category_slug"))
             this.categorySlug = savedStateHandle.get("category_slug");
+        if (savedStateHandle.contains("campaign_slug"))
+            this.campaignSlug = savedStateHandle.get("campaign_slug");
         getProducts();
         loadCategories();
+    }
+
+    public String getCampaignSlug() {
+        return campaignSlug;
     }
 
     public void clearProductList() {
@@ -80,7 +87,7 @@ public class BrandViewModel extends ViewModel {
 
     public void getProducts() {
 
-        ProductApiHelper.getCategoryBrandProducts(currentPage, categorySlug, slug, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
+        ProductApiHelper.getCampaignBrandProducts(currentPage, categorySlug, slug, campaignSlug, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
                 arrayList.addAll(response.getData());
@@ -102,14 +109,14 @@ public class BrandViewModel extends ViewModel {
 
     }
 
-    public void loadCategories() {
-        isCategoryLoading = true;
-        BrandApiHelper.getCategories(slug, categoryCurrentPage, new ResponseListenerAuth<CommonDataResponse<BrandCatResponse>, String>() {
+    public void loadCampaignCategories() {
+        if (campaignSlug == null)
+            return;
+        BrandApiHelper.getCampaignCategories(slug, campaignSlug, categoryCurrentPage, new ResponseListenerAuth<CommonDataResponse<List<CategoriesItem>>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<BrandCatResponse> response, int statusCode) {
-                detailsLive.setValue(response.getData());
+            public void onDataFetched(CommonDataResponse<List<CategoriesItem>> response, int statusCode) {
                 isCategoryLoading = false;
-                for (CategoriesItem item : response.getData().getCategories()) {
+                for (CategoriesItem item : response.getData()) {
                     TabsItem tabsItem = new TabsItem();
                     tabsItem.setTitle(item.getName());
                     tabsItem.setImage(item.getImageUrl());
@@ -118,6 +125,39 @@ public class BrandViewModel extends ViewModel {
                 }
                 categoryListLiveData.setValue(categoryArrayList);
                 categoryCurrentPage++;
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
+    public void loadCategories() {
+        isCategoryLoading = true;
+        loadCampaignCategories();
+        BrandApiHelper.getCategories(slug, categoryCurrentPage, new ResponseListenerAuth<CommonDataResponse<BrandCatResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<BrandCatResponse> response, int statusCode) {
+                detailsLive.setValue(response.getData());
+                if (campaignSlug == null) {
+                    isCategoryLoading = false;
+                    for (CategoriesItem item : response.getData().getCategories()) {
+                        TabsItem tabsItem = new TabsItem();
+                        tabsItem.setTitle(item.getName());
+                        tabsItem.setImage(item.getImageUrl());
+                        tabsItem.setSlug(item.getSlug());
+                        categoryArrayList.add(tabsItem);
+                    }
+                    categoryListLiveData.setValue(categoryArrayList);
+                    categoryCurrentPage++;
+                }
             }
 
             @Override

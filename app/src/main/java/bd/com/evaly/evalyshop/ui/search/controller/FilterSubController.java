@@ -11,8 +11,13 @@ import bd.com.evaly.evalyshop.ui.search.model.SearchFilterSubModel_;
 
 public class FilterSubController extends EpoxyController {
 
+    private String type = "";
     private GlobalSearchViewModel viewModel;
     private List<FilterSubItem> list = new ArrayList<>();
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public void setList(List<FilterSubItem> list) {
         this.list = list;
@@ -22,20 +27,47 @@ public class FilterSubController extends EpoxyController {
         this.viewModel = viewModel;
     }
 
+    public String getType() {
+        return type;
+    }
+
     @Override
     protected void buildModels() {
 
         for (FilterSubItem item : list) {
+            boolean isSelected = false;
+            List<String> selectedList = new ArrayList<>();
+            if (type.contains("categor"))
+                selectedList = viewModel.selectedFilterCategoriesList;
+            else if (type.contains("brand"))
+                selectedList = viewModel.selectedFilterBrandsList;
+            else if (type.contains("shop"))
+                selectedList = viewModel.selectedFilterShopsList;
+
+            isSelected = selectedList.contains(item.getName());
+
+            item.setSelected(isSelected);
+
             new SearchFilterSubModel_()
                     .id("root_filter", item.getName())
                     .value(item.getName())
                     .count(item.getCount())
                     .selected(item.isSelected())
-                    .clickListener((model, parentView, clickedView, position) -> {
-
+                    .checkedListener((checkBox, isChecked, value) -> {
+                        item.setSelected(isChecked);
                     })
-                    .addIf(viewModel.getSelectedFilterRoot().equals(item.getRoot()), this);
+                    .addTo(this);
         }
+    }
+
+    public List<String> getSelectedValues() {
+        List<String> items = new ArrayList<>();
+        for (FilterSubItem item : list) {
+            if (item.isSelected())
+                items.add(item.getName());
+        }
+
+        return items;
     }
 
 }

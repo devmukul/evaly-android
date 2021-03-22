@@ -3,26 +3,17 @@ package bd.com.evaly.evalyshop.ui.home;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
-import java.util.Random;
-
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
@@ -32,13 +23,12 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
-import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -47,7 +37,8 @@ import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, HomeController.ClickListener {
+public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel>
+        implements SwipeRefreshLayout.OnRefreshListener, HomeController.ClickListener {
 
     @Inject
     RecommenderViewModel recommenderViewModel;
@@ -56,23 +47,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     FirebaseRemoteConfig firebaseRemoteConfig;
 
     private boolean isLoading = true;
-    private FragmentHomeBinding binding;
-    private NavController navController;
     private HomeController homeController;
-    private HomeViewModel viewModel;
     private MainViewModel mainViewModel;
 
     public HomeFragment() {
-
-    }
-
-    public static HomeFragment newInstance() {
-        return new HomeFragment();
-    }
-
-    public static int randInt(int min, int max) {
-        Random rand = new Random();
-        return rand.nextInt((max - min) + 1) + min;
+        super(HomeViewModel.class, R.layout.fragment_home);
     }
 
     @Override
@@ -82,103 +61,21 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+    protected void initViews() {
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        networkCheck();
-        navController = NavHostFragment.findNavController(this);
         binding.swipeRefresh.setOnRefreshListener(this);
-
         initAppHeader();
-        setupRecycler();
-        liveEventObservers();
-    }
-
-    private void networkCheck() {
-        if (getContext() != null && !Utils.isNetworkAvailable(getContext()))
-            new NetworkErrorDialog(getContext(), new NetworkErrorDialogListener() {
-                @Override
-                public void onRetry() {
-                    viewModel.reload();
-                }
-
-                @Override
-                public void onBackPress() {
-                    navController.navigate(R.id.homeFragment);
-                }
-            });
-    }
-
-    private void initAppHeader() {
-        new InitializeActionBar(binding.header.headerLogo, getActivity(), "home", mainViewModel);
-        binding.header.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
+        networkCheck();
     }
 
     @Override
-    public void onRefresh() {
-        binding.swipeRefresh.setRefreshing(false);
-        viewModel.reload();
-    }
+    protected void liveEventsObservers() {
 
-    private void setupRecycler() {
-
-        if (homeController == null || homeController.getAdapter() == null)
-            homeController = new HomeController();
-
-        homeController.setFilterDuplicates(true);
-        homeController.setActivity((AppCompatActivity) getActivity());
-        homeController.setClickListener(this);
-        homeController.setFragment(this);
-        homeController.setHomeViewModel(viewModel);
-        homeController.setSpanCount(2);
-
-        //homeController.setCycloneOngoing(true);
-        homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
-        homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
-
-        binding.recyclerView.setAdapter(homeController.getAdapter());
-
-        FixedStaggeredGridLayoutManager layoutManager = new FixedStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-
-        int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(2, spacing, true));
-        binding.recyclerView.setLayoutManager(layoutManager);
-
-
-        if (!binding.recyclerView.isComputingLayout())
-            homeController.requestModelBuild();
-
-        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
-            @Override
-            public void loadMoreItem() {
-                if (!isLoading) {
-                    viewModel.loadProducts();
-                    isLoading = true;
-                    homeController.setLoadingMore(true);
-                    homeController.requestModelBuild();
-                }
-            }
+        viewModel.topCampaignProductsLiveList.observe(getViewLifecycleOwner(), campaignCategoryResponses -> {
+            homeController.setTopProductsLoading(false);
+            homeController.setCampaignTopProductList(campaignCategoryResponses);
+            requestModelBuild();
         });
-
-    }
-
-    private void requestModelBuild() {
-        if (!binding.recyclerView.isComputingLayout())
-            homeController.requestModelBuild();
-        //if (!binding.recyclerView.isComputingLayout() && !homeController.hasPendingModelBuild())
-        //homeController.requestDelayedModelBuild(randInt(100, 200));
-    }
-
-    private void liveEventObservers() {
 
         viewModel.codShopList.observe(getViewLifecycleOwner(), shopListResponses -> {
             homeController.setCodSaleShops(shopListResponses);
@@ -197,12 +94,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             if (rsEntities.size() > 0)
                 requestModelBuild();
         });
-
-//        recommenderViewModel.getRsShopLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
-//            homeController.setRsShopList(rsEntities);
-//            if (rsEntities.size() > 0)
-//                requestModelBuild();
-//        });
 
         viewModel.getProductListLive().observe(getViewLifecycleOwner(), list -> {
             isLoading = false;
@@ -242,17 +133,104 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             homeController.setBannerList(bannerItems);
             requestModelBuild();
         });
-
     }
 
     @Override
-    public void onProductClick(ProductItem item) {
+    protected void clickListeners() {
+
+    }
+
+    private void networkCheck() {
+        if (getContext() != null && !Utils.isNetworkAvailable(getContext()))
+            new NetworkErrorDialog(getContext(), new NetworkErrorDialogListener() {
+                @Override
+                public void onRetry() {
+                    viewModel.reload();
+                }
+
+                @Override
+                public void onBackPress() {
+                    navController.navigate(R.id.homeFragment);
+                }
+            });
+    }
+
+    private void initAppHeader() {
+        new InitializeActionBar(binding.header.headerLogo, getActivity(), "home", mainViewModel);
+        binding.header.homeSearch.setOnClickListener(view1 -> {
+            navController.navigate(R.id.globalSearchFragment);
+            // startActivity(new Intent(getContext(), GlobalSearchActivity.class));
+        });
+    }
+
+    @Override
+    public void onRefresh() {
+        binding.swipeRefresh.setRefreshing(false);
+        viewModel.reload();
+    }
+
+    @Override
+    protected void setupRecycler() {
+
+        if (homeController == null)
+            homeController = new HomeController();
+        else
+            homeController.getAdapter();
+
+        homeController.setFilterDuplicates(true);
+        homeController.setActivity((AppCompatActivity) getActivity());
+        homeController.setClickListener(this);
+        homeController.setFragment(this);
+        homeController.setHomeViewModel(viewModel);
+        homeController.setSpanCount(2);
+
+        homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
+        homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
+
+        if (BuildConfig.DEBUG)
+            homeController.setCycloneOngoing(false); // demo mode for dev env
+
+        binding.recyclerView.setAdapter(homeController.getAdapter());
+
+        FixedStaggeredGridLayoutManager layoutManager = new FixedStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+
+        int spacing = (int) Utils.convertDpToPixel(10, getActivity());
+        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(2, spacing, true));
+        binding.recyclerView.setLayoutManager(layoutManager);
+
+        if (!binding.recyclerView.isComputingLayout())
+            homeController.requestModelBuild();
+
+        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
+            @Override
+            public void loadMoreItem() {
+                if (!isLoading) {
+                    viewModel.loadProducts();
+                    isLoading = true;
+                    homeController.setLoadingMore(true);
+                    homeController.requestModelBuild();
+                }
+            }
+        });
+
+    }
+
+    private void requestModelBuild() {
+        if (!binding.recyclerView.isComputingLayout())
+            homeController.requestModelBuild();
+    }
+
+
+    @Override
+    public void onProductClick(CampaignProductResponse item1) {
         Intent intent = new Intent(getContext(), ViewProductActivity.class);
-        intent.putExtra("product_slug", item.getSlug());
-        intent.putExtra("product_name", item.getName());
-        intent.putExtra("product_price", item.getMaxPrice());
-        if (item.getImageUrls() != null && item.getImageUrls().size() > 0)
-            intent.putExtra("product_image", item.getImageUrls().get(0));
+        intent.putExtra("product_slug", item1.getSlug());
+        intent.putExtra("product_name", item1.getName());
+        intent.putExtra("product_price", item1.getPrice());
+        if (item1.getShopSlug() != null)
+            intent.putExtra("shop_slug", item1.getShopSlug());
+        intent.putExtra("product_image", item1.getImage());
+        intent.putExtra("cashback_text", item1.getCashbackText());
         getContext().startActivity(intent);
     }
 
@@ -357,16 +335,16 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onShowMoreShopClick() {
-        Intent intent = new Intent(getContext(), GlobalSearchActivity.class);
-        intent.putExtra("type", 3);
-        getContext().startActivity(intent);
+        Bundle bundle = new Bundle();
+        bundle.putString("type", "shop");
+        navController.navigate(R.id.globalSearchFragment, bundle);
     }
 
     @Override
     public void onShowMoreBrandClick() {
-        Intent intent = new Intent(getContext(), GlobalSearchActivity.class);
-        intent.putExtra("type", 2);
-        getContext().startActivity(intent);
+        Bundle bundle = new Bundle();
+        bundle.putString("type", "brand");
+        navController.navigate(R.id.globalSearchFragment, bundle);
     }
 
     @Override

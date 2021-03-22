@@ -11,6 +11,7 @@ import com.airbnb.epoxy.EpoxyModelClass;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemFilterSubBinding;
+import bd.com.evaly.evalyshop.ui.search.controller.CheckedListener;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -29,6 +30,9 @@ public abstract class SearchFilterSubModel extends DataBindingEpoxyModel {
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
 
+    @EpoxyAttribute(DoNotHash)
+    CheckedListener checkedListener;
+
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
@@ -36,8 +40,14 @@ public abstract class SearchFilterSubModel extends DataBindingEpoxyModel {
         binding.value.setText(value);
         binding.count.setText(count);
 
-        binding.radioButton.setSelected(selected);
-        binding.getRoot().setOnClickListener(clickListener);
+        binding.checkBox.setClickable(false);
+
+        binding.checkBox.setChecked(selected);
+
+        binding.holder.setOnClickListener(view -> {
+            binding.checkBox.toggleAnimated();
+            checkedListener.onCheckedChanged(binding.checkBox, binding.checkBox.isChecked(), value);
+        });
     }
 
     @Override

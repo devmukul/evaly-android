@@ -145,6 +145,7 @@
     <string name="shopping_cart">শপিং কার্ট</string>
     <string name="search_categories">ক্যাটাগরি অনুসন্ধান করুন</string>
     <string name="show_more">আরো দেখুন</string>
+    <string name="show_more_n">আরো দেখুন</string>
     <string name="no_post_yet">কোন পোস্ট নেই</string>
     <string name="no_orders_found">কোন অর্ডার নেই</string>
     <string name="location">অবস্থান</string>
@@ -173,6 +174,8 @@
     <string name="recent_products">সাম্প্রতিক পণ্য</string>
     <string name="brands">ব্র্যান্ড</string>
     <string name="shops">দোকান</string>
+    <string name="brand">ব্র্যান্ড</string>
+    <string name="shop">দোকান</string>
     <string name="home">হোম</string>
     <string name="cart">কার্ট</string>
     <string name="dashboard">ড্যাশবোর্ড</string>
@@ -215,6 +218,7 @@
     <string name="show_previous">"আগের আরো "</string>
     <string name="more_replies">টি রিপ্লে দেখুন</string>
     <string name="evaly_express">ইভ্যালি এক্সপ্রেস</string>
+    <string name="express">এক্সপ্রেস</string>
     <string name="total">মোট</string>
     <string name="subtotal">সাবটোটাল</string>
     <string name="paid_amount">পরিশোধিত হয়েছে</string>

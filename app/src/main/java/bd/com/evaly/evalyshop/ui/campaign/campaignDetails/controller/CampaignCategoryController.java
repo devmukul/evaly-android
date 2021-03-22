@@ -25,7 +25,9 @@ import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.CampaignDetailsViewModel;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryCarouselModel_;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryModel_;
+import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategorySkeletonModel_;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryTitleModel_;
+import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.model.ProductCategoryTitleSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBrandModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignShopModel_;
@@ -37,6 +39,10 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 
 public class CampaignCategoryController extends EpoxyController {
 
+    @AutoModel
+    ProductCategoryCarouselModel_ categoryCarousel;
+
+    private boolean isCategoryLoading = true;
     private List<CampaignParentModel> list = new ArrayList<>();
     private NavController navController;
     private boolean isLoading = true;
@@ -45,15 +51,16 @@ public class CampaignCategoryController extends EpoxyController {
     private AppCompatActivity activity;
     private List<CampaignProductCategoryResponse> categoryList = new ArrayList<>();
 
-    @AutoModel
-    ProductCategoryCarouselModel_ categoryCarousel;
-
     public CampaignCategoryController() {
         setFilterDuplicates(true);
     }
 
     @Override
     protected void buildModels() {
+
+        new ProductCategoryTitleSkeletonModel_()
+                .id("title_category_skeleton")
+                .addIf(viewModel.getType().contains("product") && categoryList.size() == 0 && isCategoryLoading, this);
 
         new ProductCategoryTitleModel_()
                 .id("title_category")
@@ -63,7 +70,12 @@ public class CampaignCategoryController extends EpoxyController {
                 .clickListener((model, parentView, clickedView, position) -> {
                     viewModel.openFilterModal.call();
                 })
-                .addIf(viewModel.getType().contains("product"), this);
+                .addIf(viewModel.getType().contains("product") && categoryList.size() > 0 && !isCategoryLoading, this);
+
+        List<ProductCategorySkeletonModel_> categorySkeletonModels = new ArrayList<>();
+        for (int i = 0; i < 3; i++)
+            categorySkeletonModels.add(new ProductCategorySkeletonModel_()
+                    .id("cat_sk_" + i));
 
         List<ProductCategoryModel_> categoryModels = new ArrayList<>();
         for (CampaignProductCategoryResponse item : categoryList) {
@@ -83,8 +95,8 @@ public class CampaignCategoryController extends EpoxyController {
         }
 
         categoryCarousel
-                .models(categoryModels)
-                .padding(Carousel.Padding.dp(10, 0, 10, 5, 10))
+                .models(isCategoryLoading ? categorySkeletonModels : categoryModels)
+                .padding(Carousel.Padding.dp(10, 0, 10, 5, 0))
                 .addIf(viewModel.getType().contains("product"), this);
 
         String campaignTitle = null;
@@ -106,7 +118,7 @@ public class CampaignCategoryController extends EpoxyController {
         new ProductCategoryTitleModel_()
                 .id("title_cc")
                 .title(campaignTitle)
-                .title2("Clear Filter")
+                .title2("Clear Category")
                 .clickListener((model, parentView, clickedView, position) -> {
                     setLoading(true);
                     viewModel.setSelectedCategoryModel(null);
@@ -150,13 +162,11 @@ public class CampaignCategoryController extends EpoxyController {
                         .clickListener((model, parentView, clickedView, position) -> {
                             Bundle bundle = new Bundle();
                             bundle.putInt("type", 1);
-                            bundle.putString("shop_name", model.model().getName());
+                            bundle.putString("brand_name", model.model().getName());
                             bundle.putString("logo_image", model.model().getImage());
-                            bundle.putString("shop_slug", model.model().getShopSlug());
-                            bundle.putString("category", "root");
                             bundle.putString("brand_slug", model.model().getSlug());
                             bundle.putString("campaign_slug", model.model().getCampaignSlug());
-                            navController.navigate(R.id.shopFragment, bundle);
+                            navController.navigate(R.id.brandFragment, bundle);
                         })
                         .addTo(this);
             else if (item instanceof CampaignShopResponse)
@@ -194,6 +204,15 @@ public class CampaignCategoryController extends EpoxyController {
         new LoadingModel_()
                 .id("bottom_loading_model")
                 .addIf(isLoading, this);
+    }
+
+
+    public int getProductListSize() {
+        return list.size();
+    }
+
+    public void setCategoryLoading(boolean categoryLoading) {
+        isCategoryLoading = categoryLoading;
     }
 
     private String getEmptyText() {

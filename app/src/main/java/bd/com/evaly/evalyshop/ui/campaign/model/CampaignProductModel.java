@@ -32,6 +32,9 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener buyNowClickListener;
 
+    @EpoxyAttribute
+    boolean hideBuyNowButton;
+
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
@@ -78,8 +81,9 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
         }
         binding.bottomText.setText(model.getBottomText());
 
-
         binding.buyNow.setOnClickListener(buyNowClickListener);
+
+        binding.buyNow.setVisibility(hideBuyNowButton ? View.GONE : View.VISIBLE);
     }
 
 

@@ -1,16 +1,17 @@
 package bd.com.evaly.evalyshop.ui.shop.controller;
 
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -18,28 +19,35 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.EpoxyController;
-import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ShopModelHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.ShopModelTitleCategoryBinding;
 import bd.com.evaly.evalyshop.databinding.ShopModelTitleProductBinding;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
+import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
+import bd.com.evaly.evalyshop.ui.shop.models.BindShopHeaderModel;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryCarouselModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryItemModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryTitleModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopHeaderModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopProductTitleModel_;
-import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class ShopController extends EpoxyController {
 
@@ -69,6 +77,27 @@ public class ShopController extends EpoxyController {
     private boolean emptyPage = false;
     private boolean categoriesLoading = false;
     private String categoryTitle = null;
+    private String description = null;
+    private boolean isSubscribed = false;
+    private ReviewSummaryModel reviewSummaryModel;
+    private int subscriberCount = 0;
+
+
+    public void setReviewSummaryModel(ReviewSummaryModel reviewSummaryModel) {
+        this.reviewSummaryModel = reviewSummaryModel;
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        isSubscribed = subscribed;
+    }
+
+    public void setSubscriberCount(int subscriberCount) {
+        this.subscriberCount = subscriberCount;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public ShopController() {
         setDebugLoggingEnabled(true);
@@ -101,22 +130,82 @@ public class ShopController extends EpoxyController {
     protected void buildModels() {
 
         headerModel
-                .activity(activity)
-                .fragment(fragment)
                 .shopInfo(shopInfo)
+                .description(description)
+                .subCount(subscriberCount)
+                .isSubscribed(isSubscribed)
+                .ratingSummary(reviewSummaryModel)
                 .onBind((model, view, position) -> {
-                    if (shopInfo != null) {
-                        TextView name = view.itemView.findViewById(R.id.name);
-                        ImageView image = view.itemView.findViewById(R.id.logo);
-                        name.setText(shopInfo.getShopName());
-                        Glide.with(image)
-                                .load(shopInfo.getShopImage())
-                                .skipMemoryCache(true)
-                                .placeholder(ContextCompat.getDrawable(activity, R.drawable.ic_evaly_placeholder))
-                                .into(image);
+                    BindShopHeaderModel.bind((ShopModelHeaderBinding) view.getDataBinding(),
+                            model.shopInfo(),
+                            model.description(),
+                            model.isSubscribed(),
+                            model.subCount(),
+                            model.ratingSummary());
+                })
+                .btn1OnClick((model, parentView, clickedView, position) -> {
+                    String phone = shopInfo.getContactNumber();
+                    if (fragment.getView() == null)
+                        return;
+                    final Snackbar snackBar = Snackbar.make(fragment.getView(), phone + "\n", Snackbar.LENGTH_LONG);
+                    snackBar.setAction("Call", v12 -> {
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("tel:" + shopInfo.getContactNumber()));
+                        activity.startActivity(intent);
+                        snackBar.dismiss();
+                    });
+                    snackBar.show();
+                })
+                .btn2OnClick((model, parentView, clickedView, position) -> {
+                    String address = shopInfo.getShopAddress();
+                    if (fragment.getView() == null)
+                        return;
+                    final Snackbar snackBar = Snackbar.make(fragment.getView(), address + "\n", Snackbar.LENGTH_LONG);
+                    snackBar.setAction("Copy", v1 -> {
+                        ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("address", shopInfo.getShopAddress());
+                        if (clipboard != null)
+                            clipboard.setPrimaryClip(clip);
+
+                        snackBar.dismiss();
+                    });
+                    snackBar.show();
+                })
+                .btn3OnClick((model, parentView, clickedView, position) -> {
+                    if (description == null) {
+                        ToastUtils.show("Delivery information is not provided");
+                    } else {
+                        description = "Not available now";
+                        TextBottomSheetFragment textBottomSheetFragment = TextBottomSheetFragment.newInstance("Terms & Conditions", description);
+                        textBottomSheetFragment.show(fragment.getParentFragmentManager(), "tc");
                     }
                 })
-                .viewModel(viewModel)
+                .btn4OnClick((model, parentView, clickedView, position) -> {
+                    Intent intent = new Intent(activity, ReviewsActivity.class);
+                    intent.putExtra("ratingJson", new Gson().toJson(model.ratingSummary()));
+                    intent.putExtra("type", "shop");
+                    intent.putExtra("item_value", shopInfo.getSlug());
+                    activity.startActivity(intent);
+                })
+                .followOnClick((model, parentView, clickedView, position) -> {
+                    if (CredentialManager.getToken().equals("")) {
+                        ToastUtils.show("You need to login first to follow a shop");
+                        return;
+                    }
+                    ShopModelHeaderBinding binding = (ShopModelHeaderBinding) parentView.getDataBinding();
+                    boolean subscribe = true;
+
+                    if (binding.followText.getText().toString().contains("Unfollow")) {
+                        subscribe = false;
+                        binding.followText.setText(String.format("Follow (%d)", --subscriberCount));
+                    } else
+                        binding.followText.setText(String.format("Unfollow (%d)", ++subscriberCount));
+
+                    viewModel.subscribe(subscribe);
+                })
+                .messageOnClick((model, parentView, clickedView, position) -> {
+                    viewModel.setOnChatClickLiveData(true);
+                })
                 .addTo(this);
 
         initCategory();
@@ -184,12 +273,7 @@ public class ShopController extends EpoxyController {
                     params.setFullSpan(true);
                     view.setLayoutParams(params);
                 })
-                .padding(new Carousel.Padding(
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(5, activity),
-                        50,
-                        (int) Utils.convertDpToPixel(5, activity),
-                        0))
+                .padding(Carousel.Padding.dp(10, 5, 50, 0, 0))
                 .models(categoryModelList)
                 .addTo(this);
 

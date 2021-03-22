@@ -161,7 +161,7 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
                     else if (viewModel.getSelectedItemCount() == 0)
                         ToastUtils.show("Please select item to delete");
                     else {
-                        new MaterialAlertDialogBuilder(getContext())
+                        new MaterialAlertDialogBuilder(getContext(), R.style.AlertDialogTheme)
                                 .setMessage("Are you sure you want to delete the selected products from the cart?")
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {

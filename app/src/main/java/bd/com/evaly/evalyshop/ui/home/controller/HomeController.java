@@ -24,24 +24,19 @@ import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
+import bd.com.evaly.evalyshop.models.campaign.topProducts.CampaignTopProductResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
-import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.recommender.database.table.RsEntity;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerSkeletonModel_;
+import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSmallProductModel_;
 import bd.com.evaly.evalyshop.ui.epoxy.EpoxyDividerModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.home.HomeViewModel;
 import bd.com.evaly.evalyshop.ui.home.model.HomeDefaultCarouselModel;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressCarouselModel;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressHeaderModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceSkeletonModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressSkeletonModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeRsCarouselModel;
 import bd.com.evaly.evalyshop.ui.home.model.HomeRsGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
@@ -53,6 +48,16 @@ import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneCarouselModel;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneSectionTitleModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneShopModel_;
+import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressCarouselModel;
+import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressHeaderModel_;
+import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressServiceModel_;
+import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressServiceSkeletonModel_;
+import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressSkeletonModel_;
+import bd.com.evaly.evalyshop.ui.home.model.topProducts.CampaignCategoryHeaderModel_;
+import bd.com.evaly.evalyshop.ui.home.model.topProducts.CampaignCategoryHeaderSkeletonModel_;
+import bd.com.evaly.evalyshop.ui.home.model.topProducts.TopProductSkeletonModel_;
+import bd.com.evaly.evalyshop.ui.home.model.topProducts.TopProductsCarouselModel;
+import bd.com.evaly.evalyshop.ui.home.model.topProducts.TopProductsDividerModel_;
 import bd.com.evaly.evalyshop.util.Constants;
 
 public class HomeController extends EpoxyController {
@@ -89,7 +94,6 @@ public class HomeController extends EpoxyController {
 
     @AutoModel
     HomeExpressHeaderModel_ flashSaleHeaderModel_;
-
     @AutoModel
     HomeExpressHeaderModel_ codHeaderModel_;
     @AutoModel
@@ -104,7 +108,8 @@ public class HomeController extends EpoxyController {
     private AppCompatActivity activity;
     private Fragment fragment;
     private HomeViewModel homeViewModel;
-    private List<ProductItem> items = new ArrayList<>();
+    private List<CampaignTopProductResponse> campaignTopProductList = new ArrayList<>();
+    private List<CampaignProductResponse> items = new ArrayList<>();
     private List<CampaignProductResponse> flashSaleProducts = new ArrayList<>();
     private List<CampaignBrandResponse> flashSaleBrands = new ArrayList<>();
     private List<CampaignShopResponse> flashSaleShops = new ArrayList<>();
@@ -117,6 +122,7 @@ public class HomeController extends EpoxyController {
     private List<RsEntity> rsShopList = new ArrayList<>();
     private boolean loadingMore = true;
     private boolean isExpressLoading = true;
+    private boolean isTopProductsLoading = true;
     private boolean isCampaignLoading = true;
     private boolean isCycloneOngoing = false;
     private String cycloneBanner = "https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/images/cyclone1.gif";
@@ -133,6 +139,10 @@ public class HomeController extends EpoxyController {
 
     public void setClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
+    }
+
+    public void setTopProductsLoading(boolean topProductsLoading) {
+        isTopProductsLoading = topProductsLoading;
     }
 
     @Override
@@ -154,9 +164,9 @@ public class HomeController extends EpoxyController {
                 .activity(activity)
                 .addTo(this);
 
-        initCampaignCarousel();
+        initCycloneCarousel();
 
-        initFlashSaleCarousel();
+        initCampaignTopProducts();
 
         initExpressCarousel();
 
@@ -170,6 +180,80 @@ public class HomeController extends EpoxyController {
 
         // bottom loading bar
         loader.addIf(loadingMore, this);
+    }
+
+    private void initCampaignTopProducts() {
+
+        for (int i = 0; i < 2; i++) {
+            new CampaignCategoryHeaderSkeletonModel_()
+                    .id("campaign_cat_header_skeleton", i)
+                    .isTop(i == 0)
+                    .addIf(isTopProductsLoading, this);
+
+            List<DataBindingEpoxyModel> skeletonModelList = new ArrayList<>();
+            for (int j = 0; j < 5; j++)
+                skeletonModelList.add(new TopProductSkeletonModel_()
+                        .id("sub_cam_skeleton", i + " " + j));
+
+            new TopProductsCarouselModel()
+                    .id("top_product_caro_skeleton", i)
+                    .models(skeletonModelList)
+                    .padding(Carousel.Padding.dp(12, 3, 12, 18, 10))
+                    .addIf(isTopProductsLoading, this);
+
+            new TopProductsDividerModel_()
+                    .id("top_product_divider_skeleton", i)
+                    .addIf(isTopProductsLoading, this);
+        }
+
+        int count = 0;
+        for (CampaignTopProductResponse rootItem : campaignTopProductList) {
+
+            if (rootItem.getProducts().size() == 0)
+                continue;
+
+            if (rootItem.getSlug().equals(Constants.FLASH_SALE_SLUG) && isCycloneOngoing && count == 0) {
+                count++;
+                continue;
+            }
+
+            new CampaignCategoryHeaderModel_()
+                    .id("cam_header", rootItem.getSlug())
+                    .isStaggered(true)
+                    .isTop(count == 0)
+                    .headerText(rootItem.getBannerHeaderText())
+                    .subText(rootItem.getBannerSubText())
+                    .primaryColor(rootItem.getBannerPrimaryBgColor())
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        clickListener.onCampaignCategoryClick(rootItem);
+                    })
+                    .addIf(rootItem.getProducts().size() > 0, this);
+
+            List<DataBindingEpoxyModel> modelList = new ArrayList<>();
+            for (CampaignProductResponse item : rootItem.getProducts())
+                modelList.add(new CycloneProductModel_()
+                        .id("sub_cam", item.getSlug())
+                        .clickListener((model, parentView, clickedView, position) -> {
+                            clickListener.onCampaignProductClick(model.model());
+                        })
+                        .model(item));
+
+            new TopProductsCarouselModel()
+                    .id("caro", rootItem.getSlug())
+                    .models(modelList)
+                    .padding(Carousel.Padding.dp(12, 3, 12, 18, 10))
+                    .addIf(rootItem.getProducts().size() > 0, this);
+
+            new TopProductsDividerModel_()
+                    .id("top_product_divider", rootItem.getSlug())
+                    .addTo(this);
+
+            count++;
+        }
+    }
+
+    public void setCampaignTopProductList(List<CampaignTopProductResponse> campaignTopProductList) {
+        this.campaignTopProductList = campaignTopProductList;
     }
 
     @Override
@@ -188,12 +272,16 @@ public class HomeController extends EpoxyController {
 
 
         // product listing
-        for (ProductItem productItem : items) {
-            new HomeProductGridModel_()
-                    .id("product_listing", productItem.getSlug())
-                    .model(productItem)
+        for (CampaignProductResponse item : items) {
+            new CampaignProductModel_()
+                    .id(item.getSlug())
+                    .model(item)
+                    .hideBuyNowButton(true)
                     .clickListener((model, parentView, clickedView, position) -> {
-                        clickListener.onProductClick(model.getModel());
+                        clickListener.onProductClick(model.model());
+                    })
+                    .buyNowClickListener((model, parentView, clickedView, position) -> {
+                        // viewModel.setBuyNowClick(model.model());
                     })
                     .addTo(this);
         }
@@ -207,7 +295,7 @@ public class HomeController extends EpoxyController {
                 .title("Shops - Cash on Delivery")
                 .transparentBackground(true)
                 .clickListener((model, parentView, clickedView, position) -> {
-                     clickListener.onShowCodShopsClick();
+                    clickListener.onShowCodShopsClick();
                 })
                 .addIf(codSaleShops.size() > 0, this);
 
@@ -371,6 +459,12 @@ public class HomeController extends EpoxyController {
 
     private void initExpressCarousel() {
         //express services carousel
+
+        new EmptySpaceModel_()
+                .id("express_top_space")
+                .height(10)
+                .addTo(this);
+
         expressHeaderModel_
                 .showMore(true)
                 .title("Evaly Express")
@@ -443,15 +537,23 @@ public class HomeController extends EpoxyController {
                 .padding(Carousel.Padding.dp(15, 12, 10, 10, 10))
                 .addIf(!isCycloneOngoing && flashSaleModels.size() > 0, this);
 
-        initCycloneCarousel();
     }
 
     private void initCycloneCarousel() {
 
+        for (CampaignTopProductResponse rootItem : campaignTopProductList) {
+            if (rootItem.getSlug().equals(Constants.FLASH_SALE_SLUG) && isCycloneOngoing) {
+                flashSaleProducts = rootItem.getProducts();
+                break;
+            }
+        }
+
         cycloneBannerModel
                 .image(cycloneBanner)
                 .clickListener((model, parentView, clickedView, position) -> clickListener.navigateToUrl("https://evaly.com.bd/campaign/products/" + Constants.FLASH_SALE_SLUG))
-                .addIf(isCycloneOngoing && (flashSaleShops.size() > 0 || flashSaleProducts.size() > 0 || flashSaleBrands.size() > 0), this);
+                .addIf(isCycloneOngoing && (flashSaleShops.size() > 0 ||
+                        flashSaleProducts.size() > 0 ||
+                        flashSaleBrands.size() > 0), this);
 
         //flash sale carousel
         flashSaleProductTitle
@@ -473,11 +575,10 @@ public class HomeController extends EpoxyController {
                     }));
         }
 
-
         new CycloneCarouselModel()
                 .id("flashSaleProductsCarousel")
                 .models(flashSaleProductModels)
-                .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
+                .padding(Carousel.Padding.dp(12, 12, 12, 17, 10))
                 .addIf(isCycloneOngoing && flashSaleProductModels.size() > 0, this);
 
         // brands
@@ -488,7 +589,8 @@ public class HomeController extends EpoxyController {
                 .clickListener((model, parentView, clickedView, position) -> {
                     clickListener.navigateToUrl("https://evaly.com.bd/campaign/brands/" + Constants.FLASH_SALE_SLUG);
                 })
-                .addIf(isCycloneOngoing && flashSaleBrands.size() > 0, this);
+                .addIf(isCycloneOngoing && flashSaleBrands.size() > 0 &&
+                        flashSaleProductModels.size() > 0, this);
 
         List<DataBindingEpoxyModel> flashSaleBrandsModels = new ArrayList<>();
 
@@ -504,8 +606,9 @@ public class HomeController extends EpoxyController {
         new CycloneCarouselModel()
                 .id("flashSaleBrandsCarousel")
                 .models(flashSaleBrandsModels)
-                .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
-                .addIf(isCycloneOngoing && flashSaleBrandsModels.size() > 0, this);
+                .padding(Carousel.Padding.dp(12, 12, 12, 17, 10))
+                .addIf(isCycloneOngoing && flashSaleBrandsModels.size() > 0 &&
+                        flashSaleProductModels.size() > 0, this);
 
         // shops
         flashSaleShopTitle
@@ -514,7 +617,9 @@ public class HomeController extends EpoxyController {
                 .clickListener((model, parentView, clickedView, position) -> {
                     clickListener.navigateToUrl("https://evaly.com.bd/campaign/suppliers/" + Constants.FLASH_SALE_SLUG);
                 })
-                .addIf(isCycloneOngoing && flashSaleShops.size() > 0, this);
+                .addIf(isCycloneOngoing && flashSaleShops.size() > 0 &&
+                        flashSaleBrandsModels.size() > 0 &&
+                        flashSaleProductModels.size() > 0, this);
 
         List<DataBindingEpoxyModel> flashSaleShopModels = new ArrayList<>();
 
@@ -530,11 +635,15 @@ public class HomeController extends EpoxyController {
         new CycloneCarouselModel()
                 .id("flashSaleShopCarousel")
                 .models(flashSaleShopModels)
-                .padding(Carousel.Padding.dp(28, 12, 30, 10, 10))
-                .addIf(isCycloneOngoing && flashSaleShopModels.size() > 0, this);
+                .padding(Carousel.Padding.dp(12, 12, 12, 10, 10))
+                .addIf(isCycloneOngoing && flashSaleShopModels.size() > 0 &&
+                        flashSaleBrandsModels.size() > 0 &&
+                        flashSaleProductModels.size() > 0, this);
 
         cycloneBottomBarModel
-                .addIf(isCycloneOngoing && (flashSaleProductModels.size() > 0 || flashSaleBrandsModels.size() > 0 || flashSaleShopModels.size() > 0), this);
+                .addIf(isCycloneOngoing && flashSaleProductModels.size() > 0 &&
+                        (flashSaleBrandsModels.size() > 0 ||
+                                flashSaleShopModels.size() > 0), this);
     }
 
     public void setCycloneBanner(String cycloneBanner) {
@@ -579,7 +688,7 @@ public class HomeController extends EpoxyController {
         this.campaignCategoryList = campaignCategoryList;
     }
 
-    public void setProductData(List<ProductItem> productItems) {
+    public void setProductData(List<CampaignProductResponse> productItems) {
         this.items = productItems;
     }
 
@@ -622,8 +731,12 @@ public class HomeController extends EpoxyController {
 
     }
 
+    public void setCodSaleShops(List<ShopListResponse> codSaleShops) {
+        this.codSaleShops = codSaleShops;
+    }
+
     public interface ClickListener {
-        void onProductClick(ProductItem item);
+        void onProductClick(CampaignProductResponse item);
 
         void onCategoryClick(String slug, String category);
 
@@ -656,10 +769,6 @@ public class HomeController extends EpoxyController {
         void onCampaignBrandClick(CampaignBrandResponse model);
 
         void onCampaignShopClick(CampaignShopResponse model);
-    }
-
-    public void setCodSaleShops(List<ShopListResponse> codSaleShops) {
-        this.codSaleShops = codSaleShops;
     }
 }
 

@@ -23,9 +23,12 @@
     <color name="f9f9f9">#222</color>
     <color name="f8f8f8">#222</color>
     <color name="f6f6f6">#222</color>
+    <color name="f5f5f5">#222</color>
+    <color name="f4f4f4">#323232</color>
     <color name="fefefe">#222</color>
 
     <color name="c777">#aaa</color>
+    <color name="c888">#aaa</color>
     <color name="c444">#ddd</color>
     <color name="c555">#B3B0B0</color>
     <color name="c666">#a8a8a8</color>

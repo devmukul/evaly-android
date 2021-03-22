@@ -11,9 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -22,10 +20,6 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -40,6 +34,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentCampaignBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignBannerController;
 import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignController;
@@ -51,12 +46,9 @@ import bd.com.evaly.evalyshop.views.FixedStaggeredGridLayoutManager;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
-public class CampaignFragment extends Fragment implements CampaignNavigator {
+public class CampaignFragment extends BaseFragment<FragmentCampaignBinding, CampaignViewModel> implements CampaignNavigator {
 
     int coverHeight;
-    private FragmentCampaignBinding binding;
-    private CampaignViewModel viewModel;
-    private NavController navController;
     private CampaignBannerController sliderController;
     private CampaignController productController;
     private boolean isLoading = false;
@@ -86,11 +78,9 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         }
     };
 
-    public static CampaignFragment newInstance() {
-        final CampaignFragment fragment = new CampaignFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+
+    public CampaignFragment() {
+        super(CampaignViewModel.class, R.layout.fragment_campaign);
     }
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
@@ -104,30 +94,17 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         win.setAttributes(winParams);
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        binding = FragmentCampaignBinding.inflate(inflater);
-        navController = NavHostFragment.findNavController(this);
-        return binding.getRoot();
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStatusBarColor();
-        viewModel = new ViewModelProvider(this).get(CampaignViewModel.class);
+        // setStatusBarColor();
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    protected void initViews() {
         setupToolbar();
         initSlider();
-        initRecycler();
         initSearch();
-        liveEventsObserver();
-        clickListeners();
     }
 
     private void initSearch() {
@@ -174,7 +151,8 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         binding.searchText.addTextChangedListener(searchTextWatcher);
     }
 
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
         binding.backArrow.setOnClickListener(v -> requireActivity().onBackPressed());
         binding.buttonRight.setOnClickListener(view -> {
             if (!isSharingBottomShowing) {
@@ -270,7 +248,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                     getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
                 }
             }
-
             binding.buttonRight.setColorFilter(getResources().getColor(R.color.fff), PorterDuff.Mode.SRC_ATOP);
             binding.backArrow.setColorFilter(getResources().getColor(R.color.fff), PorterDuff.Mode.SRC_ATOP);
             binding.clearSearch.setColorFilter(getResources().getColor(R.color.fff), PorterDuff.Mode.SRC_ATOP);
@@ -280,7 +257,8 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         }
     }
 
-    private void liveEventsObserver() {
+    @Override
+    protected void liveEventsObservers() {
 
         viewModel.getBuyNowClick().observe(getViewLifecycleOwner(), campaignProductResponse -> {
             BuyNowFragment addPhotoBottomDialogFragment =
@@ -321,7 +299,8 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         productController.requestModelBuild();
     }
 
-    private void initRecycler() {
+    @Override
+    protected void setupRecycler() {
         if (productController == null)
             productController = new CampaignController();
         productController.setNavController(navController);
@@ -374,7 +353,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                 .into(binding.coverImage);
     }
 
-
     @Override
     public void onListLoaded(List<CampaignItem> list) {
 
@@ -385,14 +363,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         if (getActivity() == null || getActivity().isFinishing() || binding == null)
             return;
         ToastUtils.show("Error occurred!");
-    }
-
-    private void setStatusBarColor() {
-        if (getActivity() != null && getActivity().getWindow() != null && Build.VERSION.SDK_INT > 23) {
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-            setWindowFlag(getActivity(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
     }
 
     private void darkStatusBar() {
@@ -409,10 +379,5 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        darkStatusBar();
-    }
 }
 

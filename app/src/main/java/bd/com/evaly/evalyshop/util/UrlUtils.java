@@ -21,7 +21,7 @@ public class UrlUtils {
     public static final String BASE_URL = DOMAIN + "core/";
     public static final String BASE_CATALOG = DOMAIN + "go-catalog/api/v1/public/";
     public static final String BASE_CART = DOMAIN + "evaly-cart/api/v1.0.0/";
-
+    public static final String BASE_SEARCH = DOMAIN + "esearch/api/v1/search/";
 
     public static final String BASE_URL_ADDRESS = DOMAIN + "eauth/api/v1/address/";
     public static final String BASE_URL_AUTH = DOMAIN_AUTH + "";

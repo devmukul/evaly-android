@@ -15,6 +15,7 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryRe
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
+import bd.com.evaly.evalyshop.models.campaign.topProducts.CampaignTopProductResponse;
 
 public class CampaignApiHelper extends BaseApiHelper {
 
@@ -38,8 +39,8 @@ public class CampaignApiHelper extends BaseApiHelper {
         getiApiClient().getCampaignCategoryCampaigns(page, limit, search, category).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getCampaignCategoryProducts(int page, int limit, String search, String category, String campaign, String productCategory, ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String> listener) {
-        getiApiClient().getCampaignCategoryProducts(page, limit, search, category, campaign, productCategory).enqueue(getResponseCallBackDefault(listener));
+    public static void getCampaignCategoryProducts(int page, int limit, String search, String category, String campaign, String productCategory, String priceSort, ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String> listener) {
+        getiApiClient().getCampaignCategoryProducts(page, limit, search, category, campaign, productCategory, priceSort).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void getCampaignCategoryBrands(int page, int limit, String search, String category, String campaign, ResponseListenerAuth<CommonDataResponse<List<CampaignBrandResponse>>, String> listener) {
@@ -56,6 +57,10 @@ public class CampaignApiHelper extends BaseApiHelper {
 
     public static void getCampaignCategory(ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String> listener) {
         getiApiClient().getCampaignCategory().enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getCampaignCategoryTopProducts(ResponseListenerAuth<CommonDataResponse<List<CampaignTopProductResponse>>, String> listener) {
+        getiApiClient().getCampaignCategoryTopProducts().enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void getCampaigns(int page, String search, ResponseListenerAuth<CommonDataResponse<List<CampaignItem>>, String> listener) {

@@ -7,15 +7,10 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -42,6 +37,7 @@ import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
@@ -54,40 +50,22 @@ import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewModel> implements SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     RecommenderViewModel recommenderViewModel;
     long startTime = 0;
     private String slug = "", campaign_slug = "", title = "";
     private String categorySlug = null;
-    private int currentPage;
-    private int totalCount = 0;
     private boolean isLoading = false;
-    private List<String> rosterList;
     private ShopController controller;
     private boolean clickFromCategory = false;
-    private ShopViewModel viewModel;
-    private FragmentShopBinding binding;
     private ShopDetailsResponse shopDetailsModel;
     private ShopDetailsModel fullShopDetailsModel;
     private String brandSlug;
 
     public ShopFragment() {
-
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        binding = FragmentShopBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+        super(ShopViewModel.class, R.layout.fragment_shop);
     }
 
     private void refreshFragment() {
@@ -95,11 +73,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    protected void initViews() {
         startTime = System.currentTimeMillis();
-
         if (getArguments() == null) {
             Toast.makeText(getContext(), "Shop not available", Toast.LENGTH_SHORT).show();
             return;
@@ -108,18 +83,37 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             title = getArguments().getString("shop_name");
         if (getArguments().getString("campaign_slug") != null)
             campaign_slug = getArguments().getString("campaign_slug");
-
         slug = getArguments().getString("shop_slug");
-
         brandSlug = null;
-        if (getArguments().containsKey("brand_slug")) {
-            brandSlug = getArguments().getString("brand_slug");
-        }
 
+        if (getArguments().containsKey("brand_slug"))
+            brandSlug = getArguments().getString("brand_slug");
 
         binding.swipeRefresh.setOnRefreshListener(this);
 
+        networkCheck();
+        initHeader();
+        binding.shimmer.startShimmer();
+    }
 
+    private void initHeader() {
+        MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
+        new InitializeActionBar(binding.appBarLayout.headerLogo, getActivity(), "shop", mainViewModel);
+        binding.appBarLayout.homeSearch.setOnClickListener(view12 -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("shop_slug", slug);
+            bundle.putString("shop_name", shopDetailsModel.getShopName());
+            bundle.putString("campaign_slug", campaign_slug);
+            bundle.putString("brand_slug", brandSlug);
+            NavHostFragment.findNavController(this).navigate(R.id.shopSearchActivity, bundle);
+        });
+
+        binding.appBarLayout.homeSearch.setEnabled(false);
+        binding.appBarLayout.searchTitle.setText("Search in this shop...");
+    }
+
+
+    private void networkCheck() {
         if (!Utils.isNetworkAvailable(getContext()))
             new NetworkErrorDialog(getContext(), new NetworkErrorDialogListener() {
                 @Override
@@ -132,83 +126,37 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     NavHostFragment.findNavController(ShopFragment.this).navigate(R.id.homeFragment);
                 }
             });
+    }
 
-        MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
+    @Override
+    protected void liveEventsObservers() {
 
-        new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "shop", mainViewModel);
-        binding.appBarLayout.homeSearch.setOnClickListener(view12 -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("shop_slug", slug);
-            bundle.putString("shop_name", shopDetailsModel.getShopName());
-            bundle.putString("campaign_slug", campaign_slug);
-            bundle.putString("brand_slug", brandSlug);
-            NavHostFragment.findNavController(this).navigate(R.id.shopSearchActivity, bundle);
+        viewModel.getRatingSummary().observe(getViewLifecycleOwner(), reviewSummaryModel -> {
+            // reviewSummaryModel.setTotalRatings(10);
+            controller.setReviewSummaryModel(reviewSummaryModel);
+            if (controller.getShopInfo() != null)
+                controller.requestModelBuild();
         });
 
-        binding.appBarLayout.homeSearch.setEnabled(false);
-        binding.appBarLayout.searchTitle.setText("Search in this shop...");
-
-        binding.shimmer.startShimmer();
-        controller = new ShopController();
-        controller.setActivity((AppCompatActivity) getActivity());
-        controller.setFragment(this);
-        controller.setViewModel(viewModel);
-        controller.setCampaignSlug(campaign_slug);
-        controller.setFilterDuplicates(true);
-
-        if (fullShopDetailsModel != null)
-            controller.setAttr(shopDetailsModel);
-
-        int spanCount = 2;
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        controller.setSpanCount(spanCount);
-
-        int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(spanCount, spacing, true));
-        binding.recyclerView.setLayoutManager(layoutManager);
-
-        binding.recyclerView.setAdapter(controller.getAdapter());
-
-        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
-            @Override
-            public void loadMoreItem() {
-                if (!isLoading) {
-                    controller.setLoadingMore(true);
-                    viewModel.loadShopProducts();
-                    isLoading = true;
-                }
-            }
+        viewModel.shopDetailsModelLiveData.observe(getViewLifecycleOwner(), shopDetailsModel -> {
+            controller.setSubscribed(shopDetailsModel.getData().isSubscribed());
+            controller.setSubscriberCount(shopDetailsModel.getData().getSubscriberCount());
+            if (controller.getShopInfo() != null)
+                controller.requestModelBuild();
         });
-        viewModelLiveDataObservers();
-    }
 
-
-    private void initRecommender() {
-        recommenderViewModel.insert("shop",
-                shopDetailsModel.getSlug(),
-                shopDetailsModel.getShopName(),
-                shopDetailsModel.getShopImage());
-    }
-
-    private void updateRecommender() {
-        if (shopDetailsModel == null)
-            return;
-        long endTime = System.currentTimeMillis();
-        long diff = endTime - startTime;
-        recommenderViewModel.updateSpentTime("shop",
-                shopDetailsModel.getSlug(),
-                diff);
-    }
-
-    private void viewModelLiveDataObservers() {
+        viewModel.campaignDetailsLiveData.observe(getViewLifecycleOwner(), subCampaignDetailsResponse -> {
+            controller.setDescription(subCampaignDetailsResponse.getDescription());
+            if (controller.getShopInfo() != null)
+                controller.requestModelBuild();
+        });
 
         viewModel.shopDetailsLive.observe(getViewLifecycleOwner(), response -> {
             shopDetailsModel = response;
             controller.setCashbackRate(response.getCashbackPercentage());
 
-            if (controller.getShopInfo() == null) {
+            if (controller.getShopInfo() == null)
                 controller.setAttr(response);
-            }
 
             binding.appBarLayout.homeSearch.setEnabled(true);
             controller.setLoadingMore(false);
@@ -238,7 +186,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 setUpXmpp();
         });
 
-
         viewModel.getBuyNowLiveData().observe(getViewLifecycleOwner(), s -> {
             if (getActivity() != null) {
                 BuyNowFragment addPhotoBottomDialogFragment =
@@ -256,7 +203,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             viewModel.setCategorySlug(categorySlug);
             viewModel.setCurrentPage(1);
             controller.setCategoryTitle(tabsItem.getTitle());
-            currentPage = 1;
             controller.clear();
             controller.setLoadingMore(true);
             viewModel.loadShopProducts();
@@ -270,7 +216,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 viewModel.setCategorySlug(null);
                 viewModel.setCurrentPage(1);
                 controller.setCategoryTitle(null);
-                currentPage = 1;
                 controller.clear();
                 controller.setLoadingMore(true);
                 clickFromCategory = true;
@@ -294,8 +239,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             List<ProductItem> tempList = new ArrayList<>();
             for (int i = 0; i < shopItems.size(); i++) {
-                if (i == 0)
-                    currentPage++;
                 ItemsItem shopItem = shopItems.get(i);
                 ProductItem item = new ProductItem();
                 item.setImageUrls(shopItem.getItemImages());
@@ -316,9 +259,59 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    protected void clickListeners() {
+
     }
+
+    @Override
+    protected void setupRecycler() {
+        controller = new ShopController();
+        controller.setActivity((AppCompatActivity) getActivity());
+        controller.setFragment(this);
+        controller.setViewModel(viewModel);
+        controller.setCampaignSlug(campaign_slug);
+        controller.setFilterDuplicates(true);
+
+        if (fullShopDetailsModel != null)
+            controller.setAttr(shopDetailsModel);
+
+        int spanCount = 2;
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        controller.setSpanCount(spanCount);
+
+        int spacing = (int) Utils.convertDpToPixel(10, getActivity());
+        binding.recyclerView.addItemDecoration(new StaggeredSpacingItemDecoration(spanCount, spacing, true));
+        binding.recyclerView.setLayoutManager(layoutManager);
+        binding.recyclerView.setAdapter(controller.getAdapter());
+        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
+            @Override
+            public void loadMoreItem() {
+                if (!isLoading) {
+                    controller.setLoadingMore(true);
+                    viewModel.loadShopProducts();
+                    isLoading = true;
+                }
+            }
+        });
+    }
+
+    private void initRecommender() {
+        recommenderViewModel.insert("shop",
+                shopDetailsModel.getSlug(),
+                shopDetailsModel.getShopName(),
+                shopDetailsModel.getShopImage());
+    }
+
+    private void updateRecommender() {
+        if (shopDetailsModel == null)
+            return;
+        long endTime = System.currentTimeMillis();
+        long diff = endTime - startTime;
+        recommenderViewModel.updateSpentTime("shop",
+                shopDetailsModel.getSlug(),
+                diff);
+    }
+
 
     private void setUpXmpp() {
 
@@ -332,32 +325,30 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
             try {
-                if (launchIntent != null) {
 
-                    Logger.d(new Gson().toJson(shopDetailsModel));
-                    RosterTable rosterTable = new RosterTable();
-                    rosterTable.name = shopDetailsModel.getShopName();
-                    if (shopDetailsModel.getOwnerName() == null || shopDetailsModel.getOwnerName().isEmpty()) {
-                        rosterTable.id = shopDetailsModel.getContactNumber() + "@" + Constants.XMPP_HOST;
-                    } else {
-                        rosterTable.id = shopDetailsModel.getOwnerName() + "@" + Constants.XMPP_HOST;
-                    }
-
-                    rosterTable.imageUrl = shopDetailsModel.getShopImage();
-                    rosterTable.status = 0;
-                    rosterTable.lastMessage = "";
-                    rosterTable.time = 0;
-                    Logger.d(new Gson().toJson(rosterTable));
-
-                    launchIntent.putExtra("to", "OPEN_CHAT_DETAILS");
-                    launchIntent.putExtra("from", "shop");
-                    launchIntent.putExtra("user", CredentialManager.getUserName());
-                    launchIntent.putExtra("password", CredentialManager.getPassword());
-                    launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
-                    launchIntent.putExtra("roster", new Gson().toJson(rosterTable));
-
-                    startActivity(launchIntent);
+                Logger.d(new Gson().toJson(shopDetailsModel));
+                RosterTable rosterTable = new RosterTable();
+                rosterTable.name = shopDetailsModel.getShopName();
+                if (shopDetailsModel.getOwnerName() == null || shopDetailsModel.getOwnerName().isEmpty()) {
+                    rosterTable.id = shopDetailsModel.getContactNumber() + "@" + Constants.XMPP_HOST;
+                } else {
+                    rosterTable.id = shopDetailsModel.getOwnerName() + "@" + Constants.XMPP_HOST;
                 }
+
+                rosterTable.imageUrl = shopDetailsModel.getShopImage();
+                rosterTable.status = 0;
+                rosterTable.lastMessage = "";
+                rosterTable.time = 0;
+                Logger.d(new Gson().toJson(rosterTable));
+
+                launchIntent.putExtra("to", "OPEN_CHAT_DETAILS");
+                launchIntent.putExtra("from", "shop");
+                launchIntent.putExtra("user", CredentialManager.getUserName());
+                launchIntent.putExtra("password", CredentialManager.getPassword());
+                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+                launchIntent.putExtra("roster", new Gson().toJson(rosterTable));
+
+                startActivity(launchIntent);
             } catch (ActivityNotFoundException e) {
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
@@ -370,22 +361,10 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
-    private String getContactFromRoster(String number) {
-        String roasterModel = null;
-        if (rosterList != null)
-            for (String model : rosterList) {
-                if (model.contains(number)) {
-                    roasterModel = model;
-                }
-            }
-        return roasterModel;
-    }
 
     @Override
     public void onRefresh() {
-
         binding.swipeRefresh.setRefreshing(false);
-        currentPage = 1;
         viewModel.setCategorySlug(null);
 
         binding.shimmer.setVisibility(View.VISIBLE);

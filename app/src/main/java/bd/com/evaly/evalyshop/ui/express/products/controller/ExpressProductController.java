@@ -22,9 +22,9 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.express.products.model.ExpressTitleModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressHeaderModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceSkeletonModel_;
+import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressHeaderModel_;
+import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressServiceModel_;
+import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressServiceSkeletonModel_;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class ExpressProductController extends EpoxyController {

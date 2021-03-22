@@ -35,9 +35,11 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryRe
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
+import bd.com.evaly.evalyshop.models.campaign.topProducts.CampaignTopProductResponse;
 import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandCatResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
+import bd.com.evaly.evalyshop.models.catalog.brands.CategoriesItem;
 import bd.com.evaly.evalyshop.models.catalog.category.ChildCategoryResponse;
 import bd.com.evaly.evalyshop.models.catalog.location.LocationResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
@@ -75,7 +77,10 @@ import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.profile.AddressWholeResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
+import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
+import bd.com.evaly.evalyshop.models.search.product.SearchRequest;
+import bd.com.evaly.evalyshop.models.search.product.response.ProductSearchResponse;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
@@ -100,6 +105,9 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface IApiClient {
+
+    @POST(UrlUtils.BASE_SEARCH + "product/search")
+    Call<CommonDataResponse<ProductSearchResponse>> searchProducts(@Body SearchRequest body, @Query("page") int page);
 
     @GET(UrlUtils.BASE_CATALOG + "locations")
     Call<CommonDataResponse<List<LocationResponse>>> getLocations(@Query("parent") String parent1);
@@ -156,12 +164,12 @@ public interface IApiClient {
 
     //TabsItem
 
-    @GET(UrlUtils.BASE_URL + "public/brands/")
+    @GET(UrlUtils.BASE_CATALOG + "brands")
     Call<CommonDataResponse<List<TabsItem>>> searchBrands(@Query("page") int page,
                                                           @Query("limit") int limit,
                                                           @Query("search") String search);
 
-    @GET(UrlUtils.BASE_URL + "custom/shops/")
+    @GET(UrlUtils.BASE_CATALOG + "shops")
     Call<CommonDataResponse<List<TabsItem>>> searchShop(@Query("page") int page,
                                                         @Query("limit") int limit,
                                                         @Query("search") String search);
@@ -191,7 +199,8 @@ public interface IApiClient {
                                                                                         @Query("search") String search,
                                                                                         @Query("category") String category,
                                                                                         @Query("campaign") String campaign,
-                                                                                        @Query("product_category") String productCategory);
+                                                                                        @Query("product_category") String productCategory,
+                                                                                        @Query("price") String priceSort);
 
     @GET(UrlUtils.BASE_CATALOG + "campaign")
     Call<CommonDataResponse<List<SubCampaignResponse>>> getCampaignCategoryCampaigns(@Query("page") int page,
@@ -220,6 +229,9 @@ public interface IApiClient {
 
     @GET(UrlUtils.BASE_CATALOG + "campaign/category/campaigns")
     Call<CommonDataResponse<List<CampaignCategoryResponse>>> getCampaignCategory();
+
+    @GET(UrlUtils.BASE_CATALOG + "campaign/category/top-products")
+    Call<CommonDataResponse<List<CampaignTopProductResponse>>> getCampaignCategoryTopProducts();
 
     // chat
 
@@ -427,6 +439,12 @@ public interface IApiClient {
                                                                            @Query("brand") String brand,
                                                                            @Query("limit") int limit);
 
+    @GET(UrlUtils.BASE_CATALOG + "campaign/{campaign_slug}/brand/{brand_slug}/products")
+    Call<CommonResultResponse<List<ProductItem>>> getCampaignBrandProducts(@Path("brand_slug") String brand,
+                                                                           @Path("campaign_slug") String campaignSlug, @Query("page") int page,
+                                                                           @Query("category") String category,
+                                                                           @Query("limit") int limit);
+
     @GET(UrlUtils.BASE_URL + "public/shops/items/{shopSlug}/")
     Call<JsonObject> getShopProducts(@Path("shopSlug") String shopSlug,
                                      @Query("page") int page,
@@ -516,20 +534,18 @@ public interface IApiClient {
                                           @Query("limit") int limit);
 
 
-    @GET(UrlUtils.BASE_CATALOG + "/shop-items/{shopSlug}/categories")
+    @GET(UrlUtils.BASE_CATALOG + "shop-items/{shopSlug}/categories")
     Call<JsonObject> getCategoriesofShop(@Path("shopSlug") String shopSlug,
                                          @Query("page") int page);
 
-    @GET(UrlUtils.BASE_CATALOG + "/brands/{slug}/categories")
+    @GET(UrlUtils.BASE_CATALOG + "brands/{slug}/categories")
     Call<CommonDataResponse<BrandCatResponse>> getCategoriesOfBrand(@Path("slug") String slug,
                                                                     @Query("page") int page);
 
-
-    @GET(UrlUtils.CAMPAIGNS + "/{campaignSlug}/shops/{shopSlug}/categories")
-    Call<JsonObject> getCategoriesOfCampaignShop(@Path("campaignSlug") String campaignSlug,
-                                                 @Path("shopSlug") String shopSlug,
-                                                 @Query("page") int page);
-
+    @GET(UrlUtils.BASE_CATALOG + "campaign/{campaign_slug}/brand/{brand_slug}/categories")
+    Call<CommonDataResponse<List<CategoriesItem>>> getCategoriesOfBrand(@Path("brand_slug") String brandSlug,
+                                                                        @Path("campaign_slug") String campaignSlug,
+                                                                        @Query("page") int page);
 
     // campaign APIs
 
@@ -549,8 +565,6 @@ public interface IApiClient {
                                                                   @Query("limit") int limit,
                                                                   @Query("area") String area,
                                                                   @Query("search") String search);
-
-
     // Root Category
 
     @GET(UrlUtils.BASE_CATALOG + "categories")
@@ -609,6 +623,10 @@ public interface IApiClient {
     @GET(UrlUtils.DOMAIN + "ratings/api/v1/public/overview")
     Call<JsonObject> getShopReviews(@Header("Authorization") String token,
                                     @Query("slug") String slug);
+
+    @GET(UrlUtils.DOMAIN + "ratings/api/v1/public/overview")
+    Call<CommonDataResponse<ReviewSummaryModel>> getReviews(@Header("Authorization") String token,
+                                                            @Query("slug") String slug);
 
     @GET(UrlUtils.BASE_URL + "shop-subscriptions")
     Call<JsonObject> getFollowedShops(@Header("Authorization") String token);

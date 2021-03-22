@@ -85,16 +85,14 @@ public class CheckoutFragment extends DialogFragment {
     private FragmentCheckoutBinding binding;
     private CheckoutViewModel viewModel;
     private CartViewModel cartViewModel;
-    private String deliveryChargeApplicable = null, deliveryDuration;
-    private double deliveryChargeAmount = 0;
     private NavController navController;
     private CheckoutProductController controller;
     private AddressResponse addressModel = null;
-    private int minPrice = 0;
     private ViewDialog dialog;
     private double totalDeliveryCharge;
     private ProgressDialog progressDialog;
     private List<Uri> selectedImagesList;
+    private HashMap<String, Integer> shopAmountMap;
     private double totalAmount = 0;
 
     public CheckoutFragment() {
@@ -121,12 +119,12 @@ public class CheckoutFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(CheckoutFragment.this);
+        shopAmountMap = new HashMap<>();
         dialog = new ViewDialog(getActivity());
         dialog.showDialog();
         progressDialog = new ProgressDialog(getActivity());
         selectedImagesList = new ArrayList<>();
         startAnimation();
-        checkRemoteConfig();
         setupRecycler();
         clickListeners();
         liveEvents();
@@ -141,16 +139,10 @@ public class CheckoutFragment extends DialogFragment {
 
     private void updateInfo() {
         UserModel userModel = CredentialManager.getUserData();
-        binding.userName.setText(userModel.getFullName());
-        binding.contact.setText(userModel.getUsername());
-//
-//        if (userModel.getAddresses() != null &&
-//                userModel.getAddresses().getData() != null &&
-//                userModel.getAddresses().getData().size() > 0) {
-//            addressModel = userModel.getAddresses().getData().get(0);
-//            binding.address.setText(addressModel.getFullAddressLine());
-//        } else
-//            binding.address.setText("No address provided");
+        if (userModel != null) {
+            binding.userName.setText(userModel.getFullName());
+            binding.contact.setText(userModel.getUsername());
+        }
     }
 
     private void setupRecycler() {
@@ -174,10 +166,6 @@ public class CheckoutFragment extends DialogFragment {
             openLocationSelector();
         });
 
-//        binding.changeAddress.setOnClickListener(v -> {
-//            openLocationSelector();
-//        });
-
         binding.btnPlaceOrder.setOnClickListener(view -> {
             if (CredentialManager.getToken().equals("")) {
                 startActivity(new Intent(getContext(), SignInActivity.class));
@@ -191,10 +179,14 @@ public class CheckoutFragment extends DialogFragment {
                 ToastUtils.show("Please enter delivery address");
                 return;
             }
-            if (minPrice > 0) {
-                Toast.makeText(getContext(), "You have to order more than TK. " + minPrice + " from an individual shop", Toast.LENGTH_SHORT).show();
+
+            String minAmountErrorMessage = viewModel.getMinAmountErrorMessage(shopAmountMap);
+
+            if (minAmountErrorMessage != null && minAmountErrorMessage.length() > 0) {
+                Toast.makeText(getContext(), "Minimum order amount required for " + minAmountErrorMessage, Toast.LENGTH_SHORT).show();
                 return;
             }
+
             dialog.showDialog();
             viewModel.placeOrder(generateOrderJson());
         });
@@ -208,22 +200,13 @@ public class CheckoutFragment extends DialogFragment {
         addressFragment.show(getParentFragmentManager(), "Address Picker");
     }
 
-    private void checkRemoteConfig() {
-        deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
-        deliveryChargeAmount = mFirebaseRemoteConfig.getDouble("delivery_charge_amount");
-    }
-
     private void updateViews() {
 
         binding.privacyText.setText(Html.fromHtml("Upon clicking on 'Place Order', I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
         binding.privacyText.setMovementMethod(LinkMovementMethod.getInstance());
 
         boolean isExpress = false;
-        boolean showDeliveryCharge = false;
         totalDeliveryCharge = 0;
-        HashMap<String, Integer> shopAmountMap = new HashMap<>();
-        HashMap<String, Boolean> shopExpressMap = new HashMap<>();
-        HashMap<String, String> expressShopSlugs = new HashMap();
 
         List<CartEntity> itemList = viewModel.liveList.getValue();
 
@@ -231,6 +214,7 @@ public class CheckoutFragment extends DialogFragment {
 
         if (itemList == null)
             itemList = new ArrayList<>();
+
         for (int i = 0; i < itemList.size(); i++) {
             CartEntity cartItem = itemList.get(i);
             if (Utils.isNumeric(cartItem.getProductID()))
@@ -238,37 +222,14 @@ public class CheckoutFragment extends DialogFragment {
             if (cartItem.isSelected()) {
                 String ss = cartItem.getShopSlug();
                 Integer am = shopAmountMap.get(ss);
-
                 if (shopAmountMap.containsKey(ss) && am != null)
-                    shopAmountMap.put(ss, am + cartItem.getPriceInt() * cartItem.getQuantity());
+                    shopAmountMap.put(ss, (int) (am + cartItem.getDiscountedPriceD() * cartItem.getQuantity()));
                 else
-                    shopAmountMap.put(ss, cartItem.getPriceInt() * cartItem.getQuantity());
-
-                if (cartItem.isExpressShop()) {
-                    isExpress = true;
-                } else {
-                    if (cartItem.getShopSlug().contains("evaly-express")) {
-                        isExpress = true;
-                    }
-                }
-                shopExpressMap.put(ss, isExpress);
+                    shopAmountMap.put(ss, (int) cartItem.getDiscountedPriceD() * cartItem.getQuantity());
             }
         }
 
         viewModel.checkAttachmentRequirements(productIdList);
-
-        for (String key : shopAmountMap.keySet()) {
-            Integer am = shopAmountMap.get(key);
-            Boolean express = shopExpressMap.get(key);
-
-            int minAmount = 500;
-            if (express && key.contains("food"))
-                minAmount = 300;
-
-            if (!key.equals("evaly-amol-1") && am != null && am < minAmount) {
-                minPrice = minAmount;
-            }
-        }
 
         checkLocationPermission();
 
@@ -277,7 +238,6 @@ public class CheckoutFragment extends DialogFragment {
         } else {
             binding.deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
         }
-
     }
 
     private void checkLocationPermission() {
@@ -386,6 +346,7 @@ public class CheckoutFragment extends DialogFragment {
                 binding.totalText.setText(String.format("%s %s", getString(R.string.total_colon), Utils.formatPriceSymbol(totalAmount + totalDeliveryCharge)));
             }
         });
+
         viewModel.attachmentCheckLiveData.observe(getViewLifecycleOwner(), list -> {
             HashMap<String, AttachmentCheckResponse> map = new HashMap<>();
             for (AttachmentCheckResponse item : list) {
@@ -485,6 +446,8 @@ public class CheckoutFragment extends DialogFragment {
 
             if (phoneNumber.equals(""))
                 error = "Please enter phone number";
+            else if (!Utils.isValidNumber(phoneNumber))
+                error = "Please enter a valid phone number";
 
             if (error != null) {
                 ToastUtils.show(error);
@@ -506,7 +469,11 @@ public class CheckoutFragment extends DialogFragment {
         PlaceOrderItem orderObject = new PlaceOrderItem();
 
         orderObject.setContactNumber(binding.contact.getText().toString());
-        orderObject.setCustomerAddress(addressModel.getFullAddressWithName());
+        if (!binding.userName.getText().toString().equals(CredentialManager.getUserData().getFullName()))
+            orderObject.setCustomerAddress(addressModel.getFullAddressWithName());
+        else
+            orderObject.setCustomerAddress(addressModel.getFullAddress());
+
         orderObject.setOrderOrigin("app");
 
         if (CredentialManager.getLatitude() != null && CredentialManager.getLongitude() != null) {

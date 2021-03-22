@@ -13,8 +13,8 @@ android {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 286
-        versionName "2.8.6"
+        versionCode 293
+        versionName "2.9.3"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
@@ -38,6 +38,7 @@ android {
     }
 
     buildTypes {
+
         release {
             minifyEnabled false
             shrinkResources false
@@ -50,6 +51,7 @@ android {
             buildConfigField "String", 'NAGAD_URL', "\"https://nagad.evaly.com.bd/nagad\""
             buildConfigField "String", "APPOINTMENT_URL", "\"https://api.evaly.com.bd/eappointment/api/v1/\""
         }
+
         debug {
             buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
             buildConfigField "String", 'WEB_URL', "\"https://beta.evaly.com.bd/\""
@@ -173,6 +175,6 @@ dependencies {
 
 
     // libraries
-    implementation project(path: ':evalyPaymentLibrary')
     implementation project(path: ':richlinkpreview')
+    implementation 'com.github.delight-im:Android-AdvancedWebView:v3.0.0'
 }

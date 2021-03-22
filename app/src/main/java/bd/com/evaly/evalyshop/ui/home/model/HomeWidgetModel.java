@@ -48,7 +48,7 @@ public abstract class HomeWidgetModel extends BaseDataBindingEpoxyModel {
             navController.navigate(R.id.giftCardFragment);
         });
 
-        binding.btn3Image.setOnClickListener(v -> navController.navigate(R.id.campaignFragment));
+        binding.btn3Image.setOnClickListener(v -> navController.navigate(R.id.expressProductSearchFragment));
 
         binding.btn4Image.setOnClickListener(v -> {
             navController.navigate(R.id.categoryFragment);

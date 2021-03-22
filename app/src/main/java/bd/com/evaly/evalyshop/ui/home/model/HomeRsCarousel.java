@@ -18,7 +18,7 @@ public class HomeRsCarousel extends Carousel {
     public HomeRsCarousel(Context context) {
         super(context);
         setNestedScrollingEnabled(false);
-        setMinimumHeight((int) Utils.convertDpToPixel(175, getContext()));
+        setMinimumHeight((int) Utils.convertDpToPixel(160, getContext()));
         StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
