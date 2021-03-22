@@ -98,6 +98,7 @@ public class CheckoutFragment extends DialogFragment {
     private HashMap<String, Integer> minOrderAmountMap;
     private HashMap<String, Integer> shopAmountMap;
     private HashMap<String, Boolean> shopExpressMap;
+    private String minAmountShopName = "";
     private double totalAmount = 0;
 
     public CheckoutFragment() {
@@ -192,12 +193,16 @@ public class CheckoutFragment extends DialogFragment {
                 return;
             }
             if (minPrice > 0) {
-                Toast.makeText(getContext(), "You have to order more than TK. " + minPrice + " from an individual shop", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "You have to order more than TK. " + minPrice + " from " + viewModel.getMinAmountShopName(), Toast.LENGTH_SHORT).show();
                 return;
             }
             dialog.showDialog();
             viewModel.placeOrder(generateOrderJson());
         });
+    }
+
+    public void getMinAmountShopName() {
+
     }
 
     private void openLocationSelector() {

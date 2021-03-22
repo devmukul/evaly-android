@@ -47,12 +47,12 @@ public class CheckoutViewModel extends ViewModel {
     protected MutableLiveData<List<AttachmentCheckResponse>> attachmentCheckLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse<List<JsonObject>>> orderPlacedLiveData = new MutableLiveData<>();
     protected MutableLiveData<HashMap<String, List<String>>> attachmentMapLiveData = new MutableLiveData<>();
+    protected MutableLiveData<AddressResponse> selectedAddress = new MutableLiveData<>();
     private AddressListDao addressListDao;
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
     private HashMap<String, List<String>> attachmentMap = new HashMap<>();
     private String selectedShopSlug;
-    protected MutableLiveData<AddressResponse> selectedAddress = new MutableLiveData<>();
 
 
     @SuppressLint("CheckResult")
@@ -129,6 +129,20 @@ public class CheckoutViewModel extends ViewModel {
 
             }
         });
+    }
+
+    public String getMinAmountShopName() {
+        if (attachmentCheckLiveData.getValue() == null || attachmentCheckLiveData.getValue().size() == 0)
+            return "individual shop";
+        int minAmount = attachmentCheckLiveData.getValue().get(0).getMinOrderAmount();
+        String name = attachmentCheckLiveData.getValue().get(0).getShopName();
+        for (AttachmentCheckResponse item : attachmentCheckLiveData.getValue()) {
+            if (item.getMinOrderAmount() < minAmount) {
+                minAmount = item.getMinOrderAmount();
+                name = item.getShopName();
+            }
+        }
+        return name;
     }
 
 
