@@ -85,20 +85,14 @@ public class CheckoutFragment extends DialogFragment {
     private FragmentCheckoutBinding binding;
     private CheckoutViewModel viewModel;
     private CartViewModel cartViewModel;
-    private String deliveryChargeApplicable = null, deliveryDuration;
-    private double deliveryChargeAmount = 0;
     private NavController navController;
     private CheckoutProductController controller;
     private AddressResponse addressModel = null;
-    private int minPrice = 0;
     private ViewDialog dialog;
     private double totalDeliveryCharge;
     private ProgressDialog progressDialog;
     private List<Uri> selectedImagesList;
-    private HashMap<String, Integer> minOrderAmountMap;
     private HashMap<String, Integer> shopAmountMap;
-    private HashMap<String, Boolean> shopExpressMap;
-    private String minAmountShopName = "";
     private double totalAmount = 0;
 
     public CheckoutFragment() {
@@ -125,15 +119,12 @@ public class CheckoutFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(CheckoutFragment.this);
-        minOrderAmountMap = new HashMap<>();
         shopAmountMap = new HashMap<>();
-        shopExpressMap = new HashMap<>();
         dialog = new ViewDialog(getActivity());
         dialog.showDialog();
         progressDialog = new ProgressDialog(getActivity());
         selectedImagesList = new ArrayList<>();
         startAnimation();
-        checkRemoteConfig();
         setupRecycler();
         clickListeners();
         liveEvents();
@@ -175,10 +166,6 @@ public class CheckoutFragment extends DialogFragment {
             openLocationSelector();
         });
 
-//        binding.changeAddress.setOnClickListener(v -> {
-//            openLocationSelector();
-//        });
-
         binding.btnPlaceOrder.setOnClickListener(view -> {
             if (CredentialManager.getToken().equals("")) {
                 startActivity(new Intent(getContext(), SignInActivity.class));
@@ -192,17 +179,17 @@ public class CheckoutFragment extends DialogFragment {
                 ToastUtils.show("Please enter delivery address");
                 return;
             }
-            if (minPrice > 0) {
-                Toast.makeText(getContext(), "You have to order more than TK. " + minPrice + " from " + viewModel.getMinAmountShopName(), Toast.LENGTH_SHORT).show();
+
+            String minAmountErrorMessage = viewModel.getMinAmountErrorMessage(shopAmountMap);
+
+            if (minAmountErrorMessage != null && minAmountErrorMessage.length() > 0) {
+                Toast.makeText(getContext(), "Minimum order amount required for " + minAmountErrorMessage, Toast.LENGTH_SHORT).show();
                 return;
             }
+
             dialog.showDialog();
             viewModel.placeOrder(generateOrderJson());
         });
-    }
-
-    public void getMinAmountShopName() {
-
     }
 
     private void openLocationSelector() {
@@ -211,11 +198,6 @@ public class CheckoutFragment extends DialogFragment {
         bundle.putBoolean("is_picker", true);
         addressFragment.setArguments(bundle);
         addressFragment.show(getParentFragmentManager(), "Address Picker");
-    }
-
-    private void checkRemoteConfig() {
-        deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
-        deliveryChargeAmount = mFirebaseRemoteConfig.getDouble("delivery_charge_amount");
     }
 
     private void updateViews() {
@@ -240,26 +222,14 @@ public class CheckoutFragment extends DialogFragment {
             if (cartItem.isSelected()) {
                 String ss = cartItem.getShopSlug();
                 Integer am = shopAmountMap.get(ss);
-
                 if (shopAmountMap.containsKey(ss) && am != null)
                     shopAmountMap.put(ss, (int) (am + cartItem.getDiscountedPriceD() * cartItem.getQuantity()));
                 else
                     shopAmountMap.put(ss, (int) cartItem.getDiscountedPriceD() * cartItem.getQuantity());
-
-                if (cartItem.isExpressShop()) {
-                    isExpress = true;
-                } else {
-                    if (cartItem.getShopSlug().contains("evaly-express")) {
-                        isExpress = true;
-                    }
-                }
-                shopExpressMap.put(ss, isExpress);
             }
         }
 
         viewModel.checkAttachmentRequirements(productIdList);
-
-        updateMinOrderAmount();
 
         checkLocationPermission();
 
@@ -267,22 +237,6 @@ public class CheckoutFragment extends DialogFragment {
             binding.deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
         } else {
             binding.deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
-        }
-    }
-
-    private void updateMinOrderAmount() {
-        for (String key : shopAmountMap.keySet()) {
-            Integer totalAmount = shopAmountMap.get(key);
-            Boolean express = shopExpressMap.get(key);
-            int minAmount = 500;
-            if (express && key.contains("food"))
-                minAmount = 300;
-            else if (minOrderAmountMap.containsKey(key) && minOrderAmountMap.get(key) != null)
-                minAmount = minOrderAmountMap.get(key);
-
-            if (!key.equals("evaly-amol-1") && totalAmount != null && totalAmount < minAmount) {
-                minPrice = minAmount;
-            }
         }
     }
 
@@ -397,11 +351,9 @@ public class CheckoutFragment extends DialogFragment {
             HashMap<String, AttachmentCheckResponse> map = new HashMap<>();
             for (AttachmentCheckResponse item : list) {
                 map.put(item.getShopSlug(), item);
-                minOrderAmountMap.put(item.getShopSlug(), item.getMinOrderAmount());
             }
             controller.setShowAttachmentMap(map);
             controller.requestModelBuild();
-            updateMinOrderAmount();
         });
 
         viewModel.imagePicker.observe(getViewLifecycleOwner(), integer -> {

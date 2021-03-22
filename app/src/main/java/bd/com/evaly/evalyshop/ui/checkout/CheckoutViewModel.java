@@ -31,6 +31,7 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
+import bd.com.evaly.evalyshop.util.Utils;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -131,18 +132,20 @@ public class CheckoutViewModel extends ViewModel {
         });
     }
 
-    public String getMinAmountShopName() {
-        if (attachmentCheckLiveData.getValue() == null || attachmentCheckLiveData.getValue().size() == 0)
-            return "individual shop";
-        int minAmount = attachmentCheckLiveData.getValue().get(0).getMinOrderAmount();
-        String name = attachmentCheckLiveData.getValue().get(0).getShopName();
+    public String getMinAmountErrorMessage(HashMap<String, Integer> shopAmount) {
+        String message = "";
+        int count = 0;
         for (AttachmentCheckResponse item : attachmentCheckLiveData.getValue()) {
-            if (item.getMinOrderAmount() < minAmount) {
-                minAmount = item.getMinOrderAmount();
-                name = item.getShopName();
+            if (item.getMinOrderAmount() > shopAmount.get(item.getShopSlug())) {
+                String name = item.getShopName();
+                int minAmount = item.getMinOrderAmount();
+                if (count > 0)
+                    message += ",";
+                message += " " + name + ": " + Utils.formatPriceSymbol(minAmount);
+                count++;
             }
         }
-        return name;
+        return message;
     }
 
 
