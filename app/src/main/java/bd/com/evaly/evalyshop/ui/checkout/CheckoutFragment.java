@@ -34,8 +34,6 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
@@ -98,6 +96,8 @@ public class CheckoutFragment extends DialogFragment {
     private ProgressDialog progressDialog;
     private List<Uri> selectedImagesList;
     private HashMap<String, Integer> minOrderAmountMap;
+    private HashMap<String, Integer> shopAmountMap;
+    private HashMap<String, Boolean> shopExpressMap;
     private double totalAmount = 0;
 
     public CheckoutFragment() {
@@ -125,6 +125,8 @@ public class CheckoutFragment extends DialogFragment {
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(CheckoutFragment.this);
         minOrderAmountMap = new HashMap<>();
+        shopAmountMap = new HashMap<>();
+        shopExpressMap = new HashMap<>();
         dialog = new ViewDialog(getActivity());
         dialog.showDialog();
         progressDialog = new ProgressDialog(getActivity());
@@ -209,15 +211,6 @@ public class CheckoutFragment extends DialogFragment {
     private void checkRemoteConfig() {
         deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
         deliveryChargeAmount = mFirebaseRemoteConfig.getDouble("delivery_charge_amount");
-
-        JsonArray shopListConditions = new Gson().fromJson(mFirebaseRemoteConfig.getString("shop_conditions"), JsonArray.class);
-        if (shopListConditions != null) {
-            for (int i = 0; i < shopListConditions.size(); i++) {
-                JsonObject obj = shopListConditions.get(i).getAsJsonObject();
-                if (obj != null)
-                    minOrderAmountMap.put(obj.get("slug").getAsString(), obj.get("min_amount").getAsInt());
-            }
-        }
     }
 
     private void updateViews() {
@@ -226,11 +219,7 @@ public class CheckoutFragment extends DialogFragment {
         binding.privacyText.setMovementMethod(LinkMovementMethod.getInstance());
 
         boolean isExpress = false;
-        boolean showDeliveryCharge = false;
         totalDeliveryCharge = 0;
-        HashMap<String, Integer> shopAmountMap = new HashMap<>();
-        HashMap<String, Boolean> shopExpressMap = new HashMap<>();
-        HashMap<String, String> expressShopSlugs = new HashMap();
 
         List<CartEntity> itemList = viewModel.liveList.getValue();
 
@@ -265,6 +254,18 @@ public class CheckoutFragment extends DialogFragment {
 
         viewModel.checkAttachmentRequirements(productIdList);
 
+        updateMinOrderAmount();
+
+        checkLocationPermission();
+
+        if (isExpress) {
+            binding.deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
+        } else {
+            binding.deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
+        }
+    }
+
+    private void updateMinOrderAmount() {
         for (String key : shopAmountMap.keySet()) {
             Integer totalAmount = shopAmountMap.get(key);
             Boolean express = shopExpressMap.get(key);
@@ -277,14 +278,6 @@ public class CheckoutFragment extends DialogFragment {
             if (!key.equals("evaly-amol-1") && totalAmount != null && totalAmount < minAmount) {
                 minPrice = minAmount;
             }
-        }
-
-        checkLocationPermission();
-
-        if (isExpress) {
-            binding.deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
-        } else {
-            binding.deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
         }
     }
 
@@ -394,13 +387,16 @@ public class CheckoutFragment extends DialogFragment {
                 binding.totalText.setText(String.format("%s %s", getString(R.string.total_colon), Utils.formatPriceSymbol(totalAmount + totalDeliveryCharge)));
             }
         });
+
         viewModel.attachmentCheckLiveData.observe(getViewLifecycleOwner(), list -> {
             HashMap<String, AttachmentCheckResponse> map = new HashMap<>();
             for (AttachmentCheckResponse item : list) {
                 map.put(item.getShopSlug(), item);
+                minOrderAmountMap.put(item.getShopSlug(), item.getMinOrderAmount());
             }
             controller.setShowAttachmentMap(map);
             controller.requestModelBuild();
+            updateMinOrderAmount();
         });
 
         viewModel.imagePicker.observe(getViewLifecycleOwner(), integer -> {
