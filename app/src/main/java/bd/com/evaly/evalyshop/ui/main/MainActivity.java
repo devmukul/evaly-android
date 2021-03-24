@@ -16,6 +16,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -120,8 +122,9 @@ public class MainActivity extends BaseActivity {
 
     private void transparentStatusBarColor() {
         if (getWindow() != null && Build.VERSION.SDK_INT > 23) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-            //  getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
     }
@@ -129,13 +132,17 @@ public class MainActivity extends BaseActivity {
     private void resetStatusBarColor() {
         if (getWindow() != null) {
             if (Build.VERSION.SDK_INT >= 23) {
-                int flags = getWindow().getDecorView().getSystemUiVisibility();
-                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                if (CredentialManager.isDarkMode())
-                    getWindow().getDecorView().setSystemUiVisibility(0);
-                else
+                int flags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                getWindow().getDecorView().setSystemUiVisibility(0);
+                if (!CredentialManager.isDarkMode())
                     getWindow().getDecorView().setSystemUiVisibility(flags);
                 getWindow().setStatusBarColor(getColor(R.color.fff));
+            } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().getDecorView().setSystemUiVisibility(0);
+                getWindow().setFlags(
+                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                getWindow().setStatusBarColor(getResources().getColor(R.color.black));
             }
         }
     }
@@ -285,7 +292,6 @@ public class MainActivity extends BaseActivity {
             Bundle bundle = new Bundle();
 
             if (type == 2) {
-
                 isLaunchActivity = false;
                 bundle.putInt("type", type);
                 bundle.putString("brand_slug", data.getStringExtra("brand_slug"));
@@ -327,10 +333,12 @@ public class MainActivity extends BaseActivity {
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         navController.createDeepLink();
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            Logger.d("hmtz called");
             if (destination.getId() == R.id.campaignFragment || destination.getId() == R.id.campaignDetails)
                 transparentStatusBarColor();
-            else
+            else {
                 resetStatusBarColor();
+            }
         });
     }
 

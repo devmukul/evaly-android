@@ -51,17 +51,6 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
         super(CampaignDetailsViewModel.class, R.layout.fragment_campaign_details);
     }
 
-    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
-        Window win = activity.getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        if (on) {
-            winParams.flags |= bits;
-        } else {
-            winParams.flags &= ~bits;
-        }
-        win.setAttributes(winParams);
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +104,6 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
         return requireArguments().containsKey(key);
     }
 
-
     @Override
     protected void initViews() {
         checkArguments();
@@ -125,7 +113,6 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
         if (getArguments() != null && getArguments().containsKey("open_filter"))
             openFilterModal();
     }
-
 
     private void initToolbar() {
         Rect rectangle = new Rect();
