@@ -135,8 +135,10 @@ public class CheckoutViewModel extends ViewModel {
     public String getMinAmountErrorMessage(HashMap<String, Integer> shopAmount) {
         String message = "";
         int count = 0;
+        if (attachmentCheckLiveData.getValue() == null)
+            return message;
         for (AttachmentCheckResponse item : attachmentCheckLiveData.getValue()) {
-            if (item.getMinOrderAmount() > shopAmount.get(item.getShopSlug())) {
+            if (shopAmount.get(item.getShopSlug()) != null && item.getMinOrderAmount() > shopAmount.get(item.getShopSlug())) {
                 String name = item.getShopName();
                 int minAmount = item.getMinOrderAmount();
                 if (count > 0)

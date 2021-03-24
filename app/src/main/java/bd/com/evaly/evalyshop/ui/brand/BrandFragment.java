@@ -172,9 +172,7 @@ public class BrandFragment extends BaseFragment<FragmentBrandBinding, BrandViewM
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-                        binding.shimmer.stopShimmer();
                         binding.shimmerHolder.setVisibility(View.GONE);
-                        binding.shimmer.setVisibility(View.GONE);
                     }
                 });
     }

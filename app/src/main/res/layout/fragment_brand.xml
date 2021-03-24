@@ -37,35 +37,24 @@
             android:layout_marginTop="60dp"
             android:background="@color/white">
 
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmer"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:shimmer_base_alpha="1"
-                app:shimmer_colored="false"
-                app:shimmer_highlight_alpha="0"
-                app:shimmer_highlight_color="@color/fff">
+                android:layout_height="match_parent">
 
-                <ScrollView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <LinearLayout
+                    <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:adjustViewBounds="true"
+                        app:srcCompat="@drawable/ic_skeleton_brand" />
 
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:adjustViewBounds="true"
-                            app:srcCompat="@drawable/ic_skeleton_brand" />
+                </LinearLayout>
 
-                    </LinearLayout>
-
-                </ScrollView>
-
-            </com.facebook.shimmer.ShimmerFrameLayout>
+            </ScrollView>
         </FrameLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

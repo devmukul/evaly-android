@@ -223,6 +223,8 @@ public class MainActivity extends BaseActivity {
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
                     if (item.getItemId() == R.id.accountFragment) {
+                        if (navController == null)
+                            return false;
                         if (CredentialManager.getToken().equals(""))
                             startActivity(new Intent(MainActivity.this, SignInActivity.class));
                         else

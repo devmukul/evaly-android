@@ -3,7 +3,6 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/root_coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -42,38 +41,26 @@
             android:background="@color/white"
             android:paddingTop="1dp">
 
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmer"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible"
-                app:shimmer_base_alpha="1"
-                app:shimmer_colored="false"
-                app:shimmer_highlight_alpha="0"
-                app:shimmer_highlight_color="@color/fff"
-                tools:visibility="gone">
+                android:layout_height="match_parent">
 
-                <ScrollView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <LinearLayout
+
+                    <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:adjustViewBounds="true"
+                        app:srcCompat="@drawable/ic_skeleton_shop" />
 
+                </LinearLayout>
 
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:adjustViewBounds="true"
-                            app:srcCompat="@drawable/ic_skeleton_shop" />
+            </ScrollView>
 
-                    </LinearLayout>
-
-                </ScrollView>
-
-            </com.facebook.shimmer.ShimmerFrameLayout>
         </FrameLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -93,7 +93,6 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
 
         networkCheck();
         initHeader();
-        binding.shimmer.startShimmer();
     }
 
     private void initHeader() {
@@ -165,8 +164,6 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
-                            binding.shimmer.stopShimmer();
-                            binding.shimmer.setVisibility(View.GONE);
                             binding.shimmerHolder.setVisibility(View.GONE);
                         }
                     });
@@ -367,10 +364,8 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
         binding.swipeRefresh.setRefreshing(false);
         viewModel.setCategorySlug(null);
 
-        binding.shimmer.setVisibility(View.VISIBLE);
         binding.shimmerHolder.setVisibility(View.VISIBLE);
         binding.shimmerHolder.setAlpha(1);
-        binding.shimmer.startShimmer();
 
         controller.clear();
         viewModel.reload();
