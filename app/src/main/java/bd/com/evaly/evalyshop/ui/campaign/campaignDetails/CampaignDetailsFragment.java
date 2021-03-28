@@ -1,14 +1,11 @@
 package bd.com.evaly.evalyshop.ui.campaign.campaignDetails;
 
-import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
@@ -27,11 +24,11 @@ import java.util.Objects;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignDetailsBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
+import bd.com.evaly.evalyshop.ui.campaign.bottomsheet.CampaignListBottomSheet;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller.CampaignCategoryController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.BindingUtils;
@@ -301,7 +298,10 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
             if (viewModel.getSelectedCategoryModel() != null)
                 bundle.putSerializable("product_category", Objects.requireNonNull(viewModel.getSelectedCategoryModel()));
             bundle.putBoolean("show_clear", viewModel.getCampaign() != null || viewModel.getSelectedCategorySlug() != null);
-            navController.navigate(R.id.campaignListBottomSheet, bundle);
+            // navController.navigate(R.id.campaignListBottomSheet, bundle);
+            CampaignListBottomSheet bottomSheet = new CampaignListBottomSheet();
+            bottomSheet.setArguments(bundle);
+            bottomSheet.show(getParentFragmentManager(), "FilterBottomSheet");
         }
     }
 
@@ -391,7 +391,13 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     private void loadCampaignDetails(CampaignCategoryResponse model) {
+
         if (model == null)
             return;
 

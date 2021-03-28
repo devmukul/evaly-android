@@ -38,7 +38,6 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
-import com.orhanobut.logger.Logger;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -335,11 +334,12 @@ public class MainActivity extends BaseActivity {
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         navController.createDeepLink();
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            Logger.d("hmtz called");
-            if (destination.getId() == R.id.campaignFragment || destination.getId() == R.id.campaignDetails)
-                transparentStatusBarColor();
-            else {
-                resetStatusBarColor();
+            if (destination.getLabel() != null && !destination.getLabel().toString().toLowerCase().contains("bottomsheet")) {
+                if (destination.getId() == R.id.campaignFragment || destination.getId() == R.id.campaignDetails)
+                    transparentStatusBarColor();
+                else {
+                    resetStatusBarColor();
+                }
             }
         });
     }
