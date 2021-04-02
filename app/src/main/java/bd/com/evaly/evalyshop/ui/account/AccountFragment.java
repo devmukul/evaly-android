@@ -53,6 +53,10 @@ public class AccountFragment extends BaseFragment<FragmentAccountBinding, Accoun
     @Override
     protected void clickListeners() {
 
+        binding.refundSettlement.setOnClickListener(v -> {
+            NavHostFragment.findNavController(this).navigate(R.id.refundSettlementFragment);
+        });
+
         binding.llAppointment.setOnClickListener(v -> {
             NavHostFragment.findNavController(this).navigate(R.id.appointmentFragment);
         });
@@ -64,7 +68,6 @@ public class AccountFragment extends BaseFragment<FragmentAccountBinding, Accoun
         binding.btn1Title.setOnClickListener(view -> {
             NavHostFragment.findNavController(this).navigate(R.id.orderListBaseFragment);
         });
-
 
         binding.notification.setOnClickListener(view -> {
             NavHostFragment.findNavController(this).navigate(R.id.notificationFragment);

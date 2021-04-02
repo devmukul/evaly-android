@@ -433,5 +433,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="select_address">Select Address</string>
     <string name="type_of_the_word">Type the word</string>
     <string name="attachments">Attachments</string>
+    <string name="refund_settlement">Refund Settlement</string>
 
 </resources>

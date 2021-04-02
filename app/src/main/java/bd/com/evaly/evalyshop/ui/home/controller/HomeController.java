@@ -181,29 +181,24 @@ public class HomeController extends EpoxyController {
 
         List<DataBindingEpoxyModel> models = new ArrayList<>();
 
-        int j = 0;
         for (BannerItem item : bannerList) {
-            for(int i = 0; i < 5; i++) {
-                models.add(new HomeSliderItemModel_()
-                        .id("slider", j + item.getSlug() + i)
-                        .clickListener((model, parentView, clickedView, position) -> {
-                            BannerItem item1 = model.getModel();
-                            String url = item1.getUrl();
-                            if (url.equals("") || url.equals("https://evaly.com.bd") || url.equals("https://evaly.com.bd/")) {
+            models.add(new HomeSliderItemModel_()
+                    .id("slider", item.getSlug())
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        BannerItem item1 = model.getModel();
+                        String url = item1.getUrl();
+                        if (url.equals("") || url.equals("https://evaly.com.bd") || url.equals("https://evaly.com.bd/")) {
+                            ToastUtils.show("It's just a banner. No page to open.");
+                        } else if (item1.getUrl().contains("evaly.com.bd/")) {
+                            try {
+                                Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(Uri.parse(item1.getUrl()));
+                            } catch (Exception e) {
                                 ToastUtils.show("It's just a banner. No page to open.");
-                            } else if (item1.getUrl().contains("evaly.com.bd/")) {
-                                try {
-                                    Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(Uri.parse(item1.getUrl()));
-                                } catch (Exception e) {
-                                    ToastUtils.show("It's just a banner. No page to open.");
-                                }
-                            } else
-                                Utils.CustomTab(item1.getUrl(), activity);
-                        })
-                        .model(item));
-            }
-
-            j++;
+                            }
+                        } else
+                            Utils.CustomTab(item1.getUrl(), activity);
+                    })
+                    .model(item));
         }
 
         new HomeSliderCarouselModel()
