@@ -16,7 +16,7 @@ public class CirclePagerIndicatorDecoration extends RecyclerView.ItemDecoration 
 
     private static final float DP = Resources.getSystem().getDisplayMetrics().density;
     private final int mIndicatorHeight = (int) (DP * 35);
-    private final float mIndicatorStrokeWidth = DP * 4;
+    private final float mIndicatorStrokeWidth = DP * 3;
     private final float mIndicatorItemLength = DP * 3;
     private final float mIndicatorItemPadding = DP * 10;
     private final Interpolator mInterpolator = new AccelerateDecelerateInterpolator();

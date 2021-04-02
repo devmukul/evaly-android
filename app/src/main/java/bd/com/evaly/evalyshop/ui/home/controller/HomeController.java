@@ -42,8 +42,6 @@ import bd.com.evaly.evalyshop.ui.home.HomeViewModel;
 import bd.com.evaly.evalyshop.ui.home.model.HomeDefaultCarouselModel;
 import bd.com.evaly.evalyshop.ui.home.model.HomeRsCarouselModel;
 import bd.com.evaly.evalyshop.ui.home.model.HomeRsGridModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeSliderItemModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneBannerModel_;
 import bd.com.evaly.evalyshop.ui.home.model.cyclone.CycloneBottomBarModel_;
@@ -58,6 +56,7 @@ import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressServiceModel_;
 import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressServiceSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.express.HomeExpressSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.slider.HomeSliderCarouselModel;
+import bd.com.evaly.evalyshop.ui.home.model.slider.HomeSliderItemModel_;
 import bd.com.evaly.evalyshop.ui.home.model.topProducts.CampaignCategoryHeaderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.topProducts.CampaignCategoryHeaderSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.topProducts.TopProductSkeletonModel_;
@@ -69,8 +68,6 @@ import bd.com.evaly.evalyshop.util.Utils;
 
 public class HomeController extends EpoxyController {
 
-    @AutoModel
-    HomeSliderModel_ sliderModel;
     @AutoModel
     HomeWidgetModel_ widgetModel;
     @AutoModel
@@ -133,15 +130,11 @@ public class HomeController extends EpoxyController {
     private boolean isCampaignLoading = true;
     private boolean isCycloneOngoing = false;
     private String cycloneBanner = "https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/images/cyclone1.gif";
-    private SliderController sliderController;
     private ClickListener clickListener;
 
     public HomeController() {
         setFilterDuplicates(true);
-        if (sliderController == null) {
-            sliderController = new SliderController();
-            sliderController.setActivity(activity);
-        }
+
     }
 
     public void setClickListener(ClickListener clickListener) {
@@ -155,20 +148,8 @@ public class HomeController extends EpoxyController {
     @Override
     protected void buildModels() {
 
-//        // slider model
-//        sliderModel
-//                .controller(sliderController)
-//                .activity(activity)
-//                .list(bannerList)
-//                .onBind((model, view, position) -> {
-//                    sliderController.setData(bannerList);
-//                })
-//                .addTo(this);
-
-
         initBannerSlider();
 
-        // home widget buttons
         widgetModel
                 .fragment(fragment)
                 .activity(activity)
@@ -188,7 +169,6 @@ public class HomeController extends EpoxyController {
 
         initProductGrid();
 
-        // bottom loading bar
         loader.addIf(loadingMore, this);
     }
 
@@ -201,24 +181,29 @@ public class HomeController extends EpoxyController {
 
         List<DataBindingEpoxyModel> models = new ArrayList<>();
 
+        int j = 0;
         for (BannerItem item : bannerList) {
-            models.add(new HomeSliderItemModel_()
-                    .id("slider", item.getSlug())
-                    .clickListener((model, parentView, clickedView, position) -> {
-                        BannerItem item1 = model.getModel();
-                        String url = item1.getUrl();
-                        if (url.equals("") || url.equals("https://evaly.com.bd") || url.equals("https://evaly.com.bd/")) {
-                            ToastUtils.show("It's just a banner. No page to open.");
-                        } else if (item1.getUrl().contains("evaly.com.bd/")) {
-                            try {
-                                Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(Uri.parse(item1.getUrl()));
-                            } catch (Exception e) {
+            for(int i = 0; i < 5; i++) {
+                models.add(new HomeSliderItemModel_()
+                        .id("slider", j + item.getSlug() + i)
+                        .clickListener((model, parentView, clickedView, position) -> {
+                            BannerItem item1 = model.getModel();
+                            String url = item1.getUrl();
+                            if (url.equals("") || url.equals("https://evaly.com.bd") || url.equals("https://evaly.com.bd/")) {
                                 ToastUtils.show("It's just a banner. No page to open.");
-                            }
-                        } else
-                            Utils.CustomTab(item1.getUrl(), activity);
-                    })
-                    .model(item));
+                            } else if (item1.getUrl().contains("evaly.com.bd/")) {
+                                try {
+                                    Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(Uri.parse(item1.getUrl()));
+                                } catch (Exception e) {
+                                    ToastUtils.show("It's just a banner. No page to open.");
+                                }
+                            } else
+                                Utils.CustomTab(item1.getUrl(), activity);
+                        })
+                        .model(item));
+            }
+
+            j++;
         }
 
         new HomeSliderCarouselModel()

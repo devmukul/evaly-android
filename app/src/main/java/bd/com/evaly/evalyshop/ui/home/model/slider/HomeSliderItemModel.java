@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.home.model;
+package bd.com.evaly.evalyshop.ui.home.model.slider;
 
 import android.view.View;
 

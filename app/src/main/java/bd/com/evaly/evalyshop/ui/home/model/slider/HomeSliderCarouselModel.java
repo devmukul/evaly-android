@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 public class HomeSliderCarouselModel extends HomeSliderCarouselModel_ {
 
     private CirclePagerIndicatorDecoration decoration = new CirclePagerIndicatorDecoration();
+   // private PageIndicator pageIndicator = new PageIndicator();
 
     @Override
     protected HomeSliderCarousel buildView(ViewGroup parent) {
