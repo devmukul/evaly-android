@@ -38,6 +38,32 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
 
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:largeHeap="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Launcher">
+
+            <nav-graph android:value="@navigation/home_nav_graph" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="evalyshop"
+                    android:path="/"
+                    android:scheme="deeplink" />
+            </intent-filter>
+        </activity>
+
         <meta-data
             android:name="asset_statements"
             android:resource="@string/asset_statements" />
@@ -73,23 +99,17 @@
         <activity
             android:name=".controller.SplashActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        </activity>
         <activity
             android:name=".ui.newsfeed.NewsfeedNotification"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.offers.OffersActivity" />
         <activity
             android:name=".ui.menu.InviteEarn"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".util.ImagePreview"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name=".ui.voucher.VoucherActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
@@ -101,13 +121,16 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity android:name=".ui.reviews.ReviewsActivity" />
+
         <activity
             android:name=".ui.order.orderDetails.OrderDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+
         <activity
             android:name=".ui.auth.ChangePasswordActivity"
             android:theme="@style/AppTheme" />
+
         <activity
             android:name=".ui.user.editProfile.EditProfileActivity"
             android:exported="true"
@@ -126,52 +149,30 @@
             android:name=".ui.auth.ForgotPasswordActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".ui.cart.CartActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".ui.order.orderList.OrderListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".ui.product.productDetails.ViewProductActivity"
             android:label="@string/title_activity_view_product"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeViewProduct" />
 
+        <activity android:name=".ui.payment.activity.PaymentWebActivity" />
 
-        <activity
-            android:name=".ui.main.MainActivity"
-            android:largeHeap="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Launcher">
-
-            <nav-graph android:value="@navigation/home_nav_graph" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="evalyshop"
-                    android:path="/"
-                    android:scheme="deeplink" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".ui.payment.activity.PaymentWebActivity"/>
         <activity
             android:name=".ui.auth.SignInActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".ui.auth.SignUpActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -189,12 +190,15 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+
         <meta-data
             android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
             android:value="false" />
+
         <meta-data
             android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled"
             android:value="false" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_status_icon" />
@@ -202,6 +206,7 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/evaly_color" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
@@ -214,6 +219,7 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />

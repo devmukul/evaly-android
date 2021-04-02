@@ -17,6 +17,10 @@ public class BannerItem implements Serializable {
     @ColumnInfo
     public String image, name, status, type, url;
 
+    public BannerItem(){
+
+    }
+
     public BannerItem(String image, String name, String slug, String status, String type, String url) {
         this.image = image;
         this.name = name;
