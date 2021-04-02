@@ -79,9 +79,6 @@
         <activity
             android:name=".ui.newsfeed.NewsfeedNotification"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.order.PayViaCard"
-            android:theme="@style/AppTheme" />
 
         <activity android:name=".ui.offers.OffersActivity" />
         <activity
@@ -99,9 +96,6 @@
             android:name=".ui.shop.search.ShopSearchActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity
-            android:name=".ui.order.PayViaBkashActivity"
-            android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.networkError.NetworkErrorActivity"
             android:theme="@style/AppTheme.NoActionBar" />

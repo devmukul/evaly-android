@@ -8,12 +8,11 @@ import java.util.List;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemAddressBinding;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
-import bd.com.evaly.evalyshop.models.user.AddressItem;
 import bd.com.evaly.evalyshop.ui.address.model.AddressListModel_;
 import bd.com.evaly.evalyshop.ui.address.model.BindAddressModel;
-import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.EmptySpaceModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.LoadingModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.NoItemModel_;
 
 public class AddressController extends EpoxyController {
 

@@ -32,8 +32,8 @@ import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBrandModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignShopModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSubModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.LoadingModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 

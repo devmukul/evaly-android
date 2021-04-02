@@ -14,9 +14,9 @@ import bd.com.evaly.evalyshop.databinding.ItemAppointmentBinding;
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
 import bd.com.evaly.evalyshop.ui.appointment.model.AppointmentModelBinder;
 import bd.com.evaly.evalyshop.ui.appointment.model.AppointmentModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.EmptySpaceModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.LoadingModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.NoItemModel_;
 
 public class AppointmentController extends EpoxyController {
 

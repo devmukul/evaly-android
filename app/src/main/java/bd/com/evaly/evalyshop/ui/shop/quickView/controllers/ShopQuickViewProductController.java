@@ -16,8 +16,8 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.LoadingModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryTitleModel_;
 import bd.com.evaly.evalyshop.ui.shop.quickView.ShopQuickViewModel;

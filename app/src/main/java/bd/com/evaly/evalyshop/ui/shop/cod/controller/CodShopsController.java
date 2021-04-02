@@ -9,7 +9,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.ui.base.BaseEpoxyController;
 import bd.com.evaly.evalyshop.ui.browseProduct.model.GridItemModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.NoItemModel_;
 
 public class CodShopsController extends BaseEpoxyController {
 

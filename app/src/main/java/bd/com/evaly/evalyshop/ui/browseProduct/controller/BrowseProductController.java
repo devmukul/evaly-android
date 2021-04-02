@@ -18,8 +18,8 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.browseProduct.BrowseProductViewModel;
 import bd.com.evaly.evalyshop.ui.browseProduct.model.GridItemModel_;
 import bd.com.evaly.evalyshop.ui.browseProduct.model.GridItemSkeletonModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.LoadingModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 
 public class BrowseProductController extends EpoxyController {

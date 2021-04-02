@@ -16,7 +16,7 @@ import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.databinding.ItemRootCategoryBinding;
 import bd.com.evaly.evalyshop.ui.category.CategoryViewModel;
 import bd.com.evaly.evalyshop.ui.category.models.RootCategoryModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.LinearLoadingModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.LinearLoadingModel_;
 
 public class RootCategoryController extends EpoxyController {
 

@@ -15,7 +15,7 @@ import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
 import bd.com.evaly.evalyshop.ui.cart.model.CartProductBinder;
 import bd.com.evaly.evalyshop.ui.cart.model.CartProductModel_;
 import bd.com.evaly.evalyshop.ui.cart.model.CartShopModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.NoItemModel_;
 
 public class CartController extends EpoxyController {
 

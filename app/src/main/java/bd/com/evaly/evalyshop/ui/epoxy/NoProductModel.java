@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.epoxyModels;
+package bd.com.evaly.evalyshop.ui.epoxy;
 
 import android.widget.ImageView;
 import android.widget.TextView;

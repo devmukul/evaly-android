@@ -8,9 +8,9 @@ import java.util.List;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.appointment.comment.AppointmentCommentResponse;
 import bd.com.evaly.evalyshop.ui.appointment.comment.model.AppointmentCommentModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.EmptySpaceModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.LoadingModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.NoItemModel_;
 
 public class AppointmentCommentController extends EpoxyController {
 

@@ -12,9 +12,9 @@ import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.search.product.response.ProductsItem;
 import bd.com.evaly.evalyshop.ui.browseProduct.model.GridItemModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.EmptySpaceModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.LoadingModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
 import bd.com.evaly.evalyshop.ui.search.model.SearchProductGridModel_;
 

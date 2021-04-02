@@ -17,8 +17,8 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.ui.category.CategoryViewModel;
 import bd.com.evaly.evalyshop.ui.category.models.SubCategoryModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.LoadingModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryTitleModel_;
 
 public class SubCategoryController extends EpoxyController {

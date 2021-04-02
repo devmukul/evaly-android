@@ -7,7 +7,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
-import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.order.orderList.model.OrderListModel_;
 import bd.com.evaly.evalyshop.ui.order.orderList.model.OrderListSkeletonModel_;
 

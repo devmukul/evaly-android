@@ -14,7 +14,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.databinding.ItemShopCategorySmallBinding;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
-import bd.com.evaly.evalyshop.ui.epoxyModels.LinearLoadingModel_;
+import bd.com.evaly.evalyshop.ui.epoxy.LinearLoadingModel_;
 import bd.com.evaly.evalyshop.ui.shop.quickView.ShopQuickViewModel;
 import bd.com.evaly.evalyshop.ui.shop.quickView.models.SmallCategoryModel_;
 

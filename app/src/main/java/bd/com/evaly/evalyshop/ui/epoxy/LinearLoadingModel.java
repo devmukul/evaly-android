@@ -1,10 +1,9 @@
-package bd.com.evaly.evalyshop.ui.epoxyModels;
+package bd.com.evaly.evalyshop.ui.epoxy;
 
 import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyHolder;
@@ -14,7 +13,7 @@ import com.airbnb.epoxy.EpoxyModelWithHolder;
 import bd.com.evaly.evalyshop.R;
 
 @EpoxyModelClass(layout = R.layout.progressbar_layout)
-public abstract class LoadingModel extends EpoxyModelWithHolder<LoadingModel.Holder> {
+public abstract class LinearLoadingModel extends EpoxyModelWithHolder<LinearLoadingModel.Holder> {
     @EpoxyAttribute
     String title;
 
@@ -30,10 +29,6 @@ public abstract class LoadingModel extends EpoxyModelWithHolder<LoadingModel.Hol
         @Override
         protected void bindView(@NonNull View itemView) {
             this.itemView = itemView;
-            if (itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-                StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) itemView.getLayoutParams();
-                params.setFullSpan(true);
-            }
             container = itemView.findViewById(R.id.container);
         }
     }
