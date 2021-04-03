@@ -54,7 +54,7 @@ public class AccountFragment extends BaseFragment<FragmentAccountBinding, Accoun
     protected void clickListeners() {
 
         binding.refundSettlement.setOnClickListener(v -> {
-            NavHostFragment.findNavController(this).navigate(R.id.refundSettlementFragment);
+            NavHostFragment.findNavController(this).navigate(R.id.preOtpFragment);
         });
 
         binding.llAppointment.setOnClickListener(v -> {

@@ -414,6 +414,10 @@
         android:id="@+id/refundSettlementFragment"
         android:name="bd.com.evaly.evalyshop.ui.refundSettlement.RefundSettlementFragment"
         android:label="RefundSettlementFragment" />
+    <fragment
+        android:id="@+id/preOtpFragment"
+        android:name="bd.com.evaly.evalyshop.ui.refundSettlement.preOtp.PreOtpFragment"
+        android:label="PreOtpFragment" />
 
 
 </navigation>
