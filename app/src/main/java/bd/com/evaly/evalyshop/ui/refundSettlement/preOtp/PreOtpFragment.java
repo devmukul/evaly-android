@@ -1,5 +1,9 @@
 package bd.com.evaly.evalyshop.ui.refundSettlement.preOtp;
 
+import android.content.Context;
+import android.os.Bundle;
+import android.view.inputmethod.InputMethodManager;
+
 import org.jetbrains.annotations.NotNull;
 
 import bd.com.evaly.evalyshop.R;
@@ -17,7 +21,18 @@ public class PreOtpFragment extends BaseFragment<FragmentPreOtpRefundSettlementB
 
     @Override
     protected void initViews() {
+        showKeyboard();
+    }
 
+    private void showKeyboard() {
+        binding.otpView.postDelayed(() -> {
+            binding.otpView.requestFocusOTP();
+            if (getActivity() != null) {
+                InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imgr != null)
+                    imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+            }
+        }, 100);
     }
 
     @Override
@@ -26,9 +41,11 @@ public class PreOtpFragment extends BaseFragment<FragmentPreOtpRefundSettlementB
             if (refundSettlementResponse == null) {
                 binding.otpView.showError();
             } else {
-                // navigate
+                binding.otpView.clearFocus();
                 navController.popBackStack();
-                navController.navigate(R.id.refundSettlementFragment);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("model", refundSettlementResponse);
+                navController.navigate(R.id.refundSettlementFragment, bundle);
             }
         });
 
@@ -48,7 +65,6 @@ public class PreOtpFragment extends BaseFragment<FragmentPreOtpRefundSettlementB
                 viewModel.getSettlementAccounts(s);
             }
         });
-
     }
 
 }

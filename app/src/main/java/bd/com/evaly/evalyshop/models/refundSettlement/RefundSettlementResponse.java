@@ -2,7 +2,9 @@ package bd.com.evaly.evalyshop.models.refundSettlement;
 
 import com.google.gson.annotations.SerializedName;
 
-public class RefundSettlementResponse{
+import java.io.Serializable;
+
+public class RefundSettlementResponse implements Serializable {
 
 	@SerializedName("bank")
 	private Bank bank;

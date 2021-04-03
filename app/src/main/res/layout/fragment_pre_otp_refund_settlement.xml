@@ -70,7 +70,6 @@
             app:otp=""
             app:otp_box_background="@drawable/input_bg_otp"
             app:otp_text_size="25dp"
-            app:text_typeface="sans-serif-medium"
             app:width="56dp" />
 
     </LinearLayout>

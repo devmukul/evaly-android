@@ -29,7 +29,7 @@ public class PreOtpViewModel extends ViewModel {
         AuthApiHelper.generateOtp(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<OtpResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<OtpResponse> response, int statusCode) {
-                ToastUtils.show(response.getMessage());
+                ToastUtils.show("An OTP has been sent to your phone number");
                 requestId = response.getData().getRequestId();
             }
 

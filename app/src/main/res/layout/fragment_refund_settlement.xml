@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -111,12 +112,13 @@
                         android:gravity="center_vertical">
 
                         <TextView
+                            android:id="@+id/bkashAccount"
+                            tools:text="01737298373"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="sans-serif-medium"
                             android:paddingStart="15dp"
-                            android:text="01737298373"
                             android:textColor="@color/c444"
                             android:textSize="16sp" />
 
@@ -189,12 +191,13 @@
                         android:gravity="center_vertical">
 
                         <TextView
+                            android:id="@+id/nagadAccount"
+                            tools:text="01637983462"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="sans-serif-medium"
                             android:paddingStart="15dp"
-                            android:text="01637983462"
                             android:textColor="@color/c444"
                             android:textSize="16sp" />
 
@@ -287,7 +290,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-medium"
-                                android:text="Dhaka Bank"
+                                android:text="N/A"
                                 android:textColor="@color/c444"
                                 android:textSize="16sp" />
 
@@ -304,7 +307,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-medium"
-                                android:text="Sifat Ahmed"
+                                android:text="N/A"
                                 android:textColor="@color/c444"
                                 android:textSize="16sp" />
 
@@ -321,7 +324,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-medium"
-                                android:text="343274623874712"
+                                android:text="N/A"
                                 android:textColor="@color/c444"
                                 android:textSize="16sp" />
 
@@ -338,7 +341,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-medium"
-                                android:text="Dhanmondi"
+                                android:text="N/A"
                                 android:textColor="@color/c444"
                                 android:textSize="16sp" />
 
@@ -355,7 +358,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-medium"
-                                android:text="588259"
+                                android:text="N/A"
                                 android:textColor="@color/c444"
                                 android:textSize="16sp" />
 
