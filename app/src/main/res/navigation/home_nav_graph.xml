@@ -419,5 +419,10 @@
         android:name="bd.com.evaly.evalyshop.ui.refundSettlement.preOtp.PreOtpFragment"
         android:label="PreOtpFragment" />
 
+    <dialog
+        android:id="@+id/editSettlementAccountBottomSheet"
+        android:name="bd.com.evaly.evalyshop.ui.refundSettlement.modals.EditSettlementAccountBottomSheet"
+        android:label="EditSettlementAccountBottomSheet" />
+
 
 </navigation>

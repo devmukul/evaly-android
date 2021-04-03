@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.rest;
 
-import android.net.Uri;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -80,6 +78,8 @@ import bd.com.evaly.evalyshop.models.profile.AddressWholeResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.refundSettlement.OtpResponse;
 import bd.com.evaly.evalyshop.models.refundSettlement.RefundSettlementResponse;
+import bd.com.evaly.evalyshop.models.refundSettlement.request.BankAccountRequest;
+import bd.com.evaly.evalyshop.models.refundSettlement.request.MFSAccountRequest;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
@@ -109,6 +109,15 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface IApiClient {
+
+    @POST(UrlUtils.DOMAIN + "eauth/api/v2/epay/set-bkash-settlement-account")
+    Call<CommonDataResponse<RefundSettlementResponse>> saveSettlementBkashAccount(@Header("Authorization") String token, @Body MFSAccountRequest body);
+
+    @POST(UrlUtils.DOMAIN + "eauth/api/v2/epay/set-nagad-settlement-account")
+    Call<CommonDataResponse<RefundSettlementResponse>> saveSettlementNagadAccount(@Header("Authorization") String token, @Body MFSAccountRequest body);
+
+    @POST(UrlUtils.DOMAIN + "eauth/api/v2/epay/set-bank-settlement-account")
+    Call<CommonDataResponse<RefundSettlementResponse>> saveSettlementBankAccount(@Header("Authorization") String token, @Body BankAccountRequest body);
 
     @POST(UrlUtils.DOMAIN + "eauth/api/v2/epay/get-settlement-accounts")
     Call<CommonDataResponse<RefundSettlementResponse>> getSettlementAccounts(@Header("Authorization") String token, @Body HashMap<String, String> body);

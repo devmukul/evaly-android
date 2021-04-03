@@ -22,6 +22,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
 import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
+import bd.com.evaly.evalyshop.models.refundSettlement.RefundSettlementResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.CartApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
@@ -43,6 +44,7 @@ public class MainViewModel extends ViewModel {
     public CampaignProductCategoryResponse selectedCampaignProductCategoryModel;
     public SingleLiveEvent<Void> campaignFilterUpdated = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> refreshCurrentFragment = new SingleLiveEvent<>();
+    public SingleLiveEvent<RefundSettlementResponse> refundSettlementUpdated = new SingleLiveEvent<>();
     public LiveData<Integer> wishListLiveCount;
     public LiveData<Integer> cartLiveCount;
     private CompositeDisposable compositeDisposable;

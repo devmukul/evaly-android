@@ -123,6 +123,7 @@
                             android:textSize="16sp" />
 
                         <ImageView
+                            android:id="@+id/editBkash"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="@drawable/btn_edit_refund_settlement"
@@ -202,6 +203,7 @@
                             android:textSize="16sp" />
 
                         <ImageView
+                            android:id="@+id/editNagad"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="@drawable/btn_edit_refund_settlement"
@@ -365,6 +367,7 @@
                         </LinearLayout>
 
                         <ImageView
+                            android:id="@+id/editBank"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="@drawable/btn_edit_refund_settlement_2"
