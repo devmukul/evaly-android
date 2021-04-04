@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.rest.ApiHandler;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import bd.com.evaly.evalyshop.rest.apiHelper.token.TokenAuthenticator;
@@ -23,6 +24,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 @InstallIn(SingletonComponent.class)
 public class NetworkModule {
+
+    @Provides
+    @Singleton
+    ApiRepository provideApiRepository(IApiClient apiService, PreferenceRepository preferenceRepository, ApiHandler apiHandler) {
+        return new ApiRepository(apiService, preferenceRepository, apiHandler);
+    }
 
     @Provides
     @Singleton
@@ -53,7 +60,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    Retrofit provideRetrofit(OkHttpClient okHttpClient){
+    Retrofit provideRetrofit(OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(BuildConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())

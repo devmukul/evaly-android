@@ -434,9 +434,8 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="type_of_the_word">Type the word</string>
     <string name="attachments">Attachments</string>
     <string name="refund_settlement">Refund Settlement</string>
-    <string name="networkError">Oh! You are not connected to a wifi or cellular data network. Please connect and try again</string>
     <string name="unknownError">Something went wrong!</string>
-    <string name="requestTimeOutError" translatable="false">Oooops! We couldn\'t capture your request in time. Please try again.</string>
+    <string name="requestTimeOutError" translatable="false">Oops! We couldn\'t capture your request in time. Please try again.</string>
     <string name="responseMalformedJson" translatable="false">Oops! We hit an error. Try again later.</string>
 
 </resources>
