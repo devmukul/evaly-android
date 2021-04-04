@@ -10,10 +10,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.AppointmentApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class AppointmentViewModel extends ViewModel {
@@ -23,15 +23,17 @@ public class AppointmentViewModel extends ViewModel {
     SingleLiveEvent<Void> hideLoadingBar = new SingleLiveEvent<>();
     List<AppointmentResponse> arrayList = new ArrayList<>();
     private int page;
+    private ApiRepository apiRepository;
 
     @Inject
-    public AppointmentViewModel() {
+    public AppointmentViewModel(ApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
         page = 1;
         loadList();
     }
 
     public void loadList() {
-        AppointmentApiHelper.getAppointmentList(page, new ResponseListenerAuth<CommonDataResponse<List<AppointmentResponse>>, String>() {
+        apiRepository.getAppointmentList(page, new ResponseListenerAuth<CommonDataResponse<List<AppointmentResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AppointmentResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
@@ -52,7 +54,7 @@ public class AppointmentViewModel extends ViewModel {
     }
 
     public void cancelAppointment(String id) {
-        AppointmentApiHelper.cancelAppointment(id, new ResponseListenerAuth<CommonDataResponse<AppointmentResponse>, String>() {
+        apiRepository.cancelAppointment(id, new ResponseListenerAuth<CommonDataResponse<AppointmentResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AppointmentResponse> response, int statusCode) {
                 cancelResponse.setValue(response);

@@ -15,12 +15,18 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.BalanceFragmentBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
+import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.databinding.BalanceFragmentBinding;
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class BalanceFragment extends BottomSheetDialogFragment {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     private BalanceViewModel mViewModel;
     private BalanceFragmentBinding binding;
 
@@ -62,7 +68,7 @@ public class BalanceFragment extends BottomSheetDialogFragment {
                 binding.claimCashback.setVisibility(View.GONE);
             else
                 binding.claimCashback.setVisibility(View.VISIBLE);
-            CredentialManager.setBalance(balanceModel.getBalance());
+            preferenceRepository.setBalance(balanceModel.getBalance());
         });
 
         mViewModel.updateBalance();

@@ -7,6 +7,7 @@ import java.util.Calendar;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -18,10 +19,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class AccountViewModel extends ViewModel {
 
+    private ApiRepository apiRepository;
     MutableLiveData<Integer> messageCount = new MutableLiveData<>();
 
     @Inject
-    public AccountViewModel(){
+    public AccountViewModel(ApiRepository apiRepository){
+        this.apiRepository = apiRepository;
         getMessageCount();
         updateUserDetails();
     }
@@ -34,7 +37,7 @@ public class AccountViewModel extends ViewModel {
             return;
         }
 
-        ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 messageCount.setValue(response.getCount());
@@ -57,7 +60,7 @@ public class AccountViewModel extends ViewModel {
 
     private void updateUserDetails() {
 
-        AuthApiHelper.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+        apiRepository.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
                 if (response.getData() != null)

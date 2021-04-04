@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -16,8 +17,6 @@ import bd.com.evaly.evalyshop.models.catalog.location.LocationResponse;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.profile.AddressWholeResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.LocationApiHelper;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -39,10 +38,12 @@ public class AddressViewModel extends ViewModel {
     MutableLiveData<LocationResponse> selectedDivisionLiveData = new MutableLiveData<>();
     MutableLiveData<LocationResponse> selectedCityLiveData = new MutableLiveData<>();
     MutableLiveData<LocationResponse> selectedAreaLiveData = new MutableLiveData<>();
+    private ApiRepository apiRepository;
 
     @Inject
-    public AddressViewModel(AddressListDao addressListDao) {
+    public AddressViewModel(AddressListDao addressListDao, ApiRepository apiRepository) {
         this.addressListDao = addressListDao;
+        this.apiRepository = apiRepository;
         compositeDisposable = new CompositeDisposable();
         addressLiveData = addressListDao.getAllLive();
         loadAddressList();
@@ -50,7 +51,7 @@ public class AddressViewModel extends ViewModel {
     }
 
     public void loadLocationList(String parent, String type) {
-        LocationApiHelper.getLocations(parent, new ResponseListenerAuth<CommonDataResponse<List<LocationResponse>>, String>() {
+        apiRepository.getLocations(parent, new ResponseListenerAuth<CommonDataResponse<List<LocationResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<LocationResponse>> response, int statusCode) {
                 if (type.equals("division"))
@@ -74,7 +75,7 @@ public class AddressViewModel extends ViewModel {
     }
 
     public void loadAddressList() {
-        AuthApiHelper.getUserAddress(new ResponseListenerAuth<CommonDataResponse<AddressWholeResponse>, String>() {
+        apiRepository.getUserAddress(new ResponseListenerAuth<CommonDataResponse<AddressWholeResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AddressWholeResponse> response, int statusCode) {
                 if (response.getData().getAddresses() != null)
@@ -128,7 +129,7 @@ public class AddressViewModel extends ViewModel {
     }
 
     public void addAddress(AddressRequest item) {
-        AuthApiHelper.addAddress(item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
+        apiRepository.addAddress(item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AddressResponse> response, int statusCode) {
                 compositeDisposable.add(addressListDao.insert(response.getData())
@@ -149,7 +150,7 @@ public class AddressViewModel extends ViewModel {
     }
 
     public void editAddress(AddressRequest item, String id) {
-        AuthApiHelper.updateAddress(id, item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
+        apiRepository.updateAddress(id, item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AddressResponse> response, int statusCode) {
                 compositeDisposable.add(addressListDao.insert(response.getData())
@@ -174,7 +175,7 @@ public class AddressViewModel extends ViewModel {
     }
 
     public void deleteAddress(String id) {
-        AuthApiHelper.removeAddress(id, new ResponseListenerAuth<CommonDataResponse, String>() {
+        apiRepository.removeAddress(id, new ResponseListenerAuth<CommonDataResponse, String>() {
             @Override
             public void onDataFetched(CommonDataResponse response, int statusCode) {
                 loadAddressList();

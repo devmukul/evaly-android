@@ -4,19 +4,17 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
-import com.orhanobut.logger.Logger;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.appointment.comment.AppointmentCommentRequest;
 import bd.com.evaly.evalyshop.models.appointment.comment.AppointmentCommentResponse;
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.AppointmentApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
@@ -30,12 +28,13 @@ public class AppointmentCommentViewModel extends ViewModel {
     private List<AppointmentCommentResponse> arrayList = new ArrayList<>();
     private int page = 1;
     private boolean isLoading = false;
+    private ApiRepository apiRepository;
 
     @Inject
-    public AppointmentCommentViewModel(SavedStateHandle savedStateHandle) {
+    public AppointmentCommentViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository) {
         this.savedStateHandle = savedStateHandle;
         this.appointmentLiveData.setValue(this.savedStateHandle.get("model"));
-        Logger.d(savedStateHandle.get("model"));
+        this.apiRepository = apiRepository;
         loadFromApi();
     }
 
@@ -44,7 +43,7 @@ public class AppointmentCommentViewModel extends ViewModel {
             return;
         isLoading = true;
         isLoadingLiveData.setValue(true);
-        AppointmentApiHelper.getAppointmentCommentList(appointmentLiveData.getValue().getAppointmentId(), page,
+        apiRepository.getAppointmentCommentList(appointmentLiveData.getValue().getAppointmentId(), page,
                 new ResponseListenerAuth<CommonDataResponse<List<AppointmentCommentResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<AppointmentCommentResponse>> response, int statusCode) {
@@ -71,7 +70,7 @@ public class AppointmentCommentViewModel extends ViewModel {
     }
 
     public void createComment(AppointmentCommentRequest body) {
-        AppointmentApiHelper.createAppointmentComment(body, new ResponseListenerAuth<CommonDataResponse<AppointmentCommentResponse>, String>() {
+        apiRepository.createAppointmentComment(body, new ResponseListenerAuth<CommonDataResponse<AppointmentCommentResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AppointmentCommentResponse> response, int statusCode) {
                 if (response.getSuccess()) {

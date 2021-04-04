@@ -15,18 +15,21 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.listener.ResponseListener;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
     @BindView(R.id.pin1Et)
@@ -52,6 +55,10 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     private String phoneNumber, password, requestId;
     private String name;
     private SetPasswordPresenter presenter;
+    @Inject
+    ApiRepository apiRepository;
+    @Inject
+    PreferenceRepository preferenceRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +78,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 //        firstName = getIntent().getStringExtra("firstName");
 //        lastName = getIntent().getStringExtra("lastName");
 
-        presenter = new SetPasswordPresenterImpl(this, this);
+        presenter = new SetPasswordPresenterImpl(this, this, apiRepository);
 
         pin1Et.addTextChangedListener(new TextWatcher() {
 
@@ -225,8 +232,8 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     @Override
     public void onPasswordSetSuccess() {
         password = etPassword.getText().toString();
-        CredentialManager.saveUserName(phoneNumber);
-        CredentialManager.savePassword(password);
+        preferenceRepository.saveUserName(phoneNumber);
+        preferenceRepository.savePassword(password);
         dialog.hideDialog();
         Toast.makeText(PasswordActivity.this, "Password set successfully!", Toast.LENGTH_SHORT).show();
         signInUser();
@@ -267,10 +274,10 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     public void signInUser() {
         dialog.showDialog();
         HashMap<String, String> payload = new HashMap<>();
-        payload.put("phone_number", CredentialManager.getUserName());
-        payload.put("password", CredentialManager.getPassword());
+        payload.put("phone_number", preferenceRepository.getUserName());
+        payload.put("password", preferenceRepository.getPassword());
 
-        AuthApiHelper.login(payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.login(payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int code) {
                 switch (code) {
@@ -279,8 +286,8 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
                     case 202:
                         response = response.get("data").getAsJsonObject();
                         String token = response.get("access_token").getAsString();
-                        CredentialManager.saveToken(token);
-                        CredentialManager.saveRefreshToken(response.get("refresh_token").getAsString());
+                        preferenceRepository.saveToken(token);
+                        preferenceRepository.saveRefreshToken(response.get("refresh_token").getAsString());
                         Balance.updateUserInfo(PasswordActivity.this, true);
                         Toast.makeText(PasswordActivity.this, "Successfully signed in.", Toast.LENGTH_SHORT).show();
                         break;

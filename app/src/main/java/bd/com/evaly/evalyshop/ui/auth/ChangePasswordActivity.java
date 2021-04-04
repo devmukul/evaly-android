@@ -13,13 +13,15 @@ import com.google.gson.JsonPrimitive;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityChangePasswordBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
@@ -27,9 +29,17 @@ import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 import retrofit2.Response;
 
+@AndroidEntryPoint
 public class ChangePasswordActivity extends BaseActivity {
+
+
+    @Inject
+    ApiRepository apiRepository;
+    @Inject
+    PreferenceRepository preferenceRepository;
 
     private ViewDialog dialog;
     private ActivityChangePasswordBinding binding;
@@ -110,15 +120,15 @@ public class ChangePasswordActivity extends BaseActivity {
         parameters.put("new_password", binding.newPassword.getText().toString());
         parameters.put("old_password", binding.currentPassword.getText().toString());
 
-        AuthApiHelper.changePassword(CredentialManager.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.changePassword(preferenceRepository.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.hideDialog();
                 ToastUtils.show(response.get("message").getAsString());
                 if (response.get("success").getAsBoolean()) {
-                    CredentialManager.savePassword(binding.newPassword.getText().toString());
+                    preferenceRepository.savePassword(binding.newPassword.getText().toString());
                     HashMap<String, String> data = new HashMap<>();
-                    data.put("user", CredentialManager.getUserName());
+                    data.put("user", preferenceRepository.getUserName());
                     data.put("host", Constants.XMPP_HOST);
                     data.put("newpass", binding.newPassword.getText().toString());
                     AuthApiHelper.changeXmppPassword(data, new DataFetchingListener<Response<JsonPrimitive>>() {
@@ -126,7 +136,7 @@ public class ChangePasswordActivity extends BaseActivity {
                         public void onDataFetched(Response<JsonPrimitive> response) {
                             dialog.hideDialog();
                             if (response.code() == 200 || response.code() == 201) {
-                                CredentialManager.savePassword(binding.newPassword.getText().toString());
+                                preferenceRepository.savePassword(binding.newPassword.getText().toString());
                                 Snackbar.make(binding.newPassword, "Password change successfully!", Snackbar.LENGTH_LONG).show();
                                 signInUser();
                             } else {
@@ -167,10 +177,10 @@ public class ChangePasswordActivity extends BaseActivity {
     public void signInUser() {
         dialog.showDialog();
         HashMap<String, String> payload = new HashMap<>();
-        payload.put("phone_number", CredentialManager.getUserName());
-        payload.put("password", CredentialManager.getPassword());
+        payload.put("phone_number", preferenceRepository.getUserName());
+        payload.put("password", preferenceRepository.getPassword());
 
-        AuthApiHelper.login(payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.login(payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int code) {
                 switch (code) {
@@ -179,8 +189,8 @@ public class ChangePasswordActivity extends BaseActivity {
                     case 202:
                         response = response.get("data").getAsJsonObject();
                         String token = response.get("access_token").getAsString();
-                        CredentialManager.saveToken(token);
-                        CredentialManager.saveRefreshToken(response.get("refresh_token").getAsString());
+                        preferenceRepository.saveToken(token);
+                        preferenceRepository.saveRefreshToken(response.get("refresh_token").getAsString());
                         Balance.updateUserInfo(ChangePasswordActivity.this, true);
                         ToastUtils.show("Successfully signed in.");
                         break;

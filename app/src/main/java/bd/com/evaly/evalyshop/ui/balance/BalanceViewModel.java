@@ -6,14 +6,23 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.gson.JsonObject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class BalanceViewModel extends ViewModel {
 
+
+    private ApiRepository apiRepository;
+
+    public BalanceViewModel(ApiRepository apiRepository){
+        this.apiRepository = apiRepository;
+    }
 
     private MutableLiveData<BalanceResponse> data = new MutableLiveData<>();
 
@@ -24,7 +33,7 @@ public class BalanceViewModel extends ViewModel {
     public void updateBalance() {
 
 
-        PaymentApiHelper.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
+        apiRepository.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
                 data.setValue(response.getData());
@@ -44,7 +53,7 @@ public class BalanceViewModel extends ViewModel {
 
     public void claimCashback() {
 
-        PaymentApiHelper.claimCashback(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.claimCashback(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 updateBalance();

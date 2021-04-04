@@ -7,8 +7,8 @@ import com.google.gson.JsonObject;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.Utils;
 
 
@@ -16,10 +16,12 @@ public class SetPasswordPresenterImpl implements SetPasswordPresenter {
 
     private Context context;
     private SetPasswordView view;
+    private ApiRepository apiRepository;
 
-    public SetPasswordPresenterImpl(Context context, SetPasswordView view) {
+    public SetPasswordPresenterImpl(Context context, SetPasswordView view, ApiRepository apiRepository) {
         this.context = context;
         this.view = view;
+        this.apiRepository = apiRepository;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class SetPasswordPresenterImpl implements SetPasswordPresenter {
             data.put("phone_number", phoneNumber);
             data.put("request_id", requestId);
 
-            AuthApiHelper.setPassword(data, new ResponseListenerAuth<JsonObject, String>() {
+            apiRepository.setPassword(data, new ResponseListenerAuth<JsonObject, String>() {
                 @Override
                 public void onDataFetched(JsonObject response, int statusCode) {
                     if (view != null)

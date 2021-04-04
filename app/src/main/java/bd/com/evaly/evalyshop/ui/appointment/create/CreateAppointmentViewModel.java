@@ -9,13 +9,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentCategoryResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentRequest;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentTimeSlotResponse;
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.AppointmentApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class CreateAppointmentViewModel extends ViewModel {
@@ -25,15 +25,17 @@ public class CreateAppointmentViewModel extends ViewModel {
     MutableLiveData<CommonDataResponse<AppointmentResponse>> createdLiveList = new MutableLiveData<>();
     SingleLiveEvent<String> createErrorMessage = new SingleLiveEvent<>();
     MutableLiveData<String> timeErrorMessage = new MutableLiveData<>();
+    private ApiRepository apiRepository;
 
 
     @Inject
-    public CreateAppointmentViewModel() {
+    public CreateAppointmentViewModel(ApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
         loadCategoryList();
     }
 
     public void loadCategoryList() {
-        AppointmentApiHelper.getAppointmentCategoryList(new ResponseListenerAuth<CommonDataResponse<List<AppointmentCategoryResponse>>, String>() {
+        apiRepository.getAppointmentCategoryList(new ResponseListenerAuth<CommonDataResponse<List<AppointmentCategoryResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AppointmentCategoryResponse>> response, int statusCode) {
                 categoryLiveList.setValue(response.getData());
@@ -62,7 +64,7 @@ public class CreateAppointmentViewModel extends ViewModel {
     }
 
     public void getTimeSlot(String date) {
-        AppointmentApiHelper.getAppointmentTimeSlotList(date, new ResponseListenerAuth<CommonDataResponse<List<AppointmentTimeSlotResponse>>, String>() {
+        apiRepository.getAppointmentTimeSlotList(date, new ResponseListenerAuth<CommonDataResponse<List<AppointmentTimeSlotResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AppointmentTimeSlotResponse>> response, int statusCode) {
                 timeSlotLiveList.setValue(response.getData());
@@ -85,7 +87,7 @@ public class CreateAppointmentViewModel extends ViewModel {
     }
 
     public void createAppointment(AppointmentRequest body) {
-        AppointmentApiHelper.createAppointment(body, new ResponseListenerAuth<CommonDataResponse<AppointmentResponse>, String>() {
+        apiRepository.createAppointment(body, new ResponseListenerAuth<CommonDataResponse<AppointmentResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AppointmentResponse> response, int statusCode) {
                 createdLiveList.setValue(response);

@@ -15,21 +15,29 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.preference.ReferPref;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.ActivitySignupNewBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.auth.captcha.CaptchaResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class SignUpActivity extends BaseActivity {
 
-
+    @Inject
+    ApiRepository apiRepository;
+    @Inject
+    PreferenceRepository preferenceRepository;
     private ActivitySignupNewBinding binding;
     private ReferPref referPref;
     private CaptchaResponse captchaModel;
@@ -74,7 +82,7 @@ public class SignUpActivity extends BaseActivity {
     }
 
     private void getCaptcha() {
-        AuthApiHelper.getCaptcha(new ResponseListenerAuth<CommonDataResponse<CaptchaResponse>, String>() {
+        apiRepository.getCaptcha(new ResponseListenerAuth<CommonDataResponse<CaptchaResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<CaptchaResponse> response, int statusCode) {
                 captchaModel = response.getData();
@@ -97,7 +105,7 @@ public class SignUpActivity extends BaseActivity {
     }
 
     public void signUpUser() {
-        if (captchaModel == null){
+        if (captchaModel == null) {
             ToastUtils.show("Please reload the page");
             return;
         }
@@ -109,12 +117,11 @@ public class SignUpActivity extends BaseActivity {
         hashMap.put("first_name", binding.fName.getText().toString());
         hashMap.put("last_name", binding.lName.getText().toString());
         hashMap.put("phone_number", binding.number.getText().toString());
-
         hashMap.put("captcha_id", captchaModel.getCaptchaId());
         hashMap.put("captcha_value", binding.captchaInput.getText().toString().trim());
         hashMap.put("service_name", "evaly");
 
-        AuthApiHelper.register(hashMap, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.register(hashMap, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 alert.hideDialog();

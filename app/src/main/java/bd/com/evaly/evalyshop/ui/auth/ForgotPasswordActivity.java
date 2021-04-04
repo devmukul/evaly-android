@@ -12,21 +12,30 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityForgotPasswordBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.auth.captcha.CaptchaResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class ForgotPasswordActivity extends BaseActivity {
 
 
+    @Inject
+    ApiRepository apiRepository;
+    @Inject
+    PreferenceRepository preferenceRepository;
     private ViewDialog dialog;
     private ActivityForgotPasswordBinding binding;
     private CaptchaResponse captchaModel;
@@ -67,7 +76,7 @@ public class ForgotPasswordActivity extends BaseActivity {
         body.put("captcha_value", binding.captchaInput.getText().toString().trim());
         body.put("service_name", "evaly");
 
-        AuthApiHelper.forgetPassword(body, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.forgetPassword(body, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.hideDialog();
@@ -100,7 +109,7 @@ public class ForgotPasswordActivity extends BaseActivity {
     }
 
     private void getCaptcha() {
-        AuthApiHelper.getCaptcha(new ResponseListenerAuth<CommonDataResponse<CaptchaResponse>, String>() {
+        apiRepository.getCaptcha(new ResponseListenerAuth<CommonDataResponse<CaptchaResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<CaptchaResponse> response, int statusCode) {
                 captchaModel = response.getData();

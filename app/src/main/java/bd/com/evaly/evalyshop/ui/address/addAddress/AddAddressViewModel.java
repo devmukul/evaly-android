@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -36,10 +37,12 @@ public class AddAddressViewModel extends ViewModel {
     MutableLiveData<LocationResponse> selectedCityLiveData = new MutableLiveData<>();
     MutableLiveData<LocationResponse> selectedAreaLiveData = new MutableLiveData<>();
     SingleLiveEvent<Void> dismissBottomSheet = new SingleLiveEvent<>();
+    private ApiRepository apiRepository;
 
     @Inject
-    public AddAddressViewModel(AddressListDao addressListDao, SavedStateHandle bundle) {
+    public AddAddressViewModel(AddressListDao addressListDao, SavedStateHandle bundle, ApiRepository apiRepository) {
         this.addressListDao = addressListDao;
+        this.apiRepository = apiRepository;
         modelLiveData.setValue(bundle.get("model"));
         isEdit = bundle.get("is_edit");
         compositeDisposable = new CompositeDisposable();
@@ -53,7 +56,7 @@ public class AddAddressViewModel extends ViewModel {
     }
 
     public void loadLocationList(String parent, String type) {
-        LocationApiHelper.getLocations(parent, new ResponseListenerAuth<CommonDataResponse<List<LocationResponse>>, String>() {
+        apiRepository.getLocations(parent, new ResponseListenerAuth<CommonDataResponse<List<LocationResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<LocationResponse>> response, int statusCode) {
                 if (type.equals("division"))
@@ -77,7 +80,7 @@ public class AddAddressViewModel extends ViewModel {
     }
 
     public void loadAddressList() {
-        AuthApiHelper.getUserAddress(new ResponseListenerAuth<CommonDataResponse<AddressWholeResponse>, String>() {
+        apiRepository.getUserAddress(new ResponseListenerAuth<CommonDataResponse<AddressWholeResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AddressWholeResponse> response, int statusCode) {
                 if (response.getData().getAddresses() != null)
@@ -99,7 +102,7 @@ public class AddAddressViewModel extends ViewModel {
     }
 
     public void addAddress(AddressRequest item) {
-        AuthApiHelper.addAddress(item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
+        apiRepository.addAddress(item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AddressResponse> response, int statusCode) {
                 loadAddressList();
@@ -121,7 +124,7 @@ public class AddAddressViewModel extends ViewModel {
     public void editAddress(AddressRequest item) {
         if (modelLiveData.getValue() == null)
             return;
-        AuthApiHelper.updateAddress(modelLiveData.getValue().getId(), item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
+        apiRepository.updateAddress(modelLiveData.getValue().getId(), item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AddressResponse> response, int statusCode) {
                 loadAddressList();

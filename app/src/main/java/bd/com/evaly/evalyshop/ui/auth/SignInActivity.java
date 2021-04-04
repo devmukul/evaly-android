@@ -17,17 +17,25 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class SignInActivity extends BaseActivity {
 
+    @Inject
+    ApiRepository apiRepository;
+    @Inject
+    PreferenceRepository preferenceRepository;
     TextView forgot;
     LinearLayout signUp;
     ImageView close, showPassword;
@@ -112,7 +120,7 @@ public class SignInActivity extends BaseActivity {
         payload.put("phone_number", phoneNumber.getText().toString());
         payload.put("password", password.getText().toString());
 
-        AuthApiHelper.login(payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.login(payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int code) {
                 alert.hideDialog();
@@ -122,10 +130,10 @@ public class SignInActivity extends BaseActivity {
                     case 202:
                         response = response.get("data").getAsJsonObject();
                         token = response.get("access_token").getAsString();
-                        CredentialManager.saveToken(token);
-                        CredentialManager.saveRefreshToken(response.get("refresh_token").getAsString());
-                        CredentialManager.saveUserName(phoneNumber.getText().toString());
-                        CredentialManager.savePassword(password.getText().toString());
+                        preferenceRepository.saveToken(token);
+                        preferenceRepository.saveRefreshToken(response.get("refresh_token").getAsString());
+                        preferenceRepository.saveUserName(phoneNumber.getText().toString());
+                        preferenceRepository.savePassword(password.getText().toString());
                         Balance.updateUserInfo(SignInActivity.this, true);
                         Toast.makeText(SignInActivity.this, "Successfully signed in.", Toast.LENGTH_SHORT).show();
                         break;
