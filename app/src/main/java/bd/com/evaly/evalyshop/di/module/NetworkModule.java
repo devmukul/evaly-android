@@ -8,6 +8,7 @@ import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.rest.ApiHandler;
+import bd.com.evaly.evalyshop.rest.ApiServiceHolder;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import bd.com.evaly.evalyshop.rest.apiHelper.token.TokenAuthenticator;
 import bd.com.evaly.evalyshop.rest.apiHelper.token.TokenInterceptor;
@@ -33,29 +34,42 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    TokenAuthenticator provideTokenAuthenticator(IApiClient apiService, PreferenceRepository preferencesHelper) {
-        return new TokenAuthenticator(apiService, preferencesHelper);
+    ApiServiceHolder apiServiceHolder() {
+        return new ApiServiceHolder();
     }
 
     @Provides
     @Singleton
-    OkHttpClient provideOkHttpClient(PreferenceRepository preferencesHelper, TokenAuthenticator tokenAuthenticator) {
+    TokenAuthenticator provideTokenAuthenticator(ApiServiceHolder apiServiceHolder, PreferenceRepository preferencesHelper) {
+        return new TokenAuthenticator(apiServiceHolder, preferencesHelper);
+    }
+
+    @Provides
+    @Singleton
+    TokenInterceptor provideTokenInterceptor(PreferenceRepository preferencesHelper) {
+        return new TokenInterceptor(preferencesHelper);
+    }
+
+    @Provides
+    @Singleton
+    OkHttpClient provideOkHttpClient(PreferenceRepository preferenceRepository, TokenAuthenticator tokenAuthenticator, TokenInterceptor tokenInterceptor) {
         OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
         okHttpClient.connectTimeout(120, TimeUnit.SECONDS);
         okHttpClient.readTimeout(120, TimeUnit.SECONDS);
         okHttpClient.writeTimeout(120, TimeUnit.SECONDS);
-        okHttpClient.addInterceptor(new TokenInterceptor(preferencesHelper));
+        okHttpClient.addInterceptor(tokenInterceptor);
         okHttpClient.authenticator(tokenAuthenticator);
         if (BuildConfig.DEBUG)
             okHttpClient.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         return okHttpClient.build();
     }
 
-
     @Provides
     @Singleton
-    IApiClient provideApiService(Retrofit retrofit) {
-        return retrofit.create(IApiClient.class);
+    IApiClient provideApiService(Retrofit retrofit, ApiServiceHolder apiServiceHolder) {
+        IApiClient client = retrofit.create(IApiClient.class);
+        apiServiceHolder.setApiService(client);
+        return client;
     }
 
     @Provides

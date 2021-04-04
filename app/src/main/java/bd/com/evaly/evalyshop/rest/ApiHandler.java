@@ -66,7 +66,7 @@ public class ApiHandler {
             if (response.body() != null) {
                 if (response.body().getClass().isAssignableFrom(CommonDataResponse.class)) {
                     CommonDataResponse<T> commonSuccessResponse = (CommonDataResponse<T>) response.body();
-                    if (commonSuccessResponse.getSuccess()) {
+                    if (commonSuccessResponse != null) {
                         responseListener.onDataFetched(response.body(), response.code());
                     } else {
                         responseListener.onFailed((V) ((CommonDataResponse<T>) response.body()).getMessage(), statusCode);

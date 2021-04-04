@@ -75,7 +75,9 @@ public class CommonDataResponse<T> {
         this.posts = posts;
     }
 
-    public Boolean getSuccess() {
+    public boolean getSuccess() {
+        if (success == null)
+            return false;
         return success;
     }
 

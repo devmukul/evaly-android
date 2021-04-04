@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.banner.BannerDao;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -28,10 +29,6 @@ import bd.com.evaly.evalyshop.models.campaign.topProducts.CampaignTopProductResp
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.CompletableObserver;
@@ -48,6 +45,7 @@ public class HomeViewModel extends ViewModel {
     protected MutableLiveData<List<CampaignShopResponse>> flashSaleShopList = new MutableLiveData<>();
     protected MutableLiveData<List<ShopListResponse>> codShopList = new MutableLiveData<>();
     protected MutableLiveData<List<CampaignTopProductResponse>> topCampaignProductsLiveList = new MutableLiveData<>();
+    private ApiRepository apiRepository;
     private int tabPosition = -1;
     private MutableLiveData<List<CampaignCategoryResponse>> categoryLiveList = new MutableLiveData<>();
     private MutableLiveData<List<CampaignProductResponse>> productListLive = new MutableLiveData<>();
@@ -64,8 +62,10 @@ public class HomeViewModel extends ViewModel {
     private BannerDao bannerDao;
 
     @Inject
-    public HomeViewModel(BannerDao bannerDao) {
+    public HomeViewModel(BannerDao bannerDao, ApiRepository apiRepository) {
         this.bannerDao = bannerDao;
+        this.apiRepository = apiRepository;
+
         bannerListLive = bannerDao.getAll();
         compositeDisposable = new CompositeDisposable();
         currentPageProducts = 1;
@@ -101,7 +101,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void loadCampaignTopProducts() {
-        CampaignApiHelper.getCampaignCategoryTopProducts(new ResponseListenerAuth<CommonDataResponse<List<CampaignTopProductResponse>>, String>() {
+        apiRepository.getCampaignCategoryTopProducts(new ResponseListenerAuth<CommonDataResponse<List<CampaignTopProductResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignTopProductResponse>> response, int statusCode) {
                 topCampaignProductsLiveList.setValue(response.getData());
@@ -120,7 +120,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void loadCodShops() {
-        ProductApiHelper.getShops(null, null, 1, "cod", new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
+        apiRepository.getShops(null, null, 1, "cod", new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
                 codShopList.setValue(response.getData());
@@ -156,7 +156,7 @@ public class HomeViewModel extends ViewModel {
 
     public void loadFlashSaleProductList() {
 
-        CampaignApiHelper.getCampaignCategoryProducts(1, 20, null, Constants.FLASH_SALE_SLUG, null, null, null,
+        apiRepository.getCampaignCategoryProducts(1, 20, null, Constants.FLASH_SALE_SLUG, null, null, null,
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
@@ -177,7 +177,7 @@ public class HomeViewModel extends ViewModel {
 
     public void loadFlashSaleBrandsList() {
 
-        CampaignApiHelper.getCampaignCategoryBrands(1, 20, null, Constants.FLASH_SALE_SLUG, null,
+        apiRepository.getCampaignCategoryBrands(1, 20, null, Constants.FLASH_SALE_SLUG, null,
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignBrandResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignBrandResponse>> response, int statusCode) {
@@ -198,7 +198,7 @@ public class HomeViewModel extends ViewModel {
 
     public void loadFlashSaleShopList() {
 
-        CampaignApiHelper.getCampaignCategoryShops(1, 20, null, Constants.FLASH_SALE_SLUG, null,
+        apiRepository.getCampaignCategoryShops(1, 20, null, Constants.FLASH_SALE_SLUG, null,
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignShopResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignShopResponse>> response, int statusCode) {
@@ -218,7 +218,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void loadCampaignCategory() {
-        CampaignApiHelper.getCampaignCategory(new ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {
+        apiRepository.getCampaignCategory(new ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignCategoryResponse>> response, int statusCode) {
                 categoryLiveList.setValue(response.getData());
@@ -238,7 +238,7 @@ public class HomeViewModel extends ViewModel {
 
     public void loadBanners() {
 
-        GeneralApiHelper.getBanners(new ResponseListenerAuth<CommonResultResponse<JsonObject>, String>() {
+        apiRepository.getBanners(new ResponseListenerAuth<CommonResultResponse<JsonObject>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<JsonObject> response, int statusCode) {
                 if (response.getData() == null || !response.getData().has("advertisement_list"))
@@ -305,7 +305,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     private void loadExpressServices() {
-        ExpressApiHelper.getServicesList(new ResponseListenerAuth<CommonDataResponse<List<ExpressServiceModel>>, String>() {
+        apiRepository.getExpressServicesList(new ResponseListenerAuth<CommonDataResponse<List<ExpressServiceModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ExpressServiceModel>> response, int statusCode) {
                 expressListLive.setValue(response.getData());
@@ -325,7 +325,7 @@ public class HomeViewModel extends ViewModel {
 
     public void loadProducts() {
 
-        CampaignApiHelper.getCampaignAllProducts(currentPageProducts, 20, null, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
+        apiRepository.getCampaignAllProducts(currentPageProducts, 20, null, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
                 productArrayList.addAll(response.getData());

@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.rest.ApiServiceHolder;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import okhttp3.Authenticator;
 import okhttp3.Request;
@@ -18,19 +18,25 @@ import okhttp3.Route;
 public class TokenAuthenticator implements Authenticator {
 
     private boolean isRefreshApiCalled = false;
+    private ApiServiceHolder apiServiceHolder;
     private IApiClient apiService;
     private PreferenceRepository preferencesHelper;
 
-    public TokenAuthenticator(IApiClient apiService, PreferenceRepository preferencesHelper) {
-        this.apiService = apiService;
+    public TokenAuthenticator(ApiServiceHolder apiServiceHolder, PreferenceRepository preferencesHelper) {
+        this.apiServiceHolder = apiServiceHolder;
         this.preferencesHelper = preferencesHelper;
     }
 
     @Override
     public Request authenticate(Route route, Response response) throws IOException {
+        if (apiServiceHolder.getApiService() == null)
+            return null;
+        apiService = apiServiceHolder.getApiService();
+
         if (!isRefreshApiCalled) {
             HashMap<String, String> loginRequest = new HashMap<>();
-            loginRequest.put("refresh_token", CredentialManager.getRefreshToken());
+            loginRequest.put("refresh_token", preferencesHelper.getRefreshToken());
+            loginRequest.put("access_token", preferencesHelper.getToken());
 
             retrofit2.Response<JsonObject> refreshApiResponse = apiService.refreshToken(preferencesHelper.getToken(), loginRequest).execute();
             if (refreshApiResponse.code() != 401) {

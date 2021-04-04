@@ -33,6 +33,18 @@ import bd.com.evaly.evalyshop.models.auth.RegisterResponse;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordBody;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordResponse;
 import bd.com.evaly.evalyshop.models.auth.captcha.CaptchaResponse;
+import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
+import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
+import bd.com.evaly.evalyshop.models.campaign.banner.CampaignBannerResponse;
+import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
+import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
+import bd.com.evaly.evalyshop.models.campaign.carousel.CampaignCarouselResponse;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
+import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
+import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
+import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
+import bd.com.evaly.evalyshop.models.campaign.topProducts.CampaignTopProductResponse;
 import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandCatResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
@@ -251,6 +263,64 @@ public class ApiRepository {
     }
 
 
+    /* ------------- Campaign APIs ------------- */
+
+
+    public void getCampaignProductCategories(String category, String campaignSlug, String search, int page, ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String> listener) {
+        apiHandler.createCall(apiService.getCampaignProductCategories(category, campaignSlug, search, page, 30), listener);
+    }
+
+    public void getSubCampaignDetails(String campaignSlug, ResponseListenerAuth<CommonDataResponse<SubCampaignDetailsResponse>, String> listener) {
+        apiHandler.createCall(apiService.getSubCampaignDetails(campaignSlug), listener);
+    }
+
+    public void getCampaignCarousel(String context, ResponseListenerAuth<CommonDataResponse<List<CampaignCarouselResponse>>, String> listener) {
+        apiHandler.createCall(apiService.getCampaignCarousel(context), listener);
+    }
+
+    public void getCampaignBanners(ResponseListenerAuth<CommonDataResponse<List<CampaignBannerResponse>>, String> listener) {
+        apiHandler.createCall(apiService.getCampaignBanners(), listener);
+    }
+
+    public void getCampaignCategoryCampaigns(int page, int limit, String search, String category, ResponseListenerAuth<CommonDataResponse<List<SubCampaignResponse>>, String> listener) {
+        apiHandler.createCall(apiService.getCampaignCategoryCampaigns(page, limit, search, category), listener);
+    }
+
+    public void getCampaignCategoryProducts(int page, int limit, String search, String category, String campaign, String productCategory, String priceSort, ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String> listener) {
+        apiHandler.createCall(apiService.getCampaignCategoryProducts(page, limit, search, category, campaign, productCategory, priceSort), listener);
+    }
+
+    public void getCampaignCategoryBrands(int page, int limit, String search, String category, String campaign, ResponseListenerAuth<CommonDataResponse<List<CampaignBrandResponse>>, String> listener) {
+        apiHandler.createCall(apiService.getCampaignCategoryBrands(page, limit, search, category, campaign), listener);
+    }
+
+    public void getCampaignCategoryShops(int page, int limit, String search, String category, String campaign, ResponseListenerAuth<CommonDataResponse<List<CampaignShopResponse>>, String> listener) {
+        apiHandler.createCall(apiService.getCampaignCategoryShops(page, limit, search, category, campaign), listener);
+    }
+
+    public void getCampaignAllProducts(int page, int limit, String search, ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String> listener) {
+        apiHandler.createCall(apiService.getCampaignAllProducts(page, limit, search), listener);
+    }
+
+    public void getCampaignCategory(ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String> listener) {
+        apiHandler.createCall(apiService.getCampaignCategory(), listener);
+    }
+
+    public void getCampaignCategoryTopProducts(ResponseListenerAuth<CommonDataResponse<List<CampaignTopProductResponse>>, String> listener) {
+        apiHandler.createCall(apiService.getCampaignCategoryTopProducts(), listener);
+    }
+
+    public void getCampaigns(int page, String search, ResponseListenerAuth<CommonDataResponse<List<CampaignItem>>, String> listener) {
+        apiHandler.createCall(apiService.getCampaigns(page, search), listener);
+    }
+
+    public void getCampaignShops(String group, int page, ResponseListenerAuth<CommonDataResponse<List<CampaignShopItem>>, String> listener) {
+        apiHandler.createCall(apiService.getCampaignShops(group, page, 21), listener);
+    }
+    
+    
+    
+    
     /* ------------- Brand APIs ------------- */
 
     public void getBrandsDetails(String brandSlug, ResponseListenerAuth<CommonDataResponse<BrandResponse>, String> listener) {
@@ -310,7 +380,7 @@ public class ApiRepository {
 
     /* ------------- Express APIs ------------- */
 
-    public void getServicesList(ResponseListenerAuth<CommonDataResponse<List<ExpressServiceModel>>, String> listener) {
+    public void getExpressServicesList(ResponseListenerAuth<CommonDataResponse<List<ExpressServiceModel>>, String> listener) {
         apiHandler.createCall(apiService.getExpressServicesList(), listener);
     }
 
