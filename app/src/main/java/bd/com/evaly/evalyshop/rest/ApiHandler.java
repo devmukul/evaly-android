@@ -14,7 +14,6 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.auth.LoginResponse;
 import bd.com.evaly.evalyshop.util.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -83,27 +82,21 @@ public class ApiHandler {
                 if (response.errorBody() != null) {
                     try {
                         String error = null;
-                        LoginResponse loginResponse = gson.fromJson(response.errorBody().string(), LoginResponse.class);
+                        CommonDataResponse loginResponse = gson.fromJson(response.errorBody().string(), CommonDataResponse.class);
                         if (loginResponse != null) {
-                            if (call.request().url().toString().contains("auth/api/login/")) {
-                                error = loginResponse.getDetails();
-                            } else {
-                                error = loginResponse.getMessage();
-                            }
+                            // if (call.request().url().toString().contains("auth/api/login/")) {}
+                            error = loginResponse.getMessage();
                         }
-
                         if (error != null) {
                             responseListener.onFailed((V) error, statusCode);
                         } else {
                             responseListener.onFailed((V) AppController.getmContext().getString(R.string.unknownError), statusCode);
                         }
-
                     } catch (JsonSyntaxException ex) {
                         responseListener.onFailed((V) AppController.getmContext().getString(R.string.unknownError), statusCode);
                         ex.printStackTrace();
                     }
                 }
-
             } catch (IOException e) {
                 responseListener.onFailed((V) AppController.getmContext().getString(R.string.unknownError), statusCode);
                 e.printStackTrace();

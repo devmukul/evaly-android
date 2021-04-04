@@ -36,7 +36,9 @@ import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetailsBinding, CampaignDetailsViewModel> {
 
     private MainViewModel mainViewModel;

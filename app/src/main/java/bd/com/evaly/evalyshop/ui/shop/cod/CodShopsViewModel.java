@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
@@ -22,9 +23,11 @@ public class CodShopsViewModel extends BaseViewModel {
     protected List<ShopListResponse> arrayList = new ArrayList<>();
     protected MutableLiveData<List<ShopListResponse>> liveList = new MutableLiveData<>();
     private boolean isLoading;
+    private ApiRepository apiRepository;
 
     @Inject
-    public CodShopsViewModel() {
+    public CodShopsViewModel(ApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
         page = 1;
         isLoading = false;
         loadCodShops();
@@ -44,7 +47,7 @@ public class CodShopsViewModel extends BaseViewModel {
         if (isLoading)
             return;
         isLoading = true;
-        ProductApiHelper.getShops(null, search, page, "cod", new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
+        apiRepository.getShops(null, search, page, "cod", new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
                 isLoading = false;

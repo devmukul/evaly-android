@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -22,10 +23,6 @@ import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
@@ -56,11 +53,12 @@ public class ShopViewModel extends ViewModel {
     private boolean isShop = true;
     protected MutableLiveData<ShopDetailsModel> shopDetailsModelLiveData = new MutableLiveData<>();
     protected MutableLiveData<SubCampaignDetailsResponse> campaignDetailsLiveData = new MutableLiveData<>();
+    private ApiRepository apiRepository;
 
 
     @Inject
-    public ShopViewModel(SavedStateHandle args) {
-
+    public ShopViewModel(SavedStateHandle args, ApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
         this.categorySlug = null;
         this.campaignSlug = args.get("campaign_slug");
         this.shopSlug = args.get("shop_slug");
@@ -80,7 +78,7 @@ public class ShopViewModel extends ViewModel {
         if (campaignSlug == null)
             return;
 
-        CampaignApiHelper.getSubCampaignDetails(campaignSlug, new ResponseListenerAuth<CommonDataResponse<SubCampaignDetailsResponse>, String>() {
+        apiRepository.getSubCampaignDetails(campaignSlug, new ResponseListenerAuth<CommonDataResponse<SubCampaignDetailsResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<SubCampaignDetailsResponse> response, int statusCode) {
                 campaignDetailsLiveData.setValue(response.getData());
@@ -224,7 +222,7 @@ public class ShopViewModel extends ViewModel {
 
     public void subscribe(boolean subscribe) {
 
-        GeneralApiHelper.subscribeToShop(CredentialManager.getToken(), shopSlug, subscribe, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.subscribeToShop(CredentialManager.getToken(), shopSlug, subscribe, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -247,7 +245,7 @@ public class ShopViewModel extends ViewModel {
 
     public void loadRatings() {
 
-        ReviewsApiHelper.getReviewSummary(CredentialManager.getToken(), shopSlug, new ResponseListenerAuth<CommonDataResponse<ReviewSummaryModel>, String>() {
+        apiRepository.getReviewSummary(CredentialManager.getToken(), shopSlug, new ResponseListenerAuth<CommonDataResponse<ReviewSummaryModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ReviewSummaryModel> response, int statusCode) {
                 ratingSummary.setValue(response.getData());
@@ -267,7 +265,7 @@ public class ShopViewModel extends ViewModel {
     }
 
     public void loadShopDetails() {
-        ShopApiHelper.getShopDetails(shopSlug, campaignSlug, new ResponseListenerAuth<CommonDataResponse<ShopDetailsResponse>, String>() {
+        apiRepository.getShopDetails(shopSlug, campaignSlug, new ResponseListenerAuth<CommonDataResponse<ShopDetailsResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ShopDetailsResponse> response, int statusCode) {
                 shopDetailsLive.setValue(response.getData());
@@ -287,7 +285,7 @@ public class ShopViewModel extends ViewModel {
 
     public void loadShopProducts() {
 
-        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        apiRepository.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 shopDetailsModelLiveData.setValue(response);
@@ -321,7 +319,7 @@ public class ShopViewModel extends ViewModel {
 
         isCategoryLoading = true;
 
-        ProductApiHelper.getCategoriesOfShop(shopSlug, campaignSlug, categoryCurrentPage, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getCategoriesOfShop(shopSlug, campaignSlug, categoryCurrentPage, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 isCategoryLoading = false;

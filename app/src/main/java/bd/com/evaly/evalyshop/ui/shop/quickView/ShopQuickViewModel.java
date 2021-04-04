@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
@@ -25,16 +26,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class ShopQuickViewModel extends ViewModel {
+    private ApiRepository apiRepository;
     private SingleLiveEvent<String> buyNowLiveData = new SingleLiveEvent<>();
     private MutableLiveData<TabsItem> selectedCategoryLiveData = new MutableLiveData<>();
-
     private MutableLiveData<ShopDetailsModel> shopDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<TabsItem>> shopCategoryListLiveData = new MutableLiveData<>();
     private MutableLiveData<List<ItemsItem>> productListLiveData = new MutableLiveData<>();
-
     private List<TabsItem> categoryArrayList = new ArrayList<>();
     private List<ItemsItem> productArrayList = new ArrayList<>();
-
     private String categorySlug;
     private String campaignSlug;
     private String brandSlug;
@@ -45,8 +44,9 @@ public class ShopQuickViewModel extends ViewModel {
     private boolean isCategoryLoading = false;
 
     @Inject
-    public ShopQuickViewModel(SavedStateHandle args) {
+    public ShopQuickViewModel(SavedStateHandle args, ApiRepository apiRepository) {
         this.categorySlug = null;
+        this.apiRepository = apiRepository;
         this.campaignSlug = args.get("campaign_slug");
         this.shopSlug = args.get("shop_slug");
         this.brandSlug = args.get("campaign_slug");
@@ -145,7 +145,7 @@ public class ShopQuickViewModel extends ViewModel {
 
     public void loadShopProducts() {
 
-        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        apiRepository.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 shopDetailsLiveData.setValue(response);
@@ -175,7 +175,7 @@ public class ShopQuickViewModel extends ViewModel {
 
         isCategoryLoading = true;
 
-        ProductApiHelper.getCategoriesOfShop(shopSlug, campaignSlug, categoryCurrentPage, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getCategoriesOfShop(shopSlug, campaignSlug, categoryCurrentPage, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 isCategoryLoading = false;

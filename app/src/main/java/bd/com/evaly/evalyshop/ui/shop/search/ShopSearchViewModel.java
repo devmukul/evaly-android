@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
@@ -22,6 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class ShopSearchViewModel extends ViewModel {
 
+    private ApiRepository apiRepository;
     protected MutableLiveData<ShopDetailsResponse> shopDetailsLive = new MutableLiveData<>();
     private MutableLiveData<Boolean> onResetLiveData = new MutableLiveData<>();
     private MutableLiveData<List<ItemsItem>> productListLiveData = new MutableLiveData<>();
@@ -37,7 +39,8 @@ public class ShopSearchViewModel extends ViewModel {
     private boolean isShop = true;
 
     @Inject
-    public ShopSearchViewModel(SavedStateHandle args) {
+    public ShopSearchViewModel(SavedStateHandle args, ApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
         this.categorySlug = null;
         this.campaignSlug = args.get("campaign_slug");
         this.shopSlug = args.get("shop_slug");
@@ -135,7 +138,7 @@ public class ShopSearchViewModel extends ViewModel {
 
     public void loadShopProducts() {
 
-        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, search, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        apiRepository.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, search, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 productArrayList.addAll(response.getData().getItems());
