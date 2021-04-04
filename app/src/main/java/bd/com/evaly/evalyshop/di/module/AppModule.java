@@ -8,14 +8,15 @@ import androidx.room.Room;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.gson.Gson;
 
 import javax.inject.Singleton;
 
+import bd.com.evaly.evalyshop.data.pref.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.CartDatabase;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.di.qualifiers.FirebaseRemoteConfigLiveData;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
@@ -29,6 +30,18 @@ public class AppModule {
     @Singleton
     Context provideContext(Application application) {
         return application;
+    }
+
+    @Provides
+    @Singleton
+    Gson provideGson() {
+        return new Gson();
+    }
+
+    @Provides
+    @Singleton
+    PreferenceRepository providePreferenceRepository(Context context, Gson gson) {
+        return new PreferenceRepository(context, gson);
     }
 
     @Provides
