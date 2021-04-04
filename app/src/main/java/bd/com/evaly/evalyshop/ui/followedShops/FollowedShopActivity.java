@@ -20,19 +20,22 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class FollowedShopActivity extends AppCompatActivity {
 
     private TabsAdapter adapter;
@@ -47,6 +50,8 @@ public class FollowedShopActivity extends AppCompatActivity {
     private String slug = "evaly1919";
     private LinearLayout not, layoutImageHolder;
     private ImageView cover;
+    @Inject
+    ApiRepository apiRepository;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,7 +112,7 @@ public class FollowedShopActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        CampaignApiHelper.getCampaignShops(slug, p, new ResponseListenerAuth<CommonDataResponse<List<CampaignShopItem>>, String>() {
+        apiRepository.getCampaignShops(slug, p, new ResponseListenerAuth<CommonDataResponse<List<CampaignShopItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignShopItem>> response, int statusCode) {
 
@@ -172,7 +177,7 @@ public class FollowedShopActivity extends AppCompatActivity {
         isLoading = true;
         progressBar.setVisibility(View.VISIBLE);
 
-        ShopApiHelper.getFollowedShop(CredentialManager.getToken(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getFollowedShop(CredentialManager.getToken(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

@@ -6,12 +6,13 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.gson.JsonObject;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
@@ -20,6 +21,7 @@ public class BalanceViewModel extends ViewModel {
 
     private ApiRepository apiRepository;
 
+    @Inject
     public BalanceViewModel(ApiRepository apiRepository){
         this.apiRepository = apiRepository;
     }

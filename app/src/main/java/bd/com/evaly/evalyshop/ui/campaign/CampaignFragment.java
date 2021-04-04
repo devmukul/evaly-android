@@ -44,8 +44,10 @@ import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.FixedStaggeredGridLayoutManager;
 import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
+import dagger.hilt.android.AndroidEntryPoint;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
+@AndroidEntryPoint
 public class CampaignFragment extends BaseFragment<FragmentCampaignBinding, CampaignViewModel> implements CampaignNavigator {
 
     int coverHeight;

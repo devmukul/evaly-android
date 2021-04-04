@@ -9,13 +9,13 @@ import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
@@ -28,9 +28,10 @@ public class BuyNowViewModel extends ViewModel {
     private AvailableShopModel shopItem;
     private CartEntity cartItem;
     private CartDao cartDao;
+    private ApiRepository apiRepository;
 
     @Inject
-    public BuyNowViewModel(CartDao cartDao, SavedStateHandle savedStateHandle) {
+    public BuyNowViewModel(CartDao cartDao, SavedStateHandle savedStateHandle, ApiRepository apiRepository) {
         if (savedStateHandle.contains("shopSlug") && savedStateHandle.contains("productSlug")) {
             shopSlug = savedStateHandle.get("shopSlug");
             productSlug = savedStateHandle.get("productSlug");
@@ -41,6 +42,7 @@ public class BuyNowViewModel extends ViewModel {
             loadFromModel.setValue(true);
         }
         this.cartDao = cartDao;
+        this.apiRepository = apiRepository;
     }
 
     public void insertCartEntity(CartEntity cartEntity){
@@ -63,7 +65,7 @@ public class BuyNowViewModel extends ViewModel {
 
     public void getProductDetails() {
 
-        ProductApiHelper.getProductVariants(shopSlug, productSlug, new ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String>() {
+        apiRepository.getProductVariants(shopSlug, productSlug, new ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopItem>> response, int statusCode) {
 

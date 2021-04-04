@@ -7,15 +7,19 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.BaseModel;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class CampaignListViewModel extends ViewModel {
 
     private MutableLiveData<List<BaseModel>> liveData = new MutableLiveData<>();
@@ -26,8 +30,11 @@ public class CampaignListViewModel extends ViewModel {
     private String search = null;
     private CampaignCategoryResponse category;
     private String type = "categories";
+    private ApiRepository apiRepository;
 
-    public CampaignListViewModel() {
+    @Inject
+    public CampaignListViewModel(ApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
         if (category != null)
             loadFromApi();
     }
@@ -45,7 +52,7 @@ public class CampaignListViewModel extends ViewModel {
     public void loadProductCategories() {
         if (getCategorySlug() == null)
             return;
-        CampaignApiHelper.getCampaignProductCategories(getCategorySlug(), null, search, currentPage, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String>() {
+        apiRepository.getCampaignProductCategories(getCategorySlug(), null, search, currentPage, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignProductCategoryResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
@@ -97,7 +104,7 @@ public class CampaignListViewModel extends ViewModel {
     }
 
     public void loadCampaignList() {
-        CampaignApiHelper.getCampaignCategoryCampaigns(currentPage, 20, search, getCategorySlug(), new ResponseListenerAuth<CommonDataResponse<List<SubCampaignResponse>>, String>() {
+        apiRepository.getCampaignCategoryCampaigns(currentPage, 20, search, getCategorySlug(), new ResponseListenerAuth<CommonDataResponse<List<SubCampaignResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<SubCampaignResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
