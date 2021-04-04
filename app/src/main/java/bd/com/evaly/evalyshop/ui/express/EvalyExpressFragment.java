@@ -41,15 +41,16 @@ import bd.com.evaly.evalyshop.ui.express.adapter.EvalyExpressAdapter;
 import bd.com.evaly.evalyshop.ui.express.adapter.ExpressDistrictAdapter;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import dagger.hilt.android.AndroidEntryPoint;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static androidx.core.content.ContextCompat.getMainExecutor;
 
+@AndroidEntryPoint
 public class EvalyExpressFragment extends Fragment {
 
     private FragmentEvalyExpressBinding binding;
     private EvalyExpressAdapter adapter;
-    private EvalyExpressViewModelFactory factory;
     private EvalyExpressViewModel viewModel;
     private boolean written = false;
     TextWatcher textWatcher = new TextWatcher() {
@@ -120,8 +121,8 @@ public class EvalyExpressFragment extends Fragment {
                 getActivity().onBackPressed();
         });
 
-        factory = new EvalyExpressViewModelFactory(serviceSlug);
-        viewModel = new ViewModelProvider(this, factory).get(EvalyExpressViewModel.class);
+
+        viewModel = new ViewModelProvider(this).get(EvalyExpressViewModel.class);
 
         adapter = new EvalyExpressAdapter(getContext(), NavHostFragment.findNavController(this));
 

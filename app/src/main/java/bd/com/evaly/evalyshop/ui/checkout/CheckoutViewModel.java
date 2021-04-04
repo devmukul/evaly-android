@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
@@ -54,15 +55,16 @@ public class CheckoutViewModel extends ViewModel {
     private CompositeDisposable compositeDisposable;
     private HashMap<String, List<String>> attachmentMap = new HashMap<>();
     private String selectedShopSlug;
+    private ApiRepository apiRepository;
 
 
     @SuppressLint("CheckResult")
     @Inject
-    public CheckoutViewModel(CartDao cartDao, AddressListDao addressListDao, SavedStateHandle savedStateHandle) {
+    public CheckoutViewModel(CartDao cartDao, AddressListDao addressListDao, SavedStateHandle savedStateHandle, ApiRepository apiRepository) {
         this.cartDao = cartDao;
         this.addressListDao = addressListDao;
+        this.apiRepository = apiRepository;
         compositeDisposable = new CompositeDisposable();
-
         compositeDisposable.add(
                 addressListDao.getAllPrimary()
                         .subscribeOn(Schedulers.io())
@@ -104,7 +106,7 @@ public class CheckoutViewModel extends ViewModel {
     }
 
     public void checkAttachmentRequirements(List<Integer> list) {
-        OrderApiHelper.isAttachmentRequired(list, new ResponseListenerAuth<CommonDataResponse<List<AttachmentCheckResponse>>, String>() {
+        apiRepository.isAttachmentRequired(list, new ResponseListenerAuth<CommonDataResponse<List<AttachmentCheckResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AttachmentCheckResponse>> response, int statusCode) {
                 attachmentCheckLiveData.setValue(response.getData());
@@ -156,7 +158,7 @@ public class CheckoutViewModel extends ViewModel {
         JsonElement element = gson.fromJson(gson.toJson(attachmentMap), JsonElement.class);
         JsonObject jsonObj = element.getAsJsonObject();
         payload.setAttachments(jsonObj);
-        OrderApiHelper.placeOrder(payload, new ResponseListenerAuth<CommonDataResponse<List<JsonObject>>, String>() {
+        apiRepository.placeOrder(payload, new ResponseListenerAuth<CommonDataResponse<List<JsonObject>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<JsonObject>> response, int statusCode) {
                 orderPlacedLiveData.setValue(response);
@@ -186,7 +188,7 @@ public class CheckoutViewModel extends ViewModel {
     }
 
     public void uploadImage(Bitmap bitmap) {
-        ImageApiHelper.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
+        apiRepository.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
                 List<String> attachmentList = new ArrayList<>();

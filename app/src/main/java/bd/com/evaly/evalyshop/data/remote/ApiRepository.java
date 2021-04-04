@@ -318,10 +318,10 @@ public class ApiRepository {
     public void getCampaignShops(String group, int page, ResponseListenerAuth<CommonDataResponse<List<CampaignShopItem>>, String> listener) {
         apiHandler.createCall(apiService.getCampaignShops(group, page, 21), listener);
     }
-    
-    
-    
-    
+
+
+
+
     /* ------------- Brand APIs ------------- */
 
     public void getBrandsDetails(String brandSlug, ResponseListenerAuth<CommonDataResponse<BrandResponse>, String> listener) {

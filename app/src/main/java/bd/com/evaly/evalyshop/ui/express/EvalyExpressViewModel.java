@@ -1,23 +1,29 @@
 package bd.com.evaly.evalyshop.ui.express;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
+import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
-import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class EvalyExpressViewModel extends ViewModel {
+
+    private ApiRepository apiRepository;
     private MutableLiveData<List<GroupShopModel>> liveData;
     private MutableLiveData<ExpressServiceDetailsModel> expressDetails;
     private int currentPage;
@@ -27,8 +33,15 @@ public class EvalyExpressViewModel extends ViewModel {
     private boolean hasNext;
     private boolean shouldClear = true;
 
-    public EvalyExpressViewModel(String serviceSlug) {
-        super();
+    @Inject
+    public EvalyExpressViewModel(SavedStateHandle arg, ApiRepository apiRepository) {
+        if (arg.contains("model"))
+            serviceSlug = ((ExpressServiceModel)arg.get("model")).getSlug();
+        else if (arg.contains("slug"))
+            serviceSlug = arg.get("slug");
+        else
+            serviceSlug = "";
+        this.apiRepository = apiRepository;
         this.serviceSlug = serviceSlug;
         currentPage = 1;
         totalCount = 0;
@@ -67,7 +80,7 @@ public class EvalyExpressViewModel extends ViewModel {
         } else
             area = CredentialManager.getArea();
 
-        ExpressApiHelper.getShopList(serviceSlug, currentPage, 24, area, shopSearch, null, longitude, latitude, new ResponseListenerAuth<CommonResultResponse<List<GroupShopModel>>, String>() {
+        apiRepository.getShopList(serviceSlug, currentPage, 24, area, shopSearch, null, longitude, latitude, new ResponseListenerAuth<CommonResultResponse<List<GroupShopModel>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<GroupShopModel>> response, int statusCode) {
 
@@ -106,7 +119,7 @@ public class EvalyExpressViewModel extends ViewModel {
 
     public void loadServiceDetails() {
 
-        ExpressApiHelper.getServiceDetails(serviceSlug, new ResponseListenerAuth<CommonDataResponse<ExpressServiceDetailsModel>, String>() {
+        apiRepository.getServiceDetails(serviceSlug, new ResponseListenerAuth<CommonDataResponse<ExpressServiceDetailsModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ExpressServiceDetailsModel> response, int statusCode) {
                 expressDetails.setValue(response.getData());

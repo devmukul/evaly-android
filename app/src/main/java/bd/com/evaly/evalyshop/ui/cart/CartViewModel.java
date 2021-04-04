@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -17,7 +18,6 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.cart.Cart;
 import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.CartApiHelper;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.SingleObserver;
 import io.reactivex.annotations.NonNull;
@@ -32,10 +32,12 @@ public final class CartViewModel extends ViewModel {
     protected LiveData<List<CartEntity>> liveList;
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
+    private ApiRepository apiRepository;
 
     @Inject
-    public CartViewModel(CartDao cartDao) {
+    public CartViewModel(CartDao cartDao, ApiRepository apiRepository) {
         this.cartDao = cartDao;
+        this.apiRepository = apiRepository;
         getCartList();
         liveList = cartDao.getAllLive();
         compositeDisposable = new CompositeDisposable();
@@ -63,7 +65,7 @@ public final class CartViewModel extends ViewModel {
         if (CredentialManager.getToken().equals(""))
             return;
 
-        CartApiHelper.getCartList(new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
+        apiRepository.getCartList(new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<CartHolderModel> response, int statusCode) {
 
@@ -173,7 +175,7 @@ public final class CartViewModel extends ViewModel {
         Cart cart = new Cart();
         cart.setItems(list);
         body.setCart(cart);
-        CartApiHelper.syncCartList(body, new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
+        apiRepository.syncCartList(body, new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<CartHolderModel> response, int statusCode) {
 

@@ -6,20 +6,28 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class CategoryViewModel extends ViewModel {
 
     private SingleLiveEvent<CategoryEntity> selectedCategoryLiveData = new SingleLiveEvent<>();
     private MutableLiveData<List<CategoryEntity>> rootCategoryLiveData = new MutableLiveData<>();
     private MutableLiveData<List<CategoryEntity>> subCategoryLiveData = new MutableLiveData<>();
     private String rootCategory = null;
+    private ApiRepository apiRepository;
 
-    public CategoryViewModel() {
+    @Inject
+    public CategoryViewModel(ApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
         loadRootCategories();
         if (rootCategory == null)
             loadTopCategories();
@@ -36,7 +44,7 @@ public class CategoryViewModel extends ViewModel {
     }
 
     public void loadRootCategories() {
-        GeneralApiHelper.getRootCategories(new ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String>() {
+        apiRepository.getRootCategories(new ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CategoryEntity>> response, int statusCode) {
 
@@ -57,7 +65,7 @@ public class CategoryViewModel extends ViewModel {
 
     public void loadSubCategories() {
 
-        GeneralApiHelper.getSubCategories(rootCategory, new ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String>() {
+        apiRepository.getSubCategories(rootCategory, new ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CategoryEntity>> response, int statusCode) {
                 subCategoryLiveData.setValue(response.getData());
@@ -75,7 +83,7 @@ public class CategoryViewModel extends ViewModel {
     }
 
     public void loadTopCategories() {
-        GeneralApiHelper.getTopCategories(new ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String>() {
+        apiRepository.getTopCategories(new ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CategoryEntity>> response, int statusCode) {
                 subCategoryLiveData.setValue(response.getData());
