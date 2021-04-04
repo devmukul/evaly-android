@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 
 import javax.inject.Singleton;
 
-import bd.com.evaly.evalyshop.data.pref.PreferenceRepository;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.CartDatabase;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;

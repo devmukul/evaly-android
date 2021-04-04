@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.pref.ReferPref;
+import bd.com.evaly.evalyshop.data.preference.ReferPref;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 

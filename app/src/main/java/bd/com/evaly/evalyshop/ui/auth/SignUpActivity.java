@@ -16,7 +16,7 @@ import com.google.gson.JsonObject;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.pref.ReferPref;
+import bd.com.evaly.evalyshop.data.preference.ReferPref;
 import bd.com.evaly.evalyshop.databinding.ActivitySignupNewBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;

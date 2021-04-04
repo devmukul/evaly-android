@@ -13,6 +13,17 @@ public class LoginResponse{
 	@SerializedName("message")
 	private String message;
 
+	@SerializedName("detail")
+	private String details;
+
+	public void setDetails(String details) {
+		this.details = details;
+	}
+
+	public String getDetails() {
+		return details;
+	}
+
 	public void setData(String data){
 		this.data = data;
 	}

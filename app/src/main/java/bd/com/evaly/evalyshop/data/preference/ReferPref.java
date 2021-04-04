@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.data.pref;
+package bd.com.evaly.evalyshop.data.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;

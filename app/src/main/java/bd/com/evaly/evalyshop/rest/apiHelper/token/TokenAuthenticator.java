@@ -7,8 +7,8 @@ import java.net.Proxy;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import okhttp3.Authenticator;
 import okhttp3.Request;
@@ -18,8 +18,12 @@ import okhttp3.Route;
 public class TokenAuthenticator implements Authenticator {
 
     private boolean isRefreshApiCalled = false;
+    private IApiClient apiService;
+    private PreferenceRepository preferencesHelper;
 
-    public TokenAuthenticator() {
+    public TokenAuthenticator(IApiClient apiService, PreferenceRepository preferencesHelper) {
+        this.apiService = apiService;
+        this.preferencesHelper = preferencesHelper;
     }
 
     @Override
@@ -28,19 +32,19 @@ public class TokenAuthenticator implements Authenticator {
             HashMap<String, String> loginRequest = new HashMap<>();
             loginRequest.put("refresh_token", CredentialManager.getRefreshToken());
 
-            IApiClient apiClient = ApiClient.getClient().create(IApiClient.class);
-            retrofit2.Response<JsonObject> refreshApiResponse = apiClient.refreshToken(CredentialManager.getToken(), loginRequest).execute();
-
+            retrofit2.Response<JsonObject> refreshApiResponse = apiService.refreshToken(preferencesHelper.getToken(), loginRequest).execute();
             if (refreshApiResponse.code() != 401) {
-                JsonObject loginResponse = refreshApiResponse.body();
-                CredentialManager.saveToken(loginResponse.get("data").getAsJsonObject().get("access").getAsString());
-                CredentialManager.saveRefreshToken(loginResponse.get("data").getAsJsonObject().get("refresh").getAsString());
-
-                return response.request().newBuilder()
-                        .addHeader("Authorization", "Bearer" + CredentialManager.getToken())
-                        .build();
+                if (refreshApiResponse.body() != null && !response.request().url().toString().contains("ecaptcha")) {
+                    JsonObject loginResponse = refreshApiResponse.body();
+                    preferencesHelper.saveToken(loginResponse.get("data").getAsJsonObject().get("access_token").getAsString());
+                    preferencesHelper.saveRefreshToken(loginResponse.get("data").getAsJsonObject().get("refresh_token").getAsString());
+                    return response.request().newBuilder()
+                            .addHeader("Authorization", "Bearer" + preferencesHelper.getToken())
+                            .build();
+                }
             } else {
-                AppController.logout();
+                if (!response.request().url().toString().contains("ecaptcha"))
+                    AppController.logout();
             }
         }
 
