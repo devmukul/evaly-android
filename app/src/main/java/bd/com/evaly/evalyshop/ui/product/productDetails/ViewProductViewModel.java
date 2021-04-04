@@ -11,8 +11,8 @@ import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
-import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -23,10 +23,6 @@ import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
@@ -44,13 +40,15 @@ public class ViewProductViewModel extends ViewModel {
     private boolean isShop = false;
     private CartDao cartDao;
     private WishListDao wishListDao;
+    private ApiRepository apiRepository;
 
     @Inject
-    public ViewProductViewModel(CartDao cartDao, WishListDao wishListDao) {
+    public ViewProductViewModel(CartDao cartDao, WishListDao wishListDao, ApiRepository apiRepository) {
         this.cartDao = cartDao;
         this.wishListDao = wishListDao;
         cartLiveCount = cartDao.getLiveCount();
         wishListLiveCount = wishListDao.getLiveCount();
+        this.apiRepository = apiRepository;
     }
 
     public CartDao getCartDao() {
@@ -72,7 +70,7 @@ public class ViewProductViewModel extends ViewModel {
 
     public void getProductDetails(String slug) {
 
-        ProductApiHelper.getProductDetails(slug, new ResponseListenerAuth<ProductDetailsModel, String>() {
+        apiRepository.getProductDetails(slug, new ResponseListenerAuth<ProductDetailsModel, String>() {
             @Override
             public void onDataFetched(ProductDetailsModel response, int statusCode) {
                 productDetailsModel.setValue(response);
@@ -93,7 +91,7 @@ public class ViewProductViewModel extends ViewModel {
 
     public void getVariantsByShop(String shop_slug, String shop_item_slug) {
 
-        ProductApiHelper.getProductVariants(shop_slug, shop_item_slug, new ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String>() {
+        apiRepository.getProductVariants(shop_slug, shop_item_slug, new ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopItem>> response, int statusCode) {
                 productsVariantsOfShop.setValue(response);
@@ -114,7 +112,7 @@ public class ViewProductViewModel extends ViewModel {
 
     public void loadRatings(String slug) {
 
-        ReviewsApiHelper.getReviewSummary(CredentialManager.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getReviewSummary(CredentialManager.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 ratingSummary.setValue(response);
@@ -136,7 +134,7 @@ public class ViewProductViewModel extends ViewModel {
 
     public void loadShopDetails(String shopSlug, String campaignSlug) {
 
-        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, 1, 0, null, campaignSlug, null, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        apiRepository.getShopDetailsItem(CredentialManager.getToken(), shopSlug, 1, 0, null, campaignSlug, null, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 shopDetails.setValue(response);
@@ -158,7 +156,7 @@ public class ViewProductViewModel extends ViewModel {
 
     public void getAvailableShops(int variationID) {
 
-        ProductApiHelper.getAvailableShops(variationID, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
+        apiRepository.getAvailableShops(variationID, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
                 availableShops.setValue(response);
@@ -174,12 +172,11 @@ public class ViewProductViewModel extends ViewModel {
 
             }
         });
-
     }
 
     public void getNearestAvailableShops(int variationID, double longitude, double latitude) {
 
-        ProductApiHelper.getNearestAvailableShops(variationID, longitude, latitude, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
+        apiRepository.getNearestAvailableShops(variationID, longitude, latitude, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
                 availableNearestShops.setValue(response);
@@ -195,12 +192,11 @@ public class ViewProductViewModel extends ViewModel {
 
             }
         });
-
     }
 
 
     public void createPost(CreatePostModel createPostModel) {
-        NewsfeedApiHelper.post(CredentialManager.getToken(), createPostModel, null, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.post(CredentialManager.getToken(), createPostModel, null, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 createPostResponse.setValue(response);
@@ -218,6 +214,5 @@ public class ViewProductViewModel extends ViewModel {
             }
         });
     }
-
 
 }

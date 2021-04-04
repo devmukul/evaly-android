@@ -11,6 +11,9 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabLayout;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentGiftcardsBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -23,8 +26,11 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class GiftCardFragment extends Fragment {
 
+    @Inject
+    ApiRepository apiRepository;
     private FragmentGiftcardsBinding binding;
     private BaseViewPagerAdapter pager;
+
 
 
     @Nullable
@@ -64,7 +70,7 @@ public class GiftCardFragment extends Fragment {
 
     public void updateBalance() {
 
-        PaymentApiHelper.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
+        apiRepository.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
                 binding.balance.setText(String.format("Gift Card: ৳ %s", response.getData().getGiftCardBalance()));

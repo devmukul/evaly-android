@@ -2,8 +2,6 @@ package bd.com.evaly.evalyshop.ui.issue.create;
 
 import android.graphics.Bitmap;
 
-import androidx.hilt.Assisted;
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
@@ -12,18 +10,21 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
 import bd.com.evaly.evalyshop.models.issueNew.create.IssueCreateBody;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class CreateIssueViewModel extends ViewModel {
 
     protected MutableLiveData<List<IssueCategoryModel>> categoryLiveList = new MutableLiveData<>();
@@ -31,15 +32,18 @@ public class CreateIssueViewModel extends ViewModel {
     protected MutableLiveData<ImageDataModel> imageLiveData = new SingleLiveEvent<>();
     protected SingleLiveEvent<String> imageErrorLiveData = new SingleLiveEvent<>();
     protected String orderStatus;
-    @ViewModelInject
-    public CreateIssueViewModel(@Assisted SavedStateHandle savedStateHandle) {
+    private ApiRepository apiRepository;
+
+    @Inject
+    public CreateIssueViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository) {
         this.orderStatus = savedStateHandle.get("orderStatus");
+        this.apiRepository = apiRepository;
         loadCategories();
     }
 
     public void submitIssue(IssueCreateBody model) {
 
-        IssueApiHelper.createIssue(model, new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
+        apiRepository.createIssue(model, new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<IssueListModel> response, int statusCode) {
                 issueCreatedLiveData.setValue(true);
@@ -67,7 +71,7 @@ public class CreateIssueViewModel extends ViewModel {
 
     public void loadCategories() {
 
-        IssueApiHelper.getCategories(orderStatus, new ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String>() {
+        apiRepository.getCategories(orderStatus, new ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<IssueCategoryModel>> response, int statusCode) {
                 categoryLiveList.setValue(response.getData());
@@ -87,7 +91,7 @@ public class CreateIssueViewModel extends ViewModel {
 
 
     public void uploadImage(Bitmap bitmap) {
-        ImageApiHelper.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
+        apiRepository.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
                 imageLiveData.setValue(response.getData());

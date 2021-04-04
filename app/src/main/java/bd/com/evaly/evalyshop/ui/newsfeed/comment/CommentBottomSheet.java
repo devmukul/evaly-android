@@ -33,20 +33,26 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.CommentBottomSheetFragmentBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
-import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import dagger.hilt.android.AndroidEntryPoint;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
+@AndroidEntryPoint
 public class CommentBottomSheet extends BottomSheetDialogFragment {
 
+    @Inject
+    ApiRepository apiRepository;
     private CommentViewModel viewModel;
     private CommentBottomSheetFragmentBinding binding;
     private List<CommentItem> itemList = new ArrayList<>();
@@ -205,7 +211,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
 
     private void loadDetailsFromApi() {
 
-        NewsfeedApiHelper.getPostDetails(CredentialManager.getToken(), newsfeedPostModel.getSlug(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getPostDetails(CredentialManager.getToken(), newsfeedPostModel.getSlug(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject ob, int statusCode) {
                 if (ob != null && ob.has("body")) {

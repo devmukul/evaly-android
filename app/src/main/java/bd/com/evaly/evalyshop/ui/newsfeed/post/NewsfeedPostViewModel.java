@@ -9,17 +9,21 @@ import androidx.paging.PagedList;
 
 import com.google.gson.JsonObject;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
-import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.executor.MainThreadExecutor;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
-
+@HiltViewModel
 public class NewsfeedPostViewModel extends ViewModel {
 
+    private ApiRepository apiRepository;
     private LiveData<NetworkState> networkState;
     private LiveData<PagedList<NewsfeedPost>> postLiveData = new MutableLiveData<>();
     private LiveData<NewsfeedPostDataSource> dataSourceLiveData;
@@ -27,13 +31,17 @@ public class NewsfeedPostViewModel extends ViewModel {
     private NewsfeedPostDataFactory feedDataFactory;
     private MutableLiveData<NewsfeedPost> editPostLiveData = new MutableLiveData<>();
 
+    @Inject
+    public NewsfeedPostViewModel(ApiRepository apiRepository){
+        this.apiRepository = apiRepository;
+    }
 
     public void setType(String type) {
         this.type = type;
 
         MainThreadExecutor executor = new MainThreadExecutor();
 
-        feedDataFactory = new NewsfeedPostDataFactory(type);
+        feedDataFactory = new NewsfeedPostDataFactory(type, apiRepository);
 
         feedDataFactory.create();
 
@@ -43,18 +51,14 @@ public class NewsfeedPostViewModel extends ViewModel {
                         .setPrefetchDistance(10)
                         .setPageSize(10).build();
 
-
         postLiveData = new LivePagedListBuilder<Integer, NewsfeedPost>(feedDataFactory, pagedListConfig)
                 .setFetchExecutor(executor)
                 .build();
 
         dataSourceLiveData = feedDataFactory.getMutableLiveData();
 
-
         networkState = Transformations.switchMap(feedDataFactory.getMutableLiveData(),
                 NewsfeedPostDataSource::getNetworkState);
-
-
     }
 
     public LiveData<NetworkState> getNetworkState() {
@@ -68,7 +72,7 @@ public class NewsfeedPostViewModel extends ViewModel {
 
     public void sendLike(String slug, boolean like) {
 
-        NewsfeedApiHelper.postLike(CredentialManager.getToken(), slug, like, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postLike(CredentialManager.getToken(), slug, like, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -100,7 +104,7 @@ public class NewsfeedPostViewModel extends ViewModel {
 
         String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + postId;
 
-        NewsfeedApiHelper.deleteItem(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.deleteItem(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

@@ -9,36 +9,40 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
-
+@HiltViewModel
 public class ReplyViewModel extends ViewModel {
-
-
+    
+    private ApiRepository apiRepository;
     private MutableLiveData<List<RepliesItem>> replyListLiveData = new MutableLiveData<>();
     private MutableLiveData<JsonObject> replyCreatedLiveData = new MutableLiveData<>();
     private String postSlug;
     private int commentId;
-
-
     public LiveData<List<RepliesItem>> getReplyListLiveData() {
         return replyListLiveData;
     }
     public LiveData<JsonObject> getReplyCreatedLiveData() {
         return replyCreatedLiveData;
     }
-
+    
+    @Inject
+    public  ReplyViewModel(ApiRepository apiRepository){
+        this.apiRepository = apiRepository;
+    }
 
     public void loadReplies(int page, String postSlug, int commentId) {
 
-
-        NewsfeedApiHelper.getRepliesList(CredentialManager.getToken(), postSlug, commentId, page, new ResponseListenerAuth<CommonDataResponse<List<CommentItem>>, String>() {
+        apiRepository.getRepliesList(CredentialManager.getToken(), postSlug, commentId, page, new ResponseListenerAuth<CommonDataResponse<List<CommentItem>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CommentItem>> response, int statusCode) {
 
@@ -65,7 +69,7 @@ public class ReplyViewModel extends ViewModel {
     public void createReply(JsonObject body, String postSlug, int commentId) {
 
 
-        NewsfeedApiHelper.postReply(CredentialManager.getToken(), postSlug, commentId, body, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postReply(CredentialManager.getToken(), postSlug, commentId, body, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 replyCreatedLiveData.setValue(response);
@@ -90,7 +94,7 @@ public class ReplyViewModel extends ViewModel {
 
         String url = UrlUtils.BASE_URL_NEWSFEED + "comments/" + id;
 
-        NewsfeedApiHelper.deleteItem(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.deleteItem(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

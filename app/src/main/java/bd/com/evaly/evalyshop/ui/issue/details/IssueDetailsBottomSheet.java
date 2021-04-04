@@ -26,24 +26,30 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetIssueDetailsBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.issueNew.comment.IssueTicketCommentModel;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.issue.adapter.IssueReplyAdapter;
 import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import dagger.hilt.android.AndroidEntryPoint;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
+@AndroidEntryPoint
 public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
 
+    @Inject
+    ApiRepository apiRepository;
     private BottomSheetIssueDetailsBinding binding;
     private IssueListModel issueModel;
     private IssueReplyAdapter adapter;
@@ -108,7 +114,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
     private void loadReplies() {
 
 
-        IssueApiHelper.getIssueCommentList(issueModel.getId(), new ResponseListenerAuth<CommonDataResponse<List<IssueTicketCommentModel>>, String>() {
+        apiRepository.getIssueCommentList(issueModel.getId(), new ResponseListenerAuth<CommonDataResponse<List<IssueTicketCommentModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<IssueTicketCommentModel>> response, int statusCode) {
                 binding.progressContainer.setVisibility(View.GONE);
@@ -148,7 +154,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         ProgressDialog dialog = new ProgressDialog(getContext());
         dialog.show();
 
-        IssueApiHelper.createIssueComment(issueModel.getId(), binding.commentInput.getText().toString(), new ResponseListenerAuth<CommonDataResponse<IssueTicketCommentModel>, String>() {
+        apiRepository.createIssueComment(issueModel.getId(), binding.commentInput.getText().toString(), new ResponseListenerAuth<CommonDataResponse<IssueTicketCommentModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<IssueTicketCommentModel> response, int statusCode) {
                 binding.commentInput.setText("");
@@ -181,7 +187,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         ProgressDialog dialog = new ProgressDialog(getContext());
         dialog.show();
 
-        IssueApiHelper.resolveIssue("resolved", (int) issueModel.getId(), new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
+        apiRepository.resolveIssue("resolved", (int) issueModel.getId(), new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<IssueListModel> response, int statusCode) {
                 dialog.dismiss();

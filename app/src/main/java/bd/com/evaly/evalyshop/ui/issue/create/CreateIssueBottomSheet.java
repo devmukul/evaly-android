@@ -34,9 +34,11 @@ import bd.com.evaly.evalyshop.models.issueNew.create.IssueCreateBody;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
 import static android.app.Activity.RESULT_OK;
 
+@AndroidEntryPoint
 public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
 
     private CreateIssueViewModel viewModel;

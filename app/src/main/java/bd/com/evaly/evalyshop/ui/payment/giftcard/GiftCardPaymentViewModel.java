@@ -7,19 +7,25 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class GiftCardPaymentViewModel extends ViewModel {
 
     public SingleLiveEvent<CommonDataResponse> onPaymentSuccess = new SingleLiveEvent<>();
     public SingleLiveEvent<String> onPaymentFailed = new SingleLiveEvent<>();
+    private ApiRepository apiRepository;
 
-    public GiftCardPaymentViewModel() {
-
+    @Inject
+    public GiftCardPaymentViewModel(ApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
     }
 
     public void makePaymentViaGiftCard(String giftCode, String invoice, String amount) {
@@ -27,7 +33,7 @@ public class GiftCardPaymentViewModel extends ViewModel {
         payload.put("invoice_no", invoice);
         payload.put("gift_code", giftCode);
         payload.put("amount", amount);
-        GiftCardApiHelper.payWithGiftCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payWithGiftCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 CommonDataResponse data = new Gson().fromJson(response, CommonDataResponse.class);

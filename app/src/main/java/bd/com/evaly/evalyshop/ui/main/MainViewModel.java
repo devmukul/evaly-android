@@ -12,10 +12,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -23,15 +23,12 @@ import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
 import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
 import bd.com.evaly.evalyshop.models.refundSettlement.RefundSettlementResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.CartApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 
 @HiltViewModel
 public class MainViewModel extends ViewModel {
@@ -49,10 +46,12 @@ public class MainViewModel extends ViewModel {
     public LiveData<Integer> cartLiveCount;
     private CompositeDisposable compositeDisposable;
     private CartDao cartDao;
+    private ApiRepository apiRepository;
 
     @Inject
-    public MainViewModel(CartDao cartDao, WishListDao wishListDao) {
+    public MainViewModel(CartDao cartDao, WishListDao wishListDao, ApiRepository apiRepository) {
         this.cartDao = cartDao;
+        this.apiRepository = apiRepository;
         cartLiveCount = cartDao.getLiveCount();
         wishListLiveCount = wishListDao.getLiveCount();
         compositeDisposable = new CompositeDisposable();
@@ -63,7 +62,7 @@ public class MainViewModel extends ViewModel {
         if (CredentialManager.getToken().equals(""))
             return;
 
-        CartApiHelper.getCartList(new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
+        apiRepository.getCartList(new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<CartHolderModel> response, int statusCode) {
 
@@ -134,14 +133,19 @@ public class MainViewModel extends ViewModel {
     public void registerXMPP() {
         HashMap<String, String> data = new HashMap<>();
         data.put("password", CredentialManager.getPassword());
-        AuthApiHelper.registerXMPP(data, new DataFetchingListener<Response<JsonObject>>() {
+        apiRepository.registerXMPP(data, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public void onDataFetched(Response<JsonObject> response) {
+            public void onDataFetched(JsonObject response, int statusCode) {
 
             }
 
             @Override
-            public void onFailed(int status) {
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
 
             }
         });

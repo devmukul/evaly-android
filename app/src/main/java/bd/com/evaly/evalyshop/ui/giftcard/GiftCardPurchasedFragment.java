@@ -36,6 +36,7 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetGiftCardPaymentBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentGiftcardListBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -43,10 +44,6 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
 import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
 import bd.com.evaly.evalyshop.ui.payment.listener.PaymentListener;
@@ -65,6 +62,8 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     public static GiftCardPurchasedFragment instance;
 
+    @Inject
+    ApiRepository apiRepository;
     @Inject
     FirebaseRemoteConfig remoteConfig;
 
@@ -214,7 +213,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         parameters.put("context_reference", giftCardInvoice);
         parameters.put("bank_receipt_copy", image);
 
-        PaymentApiHelper.payViaBank(CredentialManager.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaBank(CredentialManager.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.dismiss();
@@ -250,7 +249,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         ProgressDialog dialog = ProgressDialog.show(getContext(), "",
                 "Uploading image...", true);
 
-        ImageApiHelper.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
+        apiRepository.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
                 dialog.dismiss();
@@ -374,7 +373,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             binding.progressBar.setVisibility(View.VISIBLE);
         }
 
-        GiftCardApiHelper.getPurchasedGiftCardList("purchased", currentPage,
+        apiRepository.getPurchasedGiftCardList("purchased", currentPage,
                 new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<GiftCardListPurchasedItem>> response, int statusCode) {
@@ -424,7 +423,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         payload.put("context_reference", invoice);
         payload.put("source", "MOBILE_APP");
 
-        OrderApiHelper.payViaNagad(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaNagad(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("callBackUrl")) && !response.get("callBackUrl").isJsonNull()) {
@@ -504,7 +503,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         dialog.showDialog();
 
-        PaymentApiHelper.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

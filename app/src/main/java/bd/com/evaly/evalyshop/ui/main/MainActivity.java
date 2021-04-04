@@ -48,6 +48,7 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityMainBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -74,6 +75,8 @@ public class MainActivity extends BaseActivity {
 
     public boolean isLaunchActivity = true;
 
+    @Inject
+    ApiRepository apiRepository;
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
 
@@ -428,7 +431,7 @@ public class MainActivity extends BaseActivity {
             return;
         }
 
-        ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 updateHotCount(messageCount, response.getCount());

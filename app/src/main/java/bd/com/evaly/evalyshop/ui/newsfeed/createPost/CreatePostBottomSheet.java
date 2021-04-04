@@ -42,10 +42,11 @@ import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
-import bd.com.evaly.evalyshop.util.ToastUtils;
+import dagger.hilt.android.AndroidEntryPoint;
 
 import static android.app.Activity.RESULT_OK;
 
+@AndroidEntryPoint
 public class CreatePostBottomSheet extends BottomSheetDialogFragment {
 
     private CreatePostViewModel viewModel;

@@ -20,17 +20,23 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedPendingAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @Inject
+    ApiRepository apiRepository;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private String type;
     private RecyclerView recyclerView;
@@ -151,7 +157,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         itemsList.remove(position);
         adapter.notifyItemRemoved(position);
 
-        NewsfeedApiHelper.actionPendingPost(CredentialManager.getToken(), id, type, parameterPost, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.actionPendingPost(CredentialManager.getToken(), id, type, parameterPost, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -185,7 +191,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
             bottomProgressBar.setVisibility(View.VISIBLE);
 
 
-        NewsfeedApiHelper.getNewsfeedPosts(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getNewsfeedPosts(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

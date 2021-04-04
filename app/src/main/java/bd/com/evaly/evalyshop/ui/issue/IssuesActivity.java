@@ -14,12 +14,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.RecyclerViewOnItemClickListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.issue.adapter.IssuesAdapter;
 import bd.com.evaly.evalyshop.ui.issue.details.IssueDetailsBottomSheet;
@@ -27,9 +29,13 @@ import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemClickListener {
 
+    @Inject
+    ApiRepository apiRepository;
     @BindView(R.id.rvIssues)
     RecyclerView rvIssues;
     @BindView(R.id.noIssue)
@@ -73,7 +79,7 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
     }
 
     private void getIssuesList() {
-        IssueApiHelper.getIssueList(invoice, page, new ResponseListenerAuth<CommonDataResponse<List<IssueListModel>>, String>() {
+        apiRepository.getIssueList(invoice, page, new ResponseListenerAuth<CommonDataResponse<List<IssueListModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<IssueListModel>> response, int statusCode) {
                 dialog.hideDialog();

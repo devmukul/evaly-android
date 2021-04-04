@@ -26,8 +26,9 @@ import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedPendingFragment;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedTabPager;
 import bd.com.evaly.evalyshop.ui.newsfeed.createPost.CreatePostBottomSheet;
 import bd.com.evaly.evalyshop.ui.newsfeed.post.NewsfeedPostFragment;
+import dagger.hilt.android.AndroidEntryPoint;
 
-
+@AndroidEntryPoint
 public class NewsfeedFragment extends Fragment {
 
     private NewsfeedViewModel viewModel;

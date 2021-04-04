@@ -19,7 +19,9 @@ import bd.com.evaly.evalyshop.databinding.FragmentCategoryBinding;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.ui.category.controllers.RootCategoryController;
 import bd.com.evaly.evalyshop.ui.category.controllers.SubCategoryController;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class CategoryFragment extends Fragment {
 
     private FragmentCategoryBinding binding;

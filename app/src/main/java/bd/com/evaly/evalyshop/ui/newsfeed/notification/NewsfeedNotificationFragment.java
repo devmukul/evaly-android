@@ -19,7 +19,9 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.NewsfeedNotificationFragmentBinding;
 import bd.com.evaly.evalyshop.models.notification.NotificationItem;
 import bd.com.evaly.evalyshop.ui.newsfeed.notification.adapter.NewsfeedNotificationAdapter;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class NewsfeedNotificationFragment extends Fragment {
 
     private NewsfeedNotificationViewModel viewModel;

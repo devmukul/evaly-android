@@ -36,21 +36,26 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListAdapter;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
 
+@AndroidEntryPoint
 public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @Inject
+    ApiRepository apiRepository;
     static GiftCardListFragment instance;
     private View view;
     private RecyclerView recyclerView;
@@ -305,7 +310,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        GiftCardApiHelper.getGiftCard(currentPage, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListItem>>, String>() {
+        apiRepository.getGiftCard(currentPage, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<GiftCardListItem>> response, int statusCode) {
 
@@ -350,7 +355,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         initializeBottomSheet();
 
 
-        GiftCardApiHelper.getGiftCardDetails(slug, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getGiftCardDetails(slug, new ResponseListenerAuth<JsonObject, String>() {
             @SuppressLint("DefaultLocale")
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
@@ -410,7 +415,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         int q = Integer.parseInt(quantity.getText().toString());
         parameters.addProperty("quantity", q);
 
-        GiftCardApiHelper.placeGiftCardOrder(CredentialManager.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.placeGiftCardOrder(CredentialManager.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -418,7 +423,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
                 Toast.makeText(context, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
                 bottomSheetDialog.hide();
-                startActivity(Objects.requireNonNull(getActivity()).getIntent());
+                startActivity(requireActivity().getIntent());
                 getActivity().finish();
             }
 

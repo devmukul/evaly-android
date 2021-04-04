@@ -8,25 +8,32 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.notification.NotificationItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
-
+@HiltViewModel
 public class NewsfeedNotificationViewModel extends ViewModel {
 
     private MutableLiveData<List<NotificationItem>> notificationsMutableLiveData = new MutableLiveData<>();
+    private ApiRepository apiRepository;
+
+    @Inject
+    public NewsfeedNotificationViewModel(ApiRepository apiRepository){
+        this.apiRepository = apiRepository;
+    }
 
     public LiveData<List<NotificationItem>> getNotificationsLiveData() {
         return notificationsMutableLiveData;
     }
 
     public void getNotification(int page) {
-
-
-        NewsfeedApiHelper.getNewsfeedNotification(CredentialManager.getToken(), page, new ResponseListenerAuth<CommonResultResponse<List<NotificationItem>>, String>() {
+        apiRepository.getNewsfeedNotification(CredentialManager.getToken(), page, new ResponseListenerAuth<CommonResultResponse<List<NotificationItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<NotificationItem>> response, int statusCode) {
                 notificationsMutableLiveData.setValue(response.getData());
@@ -51,7 +58,7 @@ public class NewsfeedNotificationViewModel extends ViewModel {
 
     public void markAsRead() {
 
-        NewsfeedApiHelper.markNotificationAsRead(CredentialManager.getToken(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.markNotificationAsRead(CredentialManager.getToken(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

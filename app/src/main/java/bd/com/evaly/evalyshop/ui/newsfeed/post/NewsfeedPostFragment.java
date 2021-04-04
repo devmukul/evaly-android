@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,16 +17,14 @@ import com.ethanhua.skeleton.SkeletonScreen;
 
 import java.util.List;
 
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.NewsfeedTabsFragmentBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.newsfeed.createPost.CreatePostBottomSheet;
-import bd.com.evaly.evalyshop.util.ToastUtils;
+import dagger.hilt.android.AndroidEntryPoint;
 
-
+@AndroidEntryPoint
 public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private NewsfeedPostViewModel viewModel;
@@ -41,11 +38,7 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
     private SkeletonScreen skeletonScreen;
     private boolean isFirstLoad = true;
 
-    AppController mChatApp = AppController.getInstance();
-
-
     public static NewsfeedPostFragment newInstance(String type) {
-
         NewsfeedPostFragment fragment = new NewsfeedPostFragment();
         Bundle args = new Bundle();
         args.putString("type", type);
@@ -60,9 +53,7 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
         if (getArguments() != null) {
             type = getArguments().getString("type");
         }
-
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

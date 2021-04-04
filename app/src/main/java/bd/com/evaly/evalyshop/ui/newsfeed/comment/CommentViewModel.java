@@ -8,27 +8,35 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
-import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class CommentViewModel extends ViewModel {
-
-
+    
+    private ApiRepository apiRepository;
     private LiveData networkState;
     private MutableLiveData<NewsfeedPost> postMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<CommentItem>> commentItemMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<JsonObject> commentCreatedLiveData = new MutableLiveData<>();
 
+    @Inject
+    public CommentViewModel(ApiRepository apiRepository){
+        this.apiRepository = apiRepository;
+    }
+    
     public MutableLiveData<JsonObject> getCommentCreatedLiveData() {
         return commentCreatedLiveData;
     }
-
 
     public LiveData<Integer> getTotalCount() {
         return totalCount;
@@ -39,7 +47,6 @@ public class CommentViewModel extends ViewModel {
     public LiveData<List<CommentItem>> getCommentLiveData() {
         return commentItemMutableLiveData;
     }
-
 
     public LiveData<NetworkState> getNetworkState() {
         return networkState;
@@ -55,7 +62,7 @@ public class CommentViewModel extends ViewModel {
     }
 
     public void loadComments(int page, String postSlug) {
-        NewsfeedApiHelper.getCommentList(CredentialManager.getToken(), postSlug, page, new ResponseListenerAuth<CommonDataResponse<List<CommentItem>>, String>() {
+        apiRepository.getCommentList(CredentialManager.getToken(), postSlug, page, new ResponseListenerAuth<CommonDataResponse<List<CommentItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CommentItem>> response, int statusCode) {
                 commentItemMutableLiveData.setValue(response.getData());
@@ -76,7 +83,7 @@ public class CommentViewModel extends ViewModel {
 
     public void createComment(JsonObject body, String slug) {
 
-        NewsfeedApiHelper.postComment(CredentialManager.getToken(), slug, body, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postComment(CredentialManager.getToken(), slug, body, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 commentCreatedLiveData.setValue(response);
@@ -100,7 +107,7 @@ public class CommentViewModel extends ViewModel {
 
         String url = UrlUtils.BASE_URL_NEWSFEED + "comments/" + commentId;
 
-        NewsfeedApiHelper.deleteItem(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.deleteItem(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

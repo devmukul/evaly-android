@@ -28,20 +28,25 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
-
+@AndroidEntryPoint
 public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @Inject
+    ApiRepository apiRepository;
     static GiftCardMyFragment instance;
     private View view;
     private RecyclerView recyclerView;
@@ -180,7 +185,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        GiftCardApiHelper.getPurchasedGiftCardList("gifts", currentPage, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
+        apiRepository.getPurchasedGiftCardList("gifts", currentPage, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<GiftCardListPurchasedItem>> response, int statusCode) {
 
@@ -226,7 +231,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
 
         dialog.showDialog();
 
-        GiftCardApiHelper.redeem(invoice_no, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.redeem(invoice_no, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.hideDialog();
