@@ -18,6 +18,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -26,9 +28,6 @@ import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -36,6 +35,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class OrderDetailsViewModel extends ViewModel {
 
+    private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
     protected MutableLiveData<DeliveryHeroResponse> deliveryHeroLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse> confirmDeliveryLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse> cancelOrderLiveData = new MutableLiveData<>();
@@ -50,8 +51,10 @@ public class OrderDetailsViewModel extends ViewModel {
     private String invoiceNo;
 
     @Inject
-    public OrderDetailsViewModel(SavedStateHandle savedStateHandle) {
+    public OrderDetailsViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.invoiceNo = savedStateHandle.get("orderID");
+        this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
         getOrderDetails();
         getDeliveryHero();
         getOrderHistory();
@@ -67,7 +70,7 @@ public class OrderDetailsViewModel extends ViewModel {
 
     public void updateBalance() {
 
-        PaymentApiHelper.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
+        apiRepository.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
                 balanceLiveData.setValue(response.getData());
@@ -86,7 +89,7 @@ public class OrderDetailsViewModel extends ViewModel {
     }
 
     public void updateProductDeliveryStatus(HashMap<String, String> data) {
-        AuthApiHelper.updateProductStatus(data, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.updateProductStatus(data, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 deliveryStatusUpdateLiveData.setValue(response.get("message").getAsString());
@@ -111,7 +114,7 @@ public class OrderDetailsViewModel extends ViewModel {
     }
 
     public void cancelOrder(String reason) {
-        OrderApiHelper.cancelOrder(CredentialManager.getToken(), invoiceNo, reason, new ResponseListenerAuth<CommonDataResponse, String>() {
+        apiRepository.cancelOrder(CredentialManager.getToken(), invoiceNo, reason, new ResponseListenerAuth<CommonDataResponse, String>() {
             @Override
             public void onDataFetched(CommonDataResponse response, int statusCode) {
                 refresh();
@@ -132,7 +135,7 @@ public class OrderDetailsViewModel extends ViewModel {
 
     public void getOrderHistory() {
 
-        OrderApiHelper.getOrderHistories(CredentialManager.getToken(), invoiceNo, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getOrderHistories(CredentialManager.getToken(), invoiceNo, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 List<OrderStatus> orderStatuses = new ArrayList<>();
@@ -163,7 +166,7 @@ public class OrderDetailsViewModel extends ViewModel {
 
     public void getOrderDetails() {
 
-        OrderApiHelper.getOrderDetails(CredentialManager.getToken(), invoiceNo, new ResponseListenerAuth<OrderDetailsModel, String>() {
+        apiRepository.getOrderDetails(CredentialManager.getToken(), invoiceNo, new ResponseListenerAuth<OrderDetailsModel, String>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataFetched(OrderDetailsModel response, int statusCode) {
@@ -183,7 +186,7 @@ public class OrderDetailsViewModel extends ViewModel {
     }
 
     public void confirmDelivery() {
-        OrderApiHelper.confirmDelivery(CredentialManager.getToken(), invoiceNo, new ResponseListenerAuth<CommonDataResponse, String>() {
+        apiRepository.confirmDelivery(CredentialManager.getToken(), invoiceNo, new ResponseListenerAuth<CommonDataResponse, String>() {
             @Override
             public void onDataFetched(CommonDataResponse response, int statusCode) {
                 confirmDeliveryLiveData.setValue(response);
@@ -205,7 +208,7 @@ public class OrderDetailsViewModel extends ViewModel {
 
     private void getDeliveryHero() {
 
-        OrderApiHelper.getDeliveryHero(invoiceNo, new ResponseListenerAuth<DeliveryHeroResponse, String>() {
+        apiRepository.getDeliveryHero(invoiceNo, new ResponseListenerAuth<DeliveryHeroResponse, String>() {
             @Override
             public void onDataFetched(DeliveryHeroResponse response, int statusCode) {
                 deliveryHeroLiveData.setValue(response);
@@ -238,7 +241,7 @@ public class OrderDetailsViewModel extends ViewModel {
     }
 
     public void withdrawRefundRequest(String invoice) {
-        AuthApiHelper.withdrawRefundRequest(invoice, new ResponseListenerAuth<CommonDataResponse, String>() {
+        apiRepository.withdrawRefundRequest(invoice, new ResponseListenerAuth<CommonDataResponse, String>() {
             @Override
             public void onDataFetched(CommonDataResponse response, int statusCode) {
                 ToastUtils.show(response.getMessage());
@@ -259,7 +262,7 @@ public class OrderDetailsViewModel extends ViewModel {
     }
 
     public void updateOrderAddress(UpdateOrderAddressRequest body) {
-        OrderApiHelper.updateAddress(body, new ResponseListenerAuth<CommonDataResponse<OrderDetailsModel>, String>() {
+        apiRepository.updateAddress(body, new ResponseListenerAuth<CommonDataResponse<OrderDetailsModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<OrderDetailsModel> response, int statusCode) {
                 updateAddress.setValue(response);
@@ -278,7 +281,7 @@ public class OrderDetailsViewModel extends ViewModel {
     }
 
     public void checkRefundEligibility(String invoice) {
-        OrderApiHelper.checkRefundEligibility(invoice, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.checkRefundEligibility(invoice, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 refundEligibilityLiveData.setValue(response);
@@ -302,7 +305,7 @@ public class OrderDetailsViewModel extends ViewModel {
     }
 
     public void deleteRefundTransaction(String invoice) {
-        OrderApiHelper.deleteRefundTransaction(invoice, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.deleteRefundTransaction(invoice, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 refundDeleteLiveData.setValue(response);

@@ -17,17 +17,23 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentNotificationBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.notification.NotificationItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.ui.notification.adapter.NotificationAdapter;
 import bd.com.evaly.evalyshop.util.ToastUtils;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class NotificationFragment extends Fragment implements NotificationAdapter.ClickListener {
 
+    @Inject
+    ApiRepository apiRepository;
     private NotificationAdapter adapter;
     private ArrayList<NotificationItem> notifications;
     private FragmentNotificationBinding binding;
@@ -62,7 +68,7 @@ public class NotificationFragment extends Fragment implements NotificationAdapte
 
     public void getNotifications() {
 
-        GeneralApiHelper.getNotification(CredentialManager.getToken(), 1, new ResponseListenerAuth<CommonResultResponse<List<NotificationItem>>, String>() {
+        apiRepository.getNotification(CredentialManager.getToken(), 1, new ResponseListenerAuth<CommonResultResponse<List<NotificationItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<NotificationItem>> response, int statusCode) {
                 if (response.getCount() == 0) {
@@ -88,7 +94,7 @@ public class NotificationFragment extends Fragment implements NotificationAdapte
 
     public void markAsRead() {
 
-        GeneralApiHelper.markNotificationAsRead(CredentialManager.getToken(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.markNotificationAsRead(CredentialManager.getToken(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 ToastUtils.show("Marked as read!");

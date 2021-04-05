@@ -28,12 +28,12 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetRefundRequestBinding;
 import bd.com.evaly.evalyshop.databinding.ConfirmOtpViewBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -46,6 +46,8 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
     @Inject
     FirebaseRemoteConfig remoteConfig;
+    @Inject
+    ApiRepository apiRepository;
     private BottomSheetRefundRequestBinding binding;
     private String invoice_no;
     private String order_status;
@@ -248,7 +250,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
     private void deleteRefundTransaction() {
 
-        OrderApiHelper.deleteRefundTransaction(invoice_no, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.deleteRefundTransaction(invoice_no, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 if (response.getSuccess() && statusCode == 202) {
@@ -277,7 +279,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
         dialog.showDialog();
 
-        OrderApiHelper.requestRefund(CredentialManager.getToken(), body, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.requestRefund(CredentialManager.getToken(), body, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 Logger.d(statusCode);
@@ -372,7 +374,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
     private void submitOtp() {
         HashMap<String, Integer> otpBody = new HashMap<>();
         otpBody.put("otp_token", selectedOtp);
-        OrderApiHelper.requestRefundConfirmOTP(CredentialManager.getToken(), invoice_no.toUpperCase(), otpBody, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.requestRefundConfirmOTP(CredentialManager.getToken(), invoice_no.toUpperCase(), otpBody, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 if (response.getSuccess()) {

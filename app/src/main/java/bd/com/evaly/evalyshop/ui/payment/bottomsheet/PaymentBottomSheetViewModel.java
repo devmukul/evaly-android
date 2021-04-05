@@ -6,16 +6,27 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.BuildConfig;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.apiRepository;
+import bd.com.evaly.evalyshop.rest.apiHelper.apiRepository;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class PaymentBottomSheetViewModel extends ViewModel {
 
+    private ApiRepository apiRepository;
     private PaymentBottomSheetNavigator navigator;
+    
+    @Inject
+    public PaymentBottomSheetViewModel(ApiRepository apiRepository){
+        this.apiRepository = apiRepository;
+    }
 
     public void setNavigator(PaymentBottomSheetNavigator navigator) {
         this.navigator = navigator;
@@ -28,7 +39,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         model.setInvoice_no(invoice);
         model.setAmount(Double.parseDouble(amount));
 
-        OrderApiHelper.makePartialPayment(CredentialManager.getToken(), model, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.makePartialPayment(CredentialManager.getToken(), model, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -60,7 +71,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
 
         HashMap<String, String> data = new HashMap<>();
         data.put("invoice_no", invoice);
-        OrderApiHelper.makeCashOnDelivery(CredentialManager.getToken(), data, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.makeCashOnDelivery(CredentialManager.getToken(), data, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if (response != null) {
@@ -99,7 +110,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         payload.put("context", "order_payment");
         payload.put("context_reference", invoice);
 
-        OrderApiHelper.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("payment_gateway_url")) && !response.get("payment_gateway_url").isJsonNull()) {
@@ -131,7 +142,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         payload.put("context", "order_payment");
         payload.put("context_reference", invoice);
 
-        PaymentApiHelper.payViaCityBank(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaCityBank(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("url")) && !response.get("url").isJsonNull()) {
@@ -162,7 +173,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         payload.put("context_reference", invoice);
         payload.put("source", "MOBILE_APP");
 
-        OrderApiHelper.payViaNagad(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaNagad(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("callBackUrl")) && !response.get("callBackUrl").isJsonNull()) {

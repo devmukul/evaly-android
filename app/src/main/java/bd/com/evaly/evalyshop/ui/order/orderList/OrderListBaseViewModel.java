@@ -8,12 +8,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class OrderListBaseViewModel extends ViewModel {
 
     private List<OrderRequestResponse> arrayList = new ArrayList<>();
@@ -21,9 +23,11 @@ public class OrderListBaseViewModel extends ViewModel {
     protected SingleLiveEvent<Void> logoutLiveData = new SingleLiveEvent<>();
     private int page;
     private int count;
+    private ApiRepository apiRepository;
 
     @Inject
-    public OrderListBaseViewModel() {
+    public OrderListBaseViewModel(ApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
         count = 0;
         page = 1;
         loadFromApi();
@@ -34,7 +38,7 @@ public class OrderListBaseViewModel extends ViewModel {
     }
 
     public void loadFromApi() {
-        OrderApiHelper.getOrderRequestList(page, new ResponseListenerAuth<CommonDataResponse<List<OrderRequestResponse>>, String>() {
+        apiRepository.getOrderRequestList(page, new ResponseListenerAuth<CommonDataResponse<List<OrderRequestResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<OrderRequestResponse>> response, int statusCode) {
                 count = response.getCount();

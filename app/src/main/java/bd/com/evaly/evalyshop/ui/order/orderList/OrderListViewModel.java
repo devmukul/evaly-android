@@ -9,11 +9,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
@@ -26,10 +26,12 @@ public class OrderListViewModel extends ViewModel {
     private List<OrderListItem> arrayList = new ArrayList<>();
     private int page = 1;
     private String statusType;
+    private ApiRepository apiRepository;
 
     @Inject
-    public OrderListViewModel(SavedStateHandle savedStateHandle) {
+    public OrderListViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository) {
         this.savedStateHandle = savedStateHandle;
+        this.apiRepository = apiRepository;
         if (savedStateHandle.contains("type") && savedStateHandle.get("type") != null)
             statusType = savedStateHandle.get("type");
         else
@@ -39,7 +41,7 @@ public class OrderListViewModel extends ViewModel {
     }
 
     public void getOrderData() {
-        OrderApiHelper.getOrderList(CredentialManager.getToken(), page, statusType, new ResponseListenerAuth<CommonResultResponse<List<OrderListItem>>, String>() {
+        apiRepository.getOrderList(CredentialManager.getToken(), page, statusType, new ResponseListenerAuth<CommonResultResponse<List<OrderListItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<OrderListItem>> response, int statusCode) {
                 arrayList.addAll(response.getData());

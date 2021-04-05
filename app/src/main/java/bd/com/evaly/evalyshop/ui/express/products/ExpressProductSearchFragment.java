@@ -20,8 +20,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityExpressProductSearchBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -30,13 +33,14 @@ import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.ApiClient;
-import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 import bd.com.evaly.evalyshop.ui.express.products.controller.ExpressProductController;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class ExpressProductSearchFragment extends Fragment {
 
+    @Inject
+    ApiRepository apiRepository;
     private ExpressProductSearchViewModel viewModel;
     private ActivityExpressProductSearchBinding binding;
     private List<ProductItem> itemList;
@@ -144,7 +148,7 @@ public class ExpressProductSearchFragment extends Fragment {
     }
 
     private void getExpressServices() {
-        ExpressApiHelper.getServicesList(new ResponseListenerAuth<CommonDataResponse<List<ExpressServiceModel>>, String>() {
+        apiRepository.getExpressServicesList(new ResponseListenerAuth<CommonDataResponse<List<ExpressServiceModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ExpressServiceModel>> response, int statusCode) {
                 viewModel.syncList(response.getData());
@@ -185,7 +189,7 @@ public class ExpressProductSearchFragment extends Fragment {
         if (currentPage > 1)
             expressProductController.setLoadingMore(true);
 
-        ExpressApiHelper.getProductList(null, currentPage, 24, query, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
+        apiRepository.getProductList(null, currentPage, 24, query, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
 

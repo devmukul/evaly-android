@@ -131,11 +131,11 @@ public class ChangePasswordActivity extends BaseActivity {
                     data.put("user", preferenceRepository.getUserName());
                     data.put("host", Constants.XMPP_HOST);
                     data.put("newpass", binding.newPassword.getText().toString());
-                    AuthApiHelper.changeXmppPassword(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+                    apiRepository.changeXmppPassword(data, new ResponseListenerAuth<JsonPrimitive, String>() {
                         @Override
-                        public void onDataFetched(Response<JsonPrimitive> response) {
+                        public void onDataFetched(JsonPrimitive response, int statusCode) {
                             dialog.hideDialog();
-                            if (response.code() == 200 || response.code() == 201) {
+                            if (statusCode == 200 || statusCode == 201) {
                                 preferenceRepository.savePassword(binding.newPassword.getText().toString());
                                 Snackbar.make(binding.newPassword, "Password change successfully!", Snackbar.LENGTH_LONG).show();
                                 signInUser();
@@ -145,9 +145,14 @@ public class ChangePasswordActivity extends BaseActivity {
                         }
 
                         @Override
-                        public void onFailed(int status) {
+                        public void onFailed(String errorBody, int errorCode) {
                             dialog.hideDialog();
-                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                            ToastUtils.show(errorBody);
+                        }
+
+                        @Override
+                        public void onAuthError(boolean logout) {
+
                         }
                     });
                 }

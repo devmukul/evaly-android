@@ -97,15 +97,6 @@
         </activity>
 
         <activity
-            android:name=".controller.SplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name=".ui.newsfeed.NewsfeedNotification"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".ui.menu.InviteEarn"
             android:theme="@style/AppTheme" />
         <activity

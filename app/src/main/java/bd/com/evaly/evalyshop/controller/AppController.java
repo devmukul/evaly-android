@@ -15,9 +15,13 @@ import com.google.gson.JsonObject;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.manager.preferenceRepository;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.util.Constants;
@@ -28,6 +32,11 @@ import dagger.hilt.android.HiltAndroidApp;
 @HiltAndroidApp
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks {
 
+    @Inject
+    static ApiRepository apiRepository;
+    @Inject
+    static PreferenceRepository preferenceRepository;
+    
     public static AppController mAppController;
     public static Context mContext;
 
@@ -46,7 +55,7 @@ public class AppController extends Application implements Application.ActivityLi
     public static void logout(Activity context) {
         getInstance().logoutFromServer();
         try {
-            String email = CredentialManager.getUserName();
+            String email = preferenceRepository.getUserName();
             String strNew = email.replaceAll("[^A-Za-z0-9]", "");
             FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.BUILD + "_" + strNew);
         } catch (Exception e) {
@@ -69,7 +78,7 @@ public class AppController extends Application implements Application.ActivityLi
     public static void logout() {
         getInstance().logoutFromServer();
         try {
-            String email = CredentialManager.getUserName();
+            String email = preferenceRepository.getUserName();
             String strNew = email.replaceAll("[^A-Za-z0-9]", "");
             FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.BUILD + "_" + strNew);
         } catch (Exception e) {
@@ -87,7 +96,7 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     private void logoutFromServer(){
-        AuthApiHelper.logout(new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.logout(new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
