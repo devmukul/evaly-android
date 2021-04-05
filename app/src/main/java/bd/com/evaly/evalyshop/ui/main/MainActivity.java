@@ -48,9 +48,9 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityMainBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
@@ -64,7 +64,6 @@ import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
 import bd.com.evaly.evalyshop.ui.payment.listener.PaymentListener;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
-import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import dagger.hilt.android.AndroidEntryPoint;
 
 import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
@@ -74,6 +73,8 @@ public class MainActivity extends BaseActivity {
 
     public boolean isLaunchActivity = true;
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     @Inject
     ApiRepository apiRepository;
     @Inject
@@ -87,28 +88,28 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (CredentialManager.isDarkMode())
+        setTheme(R.style.AppTheme_NoActionBar);
+        super.onCreate(savedInstanceState);
+        if (preferenceRepository.isDarkMode())
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         else
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        setTheme(R.style.AppTheme_NoActionBar);
-        super.onCreate(savedInstanceState);
 
-        if (CredentialManager.getLanguage().equalsIgnoreCase("bn"))
+        if (preferenceRepository.getLanguage().equalsIgnoreCase("bn"))
             changeLanguage("BN");
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        if (!CredentialManager.getToken().equals("") &&
-                (CredentialManager.getUserData() == null ||
-                        CredentialManager.getUserName().equals("") ||
-                        CredentialManager.getPassword().equals(""))) {
+        if (!preferenceRepository.getToken().equals("") &&
+                (preferenceRepository.getUserData() == null ||
+                        preferenceRepository.getUserName().equals("") ||
+                        preferenceRepository.getPassword().equals(""))) {
             AppController.getInstance().logout(this);
             return;
         }
 
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        if (!CredentialManager.getToken().isEmpty() && !CredentialManager.isUserRegistered())
+        if (!preferenceRepository.getToken().isEmpty() && !preferenceRepository.isUserRegistered())
             viewModel.registerXMPP();
 
         setupNavigation();
@@ -135,7 +136,7 @@ public class MainActivity extends BaseActivity {
             if (Build.VERSION.SDK_INT >= 23) {
                 int flags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
                 getWindow().getDecorView().setSystemUiVisibility(0);
-                if (!CredentialManager.isDarkMode())
+                if (!preferenceRepository.isDarkMode())
                     getWindow().getDecorView().setSystemUiVisibility(flags);
                 getWindow().setStatusBarColor(getColor(R.color.fff));
             } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -182,11 +183,11 @@ public class MainActivity extends BaseActivity {
         CharSequence[] items = new CharSequence[]{"Dark", "Light"};
 
         int selectedPos = 0;
-        if (!CredentialManager.isDarkMode())
+        if (!preferenceRepository.isDarkMode())
             selectedPos = 1;
 
         adb.setSingleChoiceItems(items, selectedPos, (d, n) -> {
-            CredentialManager.setDarkMode(n == 0);
+            preferenceRepository.setDarkMode(n == 0);
             startActivity(new Intent(MainActivity.this, MainActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
@@ -226,7 +227,7 @@ public class MainActivity extends BaseActivity {
                     if (item.getItemId() == R.id.accountFragment) {
                         if (navController == null)
                             return false;
-                        if (CredentialManager.getToken().equals(""))
+                        if (preferenceRepository.getToken().equals(""))
                             startActivity(new Intent(MainActivity.this, SignInActivity.class));
                         else
                             return onNavDestinationSelected(item, navController);
@@ -273,14 +274,14 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setupFirebase() {
-        String email = CredentialManager.getUserName();
+        String email = preferenceRepository.getUserName();
         String strNew = email.replaceAll("[^A-Za-z0-9]", "");
 
         FirebaseMessaging.getInstance().subscribeToTopic("all_user");
 
-        if (!CredentialManager.getToken().equals("")) {
+        if (!preferenceRepository.getToken().equals("")) {
             FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew);
-            FirebaseMessaging.getInstance().subscribeToTopic("USER." + CredentialManager.getUserName());
+            FirebaseMessaging.getInstance().subscribeToTopic("USER." + preferenceRepository.getUserName());
         }
         FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user");
     }
@@ -412,7 +413,7 @@ public class MainActivity extends BaseActivity {
 
                         if (versionCode < latestVersion && isForce) {
                             if (shouldLogout) {
-                                MyPreference.with(MainActivity.this).clearAll();
+                                preferenceRepository.clearAll();
                             }
                             update(false);
                         } else if (versionCode < latestVersion)
@@ -425,8 +426,8 @@ public class MainActivity extends BaseActivity {
 
     private void getMessageCount(TextView messageCount) {
 
-        if (Calendar.getInstance().getTimeInMillis() - CredentialManager.getMessageCounterLastUpdated() < 600000) {
-            updateHotCount(messageCount, CredentialManager.getMessageCount());
+        if (Calendar.getInstance().getTimeInMillis() - preferenceRepository.getMessageCounterLastUpdated() < 600000) {
+            updateHotCount(messageCount, preferenceRepository.getMessageCount());
             return;
         }
 
@@ -434,8 +435,8 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 updateHotCount(messageCount, response.getCount());
-                CredentialManager.setMessageCounterLastUpdated();
-                CredentialManager.setMessageCount(response.getCount());
+                preferenceRepository.setMessageCounterLastUpdated();
+                preferenceRepository.setMessageCount(response.getCount());
             }
 
             @Override
@@ -490,7 +491,7 @@ public class MainActivity extends BaseActivity {
 
     private void setupDrawerMenu() {
 
-        if (CredentialManager.getToken().equals("") || CredentialManager.getUserData() == null) {
+        if (preferenceRepository.getToken().equals("") || preferenceRepository.getUserData() == null) {
             binding.drawerLayout.removeView(binding.navView);
 
             binding.drawerLayout.removeView(binding.navView2);
@@ -529,14 +530,14 @@ public class MainActivity extends BaseActivity {
 
             TextView userNameNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.userNameNavHeader);
             TextView phoneNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.phone);
-            userNameNavHeader.setText(CredentialManager.getUserData().getFullName());
-            phoneNavHeader.setText(CredentialManager.getUserName());
+            userNameNavHeader.setText(preferenceRepository.getUserData().getFullName());
+            phoneNavHeader.setText(preferenceRepository.getUserName());
 
             ImageView profilePicNav = binding.navView.getHeaderView(0).findViewById(R.id.profilePicNav);
 
             Glide.with(this)
                     .asBitmap()
-                    .load(CredentialManager.getUserData().getProfilePicUrl())
+                    .load(preferenceRepository.getUserData().getProfilePicUrl())
                     .skipMemoryCache(true)
                     .placeholder(R.drawable.user_image)
                     .fitCenter()
@@ -624,9 +625,9 @@ public class MainActivity extends BaseActivity {
         try {
             if (launchIntent != null) {
                 launchIntent.putExtra("to", "OPEN_CHAT_LIST");
-                launchIntent.putExtra("user", CredentialManager.getUserName());
-                launchIntent.putExtra("password", CredentialManager.getPassword());
-                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+                launchIntent.putExtra("user", preferenceRepository.getUserName());
+                launchIntent.putExtra("password", preferenceRepository.getPassword());
+                launchIntent.putExtra("userInfo", new Gson().toJson(preferenceRepository.getUserData()));
                 startActivity(launchIntent);
             }
         } catch (ActivityNotFoundException e) {

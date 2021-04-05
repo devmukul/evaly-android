@@ -40,8 +40,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -55,6 +55,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class ReviewsActivity extends AppCompatActivity {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     @Inject
     ApiRepository apiRepository;
     private String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
@@ -114,14 +116,14 @@ public class ReviewsActivity extends AppCompatActivity {
             getRatings(item_value);
             getReviews(item_value);
 
-            if (!CredentialManager.getToken().equals(""))
+            if (!preferenceRepository.getToken().equals(""))
                 checkEligibility(item_value);
         }
 
         loadRatingsToView(ratingJson);
 
         floatingActionButton.setOnClickListener(v -> {
-            if (CredentialManager.getToken().equals("")) {
+            if (preferenceRepository.getToken().equals("")) {
                 Toast.makeText(ReviewsActivity.this, "You need to login first to create review.", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -212,7 +214,7 @@ public class ReviewsActivity extends AppCompatActivity {
             postReview(
                     alertDialog,
                     item_value,
-                    CredentialManager.getUserData().getFullName(),
+                    preferenceRepository.getUserData().getFullName(),
                     (int) d_rating_bar.getRating(),
                     d_review_text.getText().toString());
         });
@@ -236,7 +238,7 @@ public class ReviewsActivity extends AppCompatActivity {
     public void getReviews(String slug) {
 
         progressBar.setVisibility(View.VISIBLE);
-        apiRepository.getReviews(CredentialManager.getToken(), slug, currentPage, 20, isShop, new ResponseListenerAuth<CommonDataResponse<JsonObject>, String>() {
+        apiRepository.getReviews(preferenceRepository.getToken(), slug, currentPage, 20, isShop, new ResponseListenerAuth<CommonDataResponse<JsonObject>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<JsonObject> response, int statusCode) {
                 progressBar.setVisibility(View.INVISIBLE);
@@ -281,7 +283,7 @@ public class ReviewsActivity extends AppCompatActivity {
     public void getRatings(String slug) {
 
         progressBar.setVisibility(View.VISIBLE);
-        apiRepository.getReviewSummary(CredentialManager.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getReviewSummary(preferenceRepository.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 response = response.getAsJsonObject("data");
@@ -312,7 +314,7 @@ public class ReviewsActivity extends AppCompatActivity {
         parameters.addProperty("review_message", rating_text);
         parameters.addProperty("rating", rating_value);
 
-        apiRepository.postReview(CredentialManager.getToken(), slug, parameters, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postReview(preferenceRepository.getToken(), slug, parameters, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 progressDialog.hideDialog();
@@ -347,7 +349,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
     public void checkEligibility(String slug) {
 
-        apiRepository.checkReviewEligibility(CredentialManager.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.checkReviewEligibility(preferenceRepository.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 boolean isEligible = false;

@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
@@ -49,6 +50,9 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     @Inject
     ApiRepository apiRepository;
+
+    @Inject
+    PreferenceRepository preferenceRepository;
 
     private boolean isLoading = true;
     private HomeController homeController;
@@ -160,7 +164,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     }
 
     private void initAppHeader() {
-        new InitializeActionBar(binding.header.headerLogo, getActivity(), "home", mainViewModel, apiRepository);
+        new InitializeActionBar(binding.header.headerLogo, getActivity(), "home", mainViewModel, apiRepository, preferenceRepository);
         binding.header.homeSearch.setOnClickListener(view1 -> {
             navController.navigate(R.id.globalSearchFragment);
             // startActivity(new Intent(getContext(), GlobalSearchActivity.class));

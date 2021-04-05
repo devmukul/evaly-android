@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.refundSettlement.OtpResponse;
 import bd.com.evaly.evalyshop.models.refundSettlement.RefundSettlementResponse;
@@ -21,21 +21,23 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class EditSettlementAccountViewModel extends ViewModel {
 
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
     private String requestId = "";
     protected MutableLiveData<String> typeLiveData = new MutableLiveData<>();
     protected RefundSettlementResponse accountsModel;
     protected MutableLiveData<RefundSettlementResponse> responseLiveData = new MutableLiveData<>();
 
     @Inject
-    public EditSettlementAccountViewModel(SavedStateHandle arg, ApiRepository apiRepository) {
+    public EditSettlementAccountViewModel(SavedStateHandle arg, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
         accountsModel = arg.get("model");
         typeLiveData.setValue(arg.get("type"));
         generateOtp();
     }
 
     public void generateOtp() {
-        apiRepository.generateOtp(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<OtpResponse>, String>() {
+        apiRepository.generateOtp(preferenceRepository.getToken(), new ResponseListenerAuth<CommonDataResponse<OtpResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<OtpResponse> response, int statusCode) {
                 ToastUtils.show("An OTP has been sent to your phone number");

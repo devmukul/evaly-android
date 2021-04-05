@@ -15,8 +15,8 @@ import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.HomeModelQuickAccessBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.epoxy.BaseDataBindingEpoxyModel;
 
@@ -55,7 +55,7 @@ public abstract class HomeWidgetModel extends BaseDataBindingEpoxyModel {
         });
 
         binding.btn5Image.setOnClickListener(v -> {
-            if (CredentialManager.getToken().equals(""))
+            if (AppController.getInstance().getPreferenceRepository().getToken().equals(""))
                 activity.startActivity(new Intent(activity, SignInActivity.class));
             else
                 navController.navigate(R.id.orderListBaseFragment);

@@ -15,17 +15,23 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditEmailAddressBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.profile.EmailInfoRequest;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class EmailInfoBottomSheet extends BottomSheetDialogFragment {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     private BottomSheetEditEmailAddressBinding binding;
     private EditProfileViewModel viewModel;
 
@@ -76,7 +82,7 @@ public class EmailInfoBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        UserModel userModel = CredentialManager.getUserData();
+        UserModel userModel = preferenceRepository.getUserData();
 
         if (userModel != null) {
             binding.primaryEmail.setText(userModel.getPrimaryEmail());

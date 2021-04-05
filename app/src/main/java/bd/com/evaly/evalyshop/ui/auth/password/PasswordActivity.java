@@ -288,7 +288,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
                         String token = response.get("access_token").getAsString();
                         preferenceRepository.saveToken(token);
                         preferenceRepository.saveRefreshToken(response.get("refresh_token").getAsString());
-                        Balance.updateUserInfo(PasswordActivity.this, true, apiRepository);
+                        Balance.updateUserInfo(PasswordActivity.this, true, apiRepository, preferenceRepository);
                         Toast.makeText(PasswordActivity.this, "Successfully signed in.", Toast.LENGTH_SHORT).show();
                         break;
                     default:

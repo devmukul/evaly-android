@@ -20,7 +20,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.Author;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedFragment;
@@ -32,11 +32,13 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
     ArrayList<RepliesItem> itemsList;
     Context context;
     NewsfeedFragment fragment;
+    PreferenceRepository preferenceRepository;
 
-    public ReplyAdapter(ArrayList<RepliesItem> itemsList, Context context, NewsfeedFragment fragment) {
+    public ReplyAdapter(ArrayList<RepliesItem> itemsList, Context context, NewsfeedFragment fragment, PreferenceRepository preferenceRepository) {
         this.itemsList = itemsList;
         this.context = context;
         this.fragment = fragment;
+        this.preferenceRepository = preferenceRepository;
     }
 
     @NonNull
@@ -104,7 +106,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
 
         myViewHolder.view.setOnLongClickListener(
                 view -> {
-                    if (!CredentialManager.getUserData().getGroups().toString().contains("EvalyEmployee"))
+                    if (!preferenceRepository.getUserData().getGroups().toString().contains("EvalyEmployee"))
                         return false;
 
                     new AlertDialog.Builder(context)

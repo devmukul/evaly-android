@@ -28,10 +28,10 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetRefundRequestBinding;
 import bd.com.evaly.evalyshop.databinding.ConfirmOtpViewBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
@@ -48,6 +48,8 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
     FirebaseRemoteConfig remoteConfig;
     @Inject
     ApiRepository apiRepository;
+    @Inject
+    PreferenceRepository preferenceRepository;
     private BottomSheetRefundRequestBinding binding;
     private String invoice_no;
     private String order_status;
@@ -279,7 +281,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
         dialog.showDialog();
 
-        apiRepository.requestRefund(CredentialManager.getToken(), body, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.requestRefund(preferenceRepository.getToken(), body, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 Logger.d(statusCode);
@@ -374,7 +376,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
     private void submitOtp() {
         HashMap<String, Integer> otpBody = new HashMap<>();
         otpBody.put("otp_token", selectedOtp);
-        apiRepository.requestRefundConfirmOTP(CredentialManager.getToken(), invoice_no.toUpperCase(), otpBody, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.requestRefundConfirmOTP(preferenceRepository.getToken(), invoice_no.toUpperCase(), otpBody, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 if (response.getSuccess()) {

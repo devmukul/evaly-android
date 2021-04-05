@@ -40,8 +40,8 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -54,6 +54,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     @Inject
     ApiRepository apiRepository;
     static GiftCardListFragment instance;
@@ -246,7 +248,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
         placeOrder.setOnClickListener(v -> {
 
-            if (phoneNumber.getText().toString().equals(CredentialManager.getUserName())) {
+            if (phoneNumber.getText().toString().equals(preferenceRepository.getUserName())) {
                 Toast.makeText(context, "You can't buy gift cards for yourself", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -346,7 +348,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
     public void getGiftCardDetails(String slug) {
 
-        if (CredentialManager.getToken().equals("")) {
+        if (preferenceRepository.getToken().equals("")) {
             Toast.makeText(context, "You need to login first", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -415,7 +417,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         int q = Integer.parseInt(quantity.getText().toString());
         parameters.addProperty("quantity", q);
 
-        apiRepository.placeGiftCardOrder(CredentialManager.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.placeGiftCardOrder(preferenceRepository.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

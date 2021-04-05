@@ -11,11 +11,11 @@ import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
@@ -28,6 +28,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class ViewProductViewModel extends ViewModel {
 
+    private PreferenceRepository preferenceRepository;
     public LiveData<Integer> wishListLiveCount;
     public LiveData<Integer> cartLiveCount;
     protected MutableLiveData<ProductDetailsModel> productDetailsModel = new MutableLiveData<>();
@@ -43,12 +44,13 @@ public class ViewProductViewModel extends ViewModel {
     private ApiRepository apiRepository;
 
     @Inject
-    public ViewProductViewModel(CartDao cartDao, WishListDao wishListDao, ApiRepository apiRepository) {
+    public ViewProductViewModel(CartDao cartDao, WishListDao wishListDao, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.cartDao = cartDao;
         this.wishListDao = wishListDao;
         cartLiveCount = cartDao.getLiveCount();
         wishListLiveCount = wishListDao.getLiveCount();
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
     }
 
     public CartDao getCartDao() {
@@ -64,7 +66,7 @@ public class ViewProductViewModel extends ViewModel {
         Executors.newSingleThreadExecutor().execute(() -> wishListDao.insert(entity));
     }
 
-    public int checkExistsWishList(String slug){
+    public int checkExistsWishList(String slug) {
         return wishListDao.checkExists(slug);
     }
 
@@ -112,7 +114,7 @@ public class ViewProductViewModel extends ViewModel {
 
     public void loadRatings(String slug) {
 
-        apiRepository.getReviewSummary(CredentialManager.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getReviewSummary(preferenceRepository.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 ratingSummary.setValue(response);
@@ -134,7 +136,7 @@ public class ViewProductViewModel extends ViewModel {
 
     public void loadShopDetails(String shopSlug, String campaignSlug) {
 
-        apiRepository.getShopDetailsItem(CredentialManager.getToken(), shopSlug, 1, 0, null, campaignSlug, null, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        apiRepository.getShopDetailsItem(preferenceRepository.getToken(), shopSlug, 1, 0, null, campaignSlug, null, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 shopDetails.setValue(response);
@@ -196,7 +198,7 @@ public class ViewProductViewModel extends ViewModel {
 
 
     public void createPost(CreatePostModel createPostModel) {
-        apiRepository.post(CredentialManager.getToken(), createPostModel, null, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.post(preferenceRepository.getToken(), createPostModel, null, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 createPostResponse.setValue(response);

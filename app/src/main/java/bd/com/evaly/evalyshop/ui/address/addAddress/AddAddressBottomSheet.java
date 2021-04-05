@@ -14,8 +14,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetAddAddressBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.catalog.location.LocationResponse;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -25,6 +27,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class AddAddressBottomSheet extends BottomSheetDialogFragment {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     private AddAddressViewModel viewModel;
     private BottomSheetAddAddressBinding binding;
 
@@ -82,7 +86,7 @@ public class AddAddressBottomSheet extends BottomSheetDialogFragment {
                 error = "Please enter region";
             else if (phoneNumber.equals(""))
                 error = "Please enter phone number";
-            else  if (!Utils.isValidNumber(phoneNumber))
+            else if (!Utils.isValidNumber(phoneNumber))
                 error = "Please enter valid phone number";
             else if (fullName.equals(""))
                 error = "Please enter full name";
@@ -183,11 +187,11 @@ public class AddAddressBottomSheet extends BottomSheetDialogFragment {
                 binding.city.setText(model.getCity());
                 binding.region.setText(model.getRegion());
                 if (model.getFullName() == null || model.getFullName().equals(""))
-                    binding.fullName.setText(CredentialManager.getUserData().getFullName());
+                    binding.fullName.setText(preferenceRepository.getUserData().getFullName());
                 else
                     binding.fullName.setText(model.getFullName());
                 if (model.getPhoneNumber() == null || model.getPhoneNumber().equals(""))
-                    binding.contactNumber.setText(CredentialManager.getUserData().getContact());
+                    binding.contactNumber.setText(preferenceRepository.getUserData().getContact());
                 else
                     binding.contactNumber.setText(model.getPhoneNumber());
 

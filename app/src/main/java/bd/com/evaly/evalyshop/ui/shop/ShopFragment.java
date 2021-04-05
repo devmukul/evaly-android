@@ -25,10 +25,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentShopBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
@@ -56,6 +56,8 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
     ApiRepository apiRepository;
     @Inject
     RecommenderViewModel recommenderViewModel;
+    @Inject
+    PreferenceRepository preferenceRepository;
     long startTime = 0;
     private String slug = "", campaign_slug = "", title = "";
     private String categorySlug = null;
@@ -99,7 +101,7 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
 
     private void initHeader() {
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-        new InitializeActionBar(binding.appBarLayout.headerLogo, getActivity(), "shop", mainViewModel, apiRepository);
+        new InitializeActionBar(binding.appBarLayout.headerLogo, getActivity(), "shop", mainViewModel, apiRepository, preferenceRepository);
         binding.appBarLayout.homeSearch.setOnClickListener(view12 -> {
             Bundle bundle = new Bundle();
             bundle.putString("shop_slug", slug);
@@ -317,7 +319,7 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
         if (shopDetailsModel == null)
             return;
 
-        if (CredentialManager.getToken().equals("")) {
+        if (preferenceRepository.getToken().equals("")) {
             startActivity(new Intent(getActivity(), SignInActivity.class));
             requireActivity().finish();
         } else {
@@ -342,9 +344,9 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
 
                 launchIntent.putExtra("to", "OPEN_CHAT_DETAILS");
                 launchIntent.putExtra("from", "shop");
-                launchIntent.putExtra("user", CredentialManager.getUserName());
-                launchIntent.putExtra("password", CredentialManager.getPassword());
-                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+                launchIntent.putExtra("user", preferenceRepository.getUserName());
+                launchIntent.putExtra("password", preferenceRepository.getPassword());
+                launchIntent.putExtra("userInfo", new Gson().toJson(preferenceRepository.getUserData()));
                 launchIntent.putExtra("roster", new Gson().toJson(rosterTable));
 
                 startActivity(launchIntent);

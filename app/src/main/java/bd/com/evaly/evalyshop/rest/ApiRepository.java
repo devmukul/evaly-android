@@ -18,7 +18,6 @@ import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentCategoryResponse;
@@ -380,7 +379,7 @@ public class ApiRepository {
     /* ------------- Express APIs ------------- */
 
     public void getMessageCount(ResponseListenerAuth<CommonDataResponse<String>, String> listener) {
-        apiHandler.createCall(apiService.getUnreadedMessageCount(preferenceRepository.getToken(), CredentialManager.getUserName()), listener);
+        apiHandler.createCall(apiService.getUnreadedMessageCount(preferenceRepository.getToken(), preferenceRepository.getUserName()), listener);
     }
 
 

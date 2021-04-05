@@ -10,8 +10,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
@@ -23,6 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class ShopSearchViewModel extends ViewModel {
 
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
     protected MutableLiveData<ShopDetailsResponse> shopDetailsLive = new MutableLiveData<>();
     private MutableLiveData<Boolean> onResetLiveData = new MutableLiveData<>();
     private MutableLiveData<List<ItemsItem>> productListLiveData = new MutableLiveData<>();
@@ -38,8 +39,9 @@ public class ShopSearchViewModel extends ViewModel {
     private boolean isShop = true;
 
     @Inject
-    public ShopSearchViewModel(SavedStateHandle args, ApiRepository apiRepository) {
+    public ShopSearchViewModel(SavedStateHandle args, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
         this.categorySlug = null;
         this.campaignSlug = args.get("campaign_slug");
         this.shopSlug = args.get("shop_slug");
@@ -137,7 +139,7 @@ public class ShopSearchViewModel extends ViewModel {
 
     public void loadShopProducts() {
 
-        apiRepository.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, search, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        apiRepository.getShopDetailsItem(preferenceRepository.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, search, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 productArrayList.addAll(response.getData().getItems());

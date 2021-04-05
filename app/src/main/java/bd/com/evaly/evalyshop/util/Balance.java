@@ -10,14 +10,14 @@ import com.google.gson.JsonObject;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 
-import bd.com.evaly.evalyshop.rest.ApiRepository;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoDao;
 import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 
@@ -25,22 +25,22 @@ import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 public class Balance {
 
 
-    public static void updateUserInfo(Activity context, boolean openDashboard, ApiRepository apiRepository) {
-        apiRepository.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+    public static void updateUserInfo(Activity context, boolean openDashboard, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
+        apiRepository.getUserProfile(preferenceRepository.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
-                CredentialManager.saveUserData(response.getData());
+                preferenceRepository.saveUserData(response.getData());
                 ProviderDatabase providerDatabase = ProviderDatabase.getInstance(context);
                 UserInfoDao userInfoDao = providerDatabase.userInfoDao();
 
                 Executors.newSingleThreadExecutor().execute(() -> {
                     UserInfoEntity entity = new UserInfoEntity();
-                    entity.setToken(CredentialManager.getToken());
-                    entity.setRefreshToken(CredentialManager.getRefreshToken());
+                    entity.setToken(preferenceRepository.getToken());
+                    entity.setRefreshToken(preferenceRepository.getRefreshToken());
                     entity.setName(response.getData().getFullName());
                     entity.setImage(response.getData().getImageSm());
-                    entity.setUsername(CredentialManager.getUserName());
-                    entity.setPassword(CredentialManager.getPassword());
+                    entity.setUsername(preferenceRepository.getUserName());
+                    entity.setPassword(preferenceRepository.getPassword());
                     userInfoDao.insert(entity);
                 });
 
@@ -63,19 +63,19 @@ public class Balance {
             @Override
             public void onAuthError(boolean logout) {
                 if (!logout)
-                    updateUserInfo(context, openDashboard, apiRepository);
+                    updateUserInfo(context, openDashboard, apiRepository, preferenceRepository);
             }
         });
 
     }
 
-    public static void update(Activity context, TextView textView, ApiRepository apiRepository) {
+    public static void update(Activity context, TextView textView, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
 
-        apiRepository.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getUserInfoPay(preferenceRepository.getToken(), preferenceRepository.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 response = response.getAsJsonObject("data");
-                CredentialManager.setBalance(response.get("balance").getAsDouble());
+                preferenceRepository.setBalance(response.get("balance").getAsDouble());
 
                 if (context instanceof OrderDetailsActivity)
                     textView.setText(Html.fromHtml(String.format(Locale.ENGLISH, "Account: <b>৳ %s</b>", response.get("balance").getAsString())));

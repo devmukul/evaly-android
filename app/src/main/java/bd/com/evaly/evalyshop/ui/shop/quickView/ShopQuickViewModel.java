@@ -13,8 +13,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
@@ -25,6 +25,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class ShopQuickViewModel extends ViewModel {
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
     private SingleLiveEvent<String> buyNowLiveData = new SingleLiveEvent<>();
     private MutableLiveData<TabsItem> selectedCategoryLiveData = new MutableLiveData<>();
     private MutableLiveData<ShopDetailsModel> shopDetailsLiveData = new MutableLiveData<>();
@@ -42,9 +43,10 @@ public class ShopQuickViewModel extends ViewModel {
     private boolean isCategoryLoading = false;
 
     @Inject
-    public ShopQuickViewModel(SavedStateHandle args, ApiRepository apiRepository) {
+    public ShopQuickViewModel(SavedStateHandle args, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.categorySlug = null;
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
         this.campaignSlug = args.get("campaign_slug");
         this.shopSlug = args.get("shop_slug");
         this.brandSlug = args.get("campaign_slug");
@@ -143,7 +145,7 @@ public class ShopQuickViewModel extends ViewModel {
 
     public void loadShopProducts() {
 
-        apiRepository.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        apiRepository.getShopDetailsItem(preferenceRepository.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 shopDetailsLiveData.setValue(response);

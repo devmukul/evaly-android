@@ -13,8 +13,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
@@ -54,15 +54,17 @@ public class ShopViewModel extends ViewModel {
     protected MutableLiveData<ShopDetailsModel> shopDetailsModelLiveData = new MutableLiveData<>();
     protected MutableLiveData<SubCampaignDetailsResponse> campaignDetailsLiveData = new MutableLiveData<>();
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
 
 
     @Inject
-    public ShopViewModel(SavedStateHandle args, ApiRepository apiRepository) {
+    public ShopViewModel(SavedStateHandle args, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
         this.categorySlug = null;
         this.campaignSlug = args.get("campaign_slug");
         this.shopSlug = args.get("shop_slug");
         this.brandSlug = args.get("campaign_slug");
+        this.preferenceRepository = preferenceRepository;
 
         currentPage = 1;
         categoryCurrentPage = 1;
@@ -222,7 +224,7 @@ public class ShopViewModel extends ViewModel {
 
     public void subscribe(boolean subscribe) {
 
-        apiRepository.subscribeToShop(CredentialManager.getToken(), shopSlug, subscribe, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.subscribeToShop(preferenceRepository.getToken(), shopSlug, subscribe, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -245,7 +247,7 @@ public class ShopViewModel extends ViewModel {
 
     public void loadRatings() {
 
-        apiRepository.getReviewSummary(CredentialManager.getToken(), shopSlug, new ResponseListenerAuth<CommonDataResponse<ReviewSummaryModel>, String>() {
+        apiRepository.getReviewSummary(preferenceRepository.getToken(), shopSlug, new ResponseListenerAuth<CommonDataResponse<ReviewSummaryModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ReviewSummaryModel> response, int statusCode) {
                 ratingSummary.setValue(response.getData());
@@ -285,7 +287,7 @@ public class ShopViewModel extends ViewModel {
 
     public void loadShopProducts() {
 
-        apiRepository.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        apiRepository.getShopDetailsItem(preferenceRepository.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 shopDetailsModelLiveData.setValue(response);

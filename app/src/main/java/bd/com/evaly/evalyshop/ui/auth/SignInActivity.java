@@ -134,7 +134,7 @@ public class SignInActivity extends BaseActivity {
                         preferenceRepository.saveRefreshToken(response.get("refresh_token").getAsString());
                         preferenceRepository.saveUserName(phoneNumber.getText().toString());
                         preferenceRepository.savePassword(password.getText().toString());
-                        Balance.updateUserInfo(SignInActivity.this, true, apiRepository);
+                        Balance.updateUserInfo(SignInActivity.this, true, apiRepository, preferenceRepository);
                         Toast.makeText(SignInActivity.this, "Successfully signed in.", Toast.LENGTH_SHORT).show();
                         break;
                     default:

@@ -12,11 +12,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
@@ -47,11 +47,13 @@ public class MainViewModel extends ViewModel {
     private CompositeDisposable compositeDisposable;
     private CartDao cartDao;
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
 
     @Inject
-    public MainViewModel(CartDao cartDao, WishListDao wishListDao, ApiRepository apiRepository) {
+    public MainViewModel(CartDao cartDao, WishListDao wishListDao, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.cartDao = cartDao;
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
         cartLiveCount = cartDao.getLiveCount();
         wishListLiveCount = wishListDao.getLiveCount();
         compositeDisposable = new CompositeDisposable();
@@ -59,7 +61,7 @@ public class MainViewModel extends ViewModel {
     }
 
     public void getCartList() {
-        if (CredentialManager.getToken().equals(""))
+        if (preferenceRepository.getToken().equals(""))
             return;
 
         apiRepository.getCartList(new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
@@ -132,7 +134,7 @@ public class MainViewModel extends ViewModel {
 
     public void registerXMPP() {
         HashMap<String, String> data = new HashMap<>();
-        data.put("password", CredentialManager.getPassword());
+        data.put("password", preferenceRepository.getPassword());
         apiRepository.registerXMPP(data, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {

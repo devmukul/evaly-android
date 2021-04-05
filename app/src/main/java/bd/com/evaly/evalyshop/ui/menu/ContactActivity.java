@@ -15,20 +15,26 @@ import androidx.databinding.DataBindingUtil;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityContactBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
 import static bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity.setWindowFlag;
 
+@AndroidEntryPoint
 public class ContactActivity extends BaseActivity {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
 
     private ActivityContactBinding binding;
     private ViewDialog dialog;
@@ -54,7 +60,7 @@ public class ContactActivity extends BaseActivity {
         });
 
         binding.emailBox.setOnClickListener(v -> {
-            if (CredentialManager.getToken().equals("")) {
+            if (preferenceRepository.getToken().equals("")) {
                 Toast.makeText(getApplicationContext(), "Please login to send message", Toast.LENGTH_LONG).show();
             } else
                 openEconnect();
@@ -102,9 +108,9 @@ public class ContactActivity extends BaseActivity {
             roasterModel.imageUrl = Constants.EVALY_LOGO;
             launchIntent.putExtra("to", "OPEN_CHAT_DETAILS");
             launchIntent.putExtra("from", "contact");
-            launchIntent.putExtra("user", CredentialManager.getUserName());
-            launchIntent.putExtra("password", CredentialManager.getPassword());
-            launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+            launchIntent.putExtra("user", preferenceRepository.getUserName());
+            launchIntent.putExtra("password", preferenceRepository.getPassword());
+            launchIntent.putExtra("userInfo", new Gson().toJson(preferenceRepository.getUserData()));
             launchIntent.putExtra("roster", new Gson().toJson(roasterModel));
             startActivity(launchIntent);
 

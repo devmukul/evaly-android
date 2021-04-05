@@ -23,17 +23,23 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.TimeZone;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditPersonalInformationBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.profile.PersonalInfoRequest;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Utils;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     private BottomSheetEditPersonalInformationBinding binding;
     private String dateOfBirth = "";
     private EditProfileViewModel viewModel;
@@ -81,7 +87,7 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        UserModel userModel = CredentialManager.getUserData();
+        UserModel userModel = preferenceRepository.getUserData();
 
         if (userModel != null) {
             binding.firstName.setText(userModel.getFirstName());
@@ -153,7 +159,7 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
             viewModel.setUserData(Utils.objectToHashMap(body));
 
             HashMap<String, String> data = new HashMap<>();
-            data.put("user", CredentialManager.getUserName());
+            data.put("user", preferenceRepository.getUserName());
             data.put("host", Constants.XMPP_HOST);
             data.put("name", "FN");
             data.put("content", firstName + " " + lastName);

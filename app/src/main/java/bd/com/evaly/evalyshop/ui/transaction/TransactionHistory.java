@@ -18,9 +18,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentTransactionHistoryBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -33,6 +33,8 @@ public class TransactionHistory extends Fragment {
 
     @Inject
     ApiRepository apiRepository;
+    @Inject
+    PreferenceRepository preferenceRepository;
     private TransactionHistoryAdapter adapter;
     private ArrayList<TransactionItem> itemList;
     private int currentPage = 0;
@@ -77,7 +79,7 @@ public class TransactionHistory extends Fragment {
                 binding.claimCashback.setVisibility(View.GONE);
             else
                 binding.claimCashback.setVisibility(View.VISIBLE);
-            CredentialManager.setBalance(balanceModel.getBalance());
+            preferenceRepository.setBalance(balanceModel.getBalance());
         });
 
         balanceViewModel.updateBalance();
@@ -87,7 +89,7 @@ public class TransactionHistory extends Fragment {
 
     public void getTransactionHistory(int page) {
         binding.progressBar.setVisibility(View.VISIBLE);
-        apiRepository.getTransactionHistory(CredentialManager.getToken(), CredentialManager.getUserName(), page,
+        apiRepository.getTransactionHistory(preferenceRepository.getToken(), preferenceRepository.getUserName(), page,
                 new ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<TransactionItem>> response, int statusCode) {

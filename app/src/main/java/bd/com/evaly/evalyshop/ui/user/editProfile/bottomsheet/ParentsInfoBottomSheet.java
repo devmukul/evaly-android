@@ -17,17 +17,23 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditParentInfoBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.profile.ParentInfoRequest;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class ParentsInfoBottomSheet extends BottomSheetDialogFragment {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     private BottomSheetEditParentInfoBinding binding;
     private EditProfileViewModel viewModel;
 
@@ -80,7 +86,7 @@ public class ParentsInfoBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        UserModel userModel = CredentialManager.getUserData();
+        UserModel userModel = preferenceRepository.getUserData();
 
         if (userModel != null) {
             binding.fatherName.setText(userModel.getParentsInfo().getFatherName());

@@ -26,9 +26,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetCreateIssueBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
 import bd.com.evaly.evalyshop.models.issueNew.create.IssueCreateBody;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -41,6 +43,8 @@ import static android.app.Activity.RESULT_OK;
 @AndroidEntryPoint
 public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     private CreateIssueViewModel viewModel;
     private BottomSheetCreateIssueBinding binding;
     private List<IssueCategoryModel> itemList = new ArrayList<>();
@@ -144,7 +148,7 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
                     binding.descriptionHolder.setVisibility(View.GONE);
-                    binding.etDescription.setText("Invoice: " + invoice + "\nPhone number: " + CredentialManager.getUserName());
+                    binding.etDescription.setText("Invoice: " + invoice + "\nPhone number: " + preferenceRepository.getUserName());
                 } else if (paymentType.equals("bKash Refund") || paymentType.equals("bKash Payment") || paymentType.equals("Nagad Refund") || paymentType.equals("Nagad Payment")) {
                     binding.llBkashHolder.setVisibility(View.VISIBLE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
@@ -174,7 +178,7 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
 
             model.setChannel("customer_app");
             model.setContext("evaly_order");
-            model.setCustomer(CredentialManager.getUserName());
+            model.setCustomer(preferenceRepository.getUserName());
             model.setInvoiceNumber(invoice);
             model.setSeller(seller);
             model.setShop(shop);

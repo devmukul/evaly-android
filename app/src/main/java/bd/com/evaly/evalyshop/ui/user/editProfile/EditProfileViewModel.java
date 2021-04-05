@@ -11,8 +11,8 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -22,19 +22,21 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class EditProfileViewModel extends ViewModel {
 
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
     private MutableLiveData<Boolean> infoSavedStatus = new MutableLiveData<>();
 
     @Inject
-    public EditProfileViewModel(ApiRepository apiRepository) {
+    public EditProfileViewModel(ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
     }
 
     public void setUserData(HashMap<String, String> userInfo) {
 
-        apiRepository.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+        apiRepository.setUserData(preferenceRepository.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
-                CredentialManager.saveUserData(response.getData());
+                preferenceRepository.saveUserData(response.getData());
                 infoSavedStatus.setValue(true);
             }
 
@@ -53,10 +55,10 @@ public class EditProfileViewModel extends ViewModel {
 
     public void setUserData(JsonObject userInfo) {
 
-        apiRepository.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+        apiRepository.setUserData(preferenceRepository.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
-                CredentialManager.saveUserData(response.getData());
+                preferenceRepository.saveUserData(response.getData());
                 infoSavedStatus.setValue(true);
             }
 
@@ -86,7 +88,7 @@ public class EditProfileViewModel extends ViewModel {
 
                 if (ob.get("last_name").isJsonNull())
                     userModel.setLastName("");
-                CredentialManager.saveUserData(userModel);
+                preferenceRepository.saveUserData(userModel);
             }
 
             @Override

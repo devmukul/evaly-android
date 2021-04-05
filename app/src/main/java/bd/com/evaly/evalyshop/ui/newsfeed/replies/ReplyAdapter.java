@@ -21,7 +21,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.Author;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -32,8 +32,9 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
     private List<RepliesItem> itemsList;
     private Context context;
     private ReplyViewModel viewModel;
+    private PreferenceRepository preferenceRepository;
 
-    public ReplyAdapter(List<RepliesItem> itemsList, Context context, ReplyViewModel viewModel) {
+    public ReplyAdapter(List<RepliesItem> itemsList, Context context, ReplyViewModel viewModel, PreferenceRepository preferenceRepository) {
         this.itemsList = itemsList;
         this.context = context;
         this.viewModel = viewModel;
@@ -106,9 +107,9 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
 
         myViewHolder.view.setOnLongClickListener(
                 view -> {
-                    if (CredentialManager.getToken().equals(""))
+                    if (preferenceRepository.getToken().equals(""))
                         return false;
-                    if (CredentialManager.getUserData() != null && !CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
+                    if (preferenceRepository.getUserData() != null && !preferenceRepository.getUserData().getGroups().contains("EvalyEmployee"))
                         return false;
 
                     new AlertDialog.Builder(context)

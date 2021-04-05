@@ -14,6 +14,7 @@ import com.google.android.material.tabs.TabLayout;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentProductBrowseBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
@@ -31,6 +32,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class BrowseProductFragment extends BaseFragment<FragmentProductBrowseBinding, BrowseProductViewModel> implements BrowseProductController.ClickListener, SwipeRefreshLayout.OnRefreshListener {
     @Inject
     ApiRepository apiRepository;
+    @Inject
+    PreferenceRepository preferenceRepository;
     private BrowseProductController controller;
     private RecyclerView.LayoutManager layoutManager;
     private PaginationScrollListener paginationScrollListener;
@@ -64,7 +67,7 @@ public class BrowseProductFragment extends BaseFragment<FragmentProductBrowseBin
     }
 
     private void initHeader() {
-        new InitializeActionBar(binding.headerLogo, getActivity(), "browse", mainViewModel, apiRepository);
+        new InitializeActionBar(binding.headerLogo, getActivity(), "browse", mainViewModel, apiRepository, preferenceRepository);
         binding.homeSearch.setOnClickListener(view1 -> navController.navigate(R.id.globalSearchFragment));
     }
 

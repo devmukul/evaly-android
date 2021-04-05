@@ -11,8 +11,8 @@ import com.google.gson.JsonObject;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -23,6 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class NewsfeedPostViewModel extends ViewModel {
 
+    private PreferenceRepository preferenceRepository;
     private ApiRepository apiRepository;
     private LiveData<NetworkState> networkState;
     private LiveData<PagedList<NewsfeedPost>> postLiveData = new MutableLiveData<>();
@@ -32,8 +33,9 @@ public class NewsfeedPostViewModel extends ViewModel {
     private MutableLiveData<NewsfeedPost> editPostLiveData = new MutableLiveData<>();
 
     @Inject
-    public NewsfeedPostViewModel(ApiRepository apiRepository){
+    public NewsfeedPostViewModel(ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
     }
 
     public void setType(String type) {
@@ -41,7 +43,7 @@ public class NewsfeedPostViewModel extends ViewModel {
 
         MainThreadExecutor executor = new MainThreadExecutor();
 
-        feedDataFactory = new NewsfeedPostDataFactory(type, apiRepository);
+        feedDataFactory = new NewsfeedPostDataFactory(type, apiRepository, preferenceRepository);
 
         feedDataFactory.create();
 
@@ -72,7 +74,7 @@ public class NewsfeedPostViewModel extends ViewModel {
 
     public void sendLike(String slug, boolean like) {
 
-        apiRepository.postLike(CredentialManager.getToken(), slug, like, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postLike(preferenceRepository.getToken(), slug, like, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -104,7 +106,7 @@ public class NewsfeedPostViewModel extends ViewModel {
 
         String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + postId;
 
-        apiRepository.deleteItem(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.deleteItem(preferenceRepository.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

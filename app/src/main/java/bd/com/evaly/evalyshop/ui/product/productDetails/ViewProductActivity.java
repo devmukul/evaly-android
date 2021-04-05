@@ -46,10 +46,10 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.databinding.ActivityViewProductBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.Post;
@@ -89,6 +89,9 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
     @Inject
     RecommenderViewModel recommenderViewModel;
+
+    @Inject
+    PreferenceRepository preferenceRepository;
 
     long startTime = 0;
     ProductVariantsItem firstProductVariantsItem;
@@ -247,14 +250,14 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             popup.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
 //                    case R.id.action_share_contacts:
-//                        if (CredentialManager.getUserName().equals("") && CredentialManager.getPassword().equalsIgnoreCase("")) {
+//                        if (preferenceRepository.getUserName().equals("") && preferenceRepository.getPassword().equalsIgnoreCase("")) {
 //                            Toast.makeText(getApplicationContext(), "Please login to share products", Toast.LENGTH_LONG).show();
 //                        } else {
 //                            shareWithContacts();
 //                        }
 //                        break;
                     case R.id.action_share_newsfeed:
-                        if (CredentialManager.getUserName().equals("") && CredentialManager.getPassword().equalsIgnoreCase("")) {
+                        if (preferenceRepository.getUserName().equals("") && preferenceRepository.getPassword().equalsIgnoreCase("")) {
                             Toast.makeText(getApplicationContext(), "Please login to share products", Toast.LENGTH_LONG).show();
                         } else {
                             shareToNewsFeed(shareURL);

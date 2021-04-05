@@ -31,8 +31,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -45,6 +45,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     @Inject
     ApiRepository apiRepository;
     static GiftCardMyFragment instance;
@@ -153,7 +155,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
         EditText email = bottomSheetDialog.findViewById(R.id.email);
         TextView details = bottomSheetDialog.findViewById(R.id.details);
 
-        String primaryEmail = CredentialManager.getUserData().getPrimaryEmailNonNull();
+        String primaryEmail = preferenceRepository.getUserData().getPrimaryEmailNonNull();
         email.setText(primaryEmail);
 
         if (primaryEmail.equals(""))

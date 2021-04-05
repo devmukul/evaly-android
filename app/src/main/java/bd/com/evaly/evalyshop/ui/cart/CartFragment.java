@@ -23,9 +23,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.FragmentCartBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.cart.controller.CartController;
 import bd.com.evaly.evalyshop.ui.checkout.CheckoutFragment;
@@ -38,7 +38,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class CartFragment extends Fragment implements CartController.CartClickListener {
-
+    @Inject
+    PreferenceRepository preferenceRepository;
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
     private FragmentCartBinding binding;
@@ -120,7 +121,7 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
     }
 
     private void checkoutClicked() {
-        if (CredentialManager.getToken().equals("")) {
+        if (preferenceRepository.getToken().equals("")) {
             ToastUtils.show("You need to login first.");
             startActivity(new Intent(requireActivity(), SignInActivity.class));
         } else if (viewModel.liveList.getValue() == null || viewModel.liveList.getValue().size() == 0) {

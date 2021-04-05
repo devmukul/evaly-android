@@ -18,13 +18,12 @@ import com.orhanobut.logger.Logger;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
-import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import dagger.hilt.android.HiltAndroidApp;
 
 @HiltAndroidApp
@@ -34,12 +33,16 @@ public class AppController extends Application implements Application.ActivityLi
     ApiRepository apiRepository;
     @Inject
     PreferenceRepository preferenceRepository;
-    
+
     public static AppController mAppController;
     public static Context mContext;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
+    public PreferenceRepository getPreferenceRepository() {
+        return preferenceRepository;
     }
 
     public static Context getmContext() {
@@ -60,7 +63,7 @@ public class AppController extends Application implements Application.ActivityLi
             e.printStackTrace();
         }
 
-        MyPreference.with(context).clearAll();
+        preferenceRepository.clearAll();
         ProviderDatabase providerDatabase = ProviderDatabase.getInstance(getmContext());
         providerDatabase.userInfoDao().deleteAll();
 
@@ -82,7 +85,7 @@ public class AppController extends Application implements Application.ActivityLi
         } catch (Exception e) {
             e.printStackTrace();
         }
-        MyPreference.with(getmContext().getApplicationContext()).clearAll();
+        preferenceRepository.clearAll();
         ProviderDatabase providerDatabase = ProviderDatabase.getInstance(getmContext());
         providerDatabase.userInfoDao().deleteAll();
         ToastUtils.show("Logged out");
@@ -93,7 +96,7 @@ public class AppController extends Application implements Application.ActivityLi
         }, 300);
     }
 
-    private void logoutFromServer(){
+    private void logoutFromServer() {
         apiRepository.logout(new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {

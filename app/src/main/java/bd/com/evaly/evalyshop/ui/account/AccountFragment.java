@@ -13,10 +13,12 @@ import com.google.gson.Gson;
 
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentAccountBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity;
 import bd.com.evaly.evalyshop.ui.balance.BalanceFragment;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
@@ -27,6 +29,9 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class AccountFragment extends BaseFragment<FragmentAccountBinding, AccountViewModel> {
+
+    @Inject
+    PreferenceRepository preferenceRepository;
 
     public AccountFragment() {
         super(AccountViewModel.class, R.layout.fragment_account);
@@ -45,8 +50,8 @@ public class AccountFragment extends BaseFragment<FragmentAccountBinding, Accoun
     }
 
     private void updateViews() {
-        if (CredentialManager.getUserData() != null) {
-            binding.name.setText(CredentialManager.getUserData().getFullName());
+        if (preferenceRepository.getUserData() != null) {
+            binding.name.setText(preferenceRepository.getUserData().getFullName());
         }
     }
 
@@ -108,16 +113,16 @@ public class AccountFragment extends BaseFragment<FragmentAccountBinding, Accoun
             CharSequence[] items = new CharSequence[]{"English", "বাংলা"};
 
             int selectedPos = 0;
-            if (CredentialManager.getLanguage().equalsIgnoreCase("bn"))
+            if (preferenceRepository.getLanguage().equalsIgnoreCase("bn"))
                 selectedPos = 1;
 
             adb.setSingleChoiceItems(items, selectedPos, (d, n) -> {
                 Locale myLocale;
                 if (n == 1) {
-                    CredentialManager.setLanguage("BN");
+                    preferenceRepository.setLanguage("BN");
                     myLocale = new Locale("BN");
                 } else {
-                    CredentialManager.setLanguage("EN");
+                    preferenceRepository.setLanguage("EN");
                     myLocale = new Locale("EN");
                 }
                 Locale.setDefault(myLocale);
@@ -161,9 +166,9 @@ public class AccountFragment extends BaseFragment<FragmentAccountBinding, Accoun
         try {
             Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
             launchIntent.putExtra("to", "OPEN_CHAT_LIST");
-            launchIntent.putExtra("user", CredentialManager.getUserName());
-            launchIntent.putExtra("password", CredentialManager.getPassword());
-            launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+            launchIntent.putExtra("user", preferenceRepository.getUserName());
+            launchIntent.putExtra("password", preferenceRepository.getPassword());
+            launchIntent.putExtra("userInfo", new Gson().toJson(preferenceRepository.getUserData()));
             startActivity(launchIntent);
         } catch (android.content.ActivityNotFoundException e) {
             try {
@@ -184,11 +189,11 @@ public class AccountFragment extends BaseFragment<FragmentAccountBinding, Accoun
     @Override
     public void onResume() {
         super.onResume();
-        if (CredentialManager.getUserData() != null) {
-            if (CredentialManager.getUserData().getProfilePicUrl() != null) {
+        if (preferenceRepository.getUserData() != null) {
+            if (preferenceRepository.getUserData().getProfilePicUrl() != null) {
                 Glide.with(this)
                         .asBitmap()
-                        .load(CredentialManager.getUserData().getProfilePicUrl())
+                        .load(preferenceRepository.getUserData().getProfilePicUrl())
                         .skipMemoryCache(true)
                         .fitCenter()
                         .placeholder(R.drawable.user_image)
@@ -196,8 +201,8 @@ public class AccountFragment extends BaseFragment<FragmentAccountBinding, Accoun
                         .apply(new RequestOptions().override(200, 200))
                         .into(binding.picture);
             }
-            binding.name.setText(CredentialManager.getUserData().getFullName());
-            binding.phoneNumber.setText(CredentialManager.getUserName());
+            binding.name.setText(preferenceRepository.getUserData().getFullName());
+            binding.phoneNumber.setText(preferenceRepository.getUserName());
         }
     }
 

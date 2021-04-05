@@ -31,10 +31,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentEvalyExpressBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.express.adapter.EvalyExpressAdapter;
@@ -49,6 +51,8 @@ import static androidx.core.content.ContextCompat.getMainExecutor;
 @AndroidEntryPoint
 public class EvalyExpressFragment extends Fragment {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     private FragmentEvalyExpressBinding binding;
     private EvalyExpressAdapter adapter;
     private EvalyExpressViewModel viewModel;
@@ -185,7 +189,7 @@ public class EvalyExpressFragment extends Fragment {
         });
 
         binding.districtSelector.setOnClickListener(v -> showLocationSelector());
-        binding.districtName.setText(CredentialManager.getArea() == null ? "All District" : CredentialManager.getArea());
+        binding.districtName.setText(preferenceRepository.getArea() == null ? "All District" : preferenceRepository.getArea());
 
         binding.search.addTextChangedListener(textWatcher);
 
@@ -193,7 +197,7 @@ public class EvalyExpressFragment extends Fragment {
             if (hasFocus) written = true;
         });
 
-        if (CredentialManager.getArea() == null)
+        if (preferenceRepository.getArea() == null)
             checkPermissionAndLoad();
 
     }
@@ -222,8 +226,8 @@ public class EvalyExpressFragment extends Fragment {
                 if (location.getLatitude() == 0 || location.getLongitude() == 0)
                     return;
 
-                CredentialManager.saveLongitude(String.valueOf(location.getLongitude()));
-                CredentialManager.saveLatitude(String.valueOf(location.getLatitude()));
+                preferenceRepository.saveLongitude(String.valueOf(location.getLongitude()));
+                preferenceRepository.saveLatitude(String.valueOf(location.getLatitude()));
 
                 if (getContext() == null)
                     return;
@@ -231,7 +235,7 @@ public class EvalyExpressFragment extends Fragment {
 
                 if (checkNearest) {
                     getMainExecutor(getContext()).execute(() -> {
-                        CredentialManager.saveArea("Nearby");
+                        preferenceRepository.saveArea("Nearby");
                         binding.districtName.setText("Nearby");
                         viewModel.clear();
                         viewModel.loadShops();
@@ -247,7 +251,7 @@ public class EvalyExpressFragment extends Fragment {
                             for (String district : districts) {
                                 if (myAddress.contains(district)) {
                                     getMainExecutor(getContext()).execute(() -> {
-                                        CredentialManager.saveArea(district);
+                                        preferenceRepository.saveArea(district);
                                         binding.districtName.setText(district);
                                         viewModel.loadShops();
                                     });
@@ -280,7 +284,7 @@ public class EvalyExpressFragment extends Fragment {
                     checkMyLocation();
 
                 } else {
-                    CredentialManager.saveArea("All Districts");
+                    preferenceRepository.saveArea("All Districts");
                     Toast.makeText(getContext(), "Location permission denied, please select your district manually", Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -303,7 +307,7 @@ public class EvalyExpressFragment extends Fragment {
         ExpressDistrictAdapter adapter = new ExpressDistrictAdapter(districts, object -> {
             hideAndClear();
 
-            CredentialManager.saveArea(object);
+            preferenceRepository.saveArea(object);
             viewModel.loadShops();
             binding.districtName.setText(object);
             dialog.dismiss();

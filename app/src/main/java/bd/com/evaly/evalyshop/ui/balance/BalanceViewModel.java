@@ -8,8 +8,8 @@ import com.google.gson.JsonObject;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -20,10 +20,12 @@ public class BalanceViewModel extends ViewModel {
 
 
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
 
     @Inject
-    public BalanceViewModel(ApiRepository apiRepository){
+    public BalanceViewModel(ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
     }
 
     private MutableLiveData<BalanceResponse> data = new MutableLiveData<>();
@@ -35,7 +37,7 @@ public class BalanceViewModel extends ViewModel {
     public void updateBalance() {
 
 
-        apiRepository.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
+        apiRepository.getBalance(preferenceRepository.getToken(), preferenceRepository.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
                 data.setValue(response.getData());
@@ -55,7 +57,7 @@ public class BalanceViewModel extends ViewModel {
 
     public void claimCashback() {
 
-        apiRepository.claimCashback(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.claimCashback(preferenceRepository.getToken(), preferenceRepository.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 updateBalance();

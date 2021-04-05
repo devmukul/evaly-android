@@ -36,13 +36,19 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.preference.ReferPref;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.util.ViewDialog;
+import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.data.preference.ReferPref;
+import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class InviteEarn extends AppCompatActivity {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     private TextView referText, message, statistics;
     private ViewDialog dialog;
     private NestedScrollView scrollView;
@@ -69,7 +75,7 @@ public class InviteEarn extends AppCompatActivity {
         context = this;
 
         message.setText(referPref.getRefMessage());
-        referText.setText("EVALY-" + CredentialManager.getUserName());
+        referText.setText("EVALY-" + preferenceRepository.getUserName());
         statistics.setText(Html.fromHtml(referPref.getRefStatistics()));
 
         Button rate = findViewById(R.id.rate);
@@ -105,7 +111,7 @@ public class InviteEarn extends AppCompatActivity {
 
         // scrollView.setVisibility(View.GONE);
 
-        String url = "https://nsuer.club/evaly/referral/info.php?username=" + CredentialManager.getUserName();
+        String url = "https://nsuer.club/evaly/referral/info.php?username=" + preferenceRepository.getUserName();
         JSONObject parameters = new JSONObject();
 
 
@@ -253,7 +259,7 @@ public class InviteEarn extends AppCompatActivity {
             public Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
 
-                params.put("token", CredentialManager.getToken().trim());
+                params.put("token", preferenceRepository.getToken().trim());
 
                 return params;
             }

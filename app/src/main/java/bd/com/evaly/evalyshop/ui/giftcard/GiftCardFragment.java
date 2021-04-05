@@ -13,9 +13,9 @@ import com.google.android.material.tabs.TabLayout;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentGiftcardsBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -26,11 +26,11 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class GiftCardFragment extends Fragment {
 
     @Inject
+    PreferenceRepository preferenceRepository;
+    @Inject
     ApiRepository apiRepository;
     private FragmentGiftcardsBinding binding;
     private BaseViewPagerAdapter pager;
-
-
 
     @Nullable
     @Override
@@ -48,7 +48,7 @@ public class GiftCardFragment extends Fragment {
         pager = new BaseViewPagerAdapter(getParentFragmentManager());
         pager.addFragment(new GiftCardListFragment(), "STORE");
 
-        if (!CredentialManager.getToken().equals("")) {
+        if (!preferenceRepository.getToken().equals("")) {
             pager.addFragment(new GiftCardMyFragment(), "MY GIFTS");
             pager.addFragment(new GiftCardPurchasedFragment(), "PURCHASED");
         }
@@ -69,7 +69,7 @@ public class GiftCardFragment extends Fragment {
 
     public void updateBalance() {
 
-        apiRepository.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
+        apiRepository.getBalance(preferenceRepository.getToken(), preferenceRepository.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
                 binding.balance.setText(String.format("Gift Card: ৳ %s", response.getData().getGiftCardBalance()));

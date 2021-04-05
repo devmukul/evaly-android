@@ -7,8 +7,8 @@ import java.util.Calendar;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -18,11 +18,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class AccountViewModel extends ViewModel {
 
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
     MutableLiveData<Integer> messageCount = new MutableLiveData<>();
 
     @Inject
-    public AccountViewModel(ApiRepository apiRepository){
+    public AccountViewModel(ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
         getMessageCount();
         updateUserDetails();
     }
@@ -30,8 +32,8 @@ public class AccountViewModel extends ViewModel {
 
     private void getMessageCount() {
 
-        if (Calendar.getInstance().getTimeInMillis() - CredentialManager.getMessageCounterLastUpdated() < 600000) {
-            messageCount.setValue(CredentialManager.getMessageCount());
+        if (Calendar.getInstance().getTimeInMillis() - preferenceRepository.getMessageCounterLastUpdated() < 600000) {
+            messageCount.setValue(preferenceRepository.getMessageCount());
             return;
         }
 
@@ -39,8 +41,8 @@ public class AccountViewModel extends ViewModel {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 messageCount.setValue(response.getCount());
-                CredentialManager.setMessageCounterLastUpdated();
-                CredentialManager.setMessageCount(response.getCount());
+                preferenceRepository.setMessageCounterLastUpdated();
+                preferenceRepository.setMessageCount(response.getCount());
             }
 
             @Override
@@ -58,11 +60,11 @@ public class AccountViewModel extends ViewModel {
 
     private void updateUserDetails() {
 
-        apiRepository.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+        apiRepository.getUserProfile(preferenceRepository.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
                 if (response.getData() != null)
-                    CredentialManager.saveUserData(response.getData());
+                    preferenceRepository.saveUserData(response.getData());
             }
 
             @Override

@@ -23,8 +23,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
@@ -37,6 +37,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class FollowedShopActivity extends AppCompatActivity {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     private TabsAdapter adapter;
     private ArrayList<TabsItem> itemList;
     private ProgressBar progressBar;
@@ -176,7 +178,7 @@ public class FollowedShopActivity extends AppCompatActivity {
         isLoading = true;
         progressBar.setVisibility(View.VISIBLE);
 
-        apiRepository.getFollowedShop(CredentialManager.getToken(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getFollowedShop(preferenceRepository.getToken(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

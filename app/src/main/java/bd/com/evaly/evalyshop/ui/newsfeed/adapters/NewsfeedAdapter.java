@@ -30,7 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
@@ -46,12 +46,14 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
     Context context;
     NewsfeedFragment fragment;
     NewsFeedShareListener listener;
+    PreferenceRepository preferenceRepository;
 
-    public NewsfeedAdapter(ArrayList<NewsfeedItem> itemsList, Context context, NewsfeedFragment fragment, NewsFeedShareListener listener) {
+    public NewsfeedAdapter(ArrayList<NewsfeedItem> itemsList, Context context, NewsfeedFragment fragment, NewsFeedShareListener listener, PreferenceRepository preferenceRepository) {
         this.itemsList = itemsList;
         this.context = context;
         this.fragment = fragment;
         this.listener = listener;
+        this.preferenceRepository = preferenceRepository;
     }
 
     @NonNull
@@ -69,7 +71,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         if (itemsList.get(i).getAuthorFullName().trim().equals(""))
             myViewHolder.userNameView.setText("User");
 
-        String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("gmt","yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", itemsList.get(i).getCreatedAt()));
+        String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("gmt", "yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", itemsList.get(i).getCreatedAt()));
 
         if (itemsList.get(i).getIsAdmin()) {
 
@@ -178,7 +180,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
         myViewHolder.likeHolder.setOnClickListener(v -> {
 
-            if (CredentialManager.getToken().equals("")) {
+            if (preferenceRepository.getToken().equals("")) {
                 Toast.makeText(context, R.string.you_need_to_login_first, Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -212,7 +214,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
             PopupMenu popup = new PopupMenu(context, myViewHolder.menuIcon);
 
-            if (CredentialManager.getUserData().getGroups().toString().contains("EvalyEmployee"))
+            if (preferenceRepository.getUserData().getGroups().toString().contains("EvalyEmployee"))
                 popup.getMenuInflater().inflate(R.menu.newsfeed_menu_super, popup.getMenu());
             else
                 popup.getMenuInflater().inflate(R.menu.newsfeed_menu_user, popup.getMenu());
@@ -227,7 +229,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                         context.startActivity(Intent.createChooser(in, "Share Post"));
                         break;
                     case R.id.action_delete:
-                        if (!CredentialManager.getUserData().getGroups().toString().contains("EvalyEmployee"))
+                        if (!preferenceRepository.getUserData().getGroups().toString().contains("EvalyEmployee"))
                             break;
                         new AlertDialog.Builder(context)
                                 .setMessage("Are you sure you want to delete?")

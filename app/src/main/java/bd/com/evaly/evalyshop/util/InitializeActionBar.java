@@ -15,10 +15,10 @@ import java.util.Calendar;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.rest.ApiRepository;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 
@@ -28,9 +28,11 @@ public class InitializeActionBar {
     private TextView ui_hot;
     private Activity context;
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
 
-    public InitializeActionBar(LinearLayout root, Activity context, String type, MainViewModel mainViewModel, ApiRepository apiRepository) {
+    public InitializeActionBar(LinearLayout root, Activity context, String type, MainViewModel mainViewModel, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
         this.context = context;
         // root.bringToFront();
         ImageView menuBtn = root.findViewById(R.id.menuBtn);
@@ -50,7 +52,7 @@ public class InitializeActionBar {
         });
 
         notification.setOnClickListener(v -> {
-            if (CredentialManager.getToken().equals("")) {
+            if (preferenceRepository.getToken().equals("")) {
                 context.startActivity(new Intent(context, SignInActivity.class));
             } else {
                 openEconnect();
@@ -60,14 +62,14 @@ public class InitializeActionBar {
 
         ui_hot = root.findViewById(R.id.hotlist_hot);
 
-        if (!CredentialManager.getToken().equals(""))
+        if (!preferenceRepository.getToken().equals(""))
             getNotificationCount();
     }
 
     public void getNotificationCount() {
 
-        if (Calendar.getInstance().getTimeInMillis() - CredentialManager.getMessageCounterLastUpdated() < 600000) {
-            updateHotCount(CredentialManager.getMessageCount());
+        if (Calendar.getInstance().getTimeInMillis() - preferenceRepository.getMessageCounterLastUpdated() < 600000) {
+            updateHotCount(preferenceRepository.getMessageCount());
             return;
         }
 
@@ -75,8 +77,8 @@ public class InitializeActionBar {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 updateHotCount(response.getCount());
-                CredentialManager.setMessageCounterLastUpdated();
-                CredentialManager.setMessageCount(response.getCount());
+                preferenceRepository.setMessageCounterLastUpdated();
+                preferenceRepository.setMessageCount(response.getCount());
             }
 
             @Override
@@ -115,9 +117,9 @@ public class InitializeActionBar {
             Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
             if (launchIntent != null) {
                 launchIntent.putExtra("to", "OPEN_CHAT_LIST");
-                launchIntent.putExtra("user", CredentialManager.getUserName());
-                launchIntent.putExtra("password", CredentialManager.getPassword());
-                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+                launchIntent.putExtra("user", preferenceRepository.getUserName());
+                launchIntent.putExtra("password", preferenceRepository.getPassword());
+                launchIntent.putExtra("userInfo", new Gson().toJson(preferenceRepository.getUserData()));
                 if (context != null && !context.isFinishing())
                     context.startActivity(launchIntent);
             }

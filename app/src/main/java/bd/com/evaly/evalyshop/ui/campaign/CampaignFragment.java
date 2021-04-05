@@ -29,10 +29,12 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
@@ -50,6 +52,8 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 @AndroidEntryPoint
 public class CampaignFragment extends BaseFragment<FragmentCampaignBinding, CampaignViewModel> implements CampaignNavigator {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     int coverHeight;
     private CampaignBannerController sliderController;
     private CampaignController productController;
@@ -372,7 +376,7 @@ public class CampaignFragment extends BaseFragment<FragmentCampaignBinding, Camp
             if (Build.VERSION.SDK_INT >= 23) {
                 int flags = getActivity().getWindow().getDecorView().getSystemUiVisibility();
                 flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                if (CredentialManager.isDarkMode())
+                if (preferenceRepository.isDarkMode())
                     getActivity().getWindow().getDecorView().setSystemUiVisibility(0);
                 else
                     getActivity().getWindow().getDecorView().setSystemUiVisibility(flags);

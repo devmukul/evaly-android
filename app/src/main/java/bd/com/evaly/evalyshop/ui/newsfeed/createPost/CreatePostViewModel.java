@@ -10,8 +10,8 @@ import com.google.gson.JsonObject;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.ResponseViewModel;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
@@ -24,6 +24,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class CreatePostViewModel extends ViewModel {
 
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
     private MutableLiveData<NewsfeedPost> postMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<ResponseViewModel> responseListenerAuthMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<ImageDataModel> imageUploadSuccess = new MutableLiveData<>();
@@ -31,8 +32,9 @@ public class CreatePostViewModel extends ViewModel {
 
 
     @Inject
-    public CreatePostViewModel(ApiRepository apiRepository) {
+    public CreatePostViewModel(ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
     }
 
     public MutableLiveData<ImageDataModel> getImageUploadSuccess() {
@@ -57,7 +59,7 @@ public class CreatePostViewModel extends ViewModel {
 
     public void createPost(CreatePostModel body, String slug) {
 
-        apiRepository.post(CredentialManager.getToken(), body, slug, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.post(preferenceRepository.getToken(), body, slug, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

@@ -17,10 +17,12 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.NewsfeedFragmentBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedPendingFragment;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedTabPager;
@@ -31,6 +33,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class NewsfeedFragment extends Fragment {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     private NewsfeedViewModel viewModel;
     private MainViewModel mainViewModel;
     private NewsfeedTabPager pager;
@@ -71,7 +75,7 @@ public class NewsfeedFragment extends Fragment {
 
         ui_hot.setVisibility(View.INVISIBLE);
         menu_hotlist.setOnClickListener(viw -> {
-            if (CredentialManager.getToken().equals(""))
+            if (preferenceRepository.getToken().equals(""))
                 Toast.makeText(getContext(), "You need to login first.", Toast.LENGTH_SHORT).show();
             else
                 navController.navigate(R.id.newsfeedNotificationFragment);
@@ -118,20 +122,20 @@ public class NewsfeedFragment extends Fragment {
         NewsfeedPostFragment ceoFragment = NewsfeedPostFragment.newInstance("ceo");
         pager.addFragment(ceoFragment, "CEO");
 
-        if (!CredentialManager.getToken().equals("")) {
+        if (!preferenceRepository.getToken().equals("")) {
             NewsfeedPostFragment myFragment = NewsfeedPostFragment.newInstance("my");
             pager.addFragment(myFragment, "MY POSTS");
         }
 
-        if (CredentialManager.getUserData() != null &&
-                (CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))) {
+        if (preferenceRepository.getUserData() != null &&
+                (preferenceRepository.getUserData().getGroups().contains("EvalyEmployee"))) {
             NewsfeedPendingFragment pendingFragment = NewsfeedPendingFragment.newInstance("pending");
             pager.addFragment(pendingFragment, getString(R.string.pending));
         }
 
         pager.notifyDataSetChanged();
 
-        if (CredentialManager.getToken().equals(""))
+        if (preferenceRepository.getToken().equals(""))
             binding.createPost.setVisibility(View.GONE);
 
         binding.createPost.setOnClickListener(v -> {
@@ -144,7 +148,7 @@ public class NewsfeedFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (viewModel != null && !CredentialManager.getToken().equals(""))
+        if (viewModel != null && !preferenceRepository.getToken().equals(""))
             viewModel.updateNotificationCount();
 
     }

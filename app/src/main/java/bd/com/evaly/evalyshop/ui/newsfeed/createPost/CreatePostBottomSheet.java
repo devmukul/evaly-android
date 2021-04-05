@@ -33,9 +33,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetCreatePostBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.Post;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
@@ -49,6 +51,8 @@ import static android.app.Activity.RESULT_OK;
 @AndroidEntryPoint
 public class CreatePostBottomSheet extends BottomSheetDialogFragment {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     private CreatePostViewModel viewModel;
     private BottomSheetCreatePostBinding binding;
     private String selectedImage = "";
@@ -128,8 +132,8 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
 
         });
 
-        if (CredentialManager.getUserData().getGroups() != null) {
-            if (CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
+        if (preferenceRepository.getUserData().getGroups() != null) {
+            if (preferenceRepository.getUserData().getGroups().contains("EvalyEmployee"))
                 binding.spinnerHolder.setVisibility(View.VISIBLE);
             else
                 binding.spinnerHolder.setVisibility(View.GONE);
@@ -151,7 +155,7 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
 
         viewModel.getResponseListenerAuthMutableLiveData().observe(getViewLifecycleOwner(), responseViewModel -> {
             if (responseViewModel.getOnSuccess().equals("true")) {
-                if (!CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
+                if (!preferenceRepository.getUserData().getGroups().contains("EvalyEmployee"))
                     Toast.makeText(context, "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
                 if (mainViewModel != null)
                     mainViewModel.setUpdateNewsfeed(true);
@@ -208,7 +212,7 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
         if (!(selectedImage.equals("") || selectedImage.equals("null")))
             post.setAttachment(selectedImage);
 
-        if (CredentialManager.getUserData().getGroups().contains("Employee")) {
+        if (preferenceRepository.getUserData().getGroups().contains("Employee")) {
 
             String postType;
 
@@ -239,7 +243,7 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
 
         viewModel.getResponseListenerAuthMutableLiveData().observe(getViewLifecycleOwner(), responseViewModel -> {
             if (responseViewModel.getOnSuccess().equals("true")) {
-                if (!CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
+                if (!preferenceRepository.getUserData().getGroups().contains("EvalyEmployee"))
                     Toast.makeText(context, "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
                 dismiss();
             }

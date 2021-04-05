@@ -9,8 +9,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -27,11 +27,13 @@ public class OrderListViewModel extends ViewModel {
     private int page = 1;
     private String statusType;
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
 
     @Inject
-    public OrderListViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository) {
+    public OrderListViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.savedStateHandle = savedStateHandle;
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
         if (savedStateHandle.contains("type") && savedStateHandle.get("type") != null)
             statusType = savedStateHandle.get("type");
         else
@@ -41,7 +43,7 @@ public class OrderListViewModel extends ViewModel {
     }
 
     public void getOrderData() {
-        apiRepository.getOrderList(CredentialManager.getToken(), page, statusType, new ResponseListenerAuth<CommonResultResponse<List<OrderListItem>>, String>() {
+        apiRepository.getOrderList(preferenceRepository.getToken(), page, statusType, new ResponseListenerAuth<CommonResultResponse<List<OrderListItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<OrderListItem>> response, int statusCode) {
                 arrayList.addAll(response.getData());

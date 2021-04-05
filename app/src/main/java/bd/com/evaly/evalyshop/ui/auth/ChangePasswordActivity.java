@@ -193,7 +193,7 @@ public class ChangePasswordActivity extends BaseActivity {
                         String token = response.get("access_token").getAsString();
                         preferenceRepository.saveToken(token);
                         preferenceRepository.saveRefreshToken(response.get("refresh_token").getAsString());
-                        Balance.updateUserInfo(ChangePasswordActivity.this, true, apiRepository);
+                        Balance.updateUserInfo(ChangePasswordActivity.this, true, apiRepository, preferenceRepository);
                         ToastUtils.show("Successfully signed in.");
                         break;
                     default:

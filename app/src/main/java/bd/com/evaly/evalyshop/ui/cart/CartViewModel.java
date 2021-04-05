@@ -10,10 +10,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.cart.Cart;
 import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
@@ -29,15 +29,17 @@ import io.reactivex.schedulers.Schedulers;
 @HiltViewModel
 public final class CartViewModel extends ViewModel {
 
+    private PreferenceRepository preferenceRepository;
     protected LiveData<List<CartEntity>> liveList;
     private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
     private ApiRepository apiRepository;
 
     @Inject
-    public CartViewModel(CartDao cartDao, ApiRepository apiRepository) {
+    public CartViewModel(CartDao cartDao, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.cartDao = cartDao;
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
         getCartList();
         liveList = cartDao.getAllLive();
         compositeDisposable = new CompositeDisposable();
@@ -62,7 +64,7 @@ public final class CartViewModel extends ViewModel {
     }
 
     public void getCartList() {
-        if (CredentialManager.getToken().equals(""))
+        if (preferenceRepository.getToken().equals(""))
             return;
 
         apiRepository.getCartList(new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {

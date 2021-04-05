@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ShopModelHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.ShopModelTitleCategoryBinding;
 import bd.com.evaly.evalyshop.databinding.ShopModelTitleProductBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
@@ -188,7 +188,7 @@ public class ShopController extends EpoxyController {
                     activity.startActivity(intent);
                 })
                 .followOnClick((model, parentView, clickedView, position) -> {
-                    if (CredentialManager.getToken().equals("")) {
+                    if (AppController.getInstance().getPreferenceRepository().getToken().equals("")) {
                         ToastUtils.show("You need to login first to follow a shop");
                         return;
                     }

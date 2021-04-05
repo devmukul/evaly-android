@@ -9,8 +9,8 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -19,11 +19,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class PaymentBottomSheetViewModel extends ViewModel {
 
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
     private PaymentBottomSheetNavigator navigator;
 
     @Inject
-    public PaymentBottomSheetViewModel(ApiRepository apiRepository) {
+    public PaymentBottomSheetViewModel(ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
     }
 
     public void setNavigator(PaymentBottomSheetNavigator navigator) {
@@ -37,7 +39,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         model.setInvoice_no(invoice);
         model.setAmount(Double.parseDouble(amount));
 
-        apiRepository.makePartialPayment(CredentialManager.getToken(), model, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.makePartialPayment(preferenceRepository.getToken(), model, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -69,7 +71,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
 
         HashMap<String, String> data = new HashMap<>();
         data.put("invoice_no", invoice);
-        apiRepository.makeCashOnDelivery(CredentialManager.getToken(), data, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.makeCashOnDelivery(preferenceRepository.getToken(), data, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if (response != null) {
@@ -97,7 +99,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
     }
 
     public void payViaSEBL(String invoice, String amount) {
-        navigator.payViaCard(BuildConfig.WEB_URL + "sebl/payment?amount=" + amount + "&invoice=" + invoice + "&token=" + CredentialManager.getToken().replace("Bearer ", "") + "&context_reference=order_payment");
+        navigator.payViaCard(BuildConfig.WEB_URL + "sebl/payment?amount=" + amount + "&invoice=" + invoice + "&token=" + preferenceRepository.getToken().replace("Bearer ", "") + "&context_reference=order_payment");
 //        navigator.payViaCard("http://192.168.68.126:3200/sebl/payment?amount=10&invoice=EVL707799707&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IjAxOTc3NTM3OTg4IiwiZ3JvdXBzIjpbIlNob3BPd25lciIsIlJlc3RhdXJhbnRPd25lciJdLCJmaXJzdF9uYW1lIjoiSXNoIiwibGFzdF9uYW1lIjoiQWsiLCJpc19zdGFmZiI6ZmFsc2UsImlzX2FjdGl2ZSI6dHJ1ZSwiaXNfc3VwZXJ1c2VyIjpmYWxzZSwidmVyaWZpZWQiOnRydWUsInVzZXJfdHlwZSI6ImN1c3RvbWVyIiwidXNlcl9zdGF0dXMiOiJhY3RpdmUiLCJlbWFpbCI6ImlzaGFrLnN3ZUBnbWFpbC5jb20iLCJjb250YWN0IjoiMDE1MjEyMDAwNzkiLCJkYXRlX2pvaW5lZCI6IjIwMTktMDktMDFUMDY6MjE6MDEuNzU4WiIsInRva2VuX3R5cGUiOiJhY2Nlc3MiLCJpc19lYXV0aCI6dHJ1ZSwiZXhwIjoxNjA4NDY4NzU4fQ._JepnYRbDrkCrFX_vkFnkBFXD7SLSwiDs9XQAWw7dlA&context_reference=order_payment");
     }
 
@@ -108,7 +110,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         payload.put("context", "order_payment");
         payload.put("context_reference", invoice);
 
-        apiRepository.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaCard(preferenceRepository.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("payment_gateway_url")) && !response.get("payment_gateway_url").isJsonNull()) {
@@ -140,7 +142,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         payload.put("context", "order_payment");
         payload.put("context_reference", invoice);
 
-        apiRepository.payViaCityBank(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaCityBank(preferenceRepository.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("url")) && !response.get("url").isJsonNull()) {
@@ -171,7 +173,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         payload.put("context_reference", invoice);
         payload.put("source", "MOBILE_APP");
 
-        apiRepository.payViaNagad(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaNagad(preferenceRepository.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("callBackUrl")) && !response.get("callBackUrl").isJsonNull()) {

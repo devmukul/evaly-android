@@ -161,4 +161,8 @@ public class PreferenceRepository {
         preferenceEditor.putBoolean("dark_mode", is).commit();
     }
 
+    public void clearAll() {
+        preferenceEditor.clear().commit();
+    }
+
 }

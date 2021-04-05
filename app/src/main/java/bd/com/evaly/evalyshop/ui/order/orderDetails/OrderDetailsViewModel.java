@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
@@ -35,8 +34,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class OrderDetailsViewModel extends ViewModel {
 
-    private ApiRepository apiRepository;
     private PreferenceRepository preferenceRepository;
+    private ApiRepository apiRepository;
     protected MutableLiveData<DeliveryHeroResponse> deliveryHeroLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse> confirmDeliveryLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse> cancelOrderLiveData = new MutableLiveData<>();
@@ -58,7 +57,7 @@ public class OrderDetailsViewModel extends ViewModel {
         getOrderDetails();
         getDeliveryHero();
         getOrderHistory();
-        if (CredentialManager.getBalance() == 0)
+        if (preferenceRepository.getBalance() == 0)
             updateBalance();
     }
 
@@ -70,7 +69,7 @@ public class OrderDetailsViewModel extends ViewModel {
 
     public void updateBalance() {
 
-        apiRepository.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
+        apiRepository.getBalance(preferenceRepository.getToken(), preferenceRepository.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
                 balanceLiveData.setValue(response.getData());
@@ -114,7 +113,7 @@ public class OrderDetailsViewModel extends ViewModel {
     }
 
     public void cancelOrder(String reason) {
-        apiRepository.cancelOrder(CredentialManager.getToken(), invoiceNo, reason, new ResponseListenerAuth<CommonDataResponse, String>() {
+        apiRepository.cancelOrder(preferenceRepository.getToken(), invoiceNo, reason, new ResponseListenerAuth<CommonDataResponse, String>() {
             @Override
             public void onDataFetched(CommonDataResponse response, int statusCode) {
                 refresh();
@@ -135,7 +134,7 @@ public class OrderDetailsViewModel extends ViewModel {
 
     public void getOrderHistory() {
 
-        apiRepository.getOrderHistories(CredentialManager.getToken(), invoiceNo, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getOrderHistories(preferenceRepository.getToken(), invoiceNo, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 List<OrderStatus> orderStatuses = new ArrayList<>();
@@ -166,7 +165,7 @@ public class OrderDetailsViewModel extends ViewModel {
 
     public void getOrderDetails() {
 
-        apiRepository.getOrderDetails(CredentialManager.getToken(), invoiceNo, new ResponseListenerAuth<OrderDetailsModel, String>() {
+        apiRepository.getOrderDetails(preferenceRepository.getToken(), invoiceNo, new ResponseListenerAuth<OrderDetailsModel, String>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataFetched(OrderDetailsModel response, int statusCode) {
@@ -186,7 +185,7 @@ public class OrderDetailsViewModel extends ViewModel {
     }
 
     public void confirmDelivery() {
-        apiRepository.confirmDelivery(CredentialManager.getToken(), invoiceNo, new ResponseListenerAuth<CommonDataResponse, String>() {
+        apiRepository.confirmDelivery(preferenceRepository.getToken(), invoiceNo, new ResponseListenerAuth<CommonDataResponse, String>() {
             @Override
             public void onDataFetched(CommonDataResponse response, int statusCode) {
                 confirmDeliveryLiveData.setValue(response);

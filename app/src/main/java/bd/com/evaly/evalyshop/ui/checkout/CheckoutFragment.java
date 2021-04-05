@@ -49,11 +49,11 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.BottomSheetCheckoutContactBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentCheckoutBinding;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.AttachmentCheckResponse;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
@@ -82,6 +82,8 @@ public class CheckoutFragment extends DialogFragment {
     FirebaseRemoteConfig mFirebaseRemoteConfig;
     @Inject
     SharedObservers sharedObservers;
+    @Inject
+    PreferenceRepository preferenceRepository;
     private FragmentCheckoutBinding binding;
     private CheckoutViewModel viewModel;
     private CartViewModel cartViewModel;
@@ -138,7 +140,7 @@ public class CheckoutFragment extends DialogFragment {
     }
 
     private void updateInfo() {
-        UserModel userModel = CredentialManager.getUserData();
+        UserModel userModel = preferenceRepository.getUserData();
         if (userModel != null) {
             binding.userName.setText(userModel.getFullName());
             binding.contact.setText(userModel.getUsername());
@@ -167,7 +169,7 @@ public class CheckoutFragment extends DialogFragment {
         });
 
         binding.btnPlaceOrder.setOnClickListener(view -> {
-            if (CredentialManager.getToken().equals("")) {
+            if (preferenceRepository.getToken().equals("")) {
                 startActivity(new Intent(getContext(), SignInActivity.class));
                 return;
             }
@@ -264,8 +266,8 @@ public class CheckoutFragment extends DialogFragment {
                 if (location.getLatitude() == 0 || location.getLongitude() == 0)
                     return;
 
-                CredentialManager.saveLongitude(String.valueOf(location.getLongitude()));
-                CredentialManager.saveLatitude(String.valueOf(location.getLatitude()));
+                preferenceRepository.saveLongitude(String.valueOf(location.getLongitude()));
+                preferenceRepository.saveLatitude(String.valueOf(location.getLatitude()));
             }
         });
     }
@@ -469,16 +471,16 @@ public class CheckoutFragment extends DialogFragment {
         PlaceOrderItem orderObject = new PlaceOrderItem();
 
         orderObject.setContactNumber(binding.contact.getText().toString());
-        if (!binding.userName.getText().toString().equals(CredentialManager.getUserData().getFullName()))
+        if (!binding.userName.getText().toString().equals(preferenceRepository.getUserData().getFullName()))
             orderObject.setCustomerAddress(addressModel.getFullAddressWithName());
         else
             orderObject.setCustomerAddress(addressModel.getFullAddress());
 
         orderObject.setOrderOrigin("app");
 
-        if (CredentialManager.getLatitude() != null && CredentialManager.getLongitude() != null) {
-            orderObject.setDeliveryLatitude(CredentialManager.getLatitude());
-            orderObject.setDeliveryLongitude(CredentialManager.getLongitude());
+        if (preferenceRepository.getLatitude() != null && preferenceRepository.getLongitude() != null) {
+            orderObject.setDeliveryLatitude(preferenceRepository.getLatitude());
+            orderObject.setDeliveryLongitude(preferenceRepository.getLongitude());
         }
 
         orderObject.setPaymentMethod("evaly_pay");

@@ -26,15 +26,22 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.ReplyBottomSheetFragmentBinding;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class ReplyBottomSheet extends BottomSheetDialogFragment {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     private ReplyViewModel viewModel;
     private ReplyBottomSheetFragmentBinding binding;
     private CommentItem commentModel;
@@ -108,7 +115,7 @@ public class ReplyBottomSheet extends BottomSheetDialogFragment {
             }
         });
 
-        adapter = new ReplyAdapter(itemList, getContext(), viewModel);
+        adapter = new ReplyAdapter(itemList, getContext(), viewModel, preferenceRepository);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         binding.recyclerView.setLayoutManager(layoutManager);

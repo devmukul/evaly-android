@@ -6,8 +6,8 @@ import androidx.paging.PageKeyedDataSource;
 
 import java.util.List;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
@@ -20,8 +20,9 @@ public class NewsfeedPostDataSource extends PageKeyedDataSource<Integer, Newsfee
     private MutableLiveData<NetworkState> networkState = new MutableLiveData();
     private String type = "public";
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
 
-    public NewsfeedPostDataSource(String type, ApiRepository apiRepository) {
+    public NewsfeedPostDataSource(String type, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
         this.type = type;
     }
@@ -50,7 +51,7 @@ public class NewsfeedPostDataSource extends PageKeyedDataSource<Integer, Newsfee
         else
             url = UrlUtils.BASE_URL_NEWSFEED + "posts?type=" + type + "&page=" + currentPage;
 
-        apiRepository.getNewsfeedPostsList(CredentialManager.getToken(), url, new ResponseListenerAuth<CommonDataResponse<List<NewsfeedPost>>, String>() {
+        apiRepository.getNewsfeedPostsList(preferenceRepository.getToken(), url, new ResponseListenerAuth<CommonDataResponse<List<NewsfeedPost>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<NewsfeedPost>> response, int statusCode) {
                 callback.onResult(response.getPosts(), null, 2);
@@ -98,7 +99,7 @@ public class NewsfeedPostDataSource extends PageKeyedDataSource<Integer, Newsfee
         else
             url = UrlUtils.BASE_URL_NEWSFEED + "posts?type=" + type + "&page=" + currentPage;
 
-        apiRepository.getNewsfeedPostsList(CredentialManager.getToken(), url, new ResponseListenerAuth<CommonDataResponse<List<NewsfeedPost>>, String>() {
+        apiRepository.getNewsfeedPostsList(preferenceRepository.getToken(), url, new ResponseListenerAuth<CommonDataResponse<List<NewsfeedPost>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<NewsfeedPost>> response, int statusCode) {
 

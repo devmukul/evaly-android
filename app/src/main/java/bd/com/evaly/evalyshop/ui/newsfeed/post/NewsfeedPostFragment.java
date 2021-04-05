@@ -17,6 +17,9 @@ import com.ethanhua.skeleton.SkeletonScreen;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.NewsfeedTabsFragmentBinding;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
@@ -27,6 +30,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     private NewsfeedPostViewModel viewModel;
     private MainViewModel mainViewModel;
     private String type;
@@ -87,7 +92,7 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
             in.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
             in.putExtra(Intent.EXTRA_TEXT, "https://evaly.com.bd/feeds/" + object.getSlug());
             startActivity(Intent.createChooser(in, "Share Post"));
-        });
+        }, preferenceRepository);
 
         viewModel.getPostLiveData().observe(getViewLifecycleOwner(), newsfeedPosts -> {
             adapter.submitList(newsfeedPosts);

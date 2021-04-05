@@ -37,13 +37,13 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoDao;
 import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoEntity;
 import bd.com.evaly.evalyshop.databinding.ActivityEditProfileBinding;
 import bd.com.evaly.evalyshop.databinding.DialogContinueAsBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.user.UserModel;
@@ -66,6 +66,8 @@ public class EditProfileActivity extends BaseActivity {
 
     @Inject
     ApiRepository apiRepository;
+    @Inject
+    PreferenceRepository preferenceRepository;
     private Context context;
     private ActivityEditProfileBinding binding;
     private EditProfileViewModel viewModel;
@@ -130,7 +132,7 @@ public class EditProfileActivity extends BaseActivity {
 
         try {
             if (getIntent() != null && getIntent().hasExtra("user")) {
-                if (getIntent().getStringExtra("user").equalsIgnoreCase(CredentialManager.getUserName())) {
+                if (getIntent().getStringExtra("user").equalsIgnoreCase(preferenceRepository.getUserName())) {
                     fromOtherApp = true;
                 } else {
                     if (getIntent() != null && getIntent().getStringExtra("userInfo") != null) {
@@ -146,7 +148,7 @@ public class EditProfileActivity extends BaseActivity {
                                     .placeholder(R.drawable.user_image)
                                     .into(dialogBinding.picture);
 
-                        if (CredentialManager.getToken().equals(""))
+                        if (preferenceRepository.getToken().equals(""))
                             dialogBinding.desciption.setText("You are not logged to an account. Click on the button to login automatically.");
                         else
                             dialogBinding.desciption.setText("You are logged to a different account. Click on the button to switch account automatically.");
@@ -195,10 +197,10 @@ public class EditProfileActivity extends BaseActivity {
                     case 202:
                         response = response.get("data").getAsJsonObject();
                         String token = response.get("access_token").getAsString();
-                        CredentialManager.saveToken(token);
-                        CredentialManager.saveRefreshToken(response.get("refresh_token").getAsString());
-                        CredentialManager.saveUserName(getIntent().getStringExtra("user"));
-                        CredentialManager.savePassword(getIntent().getStringExtra("password"));
+                        preferenceRepository.saveToken(token);
+                        preferenceRepository.saveRefreshToken(response.get("refresh_token").getAsString());
+                        preferenceRepository.saveUserName(getIntent().getStringExtra("user"));
+                        preferenceRepository.savePassword(getIntent().getStringExtra("password"));
                         updateUserInfo();
                         break;
                     default:
@@ -222,22 +224,22 @@ public class EditProfileActivity extends BaseActivity {
 
     public void updateUserInfo() {
         dialog.showDialog();
-        apiRepository.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+        apiRepository.getUserProfile(preferenceRepository.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
                 dialog.hideDialog();
-                CredentialManager.saveUserData(response.getData());
+                preferenceRepository.saveUserData(response.getData());
                 ProviderDatabase providerDatabase = ProviderDatabase.getInstance(context);
                 UserInfoDao userInfoDao = providerDatabase.userInfoDao();
 
                 Executors.newSingleThreadExecutor().execute(() -> {
                     UserInfoEntity entity = new UserInfoEntity();
-                    entity.setToken(CredentialManager.getToken());
-                    entity.setRefreshToken(CredentialManager.getRefreshToken());
+                    entity.setToken(preferenceRepository.getToken());
+                    entity.setRefreshToken(preferenceRepository.getRefreshToken());
                     entity.setName(response.getData().getFullName());
                     entity.setImage(response.getData().getImageSm());
-                    entity.setUsername(CredentialManager.getUserName());
-                    entity.setPassword(CredentialManager.getPassword());
+                    entity.setUsername(preferenceRepository.getUserName());
+                    entity.setPassword(preferenceRepository.getPassword());
                     userInfoDao.insert(entity);
                 });
                 finish();
@@ -262,17 +264,17 @@ public class EditProfileActivity extends BaseActivity {
 
 
     private void updateProfileData() {
-        UserModel userModel = CredentialManager.getUserData();
-        if (CredentialManager.getUserData() == null && (getIntent() != null && getIntent().hasExtra("user"))) {
+        UserModel userModel = preferenceRepository.getUserData();
+        if (preferenceRepository.getUserData() == null && (getIntent() != null && getIntent().hasExtra("user"))) {
             return;
-        } else if (CredentialManager.getUserData() == null) {
+        } else if (preferenceRepository.getUserData() == null) {
             Toast.makeText(this, "Profile information not found, please logout and login again.", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
         setProfilePic();
-        String fullName = CredentialManager.getUserData().getFullName();
+        String fullName = preferenceRepository.getUserData().getFullName();
         binding.firstName.setText(fullName);
         binding.userNameTop.setText(fullName);
         binding.gender.setText(Utils.capitalize(userModel.getGender()));
@@ -306,10 +308,10 @@ public class EditProfileActivity extends BaseActivity {
     }
 
     private void setProfilePic() {
-        if (CredentialManager.getUserData().getProfilePicUrl() != null)
+        if (preferenceRepository.getUserData().getProfilePicUrl() != null)
             Glide.with(this)
                     .asBitmap()
-                    .load(CredentialManager.getUserData().getProfilePicUrl())
+                    .load(preferenceRepository.getUserData().getProfilePicUrl())
                     .skipMemoryCache(true)
                     .fitCenter()
                     .optionalCenterCrop()
@@ -335,7 +337,7 @@ public class EditProfileActivity extends BaseActivity {
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         try {
             startActivityForResult(intent, 1001);
-        } catch (Exception e){
+        } catch (Exception e) {
             ToastUtils.show("Can't open image picker");
         }
     }
@@ -412,7 +414,7 @@ public class EditProfileActivity extends BaseActivity {
                 viewModel.setUserData(body);
 
                 HashMap<String, String> data = new HashMap<>();
-                body.put("user", CredentialManager.getUserName());
+                body.put("user", preferenceRepository.getUserName());
                 body.put("host", Constants.XMPP_HOST);
                 body.put("name", "IMAGE_URL");
                 body.put("content", response.getData().getUrl());

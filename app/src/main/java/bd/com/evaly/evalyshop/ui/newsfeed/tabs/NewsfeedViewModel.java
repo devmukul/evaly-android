@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -15,13 +15,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class NewsfeedViewModel extends ViewModel {
 
+    private PreferenceRepository preferenceRepository;
     private MutableLiveData<Integer> notificationCountLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> logoutLiveData = new MutableLiveData<>();
     private ApiRepository apiRepository;
 
     @Inject
-    public NewsfeedViewModel(ApiRepository apiRepository){
+    public NewsfeedViewModel(ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
     }
 
     public LiveData<Integer> getNotificationCountLiveData() {
@@ -36,7 +38,7 @@ public class NewsfeedViewModel extends ViewModel {
     public void updateNotificationCount() {
 
 
-        apiRepository.getNotificationCount(CredentialManager.getToken(), new ResponseListenerAuth<NotificationCount, String>() {
+        apiRepository.getNotificationCount(preferenceRepository.getToken(), new ResponseListenerAuth<NotificationCount, String>() {
             @Override
             public void onDataFetched(NotificationCount response, int statusCode) {
 

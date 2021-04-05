@@ -36,9 +36,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.CommentBottomSheetFragmentBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -51,6 +51,8 @@ import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 @AndroidEntryPoint
 public class CommentBottomSheet extends BottomSheetDialogFragment {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     @Inject
     ApiRepository apiRepository;
     private CommentViewModel viewModel;
@@ -106,7 +108,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
         else
             initCommentHeader(newsfeedPostModel);
 
-        adapter = new CommentAdapter(itemList, getContext(), getFragmentManager(), newsfeedPostModel.getSlug(), viewModel);
+        adapter = new CommentAdapter(itemList, getContext(), getFragmentManager(), newsfeedPostModel.getSlug(), viewModel, preferenceRepository);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         binding.recyclerView.setLayoutManager(layoutManager);
@@ -201,7 +203,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
         });
 
 
-        if (CredentialManager.getToken().equals("")) {
+        if (preferenceRepository.getToken().equals("")) {
             binding.commentInput.setHint("You need to login before commenting.");
             binding.commentInput.setEnabled(false);
             binding.submitComment.setEnabled(false);
@@ -211,7 +213,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
 
     private void loadDetailsFromApi() {
 
-        apiRepository.getPostDetails(CredentialManager.getToken(), newsfeedPostModel.getSlug(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getPostDetails(preferenceRepository.getToken(), newsfeedPostModel.getSlug(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject ob, int statusCode) {
                 if (ob != null && ob.has("body")) {

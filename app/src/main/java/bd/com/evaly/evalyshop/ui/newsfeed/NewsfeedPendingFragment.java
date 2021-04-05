@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
@@ -35,6 +35,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     @Inject
     ApiRepository apiRepository;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
@@ -133,7 +135,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
                     pastVisiblesItems = manager.findFirstVisibleItemPosition();
                     if (loading)
                         if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
-                        getPosts(++currentPage);
+                            getPosts(++currentPage);
                 }
             }
         });
@@ -157,7 +159,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         itemsList.remove(position);
         adapter.notifyItemRemoved(position);
 
-        apiRepository.actionPendingPost(CredentialManager.getToken(), id, type, parameterPost, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.actionPendingPost(preferenceRepository.getToken(), id, type, parameterPost, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -191,7 +193,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
             bottomProgressBar.setVisibility(View.VISIBLE);
 
 
-        apiRepository.getNewsfeedPosts(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getNewsfeedPosts(preferenceRepository.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

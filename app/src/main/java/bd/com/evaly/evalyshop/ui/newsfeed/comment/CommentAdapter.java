@@ -22,7 +22,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.Author;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
@@ -37,13 +37,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     private FragmentManager fragment;
     private String newsfeedPostSlug;
     private CommentViewModel viewModel;
+    private PreferenceRepository preferenceRepository;
 
-    public CommentAdapter(List<CommentItem> itemsList, Context context, FragmentManager fragment, String newsfeedPostSlug, CommentViewModel viewModel) {
+    public CommentAdapter(List<CommentItem> itemsList, Context context, FragmentManager fragment, String newsfeedPostSlug, CommentViewModel viewModel, PreferenceRepository preferenceRepository) {
         this.itemsList = itemsList;
         this.context = context;
         this.fragment = fragment;
         this.newsfeedPostSlug = newsfeedPostSlug;
         this.viewModel = viewModel;
+        this.preferenceRepository = preferenceRepository;
     }
 
     @NonNull
@@ -181,9 +183,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
         myViewHolder.view.setOnLongClickListener(
                 view -> {
-                    if (CredentialManager.getToken().equals(""))
+                    if (preferenceRepository.getToken().equals(""))
                         return false;
-                    if (!CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
+                    if (!preferenceRepository.getUserData().getGroups().contains("EvalyEmployee"))
                         return false;
 
                     new AlertDialog.Builder(context)

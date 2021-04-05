@@ -36,10 +36,10 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetGiftCardPaymentBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentGiftcardListBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
@@ -62,6 +62,8 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     public static GiftCardPurchasedFragment instance;
 
+    @Inject
+    PreferenceRepository preferenceRepository;
     @Inject
     ApiRepository apiRepository;
     @Inject
@@ -213,7 +215,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         parameters.put("context_reference", giftCardInvoice);
         parameters.put("bank_receipt_copy", image);
 
-        apiRepository.payViaBank(CredentialManager.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaBank(preferenceRepository.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.dismiss();
@@ -423,7 +425,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         payload.put("context_reference", invoice);
         payload.put("source", "MOBILE_APP");
 
-        apiRepository.payViaNagad(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaNagad(preferenceRepository.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("callBackUrl")) && !response.get("callBackUrl").isJsonNull()) {
@@ -454,7 +456,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             return;
         }
 
-        onPaymentRedirect(BuildConfig.WEB_URL+"sebl/payment?amount="+amount+"&invoice="+invoice+"&token="+CredentialManager.getToken().replace("Bearer ", "")+"&context_reference=gift_card_order_payment", amount, giftCardInvoice);
+        onPaymentRedirect(BuildConfig.WEB_URL + "sebl/payment?amount=" + amount + "&invoice=" + invoice + "&token=" + preferenceRepository.getToken().replace("Bearer ", "") + "&context_reference=gift_card_order_payment", amount, giftCardInvoice);
 
 
 //        HashMap<String, String> payload = new HashMap<>();
@@ -464,7 +466,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 //
 //        dialog.showDialog();
 //
-//        PaymentApiHelper.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+//        PaymentApiHelper.payViaCard(preferenceRepository.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
 //            @Override
 //            public void onDataFetched(JsonObject response, int statusCode) {
 //
@@ -503,7 +505,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         dialog.showDialog();
 
-        apiRepository.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaCard(preferenceRepository.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -534,15 +536,15 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         if (url.equals(BuildConfig.BKASH_URL)) {
             successURL = Constants.BKASH_SUCCESS_URL;
             paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.bkash_payment));
-            purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no, "gift_code");
+            purchaseRequestInfo = new PurchaseRequestInfo(preferenceRepository.getTokenNoBearer(), amount, invoice_no, "gift_code");
         } else if (url.contains("nagad")) {
             successURL = Constants.SSL_SUCCESS_URL;
             paymentWebBuilder.setToolbarTitle("Pay via Nagad");
             ToastUtils.show("Opening Nagad gateway");
         } else if (url.contains("sebl")) {
-            successURL = Constants.SSL_SUCCESS_URL+"===";
+            successURL = Constants.SSL_SUCCESS_URL + "===";
             paymentWebBuilder.setToolbarTitle("Pay via Visa / Master Card");
-            purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no, "sebl");
+            purchaseRequestInfo = new PurchaseRequestInfo(preferenceRepository.getTokenNoBearer(), amount, invoice_no, "sebl");
             ToastUtils.show("Opening SEBL gateway");
         } else {
             successURL = Constants.SSL_SUCCESS_URL;

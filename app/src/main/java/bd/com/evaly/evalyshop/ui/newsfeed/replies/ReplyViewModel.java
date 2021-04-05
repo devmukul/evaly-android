@@ -11,8 +11,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
@@ -22,27 +22,31 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class ReplyViewModel extends ViewModel {
-    
+
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
     private MutableLiveData<List<RepliesItem>> replyListLiveData = new MutableLiveData<>();
     private MutableLiveData<JsonObject> replyCreatedLiveData = new MutableLiveData<>();
     private String postSlug;
     private int commentId;
+
     public LiveData<List<RepliesItem>> getReplyListLiveData() {
         return replyListLiveData;
     }
+
     public LiveData<JsonObject> getReplyCreatedLiveData() {
         return replyCreatedLiveData;
     }
-    
+
     @Inject
-    public  ReplyViewModel(ApiRepository apiRepository){
+    public ReplyViewModel(ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
     }
 
     public void loadReplies(int page, String postSlug, int commentId) {
 
-        apiRepository.getRepliesList(CredentialManager.getToken(), postSlug, commentId, page, new ResponseListenerAuth<CommonDataResponse<List<CommentItem>>, String>() {
+        apiRepository.getRepliesList(preferenceRepository.getToken(), postSlug, commentId, page, new ResponseListenerAuth<CommonDataResponse<List<CommentItem>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CommentItem>> response, int statusCode) {
 
@@ -69,7 +73,7 @@ public class ReplyViewModel extends ViewModel {
     public void createReply(JsonObject body, String postSlug, int commentId) {
 
 
-        apiRepository.postReply(CredentialManager.getToken(), postSlug, commentId, body, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postReply(preferenceRepository.getToken(), postSlug, commentId, body, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 replyCreatedLiveData.setValue(response);
@@ -90,11 +94,11 @@ public class ReplyViewModel extends ViewModel {
 
     }
 
-    public void deleteReply(int id){
+    public void deleteReply(int id) {
 
         String url = UrlUtils.BASE_URL_NEWSFEED + "comments/" + id;
 
-        apiRepository.deleteItem(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.deleteItem(preferenceRepository.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

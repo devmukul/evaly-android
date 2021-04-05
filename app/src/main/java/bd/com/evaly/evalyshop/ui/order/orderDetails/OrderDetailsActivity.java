@@ -45,11 +45,11 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityOrderDetailsBinding;
 import bd.com.evaly.evalyshop.databinding.BottomSheetUpdateOrderAddressBinding;
 import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
@@ -87,6 +87,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     FirebaseRemoteConfig mFirebaseRemoteConfig;
     @Inject
     ApiRepository apiRepository;
+    @Inject
+    PreferenceRepository preferenceRepository;
     private ActivityOrderDetailsBinding binding;
     private double totalAmount = 0.0, paidAmount = 0.0, dueAmount = 0.0;
     private String invoiceNo = "", shopSlug = "", orderStatus = "pending", paymentStatus = "unpaid", paymentMethod = "";
@@ -134,7 +136,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             binding.orderId.setText("#" + invoiceNo);
         }
 
-        binding.balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(CredentialManager.getBalance()) + "</b>"));
+        binding.balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(preferenceRepository.getBalance()) + "</b>"));
         indicator = findViewById(R.id.indicator);
         indicator.setStepCount(6);
 
@@ -263,7 +265,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private void liveEvents() {
 
         viewModel.balanceLiveData.observe(this, response -> {
-            CredentialManager.setBalance(response.getBalance());
+            preferenceRepository.setBalance(response.getBalance());
             binding.balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(response.getBalance()) + "</b>"));
         });
 
@@ -717,7 +719,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     public void updatePage() {
         binding.scroll.postDelayed(() -> binding.scroll.fullScroll(View.FOCUS_UP), 50);
-        Balance.update(this, binding.balance, apiRepository);
+        Balance.update(this, binding.balance, apiRepository, preferenceRepository);
         viewModel.getOrderHistory();
         viewModel.getOrderDetails();
     }
@@ -797,14 +799,14 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         if (url.equals(BuildConfig.BKASH_URL)) {
             successURL = Constants.BKASH_SUCCESS_URL;
             paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.bkash_payment));
-            purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no, "bKash");
+            purchaseRequestInfo = new PurchaseRequestInfo(preferenceRepository.getTokenNoBearer(), amount, invoice_no, "bKash");
         } else {
             successURL = Constants.SSL_SUCCESS_URL;
             if (url.contains("nagad"))
                 paymentWebBuilder.setToolbarTitle("Pay via Nagad");
             else if (url.contains("sebl")) {
                 successURL = Constants.SEBL_SUCCESS_URL;
-                purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no, "sebl");
+                purchaseRequestInfo = new PurchaseRequestInfo(preferenceRepository.getTokenNoBearer(), amount, invoice_no, "sebl");
                 paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.visa_master_card));
             } else if (url.contains("citybank")) {
                 successURL = Constants.CITYBANK_SUCCESS_URL;

@@ -12,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentBrandBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
@@ -32,6 +33,8 @@ public class BrandFragment extends BaseFragment<FragmentBrandBinding, BrandViewM
     RecommenderViewModel recommenderViewModel;
     @Inject
     ApiRepository apiRepository;
+    @Inject
+    PreferenceRepository preferenceRepository;
     long startTime = 0;
     private boolean isLoading = false;
     private BrandController controller;
@@ -52,7 +55,7 @@ public class BrandFragment extends BaseFragment<FragmentBrandBinding, BrandViewM
         startTime = System.currentTimeMillis();
         binding.swipeRefresh.setOnRefreshListener(this);
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-        new InitializeActionBar(binding.header.headerLogo, getActivity(), "brand", mainViewModel, apiRepository);
+        new InitializeActionBar(binding.header.headerLogo, getActivity(), "brand", mainViewModel, apiRepository, preferenceRepository);
         binding.header.homeSearch.setOnClickListener(view1 -> {
             navController.navigate(R.id.globalSearchFragment);
         });

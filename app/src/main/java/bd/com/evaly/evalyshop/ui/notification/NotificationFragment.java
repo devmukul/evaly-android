@@ -19,9 +19,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentNotificationBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.notification.NotificationItem;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -34,6 +34,10 @@ public class NotificationFragment extends Fragment implements NotificationAdapte
 
     @Inject
     ApiRepository apiRepository;
+
+    @Inject
+    PreferenceRepository preferenceRepository;
+
     private NotificationAdapter adapter;
     private ArrayList<NotificationItem> notifications;
     private FragmentNotificationBinding binding;
@@ -68,7 +72,7 @@ public class NotificationFragment extends Fragment implements NotificationAdapte
 
     public void getNotifications() {
 
-        apiRepository.getNotification(CredentialManager.getToken(), 1, new ResponseListenerAuth<CommonResultResponse<List<NotificationItem>>, String>() {
+        apiRepository.getNotification(preferenceRepository.getToken(), 1, new ResponseListenerAuth<CommonResultResponse<List<NotificationItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<NotificationItem>> response, int statusCode) {
                 if (response.getCount() == 0) {
@@ -94,7 +98,7 @@ public class NotificationFragment extends Fragment implements NotificationAdapte
 
     public void markAsRead() {
 
-        apiRepository.markNotificationAsRead(CredentialManager.getToken(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.markNotificationAsRead(preferenceRepository.getToken(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 ToastUtils.show("Marked as read!");

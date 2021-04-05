@@ -36,9 +36,9 @@ import java.util.Calendar;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.FragmentBuyNowBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
@@ -56,6 +56,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
+    @Inject
+    PreferenceRepository preferenceRepository;
 
     private BuyNowViewModel viewModel;
     private CartViewModel cartViewModel;
@@ -167,7 +169,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         });
 
         binding.buyNow.setOnClickListener(view1 -> {
-            if (CredentialManager.getToken().equals("")) {
+            if (preferenceRepository.getToken().equals("")) {
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }
@@ -335,7 +337,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
 
         binding.buyNow.setOnClickListener(view1 -> {
-            if (CredentialManager.getToken().equals("")) {
+            if (preferenceRepository.getToken().equals("")) {
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }

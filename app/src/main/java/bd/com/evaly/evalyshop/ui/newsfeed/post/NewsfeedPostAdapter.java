@@ -30,9 +30,9 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.NewsfeedItemBinding;
 import bd.com.evaly.evalyshop.databinding.ProgressBarBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.ui.newsfeed.comment.CommentBottomSheet;
@@ -51,14 +51,16 @@ public class NewsfeedPostAdapter extends PagedListAdapter<NewsfeedPost, Recycler
     private FragmentManager fragmentManager;
     private NetworkState networkState;
     private NewsFeedShareListener<NewsfeedPost> shareListener;
+    private PreferenceRepository preferenceRepository;
 
-    public NewsfeedPostAdapter(Context context, NewsfeedPostViewModel viewModel, FragmentManager fragmentManager, NewsFeedShareListener<NewsfeedPost> shareListener) {
+    public NewsfeedPostAdapter(Context context, NewsfeedPostViewModel viewModel, FragmentManager fragmentManager, NewsFeedShareListener<NewsfeedPost> shareListener, PreferenceRepository preferenceRepository) {
 
         super(NewsfeedPost.DIFF_CALLBACK);
         this.context = context;
         this.viewModel = viewModel;
         this.fragmentManager = fragmentManager;
         this.shareListener = shareListener;
+        this.preferenceRepository = preferenceRepository;
     }
 
     @NonNull
@@ -228,7 +230,7 @@ public class NewsfeedPostAdapter extends PagedListAdapter<NewsfeedPost, Recycler
 
             myViewHolder.binding.likeIcon.setOnClickListener(v -> {
 
-                if (CredentialManager.getToken().equals("")) {
+                if (preferenceRepository.getToken().equals("")) {
                     Toast.makeText(context, "You need to login first", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -265,7 +267,7 @@ public class NewsfeedPostAdapter extends PagedListAdapter<NewsfeedPost, Recycler
 
                 PopupMenu popup = new PopupMenu(context, myViewHolder.binding.menu);
 
-                if (CredentialManager.getUserData() != null && (CredentialManager.getUserData().getGroups().contains("EvalyEmployee")))
+                if (preferenceRepository.getUserData() != null && (preferenceRepository.getUserData().getGroups().contains("EvalyEmployee")))
                     popup.getMenuInflater().inflate(R.menu.newsfeed_menu_super, popup.getMenu());
                 else
                     popup.getMenuInflater().inflate(R.menu.newsfeed_menu_user, popup.getMenu());

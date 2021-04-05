@@ -9,8 +9,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
@@ -24,6 +24,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class EvalyExpressViewModel extends ViewModel {
 
     private ApiRepository apiRepository;
+    private PreferenceRepository preferenceRepository;
     private MutableLiveData<List<GroupShopModel>> liveData;
     private MutableLiveData<ExpressServiceDetailsModel> expressDetails;
     private int currentPage;
@@ -34,14 +35,15 @@ public class EvalyExpressViewModel extends ViewModel {
     private boolean shouldClear = true;
 
     @Inject
-    public EvalyExpressViewModel(SavedStateHandle arg, ApiRepository apiRepository) {
+    public EvalyExpressViewModel(SavedStateHandle arg, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         if (arg.contains("model"))
-            serviceSlug = ((ExpressServiceModel)arg.get("model")).getSlug();
+            serviceSlug = ((ExpressServiceModel) arg.get("model")).getSlug();
         else if (arg.contains("slug"))
             serviceSlug = arg.get("slug");
         else
             serviceSlug = "";
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
         this.serviceSlug = serviceSlug;
         currentPage = 1;
         totalCount = 0;
@@ -65,20 +67,20 @@ public class EvalyExpressViewModel extends ViewModel {
         Double longitude = null;
         Double latitude = null;
 
-        if (CredentialManager.getArea() == null)
+        if (preferenceRepository.getArea() == null)
             area = null;
-        else if (CredentialManager.getArea().contains("Districts"))
+        else if (preferenceRepository.getArea().contains("Districts"))
             area = null;
-        else if (CredentialManager.getArea().toLowerCase().contains("near")) {
+        else if (preferenceRepository.getArea().toLowerCase().contains("near")) {
             area = null;
 
-            if (CredentialManager.getLatitude() != null)
-                latitude = Double.parseDouble(CredentialManager.getLatitude());
-            if (CredentialManager.getLongitude() != null)
+            if (preferenceRepository.getLatitude() != null)
+                latitude = Double.parseDouble(preferenceRepository.getLatitude());
+            if (preferenceRepository.getLongitude() != null)
 
-                longitude = Double.parseDouble(CredentialManager.getLongitude());
+                longitude = Double.parseDouble(preferenceRepository.getLongitude());
         } else
-            area = CredentialManager.getArea();
+            area = preferenceRepository.getArea();
 
         apiRepository.getShopList(serviceSlug, currentPage, 24, area, shopSearch, null, longitude, latitude, new ResponseListenerAuth<CommonResultResponse<List<GroupShopModel>>, String>() {
             @Override
