@@ -7,11 +7,14 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.orhanobut.logger.Logger;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
 import im.delight.android.webview.AdvancedWebView;
@@ -53,25 +56,47 @@ public final class PaymentWebActivity extends AppCompatActivity implements Advan
         mWebView.getSettings().setAppCacheEnabled(true);
 
         mWebView.setListener(this, this);
-        try {
-            if (PaymentWebBuilder.getPurchaseInformation() != null && PaymentWebBuilder.getPurchaseInformation().getGateway() != null && !PaymentWebBuilder.getPurchaseInformation().getGateway().equalsIgnoreCase("sebl")) {
-                String postData = "?token=" + URLEncoder.encode(PaymentWebBuilder.getPurchaseInformation().getAuthToken(), "UTF-8")
-                        + "&amount=" + URLEncoder.encode(String.valueOf(PaymentWebBuilder.getPurchaseInformation().getAmount()), "UTF-8")
-                        + "&invoice_no=" + URLEncoder.encode(PaymentWebBuilder.getPurchaseInformation().getInvoiceNo(), "UTF-8");
-                mWebView.loadUrl(PaymentWebBuilder.getRequestURL().concat(postData));
-               // Log.e("]]]]", PaymentWebBuilder.getRequestURL().concat(postData));
-            } else {
-                mWebView.loadUrl(PaymentWebBuilder.getRequestURL());
-            }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        mWebView.loadUrl(PaymentWebBuilder.getRequestURL());
+
+//            if (PaymentWebBuilder.getPurchaseInformation() != null && PaymentWebBuilder.getPurchaseInformation().getGateway() != null && !PaymentWebBuilder.getPurchaseInformation().getGateway().equalsIgnoreCase("sebl")) {
+//                String postData = "?token=" + URLEncoder.encode(PaymentWebBuilder.getPurchaseInformation().getAuthToken(), "UTF-8")
+//                        + "&amount=" + URLEncoder.encode(String.valueOf(PaymentWebBuilder.getPurchaseInformation().getAmount()), "UTF-8")
+//                        + "&invoice_no=" + URLEncoder.encode(PaymentWebBuilder.getPurchaseInformation().getInvoiceNo(), "UTF-8");
+//                mWebView.loadUrl(PaymentWebBuilder.getRequestURL().concat(postData));
+//               // Log.e("]]]]", PaymentWebBuilder.getRequestURL().concat(postData));
+//            } else {
+//                mWebView.loadUrl(PaymentWebBuilder.getRequestURL());
+//            }
 
     }
 
     @Override
     public void onPageStarted(String url, Bitmap favicon) {
-         if (url.contains(PaymentWebBuilder.getSuccessUrl()) && !(PaymentWebBuilder.getPurchaseInformation() != null && PaymentWebBuilder.getPurchaseInformation().getGateway().equalsIgnoreCase("sebl"))) {
+//         if (url.contains(PaymentWebBuilder.getSuccessUrl()) && !(PaymentWebBuilder.getPurchaseInformation() != null && PaymentWebBuilder.getPurchaseInformation().getGateway().equalsIgnoreCase("sebl"))) {
+//            if (PaymentWebBuilder.getUpayListener() != null) {
+//                try {
+//                    URL successURL = new URL(url);
+//                    PaymentWebBuilder.getUpayListener().onPaymentSuccess("success");
+//                } catch (MalformedURLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            mWebView.destroy();
+//            finish();
+//        }else if (url.toLowerCase().contains(PaymentWebBuilder.getSuccessUrl()) && PaymentWebBuilder.getPurchaseInformation().getGateway().equalsIgnoreCase("sebl")){
+//             if (PaymentWebBuilder.getUpayListener() != null) {
+//                 try {
+//                     URL successURL = new URL(url);
+//                     PaymentWebBuilder.getUpayListener().onPaymentSuccess("success");
+//                 } catch (MalformedURLException e) {
+//                     e.printStackTrace();
+//                 }
+//             }
+//             mWebView.destroy();
+//             finish();
+//         }
+        Logger.e(url);
+        if (url.toLowerCase().contains(PaymentWebBuilder.getSuccessUrl())){
             if (PaymentWebBuilder.getUpayListener() != null) {
                 try {
                     URL successURL = new URL(url);
@@ -82,18 +107,18 @@ public final class PaymentWebActivity extends AppCompatActivity implements Advan
             }
             mWebView.destroy();
             finish();
-        }else if (url.toLowerCase().contains(PaymentWebBuilder.getSuccessUrl()) && PaymentWebBuilder.getPurchaseInformation().getGateway().equalsIgnoreCase("sebl")){
-             if (PaymentWebBuilder.getUpayListener() != null) {
-                 try {
-                     URL successURL = new URL(url);
-                     PaymentWebBuilder.getUpayListener().onPaymentSuccess("success");
-                 } catch (MalformedURLException e) {
-                     e.printStackTrace();
-                 }
-             }
-             mWebView.destroy();
-             finish();
-         }
+        }else if (url.toLowerCase().equals(BuildConfig.WEB_URL)){
+            if (PaymentWebBuilder.getUpayListener() != null) {
+                try {
+                    URL successURL = new URL(url);
+                    PaymentWebBuilder.getUpayListener().onPaymentSuccess("success");
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+            mWebView.destroy();
+            finish();
+        }
     }
 
     @Override

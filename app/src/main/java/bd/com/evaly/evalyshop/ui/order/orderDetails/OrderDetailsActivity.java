@@ -4,11 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,6 +50,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ActivityOrderDetailsBinding;
 import bd.com.evaly.evalyshop.databinding.BottomSheetUpdateOrderAddressBinding;
 import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
+import bd.com.evaly.evalyshop.databinding.PaymentAmountInputLayoutBinding;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
@@ -73,6 +76,7 @@ import bd.com.evaly.evalyshop.ui.payment.model.PurchaseRequestInfo;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -210,13 +214,16 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 ToastUtils.show("Cash on delivery only");
                 return;
             }
-            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoiceNo,
-                    totalAmount,
-                    paidAmount,
-                    orderDetailsModel.getAllowedPaymentMethods(),
-                    orderDetailsModel.isApplyDeliveryCharge(),
-                    orderDetailsModel.getDeliveryCharge(), this);
-            paymentBottomSheet.show(getSupportFragmentManager(), "payment");
+
+            paymentAmountInput();
+
+//            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoiceNo,
+//                    totalAmount,
+//                    paidAmount,
+//                    orderDetailsModel.getAllowedPaymentMethods(),
+//                    orderDetailsModel.isApplyDeliveryCharge(),
+//                    orderDetailsModel.getDeliveryCharge(), this);
+//            paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
 
         binding.btnToggleTimeline.setOnClickListener(v -> {
@@ -255,6 +262,37 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
             bottomSheet.show(getSupportFragmentManager(), "Create issue");
         });
+    }
+
+    private void paymentAmountInput(){
+        PaymentAmountInputLayoutBinding paymentAmountInputLayoutBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.payment_amount_input_layout, null, false);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter your payable amount");
+        builder.setPositiveButton("Make Payment", (dialogInterface, i) -> {
+            try {
+                if (paymentAmountInputLayoutBinding.amountPay.getText().toString().trim().isEmpty()){
+                    paymentAmountInputLayoutBinding.amountPay.setError("Amount is required!");
+                }else if (Integer.parseInt(paymentAmountInputLayoutBinding.amountPay.getText().toString()) == 0){
+                    paymentAmountInputLayoutBinding.amountPay.setError("Invalid amount!");
+                } else {
+                    String paymentUrl = BuildConfig.WEB_URL + "payment/init/" + invoiceNo + "?methods="+ TextUtils.join(",", orderDetailsModel.getAllowedPaymentMethods())+ "&t="+CredentialManager.getTokenNoBearer()+"&context=order_payment&amount=" + paymentAmountInputLayoutBinding.amountPay.getText().toString();
+                    PurchaseRequestInfo purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), String.valueOf(dueAmount), invoiceNo, "bKash");
+
+                    paymentWebBuilder.setToolbarTitle("Order Payment");
+                    paymentWebBuilder.loadPaymentURL(paymentUrl, BuildConfig.WEB_URL + "order/my-orders", purchaseRequestInfo);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        });
+        builder.setNegativeButton("Close", null);
+        builder.setView(paymentAmountInputLayoutBinding.getRoot());
+
+        double amount = (totalAmount - paidAmount);
+        paymentAmountInputLayoutBinding.amountPay.setText(String.format("%s", (int) (amount)));
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void liveEvents() {
