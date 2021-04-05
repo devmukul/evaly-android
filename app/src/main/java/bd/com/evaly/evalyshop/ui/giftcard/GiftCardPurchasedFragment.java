@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,6 +40,7 @@ import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetGiftCardPaymentBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentGiftcardListBinding;
+import bd.com.evaly.evalyshop.databinding.PaymentAmountInputLayoutBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -291,6 +294,36 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         }
     }
 
+    private void paymentAmountInput(){
+        PaymentAmountInputLayoutBinding paymentAmountInputLayoutBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.payment_amount_input_layout, null, false);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Enter your payable amount");
+        builder.setPositiveButton("Make Payment", (dialogInterface, i) -> {
+            try {
+                if (paymentAmountInputLayoutBinding.amountPay.getText().toString().trim().isEmpty()){
+                    paymentAmountInputLayoutBinding.amountPay.setError("Amount is required!");
+                }else if (Integer.parseInt(paymentAmountInputLayoutBinding.amountPay.getText().toString()) == 0){
+                    paymentAmountInputLayoutBinding.amountPay.setError("Invalid amount!");
+                } else {
+                    String paymentUrl = BuildConfig.WEB_URL + "giftcard-payment/init/" + giftCardInvoice + "?t="+CredentialManager.getTokenNoBearer()+"&context=gift_card_order_payment&amount=" + paymentAmountInputLayoutBinding.amountPay.getText().toString();
+                    PurchaseRequestInfo purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), String.valueOf(amount), giftCardInvoice, "bKash");
+                    paymentWebBuilder.setToolbarTitle("Gift Card Payment");
+                    paymentWebBuilder.loadPaymentURL(paymentUrl, BuildConfig.WEB_URL + "order/my-orders", purchaseRequestInfo);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        });
+        builder.setNegativeButton("Close", null);
+        builder.setView(paymentAmountInputLayoutBinding.getRoot());
+
+        double amountDouble = Double.parseDouble(amount);
+        paymentAmountInputLayoutBinding.amountPay.setText(String.format("%s", (int) (amountDouble)));
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     public void initializeBottomSheet() {
 
         if (bottomSheetDialog == null) {
@@ -357,8 +390,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         giftCardInvoice = item.getInvoiceNo();
         paymentBinding.amountPay.setText(Utils.formatPrice(item.getTotal()));
         amount = item.getTotal() + "";
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        bottomSheetDialog.show();
+        paymentAmountInput();
 
     }
 
