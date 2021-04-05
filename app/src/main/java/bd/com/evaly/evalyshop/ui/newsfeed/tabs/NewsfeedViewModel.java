@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel

@@ -47,12 +47,12 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedAdapter;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.ReplyAdapter;

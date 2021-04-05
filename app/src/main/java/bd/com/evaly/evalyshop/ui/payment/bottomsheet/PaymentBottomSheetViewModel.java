@@ -9,12 +9,10 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.apiRepository;
-import bd.com.evaly.evalyshop.rest.apiHelper.apiRepository;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
@@ -22,9 +20,9 @@ public class PaymentBottomSheetViewModel extends ViewModel {
 
     private ApiRepository apiRepository;
     private PaymentBottomSheetNavigator navigator;
-    
+
     @Inject
-    public PaymentBottomSheetViewModel(ApiRepository apiRepository){
+    public PaymentBottomSheetViewModel(ApiRepository apiRepository) {
         this.apiRepository = apiRepository;
     }
 

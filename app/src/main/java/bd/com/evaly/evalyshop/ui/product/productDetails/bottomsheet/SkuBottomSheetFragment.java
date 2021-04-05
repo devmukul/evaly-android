@@ -5,7 +5,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +16,9 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.BottomSheetBasicTextBinding;
 import bd.com.evaly.evalyshop.databinding.BottomSheetSkuBinding;
-import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
-import bd.com.evaly.evalyshop.ui.basic.textBottomSheet.TextListController;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class SkuBottomSheetFragment extends BottomSheetDialogFragment {

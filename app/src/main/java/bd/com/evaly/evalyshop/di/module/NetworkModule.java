@@ -6,7 +6,7 @@ import javax.inject.Singleton;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.rest.ApiHandler;
 import bd.com.evaly.evalyshop.rest.ApiServiceHolder;
 import bd.com.evaly.evalyshop.rest.IApiClient;

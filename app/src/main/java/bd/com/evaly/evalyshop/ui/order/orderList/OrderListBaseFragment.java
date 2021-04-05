@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,8 +19,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
@@ -36,8 +35,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class OrderListBaseFragment extends Fragment {
 
-    @Inject
-    OrderListBaseViewModel viewModel;
+    private OrderListBaseViewModel viewModel;
     private FragmentOrderListBaseBinding binding;
     private OrderRequestListController requestListController;
     private boolean isLoading = true;
@@ -47,6 +45,7 @@ public class OrderListBaseFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentOrderListBaseBinding.inflate(inflater);
+        viewModel = new ViewModelProvider(this).get(OrderListBaseViewModel.class);
         return binding.getRoot();
     }
 
@@ -145,7 +144,7 @@ public class OrderListBaseFragment extends Fragment {
             requestListController.requestModelBuild();
         });
 
-        viewModel.logoutLiveData.observe(getViewLifecycleOwner(), aVoid -> AppController.logout(getActivity()));
+        viewModel.logoutLiveData.observe(getViewLifecycleOwner(), aVoid -> AppController.getInstance().logout(getActivity()));
 
     }
 

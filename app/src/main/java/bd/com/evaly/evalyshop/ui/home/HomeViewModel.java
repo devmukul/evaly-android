@@ -14,7 +14,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.banner.BannerDao;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -29,6 +28,7 @@ import bd.com.evaly.evalyshop.models.campaign.topProducts.CampaignTopProductResp
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.util.Constants;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.CompletableObserver;

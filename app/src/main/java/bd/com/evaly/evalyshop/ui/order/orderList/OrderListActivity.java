@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
-import bd.com.evaly.evalyshop.ui.cart.CartFragment;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint

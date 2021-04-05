@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.data.remote;
+package bd.com.evaly.evalyshop.rest;
 
 import android.graphics.Bitmap;
 
@@ -98,8 +98,6 @@ import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.models.user.UserModel;
-import bd.com.evaly.evalyshop.rest.ApiHandler;
-import bd.com.evaly.evalyshop.rest.IApiClient;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;

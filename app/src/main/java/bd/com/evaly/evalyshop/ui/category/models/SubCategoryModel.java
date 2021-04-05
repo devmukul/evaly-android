@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.category.models;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;

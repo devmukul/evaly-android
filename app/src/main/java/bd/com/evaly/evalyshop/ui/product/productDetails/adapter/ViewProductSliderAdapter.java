@@ -19,11 +19,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.image.ImageSliderActivity;
-import bd.com.evaly.evalyshop.util.ImagePreview;
 
 public class ViewProductSliderAdapter extends PagerAdapter {
 

@@ -13,7 +13,6 @@ import com.airbnb.epoxy.EpoxyModelClass;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemAddressBinding;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
-import bd.com.evaly.evalyshop.models.user.AddressItem;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 

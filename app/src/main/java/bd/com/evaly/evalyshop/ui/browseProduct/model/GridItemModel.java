@@ -13,7 +13,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.ItemHomeBrandsBinding;
 import bd.com.evaly.evalyshop.databinding.ItemShopBrandBinding;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;

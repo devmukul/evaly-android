@@ -22,14 +22,17 @@ import bd.com.evaly.evalyshop.models.search.product.SearchRequest;
 import bd.com.evaly.evalyshop.models.search.product.SortItem;
 import bd.com.evaly.evalyshop.models.search.product.response.Facets;
 import bd.com.evaly.evalyshop.models.search.product.response.ProductSearchResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.SearchApiHelper;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseViewModel;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class GlobalSearchViewModel extends BaseViewModel {
 
 
+    @Inject
+    ApiRepository apiRepository;
     private List<BaseModel> productList = new ArrayList<>();
     protected SingleLiveEvent<Void> updateButtonHighlights = new SingleLiveEvent<>();
     private MutableLiveData<List<FilterRootItem>> filterRootLiveList = new MutableLiveData<>();
@@ -58,7 +61,8 @@ public class GlobalSearchViewModel extends BaseViewModel {
 
     @SuppressLint("DefaultLocale")
     @Inject
-    public GlobalSearchViewModel(SavedStateHandle bundle) {
+    public GlobalSearchViewModel(SavedStateHandle bundle, ApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
         page = 1;
         type = "product";
         if (bundle.contains("type"))
@@ -181,7 +185,7 @@ public class GlobalSearchViewModel extends BaseViewModel {
         body.setMinPrice(minPrice);
         body.setMaxPrice(maxPrice);
 
-        SearchApiHelper.searchProducts(body, page, new ResponseListenerAuth<CommonDataResponse<ProductSearchResponse>, String>() {
+        apiRepository.searchProducts(body, page, new ResponseListenerAuth<CommonDataResponse<ProductSearchResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ProductSearchResponse> response, int statusCode) {
                 productList.addAll(response.getData().getProducts());
@@ -210,7 +214,7 @@ public class GlobalSearchViewModel extends BaseViewModel {
 
     public void getShops() {
 
-        ProductApiHelper.getShops(null, query, page, null, new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
+        apiRepository.getShops(null, query, page, null, new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
                 productList.addAll(response.getData());
@@ -231,7 +235,7 @@ public class GlobalSearchViewModel extends BaseViewModel {
     }
 
     public void getBrands() {
-        ProductApiHelper.getBrands(null, query, page, new ResponseListenerAuth<CommonDataResponse<List<BrandResponse>>, String>() {
+        apiRepository.getBrands(null, query, page, new ResponseListenerAuth<CommonDataResponse<List<BrandResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<BrandResponse>> response, int statusCode) {
                 productList.addAll(response.getData());

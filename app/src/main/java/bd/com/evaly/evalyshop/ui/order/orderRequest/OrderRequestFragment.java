@@ -8,9 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.databinding.FragmentOrderRequestsBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
@@ -20,8 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class OrderRequestFragment extends Fragment {
 
-    @Inject
-    OrderListBaseViewModel viewModel;
+    private OrderListBaseViewModel viewModel;
     private FragmentOrderRequestsBinding binding;
     private OrderRequestListController requestListController;
     private boolean isLoading = true;
@@ -30,6 +28,7 @@ public class OrderRequestFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentOrderRequestsBinding.inflate(inflater);
+        viewModel = new ViewModelProvider(this).get(OrderListBaseViewModel.class);
         return binding.getRoot();
     }
 

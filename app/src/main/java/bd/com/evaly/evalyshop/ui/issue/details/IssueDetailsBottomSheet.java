@@ -29,12 +29,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetIssueDetailsBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.issueNew.comment.IssueTicketCommentModel;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.issue.adapter.IssueReplyAdapter;
 import bd.com.evaly.evalyshop.util.ImagePreview;

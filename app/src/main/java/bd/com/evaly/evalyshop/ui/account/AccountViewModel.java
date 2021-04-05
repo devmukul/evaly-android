@@ -7,13 +7,11 @@ import java.util.Calendar;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel

@@ -16,6 +16,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentBrandBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.brand.controller.BrandController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
@@ -29,6 +30,8 @@ public class BrandFragment extends BaseFragment<FragmentBrandBinding, BrandViewM
 
     @Inject
     RecommenderViewModel recommenderViewModel;
+    @Inject
+    ApiRepository apiRepository;
     long startTime = 0;
     private boolean isLoading = false;
     private BrandController controller;
@@ -49,7 +52,7 @@ public class BrandFragment extends BaseFragment<FragmentBrandBinding, BrandViewM
         startTime = System.currentTimeMillis();
         binding.swipeRefresh.setOnRefreshListener(this);
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-        new InitializeActionBar(binding.header.headerLogo, getActivity(), "brand", mainViewModel);
+        new InitializeActionBar(binding.header.headerLogo, getActivity(), "brand", mainViewModel, apiRepository);
         binding.header.homeSearch.setOnClickListener(view1 -> {
             navController.navigate(R.id.globalSearchFragment);
         });

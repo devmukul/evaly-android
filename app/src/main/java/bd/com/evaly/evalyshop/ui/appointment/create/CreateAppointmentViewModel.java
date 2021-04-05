@@ -9,13 +9,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentCategoryResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentRequest;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentTimeSlotResponse;
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class CreateAppointmentViewModel extends ViewModel {

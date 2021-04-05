@@ -45,12 +45,12 @@ public class TokenAuthenticator implements Authenticator {
                     preferencesHelper.saveToken(loginResponse.get("data").getAsJsonObject().get("access_token").getAsString());
                     preferencesHelper.saveRefreshToken(loginResponse.get("data").getAsJsonObject().get("refresh_token").getAsString());
                     return response.request().newBuilder()
-                            .addHeader("Authorization", "Bearer" + preferencesHelper.getToken())
+                            .addHeader("Authorization", preferencesHelper.getToken())
                             .build();
                 }
             } else {
                 if (!response.request().url().toString().contains("ecaptcha"))
-                    AppController.logout();
+                    AppController.getInstance().logout();
             }
         }
 

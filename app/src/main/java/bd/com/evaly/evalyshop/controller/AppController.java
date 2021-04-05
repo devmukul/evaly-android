@@ -18,11 +18,9 @@ import com.orhanobut.logger.Logger;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.manager.preferenceRepository;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -33,9 +31,9 @@ import dagger.hilt.android.HiltAndroidApp;
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks {
 
     @Inject
-    static ApiRepository apiRepository;
+    ApiRepository apiRepository;
     @Inject
-    static PreferenceRepository preferenceRepository;
+    PreferenceRepository preferenceRepository;
     
     public static AppController mAppController;
     public static Context mContext;
@@ -52,7 +50,7 @@ public class AppController extends Application implements Application.ActivityLi
         return mAppController;
     }
 
-    public static void logout(Activity context) {
+    public void logout(Activity context) {
         getInstance().logoutFromServer();
         try {
             String email = preferenceRepository.getUserName();
@@ -75,7 +73,7 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
 
-    public static void logout() {
+    public void logout() {
         getInstance().logoutFromServer();
         try {
             String email = preferenceRepository.getUserName();

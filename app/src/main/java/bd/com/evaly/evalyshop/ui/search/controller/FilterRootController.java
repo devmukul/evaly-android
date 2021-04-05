@@ -8,7 +8,6 @@ import java.util.List;
 import bd.com.evaly.evalyshop.models.search.filter.FilterRootItem;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
 import bd.com.evaly.evalyshop.ui.search.model.SearchFilterRootModel_;
-import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class FilterRootController extends EpoxyController {
 

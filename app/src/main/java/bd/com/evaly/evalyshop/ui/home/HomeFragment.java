@@ -24,6 +24,7 @@ import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
@@ -45,6 +46,9 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     @Inject
     FirebaseRemoteConfig firebaseRemoteConfig;
+
+    @Inject
+    ApiRepository apiRepository;
 
     private boolean isLoading = true;
     private HomeController homeController;
@@ -156,7 +160,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     }
 
     private void initAppHeader() {
-        new InitializeActionBar(binding.header.headerLogo, getActivity(), "home", mainViewModel);
+        new InitializeActionBar(binding.header.headerLogo, getActivity(), "home", mainViewModel, apiRepository);
         binding.header.homeSearch.setOnClickListener(view1 -> {
             navController.navigate(R.id.globalSearchFragment);
             // startActivity(new Intent(getContext(), GlobalSearchActivity.class));

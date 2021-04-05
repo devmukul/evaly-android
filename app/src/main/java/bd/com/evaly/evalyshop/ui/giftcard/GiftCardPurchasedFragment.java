@@ -36,7 +36,6 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetGiftCardPaymentBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentGiftcardListBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -44,6 +43,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
 import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
 import bd.com.evaly.evalyshop.ui.payment.listener.PaymentListener;

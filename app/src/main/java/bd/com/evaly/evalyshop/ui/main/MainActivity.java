@@ -48,12 +48,11 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityMainBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
@@ -104,7 +103,7 @@ public class MainActivity extends BaseActivity {
                 (CredentialManager.getUserData() == null ||
                         CredentialManager.getUserName().equals("") ||
                         CredentialManager.getPassword().equals(""))) {
-            AppController.logout(this);
+            AppController.getInstance().logout(this);
             return;
         }
 

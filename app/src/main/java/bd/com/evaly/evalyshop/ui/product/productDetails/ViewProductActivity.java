@@ -49,7 +49,6 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.databinding.ActivityViewProductBinding;
-import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
@@ -74,7 +73,6 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SpecificationAda
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSliderAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.bottomsheet.SkuBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.product.productDetails.controller.VariantsController;
-import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.LocationUtils;
@@ -604,19 +602,21 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
     }
 
     private void getRelatedProducts(String categorySlug) {
-        ProductGrid productGrid = new ProductGrid(this, binding.products, categorySlug, binding.progressBar);
-        productGrid.setListener(new ProductListener() {
-            @Override
-            public void onSuccess(int count) {
-                binding.products.setVisibility(View.VISIBLE);
-                binding.progressBar.setVisibility(View.GONE);
-            }
 
-            @Override
-            public void buyNow(String product_slug) {
 
-            }
-        });
+//        ProductGrid productGrid = new ProductGrid(this, binding.products, categorySlug, binding.progressBar);
+//        productGrid.setListener(new ProductListener() {
+//            @Override
+//            public void onSuccess(int count) {
+//                binding.products.setVisibility(View.VISIBLE);
+//                binding.progressBar.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void buyNow(String product_slug) {
+//
+//            }
+//        });
     }
 
     private void inflateShopDetails(AvailableShopModel shop) {

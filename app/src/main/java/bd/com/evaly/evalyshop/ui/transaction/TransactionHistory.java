@@ -15,18 +15,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentTransactionHistoryBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.balance.BalanceViewModel;
 import bd.com.evaly.evalyshop.ui.transaction.adapter.TransactionHistoryAdapter;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class TransactionHistory extends Fragment {
 
+    @Inject
+    ApiRepository apiRepository;
     private TransactionHistoryAdapter adapter;
     private ArrayList<TransactionItem> itemList;
     private int currentPage = 0;
@@ -60,7 +66,7 @@ public class TransactionHistory extends Fragment {
                 getTransactionHistory(++currentPage);
         });
 
-        balanceViewModel.getData().observe(this, balanceModel -> {
+        balanceViewModel.getData().observe(getViewLifecycleOwner(), balanceModel -> {
             binding.balanceHolder.setVisibility(View.VISIBLE);
             binding.balanceHolder2.setVisibility(View.VISIBLE);
             binding.tvBalance.setText(String.format("৳ %s", balanceModel.getBalance()));
@@ -81,7 +87,7 @@ public class TransactionHistory extends Fragment {
 
     public void getTransactionHistory(int page) {
         binding.progressBar.setVisibility(View.VISIBLE);
-        AuthApiHelper.getTransactionHistory(CredentialManager.getToken(), CredentialManager.getUserName(), page,
+        apiRepository.getTransactionHistory(CredentialManager.getToken(), CredentialManager.getUserName(), page,
                 new ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<TransactionItem>> response, int statusCode) {
@@ -103,7 +109,7 @@ public class TransactionHistory extends Fragment {
                     @Override
                     public void onAuthError(boolean logout) {
                         if (logout)
-                            AppController.logout(getActivity());
+                            AppController.getInstance().logout(getActivity());
                         else
                             getTransactionHistory(page);
                     }

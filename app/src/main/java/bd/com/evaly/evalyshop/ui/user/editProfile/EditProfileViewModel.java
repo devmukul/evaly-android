@@ -9,23 +9,29 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class EditProfileViewModel extends ViewModel {
 
+    private ApiRepository apiRepository;
     private MutableLiveData<Boolean> infoSavedStatus = new MutableLiveData<>();
 
-    public EditProfileViewModel() {
-
+    @Inject
+    public EditProfileViewModel(ApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
     }
 
     public void setUserData(HashMap<String, String> userInfo) {
 
-        AuthApiHelper.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+        apiRepository.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
                 CredentialManager.saveUserData(response.getData());
@@ -47,7 +53,7 @@ public class EditProfileViewModel extends ViewModel {
 
     public void setUserData(JsonObject userInfo) {
 
-        AuthApiHelper.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+        apiRepository.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
                 CredentialManager.saveUserData(response.getData());
@@ -69,7 +75,7 @@ public class EditProfileViewModel extends ViewModel {
 
     public void updateToXMPP(HashMap<String, String> userInfo) {
 
-        AuthApiHelper.setUserDataToXmpp(userInfo, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.setUserDataToXmpp(userInfo, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

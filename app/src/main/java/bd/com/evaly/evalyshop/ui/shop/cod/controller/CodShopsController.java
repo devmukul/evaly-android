@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.ui.shop.cod.controller;
 
-import com.airbnb.epoxy.EpoxyModel;
-
 import java.util.ArrayList;
 import java.util.List;
 

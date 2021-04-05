@@ -19,8 +19,8 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -288,7 +288,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
                         String token = response.get("access_token").getAsString();
                         preferenceRepository.saveToken(token);
                         preferenceRepository.saveRefreshToken(response.get("refresh_token").getAsString());
-                        Balance.updateUserInfo(PasswordActivity.this, true);
+                        Balance.updateUserInfo(PasswordActivity.this, true, apiRepository);
                         Toast.makeText(PasswordActivity.this, "Successfully signed in.", Toast.LENGTH_SHORT).show();
                         break;
                     default:

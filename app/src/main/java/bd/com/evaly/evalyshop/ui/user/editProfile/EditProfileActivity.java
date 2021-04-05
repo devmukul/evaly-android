@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoDao;
@@ -45,8 +47,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.user.UserModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.EmailInfoBottomSheet;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.EmploymentInfoBottomSheet;
@@ -58,10 +59,13 @@ import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
-
+@AndroidEntryPoint
 public class EditProfileActivity extends BaseActivity {
 
+    @Inject
+    ApiRepository apiRepository;
     private Context context;
     private ActivityEditProfileBinding binding;
     private EditProfileViewModel viewModel;
@@ -181,7 +185,7 @@ public class EditProfileActivity extends BaseActivity {
         payload.put("username", getIntent().getStringExtra("user"));
         payload.put("password", getIntent().getStringExtra("password"));
 
-        AuthApiHelper.login(payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.login(payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int code) {
                 dialog.hideDialog();
@@ -218,7 +222,7 @@ public class EditProfileActivity extends BaseActivity {
 
     public void updateUserInfo() {
         dialog.showDialog();
-        AuthApiHelper.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+        apiRepository.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
                 dialog.hideDialog();
@@ -395,7 +399,7 @@ public class EditProfileActivity extends BaseActivity {
 
         ProgressDialog dialog = ProgressDialog.show(EditProfileActivity.this, "",
                 "Uploading image...", true);
-        ImageApiHelper.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
+        apiRepository.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
 

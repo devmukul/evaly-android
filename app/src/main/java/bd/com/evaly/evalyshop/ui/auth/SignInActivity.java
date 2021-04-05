@@ -21,8 +21,8 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -134,7 +134,7 @@ public class SignInActivity extends BaseActivity {
                         preferenceRepository.saveRefreshToken(response.get("refresh_token").getAsString());
                         preferenceRepository.saveUserName(phoneNumber.getText().toString());
                         preferenceRepository.savePassword(password.getText().toString());
-                        Balance.updateUserInfo(SignInActivity.this, true);
+                        Balance.updateUserInfo(SignInActivity.this, true, apiRepository);
                         Toast.makeText(SignInActivity.this, "Successfully signed in.", Toast.LENGTH_SHORT).show();
                         break;
                     default:

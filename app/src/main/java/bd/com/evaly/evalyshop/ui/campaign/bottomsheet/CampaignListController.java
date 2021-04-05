@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.ui.campaign.bottomsheet;
 
-import androidx.navigation.NavController;
-
 import com.airbnb.epoxy.EpoxyController;
 
 import java.util.ArrayList;

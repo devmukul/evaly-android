@@ -56,6 +56,7 @@ import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.image.ImageSliderActivity;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
@@ -84,6 +85,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     SharedObservers sharedObservers;
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
+    @Inject
+    ApiRepository apiRepository;
     private ActivityOrderDetailsBinding binding;
     private double totalAmount = 0.0, paidAmount = 0.0, dueAmount = 0.0;
     private String invoiceNo = "", shopSlug = "", orderStatus = "pending", paymentStatus = "unpaid", paymentMethod = "";
@@ -714,7 +717,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     public void updatePage() {
         binding.scroll.postDelayed(() -> binding.scroll.fullScroll(View.FOCUS_UP), 50);
-        Balance.update(this, binding.balance);
+        Balance.update(this, binding.balance, apiRepository);
         viewModel.getOrderHistory();
         viewModel.getOrderDetails();
     }

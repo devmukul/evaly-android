@@ -18,11 +18,9 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityChangePasswordBinding;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
@@ -30,7 +28,6 @@ import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
-import retrofit2.Response;
 
 @AndroidEntryPoint
 public class ChangePasswordActivity extends BaseActivity {
@@ -171,7 +168,7 @@ public class ChangePasswordActivity extends BaseActivity {
             public void onAuthError(boolean logout) {
 
                 if (logout)
-                    AppController.logout(ChangePasswordActivity.this);
+                    AppController.getInstance().logout(ChangePasswordActivity.this);
                 else
                     updatePassword();
             }
@@ -196,7 +193,7 @@ public class ChangePasswordActivity extends BaseActivity {
                         String token = response.get("access_token").getAsString();
                         preferenceRepository.saveToken(token);
                         preferenceRepository.saveRefreshToken(response.get("refresh_token").getAsString());
-                        Balance.updateUserInfo(ChangePasswordActivity.this, true);
+                        Balance.updateUserInfo(ChangePasswordActivity.this, true, apiRepository);
                         ToastUtils.show("Successfully signed in.");
                         break;
                     default:

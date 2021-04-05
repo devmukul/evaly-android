@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
 
-import bd.com.evaly.evalyshop.data.remote.ApiRepository;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 
 public class NewsfeedPostDataFactory extends DataSource.Factory {
 

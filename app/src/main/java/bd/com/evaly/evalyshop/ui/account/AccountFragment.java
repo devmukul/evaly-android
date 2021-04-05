@@ -150,7 +150,7 @@ public class AccountFragment extends BaseFragment<FragmentAccountBinding, Accoun
         });
 
         binding.toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
-            AppController.logout(getActivity());
+            AppController.getInstance().logout(getActivity());
             return false;
         });
         binding.toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());

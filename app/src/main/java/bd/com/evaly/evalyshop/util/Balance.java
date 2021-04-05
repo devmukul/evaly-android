@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoDao;
 import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoEntity;
@@ -17,50 +18,15 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 
 
 public class Balance {
 
-    public static void update(Activity context, boolean openDashboard) {
 
-
-        AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
-                JsonObject data = response.getAsJsonObject("data");
-                CredentialManager.setBalance(data.get("balance").getAsDouble());
-
-                if (openDashboard) {
-                    Intent intent = new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("from", "signin");
-                    context.startActivity(intent);
-                    try {
-                        context.finishAffinity();
-                    } catch (Exception ignored) {
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-    }
-
-
-    public static void updateUserInfo(Activity context, boolean openDashboard) {
-        AuthApiHelper.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+    public static void updateUserInfo(Activity context, boolean openDashboard, ApiRepository apiRepository) {
+        apiRepository.getUserProfile(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
                 CredentialManager.saveUserData(response.getData());
@@ -97,15 +63,15 @@ public class Balance {
             @Override
             public void onAuthError(boolean logout) {
                 if (!logout)
-                    updateUserInfo(context, openDashboard);
+                    updateUserInfo(context, openDashboard, apiRepository);
             }
         });
 
     }
 
-    public static void update(Activity context, TextView textView) {
+    public static void update(Activity context, TextView textView, ApiRepository apiRepository) {
 
-        AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 response = response.getAsJsonObject("data");

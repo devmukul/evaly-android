@@ -24,7 +24,7 @@ public class TokenInterceptor implements Interceptor {
         Request originalRequest = chain.request();
         if (!preferenceRepository.getToken().isEmpty()) {
             Request.Builder builder = originalRequest.newBuilder();
-            builder.addHeader("Authorization", "Bearer " + preferenceRepository.getToken());
+            builder.addHeader("Authorization", preferenceRepository.getToken());
             Request request = builder.build();
             return chain.proceed(request);
         }

@@ -21,7 +21,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.ItemCampaignProductCategoryBinding;
 import bd.com.evaly.evalyshop.databinding.ItemCampaignProductCategoryListBinding;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
 import bd.com.evaly.evalyshop.util.Utils;

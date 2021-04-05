@@ -10,23 +10,25 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.refundSettlement.OtpResponse;
 import bd.com.evaly.evalyshop.models.refundSettlement.RefundSettlementResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class PreOtpViewModel extends ViewModel {
 
+    private ApiRepository apiRepository;
     private String requestId = "";
     protected MutableLiveData<RefundSettlementResponse> settlementResponse = new MutableLiveData<>();
 
     @Inject
-    public PreOtpViewModel() {
+    public PreOtpViewModel(ApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
         generateOtp();
     }
 
     public void generateOtp() {
-        AuthApiHelper.generateOtp(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<OtpResponse>, String>() {
+        apiRepository.generateOtp(CredentialManager.getToken(), new ResponseListenerAuth<CommonDataResponse<OtpResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<OtpResponse> response, int statusCode) {
                 ToastUtils.show("An OTP has been sent to your phone number");
@@ -50,7 +52,7 @@ public class PreOtpViewModel extends ViewModel {
             generateOtp();
             ToastUtils.show("Please try again");
         }
-        AuthApiHelper.getSettlementAccounts(CredentialManager.getToken(), otp, requestId, new ResponseListenerAuth<CommonDataResponse<RefundSettlementResponse>, String>() {
+        apiRepository.getSettlementAccounts(CredentialManager.getToken(), otp, requestId, new ResponseListenerAuth<CommonDataResponse<RefundSettlementResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<RefundSettlementResponse> response, int statusCode) {
                 settlementResponse.setValue(response.getData());

@@ -10,7 +10,6 @@ import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ItemVariationSizeBinding;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributeValuesItem;
 import bd.com.evaly.evalyshop.util.BindingUtils;

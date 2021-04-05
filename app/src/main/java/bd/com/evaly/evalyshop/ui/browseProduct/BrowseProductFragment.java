@@ -11,10 +11,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.tabs.TabLayout;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentProductBrowseBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.browseProduct.controller.BrowseProductController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
@@ -26,7 +29,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class BrowseProductFragment extends BaseFragment<FragmentProductBrowseBinding, BrowseProductViewModel> implements BrowseProductController.ClickListener, SwipeRefreshLayout.OnRefreshListener {
-
+    @Inject
+    ApiRepository apiRepository;
     private BrowseProductController controller;
     private RecyclerView.LayoutManager layoutManager;
     private PaginationScrollListener paginationScrollListener;
@@ -60,7 +64,7 @@ public class BrowseProductFragment extends BaseFragment<FragmentProductBrowseBin
     }
 
     private void initHeader() {
-        new InitializeActionBar(binding.headerLogo, getActivity(), "browse", mainViewModel);
+        new InitializeActionBar(binding.headerLogo, getActivity(), "browse", mainViewModel, apiRepository);
         binding.homeSearch.setOnClickListener(view1 -> navController.navigate(R.id.globalSearchFragment));
     }
 

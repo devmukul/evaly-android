@@ -36,6 +36,7 @@ import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
@@ -51,7 +52,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewModel> implements SwipeRefreshLayout.OnRefreshListener {
-
+    @Inject
+    ApiRepository apiRepository;
     @Inject
     RecommenderViewModel recommenderViewModel;
     long startTime = 0;
@@ -97,7 +99,7 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
 
     private void initHeader() {
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-        new InitializeActionBar(binding.appBarLayout.headerLogo, getActivity(), "shop", mainViewModel);
+        new InitializeActionBar(binding.appBarLayout.headerLogo, getActivity(), "shop", mainViewModel, apiRepository);
         binding.appBarLayout.homeSearch.setOnClickListener(view12 -> {
             Bundle bundle = new Bundle();
             bundle.putString("shop_slug", slug);

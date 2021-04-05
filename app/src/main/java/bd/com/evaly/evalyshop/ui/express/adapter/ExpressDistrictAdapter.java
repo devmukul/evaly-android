@@ -4,17 +4,14 @@ package bd.com.evaly.evalyshop.ui.express.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.RecyclerViewOnItemClickListener;
 
 public class ExpressDistrictAdapter extends RecyclerView.Adapter<ExpressDistrictAdapter.MyViewHolder> {

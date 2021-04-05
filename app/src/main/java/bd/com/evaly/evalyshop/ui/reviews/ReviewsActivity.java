@@ -37,21 +37,26 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.reviews.adapter.ReviewsAdapter;
-import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
 import bd.com.evaly.evalyshop.util.reviewratings.RatingReviews;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class ReviewsActivity extends AppCompatActivity {
 
+    @Inject
+    ApiRepository apiRepository;
     private String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
     private String type = "shop";
     private String item_value = "1";
@@ -231,7 +236,7 @@ public class ReviewsActivity extends AppCompatActivity {
     public void getReviews(String slug) {
 
         progressBar.setVisibility(View.VISIBLE);
-        ReviewsApiHelper.getReviews(CredentialManager.getToken(), slug, currentPage, 20, isShop, new ResponseListenerAuth<CommonDataResponse<JsonObject>, String>() {
+        apiRepository.getReviews(CredentialManager.getToken(), slug, currentPage, 20, isShop, new ResponseListenerAuth<CommonDataResponse<JsonObject>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<JsonObject> response, int statusCode) {
                 progressBar.setVisibility(View.INVISIBLE);
@@ -276,7 +281,7 @@ public class ReviewsActivity extends AppCompatActivity {
     public void getRatings(String slug) {
 
         progressBar.setVisibility(View.VISIBLE);
-        ReviewsApiHelper.getReviewSummary(CredentialManager.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getReviewSummary(CredentialManager.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 response = response.getAsJsonObject("data");
@@ -307,7 +312,7 @@ public class ReviewsActivity extends AppCompatActivity {
         parameters.addProperty("review_message", rating_text);
         parameters.addProperty("rating", rating_value);
 
-        ReviewsApiHelper.postReview(CredentialManager.getToken(), slug, parameters, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postReview(CredentialManager.getToken(), slug, parameters, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 progressDialog.hideDialog();
@@ -342,7 +347,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
     public void checkEligibility(String slug) {
 
-        ReviewsApiHelper.checkReviewEligibility(CredentialManager.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.checkReviewEligibility(CredentialManager.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 boolean isEligible = false;

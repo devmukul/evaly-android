@@ -15,10 +15,10 @@ import java.util.Calendar;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 
@@ -27,9 +27,10 @@ public class InitializeActionBar {
     private int hot_number = 0;
     private TextView ui_hot;
     private Activity context;
+    private ApiRepository apiRepository;
 
-    public InitializeActionBar(LinearLayout root, Activity context, String type, MainViewModel mainViewModel) {
-
+    public InitializeActionBar(LinearLayout root, Activity context, String type, MainViewModel mainViewModel, ApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
         this.context = context;
         // root.bringToFront();
         ImageView menuBtn = root.findViewById(R.id.menuBtn);
@@ -70,7 +71,7 @@ public class InitializeActionBar {
             return;
         }
 
-        ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 updateHotCount(response.getCount());
@@ -87,7 +88,7 @@ public class InitializeActionBar {
             public void onAuthError(boolean logout) {
                 if (!logout)
                     getNotificationCount();
-                else if (context != null) AppController.logout(context);
+                else if (context != null) AppController.getInstance().logout(context);
             }
         });
 
