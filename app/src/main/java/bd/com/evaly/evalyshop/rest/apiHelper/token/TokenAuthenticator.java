@@ -38,7 +38,7 @@ public class TokenAuthenticator implements Authenticator {
             loginRequest.put("refresh_token", preferencesHelper.getRefreshToken());
             loginRequest.put("access_token", preferencesHelper.getToken());
 
-            retrofit2.Response<JsonObject> refreshApiResponse = apiService.refreshToken(preferencesHelper.getToken(), loginRequest).execute();
+            retrofit2.Response<JsonObject> refreshApiResponse = apiService.refreshToken(loginRequest).execute();
             if (refreshApiResponse.code() != 401) {
                 if (refreshApiResponse.body() != null && !response.request().url().toString().contains("ecaptcha")) {
                     JsonObject loginResponse = refreshApiResponse.body();

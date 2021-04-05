@@ -88,12 +88,12 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme_NoActionBar);
-        super.onCreate(savedInstanceState);
-        if (preferenceRepository.isDarkMode())
+        if (AppController.getInstance().getPreferenceRepository().isDarkMode())
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         else
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        setTheme(R.style.AppTheme_NoActionBar);
+        super.onCreate(savedInstanceState);
 
         if (preferenceRepository.getLanguage().equalsIgnoreCase("bn"))
             changeLanguage("BN");

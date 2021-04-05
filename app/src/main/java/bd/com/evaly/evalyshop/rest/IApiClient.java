@@ -111,19 +111,19 @@ import retrofit2.http.Url;
 public interface IApiClient {
 
     @POST(UrlUtils.DOMAIN + "eauth/api/v2/epay/set-bkash-settlement-account")
-    Call<CommonDataResponse<RefundSettlementResponse>> saveSettlementBkashAccount(@Header("Authorizationn") String token, @Body MFSAccountRequest body);
+    Call<CommonDataResponse<RefundSettlementResponse>> saveSettlementBkashAccount(@Body MFSAccountRequest body);
 
     @POST(UrlUtils.DOMAIN + "eauth/api/v2/epay/set-nagad-settlement-account")
-    Call<CommonDataResponse<RefundSettlementResponse>> saveSettlementNagadAccount(@Header("Authorizationn") String token, @Body MFSAccountRequest body);
+    Call<CommonDataResponse<RefundSettlementResponse>> saveSettlementNagadAccount(@Body MFSAccountRequest body);
 
     @POST(UrlUtils.DOMAIN + "eauth/api/v2/epay/set-bank-settlement-account")
-    Call<CommonDataResponse<RefundSettlementResponse>> saveSettlementBankAccount(@Header("Authorizationn") String token, @Body BankAccountRequest body);
+    Call<CommonDataResponse<RefundSettlementResponse>> saveSettlementBankAccount(@Body BankAccountRequest body);
 
     @POST(UrlUtils.DOMAIN + "eauth/api/v2/epay/get-settlement-accounts")
-    Call<CommonDataResponse<RefundSettlementResponse>> getSettlementAccounts(@Header("Authorizationn") String token, @Body HashMap<String, String> body);
+    Call<CommonDataResponse<RefundSettlementResponse>> getSettlementAccounts(@Body HashMap<String, String> body);
 
     @GET(UrlUtils.DOMAIN + "eauth/api/v2/common/epay/generate-otp")
-    Call<CommonDataResponse<OtpResponse>> generateOtp(@Header("Authorizationn") String token);
+    Call<CommonDataResponse<OtpResponse>> generateOtp();
 
     @POST(UrlUtils.BASE_SEARCH + "product/search")
     Call<CommonDataResponse<ProductSearchResponse>> searchProducts(@Body SearchRequest body, @Query("page") int page);
@@ -132,54 +132,44 @@ public interface IApiClient {
     Call<CommonDataResponse<List<LocationResponse>>> getLocations(@Query("parent") String parent1);
 
     @GET(UrlUtils.BASE_CART + "carts/users/evaly")
-    Call<CommonDataResponse<CartHolderModel>> getCartList(@Header("Authorizationn") String token);
+    Call<CommonDataResponse<CartHolderModel>> getCartList();
 
     @POST(UrlUtils.BASE_CART + "carts")
-    Call<CommonDataResponse<CartHolderModel>> syncCartList(@Header("Authorizationn") String token,
-                                                           @Body CartHolderModel body);
+    Call<CommonDataResponse<CartHolderModel>> syncCartList(@Body CartHolderModel body);
 
     @POST(UrlUtils.BASE_CATALOG + "orders/checkout/buckets")
-    Call<CommonDataResponse<List<AttachmentCheckResponse>>> isAttachmentRequired(@Header("Authorizationn") String token,
-                                                                                 @Body List<Integer> list);
+    Call<CommonDataResponse<List<AttachmentCheckResponse>>> isAttachmentRequired(@Body List<Integer> list);
 
     @GET(UrlUtils.DOMAIN + "ecaptcha/auth/init")
     Call<CommonDataResponse<CaptchaResponse>> getCaptcha();
 
     @GET(UrlUtils.DOMAIN + "order-request-go/api/v1/order-requests/get-orders")
-    Call<CommonDataResponse<List<OrderRequestResponse>>> getOrderRequests(@Header("Authorizationn") String token,
-                                                                          @Query("page") int page);
+    Call<CommonDataResponse<List<OrderRequestResponse>>> getOrderRequests(@Query("page") int page);
 
     // appointment
 
     @GET(BuildConfig.APPOINTMENT_URL + "common/comments")
-    Call<CommonDataResponse<List<AppointmentCommentResponse>>> getAppointmentCommentList(@Header("Authorizationn") String token,
-                                                                                         @Query("appointment_id") String appointmentId,
+    Call<CommonDataResponse<List<AppointmentCommentResponse>>> getAppointmentCommentList(@Query("appointment_id") String appointmentId,
                                                                                          @Query("offset") int page);
 
     @POST(BuildConfig.APPOINTMENT_URL + "common/comments")
-    Call<CommonDataResponse<AppointmentCommentResponse>> createAppointmentComment(@Header("Authorizationn") String token,
-                                                                                  @Body AppointmentCommentRequest body);
+    Call<CommonDataResponse<AppointmentCommentResponse>> createAppointmentComment(@Body AppointmentCommentRequest body);
 
 
     @GET(BuildConfig.APPOINTMENT_URL + "time-slots/{date}")
-    Call<CommonDataResponse<List<AppointmentTimeSlotResponse>>> getAppointmentTimeSlotList(@Header("Authorizationn") String token,
-                                                                                           @Path("date") String date);
+    Call<CommonDataResponse<List<AppointmentTimeSlotResponse>>> getAppointmentTimeSlotList(@Path("date") String date);
 
     @GET(BuildConfig.APPOINTMENT_URL + "users/categories")
-    Call<CommonDataResponse<List<AppointmentCategoryResponse>>> getAppointmentCategoryList(@Header("Authorizationn") String token,
-                                                                                           @Query("limit") int limit);
+    Call<CommonDataResponse<List<AppointmentCategoryResponse>>> getAppointmentCategoryList(@Query("limit") int limit);
 
     @GET(BuildConfig.APPOINTMENT_URL + "users/appointments")
-    Call<CommonDataResponse<List<AppointmentResponse>>> getAppointmentList(@Header("Authorizationn") String token,
-                                                                           @Query("offset") int page);
+    Call<CommonDataResponse<List<AppointmentResponse>>> getAppointmentList(@Query("offset") int page);
 
     @POST(BuildConfig.APPOINTMENT_URL + "users/appointments")
-    Call<CommonDataResponse<AppointmentResponse>> createAppointment(@Header("Authorizationn") String token,
-                                                                    @Body AppointmentRequest body);
+    Call<CommonDataResponse<AppointmentResponse>> createAppointment(@Body AppointmentRequest body);
 
     @PUT(BuildConfig.APPOINTMENT_URL + "users/appointments/{id}/cancel")
-    Call<CommonDataResponse<AppointmentResponse>> cancelAppointment(@Header("Authorizationn") String token,
-                                                                    @Path("id") String id);
+    Call<CommonDataResponse<AppointmentResponse>> cancelAppointment(@Path("id") String id);
 
     //TabsItem
 
@@ -255,37 +245,30 @@ public interface IApiClient {
     // chat
 
     @GET("https://" + Constants.XMPP_DOMAIN + "/rest/messages/unread-messages/count/{username}")
-    Call<CommonDataResponse<String>> getUnreadedMessageCount(@Header("Authorizationn") String token,
-                                                             @Path("username") String username);
+    Call<CommonDataResponse<String>> getUnreadedMessageCount(@Path("username") String username);
 
     // issue ticket
     @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/categories/customer")
-    Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Header("Authorizationn") String token,
-                                                                              @Query("order_status") String orderStatus,
+    Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Query("order_status") String orderStatus,
                                                                               @Query("context") String context,
                                                                               @Query("limit") int limit);
 
     @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/evaly")
-    Call<CommonDataResponse<List<IssueListModel>>> getIssueTicketList(@Header("Authorizationn") String token,
-                                                                      @Query("invoice_no") String invoice,
+    Call<CommonDataResponse<List<IssueListModel>>> getIssueTicketList(@Query("invoice_no") String invoice,
                                                                       @Query("offset") int page);
 
     @PATCH(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/{tickerId}")
-    Call<CommonDataResponse<IssueListModel>> resolveIssueTicketStatus(@Header("Authorizationn") String token,
-                                                                      @Body HashMap<String, String> body,
+    Call<CommonDataResponse<IssueListModel>> resolveIssueTicketStatus(@Body HashMap<String, String> body,
                                                                       @Path("tickerId") int id);
 
     @POST(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/evaly")
-    Call<CommonDataResponse<IssueListModel>> createIssueTicket(@Header("Authorizationn") String token,
-                                                               @Body IssueCreateBody body);
+    Call<CommonDataResponse<IssueListModel>> createIssueTicket(@Body IssueCreateBody body);
 
     @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/comments/{ticket_id}")
-    Call<CommonDataResponse<List<IssueTicketCommentModel>>> getIssueTicketComment(@Header("Authorizationn") String token,
-                                                                                  @Path("ticket_id") int ticketId);
+    Call<CommonDataResponse<List<IssueTicketCommentModel>>> getIssueTicketComment(@Path("ticket_id") int ticketId);
 
     @POST(UrlUtils.DOMAIN + "evaly-issue/api/v1/tickets/customer/comments/{ticket_id}")
-    Call<CommonDataResponse<IssueTicketCommentModel>> createIssueTicketComment(@Header("Authorizationn") String token,
-                                                                               @Body IssueCommentBody body,
+    Call<CommonDataResponse<IssueTicketCommentModel>> createIssueTicketComment(@Body IssueCommentBody body,
                                                                                @Path("ticket_id") int tickerId);
 
 
@@ -302,99 +285,83 @@ public interface IApiClient {
     Call<JsonObject> login(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.DOMAIN_EAUTH + "change-password")
-    Call<JsonObject> changePassword(@Header("Authorizationn") String token,
-                                    @Body HashMap<String, String> data);
+    Call<JsonObject> changePassword(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.DOMAIN_EAUTH + "logout")
-    Call<JsonObject> logout(@Header("Authorizationn") String token);
+    Call<JsonObject> logout();
 
     @GET(UrlUtils.BASE_URL_AUTH + "user-info-pay/{username}/")
-    Call<JsonObject> getUserInfoPay(@Header("Authorizationn") String token,
-                                    @Path("username") String username);
+    Call<JsonObject> getUserInfoPay(@Path("username") String username);
 
     @GET(UrlUtils.DOMAIN + "epay-reader/api/v1/user/balance")
-    Call<CommonDataResponse<BalanceResponse>> getBalance(@Header("Authorizationn") String token);
+    Call<CommonDataResponse<BalanceResponse>> getBalance();
 
     @GET(UrlUtils.DOMAIN_EAUTH + "profile")
-    Call<CommonDataResponse<UserModel>> getUserProfile(@Header("Authorizationn") String token);
+    Call<CommonDataResponse<UserModel>> getUserProfile();
 
     @PUT(UrlUtils.DOMAIN_EAUTH + "profile")
-    Call<CommonDataResponse<UserModel>> setUserData(@Header("Authorizationn") String token,
-                                                    @Body HashMap<String, String> data);
+    Call<CommonDataResponse<UserModel>> setUserData(@Body HashMap<String, String> data);
 
     @PUT(UrlUtils.DOMAIN_EAUTH + "profile")
-    Call<CommonDataResponse<UserModel>> setUserData(@Header("Authorizationn") String token,
-                                                    @Body JsonObject body);
+    Call<CommonDataResponse<UserModel>> setUserData(@Body JsonObject body);
 
     @POST(UrlUtils.BASE_URL_AUTH + "add-user-info/")
-    Call<CommonDataResponse<UserInfoResponse>> addUserData(@Header("Authorizationn") String token,
-                                                           @Body HashMap<String, String> data);
+    Call<CommonDataResponse<UserInfoResponse>> addUserData(@Body HashMap<String, String> data);
 
     @GET(UrlUtils.BASE_URL_AUTH + "user-info-details/")
-    Call<CommonDataResponse<UserInfoResponse>> getUserInfo(@Header("Authorizationn") String token);
+    Call<CommonDataResponse<UserInfoResponse>> getUserInfo();
 
     @GET(UrlUtils.BASE_URL_ADDRESS + "get-addresses")
-    Call<CommonDataResponse<AddressWholeResponse>> getAddressList(@Header("Authorizationn") String token);
+    Call<CommonDataResponse<AddressWholeResponse>> getAddressList();
 
     @PATCH(UrlUtils.BASE_URL_ADDRESS + "update-address/{id}")
-    Call<CommonDataResponse<AddressResponse>> updateAddress(@Header("Authorizationn") String token,
-                                                            @Path("id") String id,
+    Call<CommonDataResponse<AddressResponse>> updateAddress(@Path("id") String id,
                                                             @Body AddressRequest body);
 
     @POST(UrlUtils.BASE_URL_ADDRESS + "add-new-address")
-    Call<CommonDataResponse<AddressResponse>> addAddress(@Header("Authorizationn") String token,
-                                                         @Body AddressRequest body);
+    Call<CommonDataResponse<AddressResponse>> addAddress(@Body AddressRequest body);
 
     @DELETE(UrlUtils.BASE_URL_ADDRESS + "set-primary-address/{id}")
-    Call<CommonDataResponse> setPrimaryAddress(@Header("Authorizationn") String token,
-                                               @Path("id") int id);
+    Call<CommonDataResponse> setPrimaryAddress(@Path("id") int id);
 
     @DELETE(UrlUtils.BASE_URL_ADDRESS + "remove-address/{id}")
-    Call<CommonDataResponse> removeAddress(@Header("Authorizationn") String token,
-                                           @Path("id") String id);
+    Call<CommonDataResponse> removeAddress(@Path("id") String id);
 
     @POST(UrlUtils.UPDATE_VCARD)
     Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.DOMAIN_EAUTH + "token/refresh")
-    Call<JsonObject> refreshToken(@Header("Authorizationn") String token,
-                                  @Body HashMap<String, String> data);
+    Call<JsonObject> refreshToken(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.CHANGE_XMPP_PASSWORD)
     Call<JsonPrimitive> changeXmppPassword(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.XMPP_REGISTER)
-    Call<JsonObject> registerXmpp(@Header("Authorizationn") String token,
-                                  @Body HashMap<String, String> data);
+    Call<JsonObject> registerXmpp(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.ADD_ROSTER)
     Call<JsonPrimitive> addRoster(@Body HashMap<String, String> data);
 
     @GET(UrlUtils.INVITATION_LIST + "{phone}/")
-    Call<JsonArray> getInvitationList(@Header("Authorizationn") String token,
-                                      @Path("phone") String phone);
+    Call<JsonArray> getInvitationList(@Path("phone") String phone);
 
 
     @POST(UrlUtils.SEND_CUSTOM_MESSAGE)
-    Call<JsonObject> sendCustomMessage(@Header("Authorizationn") String token,
-                                       @Body HashMap<String, String> data);
+    Call<JsonObject> sendCustomMessage(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.UPDATE_PRODUCT_STATUS)
-    Call<JsonObject> updateProductStatus(@Header("Authorizationn") String token,
-                                         @Body HashMap<String, String> data);
+    Call<JsonObject> updateProductStatus(@Body HashMap<String, String> data);
 
     @Multipart
     @POST(UrlUtils.IMAGE_UPLOAD)
-    Call<JsonObject> imageUpload(@Header("Authorizationn") String token,
-                                 @Header("Content_Type") String contentType,
+    Call<JsonObject> imageUpload(@Header("Content_Type") String contentType,
                                  @Part MultipartBody.Part image);
 
     @GET(UrlUtils.CHECK_UPDATE)
     Call<JsonObject> checkUpdate();
 
     @GET(UrlUtils.EVALY_USERS)
-    Call<JsonObject> searchEvalyUsers(@Header("Authorizationn") String token,
-                                      @Query("search") String search,
+    Call<JsonObject> searchEvalyUsers(@Query("search") String search,
                                       @Query("page") int page);
 
     @POST(UrlUtils.NEWS_FEED)
@@ -421,18 +388,15 @@ public interface IApiClient {
     // balance, transaction
 
     @GET(UrlUtils.DOMAIN + "pay/wallet-history/{username}")
-    Call<CommonDataResponse<List<TransactionItem>>> getTransactionHistory(@Header("Authorizationn") String token,
-                                                                          @Path("username") String username,
+    Call<CommonDataResponse<List<TransactionItem>>> getTransactionHistory(@Path("username") String username,
                                                                           @Query("page") int page);
 
 
     @GET(UrlUtils.DOMAIN + "pay/apply/cashback-balance/{username}/")
-    Call<JsonObject> claimCashBack(@Header("Authorizationn") String header,
-                                   @Path("username") String username);
+    Call<JsonObject> claimCashBack(@Path("username") String username);
 
     @PUT(UrlUtils.DOMAIN + "pay/withdraw_refund_request/{invoice}")
-    Call<CommonDataResponse> withdrawRefundRequest(@Header("Authorizationn") String header,
-                                                   @Path("invoice") String invoice);
+    Call<CommonDataResponse> withdrawRefundRequest(@Path("invoice") String invoice);
 
     // product APIs
 
@@ -493,20 +457,17 @@ public interface IApiClient {
     // with token
 
     @GET(UrlUtils.BASE_CATALOG + "shop-items/{shopSlug}/items")
-    Call<ShopDetailsModel> getShopDetails(@Header("Authorizationn") String token,
-                                          @Path("shopSlug") String shopSlug,
+    Call<ShopDetailsModel> getShopDetails(@Path("shopSlug") String shopSlug,
                                           @Query("page") int page,
                                           @Query("limit") int limit,
                                           @Query("category_slug") String categorySlug,
                                           @Query("search") String search);
 
     @GET(UrlUtils.BASE_CATALOG + "shops/{shopSlug}")
-    Call<CommonDataResponse<ShopDetailsResponse>> getShopDetails(@Header("Authorizationn") String token,
-                                                                 @Path("shopSlug") String shopSlug);
+    Call<CommonDataResponse<ShopDetailsResponse>> getShopDetails(@Path("shopSlug") String shopSlug);
 
     @GET(UrlUtils.BASE_CATALOG + "campaign/shops/{shopSlug}")
-    Call<CommonDataResponse<ShopDetailsResponse>> getCampaignShopDetails(@Header("Authorizationn") String token,
-                                                                         @Path("shopSlug") String shopSlug);
+    Call<CommonDataResponse<ShopDetailsResponse>> getCampaignShopDetails(@Path("shopSlug") String shopSlug);
 
     @GET(UrlUtils.BASE_CATALOG + "campaign/products/categories")
     Call<CommonDataResponse<List<CampaignProductCategoryResponse>>> getCampaignProductCategories(@Query("category") String categorySlug,
@@ -516,8 +477,7 @@ public interface IApiClient {
                                                                                                  @Query("limit") int limit);
 
     @GET(UrlUtils.CAMPAIGNS + "/{campaignSlug}/shops/{shopSlug}/items")
-    Call<ShopDetailsModel> getCampaignShopDetails(@Header("Authorizationn") String token,
-                                                  @Path("campaignSlug") String campaignSlug,
+    Call<ShopDetailsModel> getCampaignShopDetails(@Path("campaignSlug") String campaignSlug,
                                                   @Path("shopSlug") String shopSlug,
                                                   @Query("page") int page,
                                                   @Query("limit") int limit,
@@ -598,18 +558,15 @@ public interface IApiClient {
 
     // Order APIs
     @GET(UrlUtils.ORDERS)
-    Call<CommonResultResponse<List<OrderListItem>>> getOrderList(@Header("Authorizationn") String token,
-                                                                 @Query("page") int page,
+    Call<CommonResultResponse<List<OrderListItem>>> getOrderList(@Query("page") int page,
                                                                  @Query("order_status") String orderStatus);
 
     @PUT(UrlUtils.BASE_URL + "orders/customer/cancel-order/{invoice_no}/")
-    Call<CommonDataResponse> cancelOrder(@Header("Authorizationn") String token,
-                                         @Path("invoice_no") String invoiceNo,
+    Call<CommonDataResponse> cancelOrder(@Path("invoice_no") String invoiceNo,
                                          @Body HashMap<String, String> body);
 
     @PUT(UrlUtils.BASE_URL + "orders/customer/deliver-order/{invoice_no}/")
-    Call<CommonDataResponse> confirmDelivery(@Header("Authorizationn") String token,
-                                             @Path("invoice_no") String invoiceNo);
+    Call<CommonDataResponse> confirmDelivery(@Path("invoice_no") String invoiceNo);
 
 
     // brand
@@ -621,34 +578,28 @@ public interface IApiClient {
     // Notification
 
     @GET(UrlUtils.DOMAIN + "{notificationSource}/notifications_count/")
-    Call<NotificationCount> getNotificationCount(@Header("Authorizationn") String token,
-                                                 @Path("notificationSource") String notificationType);
+    Call<NotificationCount> getNotificationCount(@Path("notificationSource") String notificationType);
 
     // shop releated
 
     @GET
-    Call<ShopDetailsModel> getShopDetailsItems(@Header("Authorizationn") String token,
-                                               @Url String url);
+    Call<ShopDetailsModel> getShopDetailsItems(@Url String url);
 
     @POST(UrlUtils.BASE_URL + "shop-subscriptions")
-    Call<JsonObject> subscribeToShop(@Header("Authorizationn") String token,
-                                     @Body HashMap<String, String> shopSlug);
+    Call<JsonObject> subscribeToShop(@Body HashMap<String, String> shopSlug);
 
 
     @DELETE(UrlUtils.BASE_URL + "unsubscribe-shop/{shop_slug}/")
-    Call<JsonObject> unsubscribeShop(@Header("Authorizationn") String token,
-                                     @Path("shop_slug") String shopSlug);
+    Call<JsonObject> unsubscribeShop(@Path("shop_slug") String shopSlug);
 
     @GET(UrlUtils.DOMAIN + "ratings/api/v1/public/overview")
-    Call<JsonObject> getShopReviews(@Header("Authorizationn") String token,
-                                    @Query("slug") String slug);
+    Call<JsonObject> getShopReviews(@Query("slug") String slug);
 
     @GET(UrlUtils.DOMAIN + "ratings/api/v1/public/overview")
-    Call<CommonDataResponse<ReviewSummaryModel>> getReviews(@Header("Authorizationn") String token,
-                                                            @Query("slug") String slug);
+    Call<CommonDataResponse<ReviewSummaryModel>> getReviews(@Query("slug") String slug);
 
     @GET(UrlUtils.BASE_URL + "shop-subscriptions")
-    Call<JsonObject> getFollowedShops(@Header("Authorizationn") String token);
+    Call<JsonObject> getFollowedShops();
 
     // referral
 
@@ -661,246 +612,200 @@ public interface IApiClient {
     // order apis
 
     @POST(UrlUtils.DOMAIN + "order-request-go/api/v1/order-requests/place-order")
-    Call<JsonObject> placeOrder(@Header("Authorizationn") String token,
-                                @Body JsonObject body);
+    Call<JsonObject> placeOrder(@Body JsonObject body);
 
 
     @POST(UrlUtils.DOMAIN + "order-request-go/api/v1/order-requests/place-order")
-    Call<CommonDataResponse<List<JsonObject>>> placeOrder(@Header("Authorizationn") String token,
-                                                          @Body PlaceOrderItem body);
+    Call<CommonDataResponse<List<JsonObject>>> placeOrder(@Body PlaceOrderItem body);
 
     @GET(UrlUtils.BASE_URL + "custom/orders/{invoiceNo}/")
-    Call<OrderDetailsModel> getOrderDetails(@Header("Authorizationn") String token,
-                                            @Path("invoiceNo") String invoiceNo);
+    Call<OrderDetailsModel> getOrderDetails(@Path("invoiceNo") String invoiceNo);
 
 
     @POST(UrlUtils.BASE_URL + "orders/delivery-address/update/")
-    Call<CommonDataResponse<OrderDetailsModel>> updateOrderAddress(@Header("Authorizationn") String token,
-                                                                   @Body UpdateOrderAddressRequest body);
+    Call<CommonDataResponse<OrderDetailsModel>> updateOrderAddress(@Body UpdateOrderAddressRequest body);
 
     @GET(UrlUtils.BASE_URL + "orders/histories/{invoiceNo}/")
-    Call<JsonObject> getOrderHistories(@Header("Authorizationn") String token,
-                                       @Path("invoiceNo") String invoiceNo);
+    Call<JsonObject> getOrderHistories(@Path("invoiceNo") String invoiceNo);
 
     // gift card
 
     @POST(UrlUtils.DOMAIN + "pay/transactions/payment/order/gift-code/")
-    Call<JsonObject> payWithGiftCard(@Header("Authorizationn") String token,
-                                     @Body HashMap<String, String> body);
+    Call<JsonObject> payWithGiftCard(@Body HashMap<String, String> body);
 
     @GET(UrlUtils.DOMAIN + "cpn/gift-cards/custom/list")
     Call<CommonDataResponse<List<GiftCardListItem>>> getGiftCardList(@Query("page") int page);
 
     @POST(UrlUtils.DOMAIN + "cpn/gift-card-orders/place/")
-    Call<JsonObject> placeGiftCardOrder(@Header("Authorizationn") String token,
-                                        @Body JsonObject body);
+    Call<JsonObject> placeGiftCardOrder(@Body JsonObject body);
 
     @GET(UrlUtils.DOMAIN + "cpn/gift-cards/retrieve/{slug}")
     Call<JsonObject> getGiftCardDetails(@Path("slug") String slug);
 
     @GET(UrlUtils.DOMAIN + "cpn/gift-card-orders")
-    Call<CommonDataResponse<List<GiftCardListPurchasedItem>>> getPurchasedGiftCardList(@Header("Authorizationn") String token,
-                                                                                       @Query("show") String show,
+    Call<CommonDataResponse<List<GiftCardListPurchasedItem>>> getPurchasedGiftCardList(@Query("show") String show,
                                                                                        @Query("page") int page);
 
     @POST(UrlUtils.DOMAIN + "cpn/gift-card-orders/gift-code/retrieve")
-    Call<JsonObject> redeemGiftCard(@Header("Authorizationn") String token,
-                                    @Body HashMap<String, String> invoiceNo);
+    Call<JsonObject> redeemGiftCard(@Body HashMap<String, String> invoiceNo);
 
     // payment
 
     @POST(UrlUtils.DOMAIN + "pay/transactions/payment/order/")
-    Call<JsonObject> makePartialPayment(@Header("Authorizationn") String token,
-                                        @Body ParitalPaymentModel body);
+    Call<JsonObject> makePartialPayment(@Body ParitalPaymentModel body);
 
     @POST(UrlUtils.DOMAIN + "core/orders/payment/cod/")
-    Call<JsonObject> makeCashOnDelivery(@Header("Authorizationn") String token,
-                                        @Body HashMap<String, String> body);
+    Call<JsonObject> makeCashOnDelivery(@Body HashMap<String, String> body);
 
 
     @POST(UrlUtils.DOMAIN + "pay/pg")
-    Call<JsonObject> payViaCard(@Header("Authorizationn") String token,
-                                @Body HashMap<String, String> body);
+    Call<JsonObject> payViaCard(@Body HashMap<String, String> body);
 
     @POST(UrlUtils.DOMAIN + "pay/city-bank")
-    Call<JsonObject> payViaCityBank(@Header("Authorizationn") String token,
-                                    @Body HashMap<String, String> body);
+    Call<JsonObject> payViaCityBank(@Body HashMap<String, String> body);
 
     @POST(BuildConfig.WEB_URL + "sebl/payment")
-    Call<JsonObject> payViaSEBL(@Header("Authorizationn") String token,
-                                @Query("amount") String amount,
+    Call<JsonObject> payViaSEBL(@Query("amount") String amount,
                                 @Query("invoice") String invoice,
                                 @Query("token") String authToken,
                                 @Query("context_reference") String context);
 
     @POST(BuildConfig.NAGAD_URL)
-    Call<JsonObject> payViaNagad(@Header("Authorizationn") String token,
-                                 @Body HashMap<String, String> body);
+    Call<JsonObject> payViaNagad(@Body HashMap<String, String> body);
 
     @POST(UrlUtils.DOMAIN + "pay/bank_deposit/")
-    Call<JsonObject> payViaBank(@Header("Authorizationn") String token,
-                                @Body HashMap<String, String> body);
+    Call<JsonObject> payViaBank(@Body HashMap<String, String> body);
 
     // reviews
     @GET(UrlUtils.DOMAIN + "ratings/api/v1/public/all-reviews")
-    Call<CommonDataResponse<JsonObject>> getShopReviews(@Header("Authorizationn") String token,
-                                                        @Query("slug") String shopSlug,
+    Call<CommonDataResponse<JsonObject>> getShopReviews(@Query("slug") String shopSlug,
                                                         @Query("page") int page,
                                                         @Query("limit") int limit);
 
     @POST(UrlUtils.BASE_URL + "add-review/{shopSlug}/")
-    Call<JsonObject> postShopReview(@Header("Authorizationn") String token,
-                                    @Path("shopSlug") String slug,
+    Call<JsonObject> postShopReview(@Path("shopSlug") String slug,
                                     @Body JsonObject body);
 
     @GET(UrlUtils.BASE_URL + "review-eligibility/{shopSlug}/")
-    Call<JsonObject> checkShopReviewEligibility(@Header("Authorizationn") String token,
-                                                @Path("shopSlug") String slug);
+    Call<JsonObject> checkShopReviewEligibility(@Path("shopSlug") String slug);
 
 
     // product reviews
 
     @GET(UrlUtils.BASE_URL + "public/product-review-summary/{sku}")
-    Call<JsonObject> getProductReviewSummary(@Header("Authorizationn") String token,
-                                             @Path("sku") String sku);
+    Call<JsonObject> getProductReviewSummary(@Path("sku") String sku);
 
     @GET(UrlUtils.BASE_URL + "public/product-reviews/{slug}/")
-    Call<CommonDataResponse<List<ReviewItem>>> getProductReviews(@Header("Authorizationn") String token,
-                                                                 @Path("slug") String shopSlug,
+    Call<CommonDataResponse<List<ReviewItem>>> getProductReviews(@Path("slug") String shopSlug,
                                                                  @Query("page") int page,
                                                                  @Query("limit") int limit);
 
     @POST(UrlUtils.BASE_URL + "add-product-review/{slug}/")
-    Call<JsonObject> postProductReview(@Header("Authorizationn") String token,
-                                       @Path("slug") String slug,
+    Call<JsonObject> postProductReview(@Path("slug") String slug,
                                        @Body JsonObject body);
 
     @GET(UrlUtils.BASE_URL + "product-review-eligibility/{slug}/")
-    Call<JsonObject> checkProductReviewEligibility(@Header("Authorizationn") String token,
-                                                   @Path("slug") String slug);
+    Call<JsonObject> checkProductReviewEligibility(@Path("slug") String slug);
 
     // Newsfeed
 
     @GET
-    Call<JsonObject> getNewsfeedPosts(@Header("Authorizationn") String token,
-                                      @Url String url);
+    Call<JsonObject> getNewsfeedPosts(@Url String url);
 
 
     @GET
-    Call<CommonDataResponse<List<NewsfeedPost>>> getNewsfeedPostsList(@Header("Authorizationn") String token,
-                                                                      @Url String url);
+    Call<CommonDataResponse<List<NewsfeedPost>>> getNewsfeedPostsList(@Url String url);
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "posts/{post_id}")
-    Call<JsonObject> getNewsfeedPostDetails(@Header("Authorizationn") String token,
-                                            @Path("post_id") String postId);
+    Call<JsonObject> getNewsfeedPostDetails(@Path("post_id") String postId);
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "posts/{selectedPostId}/comments/{commentId}/replies")
-    Call<JsonObject> getNewsfeedReplies(@Header("Authorizationn") String token,
-                                        @Path("selectedPostId") String postId,
+    Call<JsonObject> getNewsfeedReplies(@Path("selectedPostId") String postId,
                                         @Path("commentId") int commentId,
                                         @Query("page") int page);
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "posts/{selectedPostId}/comments/{commentId}/replies")
-    Call<CommonDataResponse<List<CommentItem>>> getNewsfeedRepliesList(@Header("Authorizationn") String token,
-                                                                       @Path("selectedPostId") String postId,
+    Call<CommonDataResponse<List<CommentItem>>> getNewsfeedRepliesList(@Path("selectedPostId") String postId,
                                                                        @Path("commentId") int commentId,
                                                                        @Query("page") int page);
 
     @Multipart
     @POST(UrlUtils.IMAGE_UPLOAD)
-    Call<CommonDataResponse<ImageDataModel>> imageUploadNew(@Header("Authorizationn") String token,
-                                                            @Header("Content_Type") String contentType,
+    Call<CommonDataResponse<ImageDataModel>> imageUploadNew(@Header("Content_Type") String contentType,
                                                             @Part MultipartBody.Part image);
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "posts/{postId}/comments")
-    Call<JsonObject> getNewsfeedComments(@Header("Authorizationn") String token,
-                                         @Path("postId") String postId,
+    Call<JsonObject> getNewsfeedComments(@Path("postId") String postId,
                                          @Query("page") int page);
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "posts/{postId}/comments")
-    Call<CommonDataResponse<List<CommentItem>>> getNewsfeedCommentsList(@Header("Authorizationn") String token,
-                                                                        @Path("postId") String postId,
+    Call<CommonDataResponse<List<CommentItem>>> getNewsfeedCommentsList(@Path("postId") String postId,
                                                                         @Query("page") int page);
 
     @POST(UrlUtils.BASE_URL_NEWSFEED + "posts/{selectedPostID}/comments")
-    Call<JsonObject> postNewsfeedComment(@Header("Authorizationn") String token,
-                                         @Path("selectedPostID") String selectedPostID,
+    Call<JsonObject> postNewsfeedComment(@Path("selectedPostID") String selectedPostID,
                                          @Body JsonObject body);
 
     @POST(UrlUtils.BASE_URL_NEWSFEED + "posts/{selectedPostID}/comments/{selectedCommentID}/replies")
-    Call<JsonObject> postNewsfeedReply(@Header("Authorizationn") String token,
-                                       @Path("selectedPostID") String selectedPostID,
+    Call<JsonObject> postNewsfeedReply(@Path("selectedPostID") String selectedPostID,
                                        @Path("selectedCommentID") int selectedCommentID,
                                        @Body JsonObject body);
 
     @POST(UrlUtils.BASE_URL_NEWSFEED + "posts/{slug}/favorite")
-    Call<JsonObject> likeNewsfeedPost(@Header("Authorizationn") String token,
-                                      @Path("slug") String postSlug);
+    Call<JsonObject> likeNewsfeedPost(@Path("slug") String postSlug);
 
     @DELETE(UrlUtils.BASE_URL_NEWSFEED + "posts/{slug}/favorite")
-    Call<JsonObject> dislikeNewsfeedPost(@Header("Authorizationn") String token,
-                                         @Path("slug") String postSlug);
+    Call<JsonObject> dislikeNewsfeedPost(@Path("slug") String postSlug);
 
     @DELETE
-    Call<JsonObject> deleteNewsfeedItem(@Header("Authorizationn") String token,
-                                        @Url String url);
+    Call<JsonObject> deleteNewsfeedItem(@Url String url);
 
     @PUT(UrlUtils.BASE_URL_NEWSFEED + "posts/{postId}")
-    Call<JsonObject> approvePendingNewsfeedPost(@Header("Authorizationn") String token,
-                                                @Path("postId") String postId,
+    Call<JsonObject> approvePendingNewsfeedPost(@Path("postId") String postId,
                                                 @Body JsonObject body);
 
     @DELETE(UrlUtils.BASE_URL_NEWSFEED + "posts/{postId}")
-    Call<JsonObject> deletePendingNewsfeedPost(@Header("Authorizationn") String token,
-                                               @Path("postId") String postId,
+    Call<JsonObject> deletePendingNewsfeedPost(@Path("postId") String postId,
                                                @Body JsonObject body);
 
     @POST(UrlUtils.BASE_URL_NEWSFEED + "posts")
-    Call<JsonObject> createNewsfeedPost(@Header("Authorizationn") String token,
-                                        @Body CreatePostModel body);
+    Call<JsonObject> createNewsfeedPost(@Body CreatePostModel body);
 
     @PUT(UrlUtils.BASE_URL_NEWSFEED + "posts/{postSlug}")
-    Call<JsonObject> editNewsfeedPost(@Header("Authorizationn") String token,
-                                      @Body CreatePostModel body,
+    Call<JsonObject> editNewsfeedPost(@Body CreatePostModel body,
                                       @Path(("postSlug")) String postSlug);
 
     // newsfeed notifation
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "notifications")
-    Call<CommonResultResponse<List<NotificationItem>>> getNewsfeedNotification(@Header("Authorizationn") String token,
-                                                                               @Query("page") int page);
+    Call<CommonResultResponse<List<NotificationItem>>> getNewsfeedNotification(@Query("page") int page);
 
     @GET(UrlUtils.BASE_URL + "notifications/")
-    Call<CommonResultResponse<List<NotificationItem>>> getNotification(@Header("Authorizationn") String token,
-                                                                       @Query("page") int page);
+    Call<CommonResultResponse<List<NotificationItem>>> getNotification(@Query("page") int page);
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "update-notifications/")
-    Call<JsonObject> markNewsfeedNotificationAsRead(@Header("Authorizationn") String token);
+    Call<JsonObject> markNewsfeedNotificationAsRead();
 
     @GET(UrlUtils.BASE_URL + "update-notifications/")
-    Call<JsonObject> markNotificationAsRead(@Header("Authorizationn") String token);
+    Call<JsonObject> markNotificationAsRead();
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "notifications_count/")
-    Call<NotificationCount> getNewsfeedNotificationCount(@Header("Authorizationn") String token);
+    Call<NotificationCount> getNewsfeedNotificationCount();
 
     // refund
     @POST(UrlUtils.BASE_URL + "/orders/request-refund")
-    Call<CommonDataResponse<String>> postRequestRefund(@Header("Authorizationn") String token,
-                                                       @Body HashMap<String, String> body);
+    Call<CommonDataResponse<String>> postRequestRefund(@Body HashMap<String, String> body);
 
     @POST(UrlUtils.BASE_URL + "confirm/refund-request/{invoice}")
-    Call<CommonDataResponse<String>> postRequestRefundConfirmOTP(@Header("Authorizationn") String token,
-                                                                 @Body HashMap<String, Integer> body,
+    Call<CommonDataResponse<String>> postRequestRefundConfirmOTP(@Body HashMap<String, Integer> body,
                                                                  @Path("invoice") String slug);
 
 
     @GET(UrlUtils.DOMAIN + "pay/refund-eligibility/{invoice}")
-    Call<CommonDataResponse<String>> checkRefundEligibility(@Header("Authorizationn") String token,
-                                                            @Path("invoice") String slug);
+    Call<CommonDataResponse<String>> checkRefundEligibility(@Path("invoice") String slug);
 
     @DELETE(UrlUtils.DOMAIN + "pay/delete-refund-transaction/{invoice}")
-    Call<CommonDataResponse<String>> deleteRefundTransaction(@Header("Authorizationn") String token,
-                                                             @Path("invoice") String slug);
+    Call<CommonDataResponse<String>> deleteRefundTransaction(@Path("invoice") String slug);
 
 
     // auth 2.0
@@ -938,7 +843,6 @@ public interface IApiClient {
                                                                         @Query("search") String search);
 
     @GET(UrlUtils.BASE_URL + "delivery/orders/{invoice_no}/hero")
-    Call<DeliveryHeroResponse> getDeliveryHero(@Header("Authorizationn") String token,
-                                               @Path("invoice_no") String invoice);
+    Call<DeliveryHeroResponse> getDeliveryHero(@Path("invoice_no") String invoice);
 
 }

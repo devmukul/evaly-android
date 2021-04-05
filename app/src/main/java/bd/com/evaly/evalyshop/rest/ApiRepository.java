@@ -120,24 +120,24 @@ public class ApiRepository {
 
     public void saveSettlementMFSAccount(String type, MFSAccountRequest body, ResponseListenerAuth<CommonDataResponse<RefundSettlementResponse>, String> listener) {
         if (type.equalsIgnoreCase("bkash"))
-            apiHandler.createCall(apiService.saveSettlementBkashAccount(preferenceRepository.getToken(), body), listener);
+            apiHandler.createCall(apiService.saveSettlementBkashAccount(body), listener);
         else if (type.equalsIgnoreCase("nagad"))
-            apiHandler.createCall(apiService.saveSettlementNagadAccount(preferenceRepository.getToken(), body), listener);
+            apiHandler.createCall(apiService.saveSettlementNagadAccount(body), listener);
     }
 
     public void saveSettlementBankAccount(BankAccountRequest body, ResponseListenerAuth<CommonDataResponse<RefundSettlementResponse>, String> listener) {
-        apiHandler.createCall(apiService.saveSettlementBankAccount(preferenceRepository.getToken(), body), listener);
+        apiHandler.createCall(apiService.saveSettlementBankAccount(body), listener);
     }
 
     public void getSettlementAccounts(String token, String otp, String requestId, ResponseListenerAuth<CommonDataResponse<RefundSettlementResponse>, String> listener) {
         HashMap<String, String> body = new HashMap<>();
         body.put("otp", otp);
         body.put("request_id", requestId);
-        apiHandler.createCall(apiService.getSettlementAccounts(token, body), listener);
+        apiHandler.createCall(apiService.getSettlementAccounts(body), listener);
     }
 
     public void generateOtp(String token, ResponseListenerAuth<CommonDataResponse<OtpResponse>, String> listener) {
-        apiHandler.createCall(apiService.generateOtp(token), listener);
+        apiHandler.createCall(apiService.generateOtp(), listener);
     }
 
     public void getCaptcha(ResponseListenerAuth<CommonDataResponse<CaptchaResponse>, String> listener) {
@@ -164,49 +164,49 @@ public class ApiRepository {
     }
 
     public void registerXMPP(HashMap<String, String> data, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.registerXmpp(preferenceRepository.getToken(), data), listener);
+        apiHandler.createCall(apiService.registerXmpp(data), listener);
     }
 
     // user info pay
 
     public void getUserInfoPay(String token, String username, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.getUserInfoPay(token, username), listener);
+        apiHandler.createCall(apiService.getUserInfoPay(username), listener);
     }
 
     public void getUserProfile(String token, ResponseListenerAuth<CommonDataResponse<UserModel>, String> listener) {
-        apiHandler.createCall(apiService.getUserProfile(token), listener);
+        apiHandler.createCall(apiService.getUserProfile(), listener);
     }
 
     public void withdrawRefundRequest(String invoice, ResponseListenerAuth<CommonDataResponse, String> listener) {
-        apiHandler.createCall(apiService.withdrawRefundRequest(preferenceRepository.getToken(), invoice), listener);
+        apiHandler.createCall(apiService.withdrawRefundRequest(invoice), listener);
     }
 
     // change password
 
     public void changePassword(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.changePassword(token, body), listener);
+        apiHandler.createCall(apiService.changePassword(body), listener);
     }
 
     public void logout(ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.logout(preferenceRepository.getToken()), listener);
+        apiHandler.createCall(apiService.logout(), listener);
     }
 
     // update profile data
 
     public void setUserData(String token, HashMap<String, String> body, ResponseListenerAuth<CommonDataResponse<UserModel>, String> listener) {
-        apiHandler.createCall(apiService.setUserData(token, body), listener);
+        apiHandler.createCall(apiService.setUserData(body), listener);
     }
 
     public void setUserData(String token, JsonObject body, ResponseListenerAuth<CommonDataResponse<UserModel>, String> listener) {
-        apiHandler.createCall(apiService.setUserData(token, body), listener);
+        apiHandler.createCall(apiService.setUserData(body), listener);
     }
 
     public void addUserData(String token, HashMap<String, String> body, ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String> listener) {
-        apiHandler.createCall(apiService.addUserData(token, body), listener);
+        apiHandler.createCall(apiService.addUserData(body), listener);
     }
 
     public void getUserInfo(ResponseListenerAuth<CommonDataResponse<UserInfoResponse>, String> listener) {
-        apiHandler.createCall(apiService.getUserInfo(preferenceRepository.getToken()), listener);
+        apiHandler.createCall(apiService.getUserInfo(), listener);
     }
 
     public void setUserDataToXmpp(HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
@@ -215,7 +215,7 @@ public class ApiRepository {
 
     // balance, transaction
     public void getTransactionHistory(String token, String username, int page, ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String> listener) {
-        apiHandler.createCall(apiService.getTransactionHistory(token, username, page), listener);
+        apiHandler.createCall(apiService.getTransactionHistory(username, page), listener);
     }
 
     // forget password
@@ -225,19 +225,19 @@ public class ApiRepository {
     }
 
     public void getUserAddress(ResponseListenerAuth<CommonDataResponse<AddressWholeResponse>, String> listener) {
-        apiHandler.createCall(apiService.getAddressList(preferenceRepository.getToken()), listener);
+        apiHandler.createCall(apiService.getAddressList(), listener);
     }
 
     public void addAddress(AddressRequest body, ResponseListenerAuth<CommonDataResponse<AddressResponse>, String> listener) {
-        apiHandler.createCall(apiService.addAddress(preferenceRepository.getToken(), body), listener);
+        apiHandler.createCall(apiService.addAddress(body), listener);
     }
 
     public void updateAddress(String id, AddressRequest body, ResponseListenerAuth<CommonDataResponse<AddressResponse>, String> listener) {
-        apiHandler.createCall(apiService.updateAddress(preferenceRepository.getToken(), id, body), listener);
+        apiHandler.createCall(apiService.updateAddress(id, body), listener);
     }
 
     public void removeAddress(String id, ResponseListenerAuth<CommonDataResponse, String> listener) {
-        apiHandler.createCall(apiService.removeAddress(preferenceRepository.getToken(), id), listener);
+        apiHandler.createCall(apiService.removeAddress(id), listener);
     }
 
     // auth 2.0
@@ -257,7 +257,7 @@ public class ApiRepository {
 
 
     public void updateProductStatus(HashMap<String, String> data, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.updateProductStatus(preferenceRepository.getToken(), data), listener);
+        apiHandler.createCall(apiService.updateProductStatus(data), listener);
     }
 
 
@@ -336,31 +336,31 @@ public class ApiRepository {
 
 
     public void getAppointmentList(int page, ResponseListenerAuth<CommonDataResponse<List<AppointmentResponse>>, String> listener) {
-        apiHandler.createCall(apiService.getAppointmentList(preferenceRepository.getToken(), page), listener);
+        apiHandler.createCall(apiService.getAppointmentList(page), listener);
     }
 
     public void getAppointmentCategoryList(ResponseListenerAuth<CommonDataResponse<List<AppointmentCategoryResponse>>, String> listener) {
-        apiHandler.createCall(apiService.getAppointmentCategoryList(preferenceRepository.getToken(), 200), listener);
+        apiHandler.createCall(apiService.getAppointmentCategoryList(200), listener);
     }
 
     public void getAppointmentTimeSlotList(String date, ResponseListenerAuth<CommonDataResponse<List<AppointmentTimeSlotResponse>>, String> listener) {
-        apiHandler.createCall(apiService.getAppointmentTimeSlotList(preferenceRepository.getToken(), date), listener);
+        apiHandler.createCall(apiService.getAppointmentTimeSlotList(date), listener);
     }
 
     public void createAppointmentComment(AppointmentCommentRequest body, ResponseListenerAuth<CommonDataResponse<AppointmentCommentResponse>, String> listener) {
-        apiHandler.createCall(apiService.createAppointmentComment(preferenceRepository.getToken(), body), listener);
+        apiHandler.createCall(apiService.createAppointmentComment(body), listener);
     }
 
     public void getAppointmentCommentList(String id, int page, ResponseListenerAuth<CommonDataResponse<List<AppointmentCommentResponse>>, String> listener) {
-        apiHandler.createCall(apiService.getAppointmentCommentList(preferenceRepository.getToken(), id, page), listener);
+        apiHandler.createCall(apiService.getAppointmentCommentList(id, page), listener);
     }
 
     public void createAppointment(AppointmentRequest body, ResponseListenerAuth<CommonDataResponse<AppointmentResponse>, String> listener) {
-        apiHandler.createCall(apiService.createAppointment(preferenceRepository.getToken(), body), listener);
+        apiHandler.createCall(apiService.createAppointment(body), listener);
     }
 
     public void cancelAppointment(String id, ResponseListenerAuth<CommonDataResponse<AppointmentResponse>, String> listener) {
-        apiHandler.createCall(apiService.cancelAppointment(preferenceRepository.getToken(), id), listener);
+        apiHandler.createCall(apiService.cancelAppointment(id), listener);
     }
 
 
@@ -368,18 +368,18 @@ public class ApiRepository {
 
 
     public void getCartList(ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String> listener) {
-        apiHandler.createCall(apiService.getCartList(preferenceRepository.getToken()), listener);
+        apiHandler.createCall(apiService.getCartList(), listener);
     }
 
     public void syncCartList(CartHolderModel body, ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String> listener) {
-        apiHandler.createCall(apiService.syncCartList(preferenceRepository.getToken(), body), listener);
+        apiHandler.createCall(apiService.syncCartList(body), listener);
     }
 
 
     /* ------------- Express APIs ------------- */
 
     public void getMessageCount(ResponseListenerAuth<CommonDataResponse<String>, String> listener) {
-        apiHandler.createCall(apiService.getUnreadedMessageCount(preferenceRepository.getToken(), preferenceRepository.getUserName()), listener);
+        apiHandler.createCall(apiService.getUnreadedMessageCount(preferenceRepository.getUserName()), listener);
     }
 
 
@@ -420,11 +420,11 @@ public class ApiRepository {
     /* ------------- General APIs ------------- */
 
     public void getNotification(String token, int page, ResponseListenerAuth<CommonResultResponse<List<NotificationItem>>, String> listener) {
-        apiHandler.createCall(apiService.getNotification(token, page), listener);
+        apiHandler.createCall(apiService.getNotification(page), listener);
     }
 
     public void markNotificationAsRead(String token, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.markNewsfeedNotificationAsRead(token), listener);
+        apiHandler.createCall(apiService.markNewsfeedNotificationAsRead(), listener);
     }
 
     public void getRootCategories(ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String> listener) {
@@ -445,7 +445,7 @@ public class ApiRepository {
 
 
     public void getNotificationCount(String token, String notificationType, ResponseListenerAuth<NotificationCount, String> listener) {
-        apiHandler.createCall(apiService.getNotificationCount(token, notificationType), listener);
+        apiHandler.createCall(apiService.getNotificationCount(notificationType), listener);
     }
 
 
@@ -455,9 +455,9 @@ public class ApiRepository {
             HashMap<String, String> body = new HashMap<>();
             body.put("shop_slug", shopSlug);
 
-            apiHandler.createCall(apiService.subscribeToShop(token, body), listener);
+            apiHandler.createCall(apiService.subscribeToShop(body), listener);
         } else
-            apiHandler.createCall(apiService.unsubscribeShop(token, shopSlug), listener);
+            apiHandler.createCall(apiService.unsubscribeShop(shopSlug), listener);
     }
 
 
@@ -471,7 +471,7 @@ public class ApiRepository {
 
     public void payWithGiftCard(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
 
-        apiHandler.createCall(apiService.payWithGiftCard(token, body), listener);
+        apiHandler.createCall(apiService.payWithGiftCard(body), listener);
     }
 
 
@@ -482,7 +482,7 @@ public class ApiRepository {
 
     public void placeGiftCardOrder(String token, JsonObject body, ResponseListenerAuth<JsonObject, String> listener) {
 
-        apiHandler.createCall(apiService.placeGiftCardOrder(token, body), listener);
+        apiHandler.createCall(apiService.placeGiftCardOrder(body), listener);
     }
 
     public void getGiftCardDetails(String slug, ResponseListenerAuth<JsonObject, String> listener) {
@@ -492,7 +492,7 @@ public class ApiRepository {
 
     public void getPurchasedGiftCardList(String show, int page, ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String> listener) {
 
-        apiHandler.createCall(apiService.getPurchasedGiftCardList(preferenceRepository.getToken(), show, page), listener);
+        apiHandler.createCall(apiService.getPurchasedGiftCardList(show, page), listener);
     }
 
     public void redeem(String invoiceNo, ResponseListenerAuth<JsonObject, String> listener) {
@@ -500,7 +500,7 @@ public class ApiRepository {
         HashMap<String, String> body = new HashMap<>();
         body.put("invoice_no", invoiceNo);
 
-        apiHandler.createCall(apiService.redeemGiftCard(preferenceRepository.getToken(), body), listener);
+        apiHandler.createCall(apiService.redeemGiftCard(body), listener);
     }
 
 
@@ -528,7 +528,7 @@ public class ApiRepository {
         RequestBody requestFile = RequestBody.create(f, MediaType.parse("image/jpg"));
         MultipartBody.Part body = MultipartBody.Part.createFormData("image", f.getName(), requestFile);
 
-        apiHandler.createCall(apiService.imageUploadNew(preferenceRepository.getToken(), "multipart/form-data", body), listener);
+        apiHandler.createCall(apiService.imageUploadNew("multipart/form-data", body), listener);
     }
 
 
@@ -536,32 +536,32 @@ public class ApiRepository {
 
 
     public void getCategories(String orderStatus, ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String> listener) {
-        apiHandler.createCall(apiService.getIssueTicketCategory(preferenceRepository.getToken(), orderStatus, "evaly_order", 250), listener);
+        apiHandler.createCall(apiService.getIssueTicketCategory(orderStatus, "evaly_order", 250), listener);
     }
 
     public void getIssueList(String invoice, int page, ResponseListenerAuth<CommonDataResponse<List<IssueListModel>>, String> listener) {
-        apiHandler.createCall(apiService.getIssueTicketList(preferenceRepository.getToken(), invoice, page), listener);
+        apiHandler.createCall(apiService.getIssueTicketList(invoice, page), listener);
     }
 
     public void resolveIssue(String status, int id, ResponseListenerAuth<CommonDataResponse<IssueListModel>, String> listener) {
         HashMap<String, String> body = new HashMap<>();
         body.put("order_status", status);
-        apiHandler.createCall(apiService.resolveIssueTicketStatus(preferenceRepository.getToken(), body, id), listener);
+        apiHandler.createCall(apiService.resolveIssueTicketStatus(body, id), listener);
     }
 
     public void createIssue(IssueCreateBody body, ResponseListenerAuth<CommonDataResponse<IssueListModel>, String> listener) {
-        apiHandler.createCall(apiService.createIssueTicket(preferenceRepository.getToken(), body), listener);
+        apiHandler.createCall(apiService.createIssueTicket(body), listener);
     }
 
     public void getIssueCommentList(int ticketId, ResponseListenerAuth<CommonDataResponse<List<IssueTicketCommentModel>>, String> listener) {
-        apiHandler.createCall(apiService.getIssueTicketComment(preferenceRepository.getToken(), ticketId), listener);
+        apiHandler.createCall(apiService.getIssueTicketComment(ticketId), listener);
     }
 
     public void createIssueComment(int ticketId, String comment, ResponseListenerAuth<CommonDataResponse<IssueTicketCommentModel>, String> listener) {
         IssueCommentBody body = new IssueCommentBody();
         body.setComment(comment);
         body.setTicket(ticketId);
-        apiHandler.createCall(apiService.createIssueTicketComment(preferenceRepository.getToken(), body, ticketId), listener);
+        apiHandler.createCall(apiService.createIssueTicketComment(body, ticketId), listener);
     }
 
 
@@ -578,7 +578,7 @@ public class ApiRepository {
         if (token.equals(""))
             token = null;
 
-        apiHandler.createCall(apiService.getNewsfeedPosts(token, url), listener);
+        apiHandler.createCall(apiService.getNewsfeedPosts(url), listener);
     }
 
 
@@ -586,75 +586,75 @@ public class ApiRepository {
         if (token.equals(""))
             token = null;
 
-        apiHandler.createCall(apiService.getNewsfeedPostsList(token, url), listener);
+        apiHandler.createCall(apiService.getNewsfeedPostsList(url), listener);
     }
 
     public void getPostDetails(String token, String postId, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.getNewsfeedPostDetails(token, postId), listener);
+        apiHandler.createCall(apiService.getNewsfeedPostDetails(postId), listener);
     }
 
     public void getReplies(String token, String postId, int commentId, int page, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.getNewsfeedReplies(token, postId, commentId, page), listener);
+        apiHandler.createCall(apiService.getNewsfeedReplies(postId, commentId, page), listener);
     }
 
     public void getRepliesList(String token, String postId, int commentId, int page, ResponseListenerAuth<CommonDataResponse<List<CommentItem>>, String> listener) {
-        apiHandler.createCall(apiService.getNewsfeedRepliesList(token, postId, commentId, page), listener);
+        apiHandler.createCall(apiService.getNewsfeedRepliesList(postId, commentId, page), listener);
     }
 
     public void getComments(String token, String postId, int page, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.getNewsfeedComments(token, postId, page), listener);
+        apiHandler.createCall(apiService.getNewsfeedComments(postId, page), listener);
     }
 
 
     public void getCommentList(String token, String postId, int page, ResponseListenerAuth<CommonDataResponse<List<CommentItem>>, String> listener) {
-        apiHandler.createCall(apiService.getNewsfeedCommentsList(token, postId, page), listener);
+        apiHandler.createCall(apiService.getNewsfeedCommentsList(postId, page), listener);
     }
 
     public void postComment(String token, String postId, JsonObject body, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.postNewsfeedComment(token, postId, body), listener);
+        apiHandler.createCall(apiService.postNewsfeedComment(postId, body), listener);
     }
 
     public void postReply(String token, String postId, int commentId, JsonObject body, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.postNewsfeedReply(token, postId, commentId, body), listener);
+        apiHandler.createCall(apiService.postNewsfeedReply(postId, commentId, body), listener);
     }
 
     public void postLike(String token, String postSlug, boolean dislike, ResponseListenerAuth<JsonObject, String> listener) {
         if (!dislike)
-            apiHandler.createCall(apiService.likeNewsfeedPost(token, postSlug), listener);
+            apiHandler.createCall(apiService.likeNewsfeedPost(postSlug), listener);
         else
-            apiHandler.createCall(apiService.dislikeNewsfeedPost(token, postSlug), listener);
+            apiHandler.createCall(apiService.dislikeNewsfeedPost(postSlug), listener);
     }
 
     public void deleteItem(String token, String url, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.deleteNewsfeedItem(token, url), listener);
+        apiHandler.createCall(apiService.deleteNewsfeedItem(url), listener);
     }
 
     public void actionPendingPost(String token, String postId, String type, JsonObject body, ResponseListenerAuth<JsonObject, String> listener) {
 
         if (type.equals("delete"))
-            apiHandler.createCall(apiService.deletePendingNewsfeedPost(token, postId, body), listener);
+            apiHandler.createCall(apiService.deletePendingNewsfeedPost(postId, body), listener);
         else
-            apiHandler.createCall(apiService.approvePendingNewsfeedPost(token, postId, body), listener);
+            apiHandler.createCall(apiService.approvePendingNewsfeedPost(postId, body), listener);
     }
 
     public void getNewsfeedNotification(String token, int page, ResponseListenerAuth<CommonResultResponse<List<NotificationItem>>, String> listener) {
-        apiHandler.createCall(apiService.getNewsfeedNotification(token, page), listener);
+        apiHandler.createCall(apiService.getNewsfeedNotification(page), listener);
     }
 
     public void markFeedNotificationAsRead(String token, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.markNewsfeedNotificationAsRead(token), listener);
+        apiHandler.createCall(apiService.markNewsfeedNotificationAsRead(), listener);
     }
 
     public void getNotificationCount(String token, ResponseListenerAuth<NotificationCount, String> listener) {
-        apiHandler.createCall(apiService.getNewsfeedNotificationCount(token), listener);
+        apiHandler.createCall(apiService.getNewsfeedNotificationCount(), listener);
     }
 
     public void post(String token, CreatePostModel body, String postSlug, ResponseListenerAuth<JsonObject, String> listener) {
 
         if (postSlug == null)
-            apiHandler.createCall(apiService.createNewsfeedPost(token, body), listener);
+            apiHandler.createCall(apiService.createNewsfeedPost(body), listener);
         else
-            apiHandler.createCall(apiService.editNewsfeedPost(token, body, postSlug), listener);
+            apiHandler.createCall(apiService.editNewsfeedPost(body, postSlug), listener);
 
     }
 
@@ -663,60 +663,60 @@ public class ApiRepository {
 
 
     public void isAttachmentRequired(List<Integer> productIdList, ResponseListenerAuth<CommonDataResponse<List<AttachmentCheckResponse>>, String> listener) {
-        apiHandler.createCall(apiService.isAttachmentRequired(preferenceRepository.getToken(), productIdList), listener);
+        apiHandler.createCall(apiService.isAttachmentRequired(productIdList), listener);
     }
 
     public void updateAddress(UpdateOrderAddressRequest body, ResponseListenerAuth<CommonDataResponse<OrderDetailsModel>, String> listener) {
-        apiHandler.createCall(apiService.updateOrderAddress(preferenceRepository.getToken(), body), listener);
+        apiHandler.createCall(apiService.updateOrderAddress(body), listener);
     }
 
     public void getOrderRequestList(int page, ResponseListenerAuth<CommonDataResponse<List<OrderRequestResponse>>, String> listener) {
-        apiHandler.createCall(apiService.getOrderRequests(preferenceRepository.getToken(), page), listener);
+        apiHandler.createCall(apiService.getOrderRequests(page), listener);
     }
 
     public void getOrderList(String token, int page, String orderStatus, ResponseListenerAuth<CommonResultResponse<List<OrderListItem>>, String> listener) {
         if (orderStatus.equals("all"))
             orderStatus = null;
 
-        apiHandler.createCall(apiService.getOrderList(token, page, orderStatus), listener);
+        apiHandler.createCall(apiService.getOrderList(page, orderStatus), listener);
     }
 
     public void placeOrder(String token, JsonObject body, ResponseListenerAuth<JsonObject, String> listener) {
 
-        apiHandler.createCall(apiService.placeOrder(token, body), listener);
+        apiHandler.createCall(apiService.placeOrder(body), listener);
     }
 
     public void placeOrder(PlaceOrderItem body, ResponseListenerAuth<CommonDataResponse<List<JsonObject>>, String> listener) {
-        apiHandler.createCall(apiService.placeOrder(preferenceRepository.getToken(), body), listener);
+        apiHandler.createCall(apiService.placeOrder(body), listener);
     }
 
     public void makeCashOnDelivery(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
 
-        apiHandler.createCall(apiService.makeCashOnDelivery(token, body), listener);
+        apiHandler.createCall(apiService.makeCashOnDelivery(body), listener);
     }
 
 
     public void payViaSEBL(String token, String amount, String invoice, String context, ResponseListenerAuth<JsonObject, String> listener) {
 
-        apiHandler.createCall(apiService.payViaSEBL(token, amount, invoice, token, context), listener);
+        apiHandler.createCall(apiService.payViaSEBL(amount, invoice, token, context), listener);
     }
 
 
     public void payViaNagad(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
 
-        apiHandler.createCall(apiService.payViaNagad(token, body), listener);
+        apiHandler.createCall(apiService.payViaNagad(body), listener);
     }
 
 
     public void getOrderDetails(String token, String invoiceNo, ResponseListenerAuth<OrderDetailsModel, String> listener) {
 
-        apiHandler.createCall(apiService.getOrderDetails(token, invoiceNo), listener);
+        apiHandler.createCall(apiService.getOrderDetails(invoiceNo), listener);
     }
 
 
     public void getOrderHistories(String token, String invoiceNo, ResponseListenerAuth<JsonObject, String> listener) {
 
-        apiHandler.createCall(apiService.getOrderHistories(token, invoiceNo), listener);
+        apiHandler.createCall(apiService.getOrderHistories(invoiceNo), listener);
     }
 
     public void cancelOrder(String token, String invoiceNo, String userNote, ResponseListenerAuth<CommonDataResponse, String> listener) {
@@ -725,31 +725,31 @@ public class ApiRepository {
         hashMap.put("order_status", "cancel");
         hashMap.put("user_note", userNote);
 
-        apiHandler.createCall(apiService.cancelOrder(token, invoiceNo, hashMap), listener);
+        apiHandler.createCall(apiService.cancelOrder(invoiceNo, hashMap), listener);
     }
 
     public void confirmDelivery(String token, String invoiceNo, ResponseListenerAuth<CommonDataResponse, String> listener) {
-        apiHandler.createCall(apiService.confirmDelivery(token, invoiceNo), listener);
+        apiHandler.createCall(apiService.confirmDelivery(invoiceNo), listener);
     }
 
     public void requestRefund(String token, HashMap<String, String> body, ResponseListenerAuth<CommonDataResponse<String>, String> listener) {
-        apiHandler.createCall(apiService.postRequestRefund(token, body), listener);
+        apiHandler.createCall(apiService.postRequestRefund(body), listener);
     }
 
     public void requestRefundConfirmOTP(String token, String invoice, HashMap<String, Integer> body, ResponseListenerAuth<CommonDataResponse<String>, String> listener) {
-        apiHandler.createCall(apiService.postRequestRefundConfirmOTP(token, body, invoice), listener);
+        apiHandler.createCall(apiService.postRequestRefundConfirmOTP(body, invoice), listener);
     }
 
     public void getDeliveryHero(String invoiceNo, ResponseListenerAuth<DeliveryHeroResponse, String> listener) {
-        apiHandler.createCall(apiService.getDeliveryHero(preferenceRepository.getToken(), invoiceNo), listener);
+        apiHandler.createCall(apiService.getDeliveryHero(invoiceNo), listener);
     }
 
     public void checkRefundEligibility(String invoiceNo, ResponseListenerAuth<CommonDataResponse<String>, String> listener) {
-        apiHandler.createCall(apiService.checkRefundEligibility(preferenceRepository.getToken(), invoiceNo.toUpperCase()), listener);
+        apiHandler.createCall(apiService.checkRefundEligibility(invoiceNo.toUpperCase()), listener);
     }
 
     public void deleteRefundTransaction(String invoiceNo, ResponseListenerAuth<CommonDataResponse<String>, String> listener) {
-        apiHandler.createCall(apiService.deleteRefundTransaction(preferenceRepository.getToken(), invoiceNo.toUpperCase()), listener);
+        apiHandler.createCall(apiService.deleteRefundTransaction(invoiceNo.toUpperCase()), listener);
     }
 
 
@@ -757,27 +757,27 @@ public class ApiRepository {
 
 
     public void claimCashback(String token, String username, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.claimCashBack(token, username), listener);
+        apiHandler.createCall(apiService.claimCashBack(username), listener);
     }
 
     public void getBalance(String token, String username, ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String> listener) {
-        apiHandler.createCall(apiService.getBalance(token), listener);
+        apiHandler.createCall(apiService.getBalance(), listener);
     }
 
     public void makePartialPayment(String token, ParitalPaymentModel body, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.makePartialPayment(token, body), listener);
+        apiHandler.createCall(apiService.makePartialPayment(body), listener);
     }
 
     public void payViaCard(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.payViaCard(token, body), listener);
+        apiHandler.createCall(apiService.payViaCard(body), listener);
     }
 
     public void payViaCityBank(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.payViaCityBank(token, body), listener);
+        apiHandler.createCall(apiService.payViaCityBank(body), listener);
     }
 
     public void payViaBank(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.payViaBank(token, body), listener);
+        apiHandler.createCall(apiService.payViaBank(body), listener);
     }
 
 
@@ -878,29 +878,29 @@ public class ApiRepository {
     /* ------------- Reviews APIs ------------- */
 
     public void getReviewSummary(String token, String slug, boolean isShop, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.getShopReviews(token, slug), listener);
+        apiHandler.createCall(apiService.getShopReviews(slug), listener);
     }
 
     public void getReviewSummary(String token, String slug, ResponseListenerAuth<CommonDataResponse<ReviewSummaryModel>, String> listener) {
-        apiHandler.createCall(apiService.getReviews(token, slug), listener);
+        apiHandler.createCall(apiService.getReviews(slug), listener);
     }
 
     public void getReviews(String token, String shopSlug, int page, int limit, boolean isShop, ResponseListenerAuth<CommonDataResponse<JsonObject>, String> listener) {
-        apiHandler.createCall(apiService.getShopReviews(token, shopSlug, page, limit), listener);
+        apiHandler.createCall(apiService.getShopReviews(shopSlug, page, limit), listener);
     }
 
     public void postReview(String token, String slug, JsonObject body, boolean isShop, ResponseListenerAuth<JsonObject, String> listener) {
         if (isShop)
-            apiHandler.createCall(apiService.postShopReview(token, slug, body), listener);
+            apiHandler.createCall(apiService.postShopReview(slug, body), listener);
         else
-            apiHandler.createCall(apiService.postProductReview(token, slug, body), listener);
+            apiHandler.createCall(apiService.postProductReview(slug, body), listener);
     }
 
     public void checkReviewEligibility(String token, String slug, boolean isShop, ResponseListenerAuth<JsonObject, String> listener) {
         if (isShop)
-            apiHandler.createCall(apiService.checkShopReviewEligibility(token, slug), listener);
+            apiHandler.createCall(apiService.checkShopReviewEligibility(slug), listener);
         else
-            apiHandler.createCall(apiService.checkProductReviewEligibility(token, slug), listener);
+            apiHandler.createCall(apiService.checkProductReviewEligibility(slug), listener);
     }
 
 
@@ -922,11 +922,11 @@ public class ApiRepository {
     /* ------------- Shops APIs ------------- */
 
     public void getShopDetailsItem(String token, String url, ResponseListenerAuth<ShopDetailsModel, String> listener) {
-        apiHandler.createCall(apiService.getShopDetailsItems(token, url), listener);
+        apiHandler.createCall(apiService.getShopDetailsItems(url), listener);
     }
 
     public void getShopDetailsItem(String token, String shopSlug, int page, int limit, String categorySlug, String campaignSlug, String search, String brandSlug, ResponseListenerAuth<ShopDetailsModel, String> listener) {
-        apiHandler.createCall(apiService.getShopDetails(token, shopSlug, page, limit, categorySlug, search), listener);
+        apiHandler.createCall(apiService.getShopDetails(shopSlug, page, limit, categorySlug, search), listener);
     }
 
     public void getShopsList(String categorySlug, String search, int page, String paymentType, ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String> listener) {
@@ -934,11 +934,11 @@ public class ApiRepository {
     }
 
     public void getShopDetails(String slug, String campaignSlug, ResponseListenerAuth<CommonDataResponse<ShopDetailsResponse>, String> listener) {
-        apiHandler.createCall(apiService.getShopDetails(preferenceRepository.getToken(), slug), listener);
+        apiHandler.createCall(apiService.getShopDetails(slug), listener);
     }
 
     public void getFollowedShop(String token, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.getFollowedShops(token), listener);
+        apiHandler.createCall(apiService.getFollowedShops(), listener);
     }
 
     public void getShopsByGroup(String group, int page, int limit, String area, String search, ResponseListenerAuth<CommonDataResponse<List<GroupShopModel>>, String> listener) {
