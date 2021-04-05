@@ -12,21 +12,32 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentTransactionHistoryBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.balance.BalanceViewModel;
 import bd.com.evaly.evalyshop.ui.transaction.adapter.TransactionHistoryAdapter;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class TransactionHistory extends Fragment {
 
+    @Inject
+    FirebaseRemoteConfig firebaseRemoteConfig;
     private TransactionHistoryAdapter adapter;
     private ArrayList<TransactionItem> itemList;
     private int currentPage = 0;
@@ -81,7 +92,17 @@ public class TransactionHistory extends Fragment {
 
     public void getTransactionHistory(int page) {
         binding.progressBar.setVisibility(View.VISIBLE);
-        AuthApiHelper.getTransactionHistory(CredentialManager.getToken(), CredentialManager.getUserName(), page,
+
+        String url = null;
+        RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
+        if (BuildConfig.DEBUG)
+            url = baseUrls.getDevTransectionHistoryUrl();
+        else
+            url = baseUrls.getProdTransectionHistoryUrl();
+        if (url == null)
+            return;
+
+        AuthApiHelper.getTransactionHistory(CredentialManager.getToken(), CredentialManager.getUserName(), page, url,
                 new ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<TransactionItem>> response, int statusCode) {

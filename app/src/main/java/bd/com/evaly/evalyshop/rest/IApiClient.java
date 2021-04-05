@@ -293,8 +293,8 @@ public interface IApiClient {
     Call<JsonObject> getUserInfoPay(@Header("Authorization") String token,
                                     @Path("username") String username);
 
-    @GET(UrlUtils.DOMAIN + "epay-reader/api/v1/user/balance")
-    Call<CommonDataResponse<BalanceResponse>> getBalance(@Header("Authorization") String token);
+    @GET
+    Call<CommonDataResponse<BalanceResponse>> getBalance(@Header("Authorization") String token, @Url String url);
 
     @GET(UrlUtils.DOMAIN_EAUTH + "profile")
     Call<CommonDataResponse<UserModel>> getUserProfile(@Header("Authorization") String token);
@@ -401,15 +401,16 @@ public interface IApiClient {
 
     // balance, transaction
 
-    @GET(UrlUtils.DOMAIN + "pay/wallet-history/{username}")
+    @GET
     Call<CommonDataResponse<List<TransactionItem>>> getTransactionHistory(@Header("Authorization") String token,
-                                                                          @Path("username") String username,
+                                                                          @Url String url,
                                                                           @Query("page") int page);
 
 
-    @GET(UrlUtils.DOMAIN + "pay/apply/cashback-balance/{username}/")
+    @GET
     Call<JsonObject> claimCashBack(@Header("Authorization") String header,
-                                   @Path("username") String username);
+                                   @Path("username") String username,
+                                   @Url String url);
 
     @PUT(UrlUtils.DOMAIN + "pay/withdraw_refund_request/{invoice}")
     Call<CommonDataResponse> withdrawRefundRequest(@Header("Authorization") String header,
@@ -669,23 +670,26 @@ public interface IApiClient {
     Call<JsonObject> payWithGiftCard(@Header("Authorization") String token,
                                      @Body HashMap<String, String> body);
 
-    @GET(UrlUtils.DOMAIN + "cpn/gift-cards/custom/list")
-    Call<CommonDataResponse<List<GiftCardListItem>>> getGiftCardList(@Query("page") int page);
+    @GET
+    Call<CommonDataResponse<List<GiftCardListItem>>> getGiftCardList(@Url String url, @Query("page") int page);
 
-    @POST(UrlUtils.DOMAIN + "cpn/gift-card-orders/place/")
+    @POST
     Call<JsonObject> placeGiftCardOrder(@Header("Authorization") String token,
+                                        @Url String url,
                                         @Body JsonObject body);
 
-    @GET(UrlUtils.DOMAIN + "cpn/gift-cards/retrieve/{slug}")
-    Call<JsonObject> getGiftCardDetails(@Path("slug") String slug);
+    @GET
+    Call<JsonObject> getGiftCardDetails(@Url String url);
 
-    @GET(UrlUtils.DOMAIN + "cpn/gift-card-orders")
+    @GET
     Call<CommonDataResponse<List<GiftCardListPurchasedItem>>> getPurchasedGiftCardList(@Header("Authorization") String token,
+                                                                                       @Url String url,
                                                                                        @Query("show") String show,
                                                                                        @Query("page") int page);
 
-    @POST(UrlUtils.DOMAIN + "cpn/gift-card-orders/gift-code/retrieve")
+    @POST
     Call<JsonObject> redeemGiftCard(@Header("Authorization") String token,
+                                    @Url String url,
                                     @Body HashMap<String, String> invoiceNo);
 
     // payment

@@ -14,6 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,25 +25,33 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
+import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
-
+@AndroidEntryPoint
 public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-
+    @Inject
+    FirebaseRemoteConfig firebaseRemoteConfig;
     static GiftCardMyFragment instance;
     private View view;
     private RecyclerView recyclerView;
@@ -63,6 +73,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private SwipeRefreshLayout swipeLayout;
     private boolean loading = true;
+    private String baseUrl = BuildConfig.BASE_URL + "cpn/";
 
     public GiftCardMyFragment() {
         // Required empty public constructor
@@ -128,6 +139,23 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
+
+        String url;
+        if (BuildConfig.DEBUG)
+            url = baseUrls.getDevGiftCardBaseUrl();
+        else
+            url = baseUrls.getProdGiftCardBaseUrl();
+
+        if (url != null)
+            baseUrl = url;
+    }
+
+
     public void toggleBottomSheet(GiftCardListPurchasedItem item) {
 
         giftCardInvoice = item.getInvoiceNo();
@@ -180,7 +208,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        GiftCardApiHelper.getPurchasedGiftCardList("gifts", currentPage, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
+        GiftCardApiHelper.getPurchasedGiftCardList("gifts", currentPage, baseUrl, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<GiftCardListPurchasedItem>> response, int statusCode) {
 
@@ -226,7 +254,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
 
         dialog.showDialog();
 
-        GiftCardApiHelper.redeem(invoice_no, new ResponseListenerAuth<JsonObject, String>() {
+        GiftCardApiHelper.redeem(invoice_no, baseUrl, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.hideDialog();

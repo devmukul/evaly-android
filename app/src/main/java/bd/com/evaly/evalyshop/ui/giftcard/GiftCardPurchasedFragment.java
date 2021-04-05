@@ -28,6 +28,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
+import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
@@ -86,6 +88,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     private boolean isImageSelected = false;
 
     private PaymentWebBuilder paymentWebBuilder;
+    private String baseUrl = BuildConfig.BASE_URL + "cpn/";
 
 
     public GiftCardPurchasedFragment() {
@@ -112,6 +115,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         binding = FragmentGiftcardListBinding.inflate(inflater);
         return binding.getRoot();
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -152,6 +156,17 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
 
         getGiftCardList();
+
+        RemoteConfigBaseUrls baseUrls = new Gson().fromJson(remoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
+
+        String url;
+        if (BuildConfig.DEBUG)
+            url = baseUrls.getDevGiftCardBaseUrl();
+        else
+            url = baseUrls.getProdGiftCardBaseUrl();
+
+        if (url != null)
+            baseUrl = url;
 
     }
 
@@ -406,7 +421,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             binding.progressBar.setVisibility(View.VISIBLE);
         }
 
-        GiftCardApiHelper.getPurchasedGiftCardList("purchased", currentPage,
+        GiftCardApiHelper.getPurchasedGiftCardList("purchased", currentPage, baseUrl,
                 new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<GiftCardListPurchasedItem>> response, int statusCode) {

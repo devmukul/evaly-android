@@ -20,6 +20,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -38,19 +41,26 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import javax.inject.Inject;
+
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
+import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListAdapter;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import dagger.hilt.android.AndroidEntryPoint;
 
-
+@AndroidEntryPoint
 public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @Inject
+    FirebaseRemoteConfig firebaseRemoteConfig;
     static GiftCardListFragment instance;
     private View view;
     private RecyclerView recyclerView;
@@ -77,6 +87,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
     private boolean loading = true;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private SwipeRefreshLayout swipeLayout;
+    private String baseUrl = BuildConfig.BASE_URL + "cpn/";
 
     public GiftCardListFragment() {
         // Required empty public constructor
@@ -148,6 +159,22 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         getGiftCardList();
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
+
+        String url;
+        if (BuildConfig.DEBUG)
+            url = baseUrls.getDevGiftCardBaseUrl();
+        else
+            url = baseUrls.getProdGiftCardBaseUrl();
+
+        if (url != null)
+            baseUrl = url;
     }
 
     public void initializeBottomSheet() {
@@ -305,7 +332,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        GiftCardApiHelper.getGiftCard(currentPage, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListItem>>, String>() {
+        GiftCardApiHelper.getGiftCard(currentPage, baseUrl, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<GiftCardListItem>> response, int statusCode) {
 
@@ -350,7 +377,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         initializeBottomSheet();
 
 
-        GiftCardApiHelper.getGiftCardDetails(slug, new ResponseListenerAuth<JsonObject, String>() {
+        GiftCardApiHelper.getGiftCardDetails(slug, baseUrl, new ResponseListenerAuth<JsonObject, String>() {
             @SuppressLint("DefaultLocale")
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
@@ -410,7 +437,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         int q = Integer.parseInt(quantity.getText().toString());
         parameters.addProperty("quantity", q);
 
-        GiftCardApiHelper.placeGiftCardOrder(CredentialManager.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
+        GiftCardApiHelper.placeGiftCardOrder(CredentialManager.getToken(), parameters, baseUrl, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -418,7 +445,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
                 Toast.makeText(context, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
                 bottomSheetDialog.hide();
-                startActivity(Objects.requireNonNull(getActivity()).getIntent());
+                startActivity(requireActivity().getIntent());
                 getActivity().finish();
             }
 

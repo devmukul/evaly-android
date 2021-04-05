@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -26,6 +28,7 @@ import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
+import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
@@ -48,10 +51,12 @@ public class OrderDetailsViewModel extends ViewModel {
     private MutableLiveData<CommonDataResponse<OrderDetailsModel>> updateAddress = new MutableLiveData<>();
     protected MutableLiveData<BalanceResponse> balanceLiveData = new MutableLiveData<>();
     private String invoiceNo;
+    private FirebaseRemoteConfig firebaseRemoteConfig;
 
     @Inject
-    public OrderDetailsViewModel(SavedStateHandle savedStateHandle) {
+    public OrderDetailsViewModel(SavedStateHandle savedStateHandle, FirebaseRemoteConfig  firebaseRemoteConfig) {
         this.invoiceNo = savedStateHandle.get("orderID");
+        this.firebaseRemoteConfig = firebaseRemoteConfig;
         getOrderDetails();
         getDeliveryHero();
         getOrderHistory();
@@ -67,7 +72,19 @@ public class OrderDetailsViewModel extends ViewModel {
 
     public void updateBalance() {
 
-        PaymentApiHelper.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
+        String url = null;
+
+        RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
+
+        if (BuildConfig.DEBUG)
+            url = baseUrls.getDevBalanceUrl();
+        else
+            url = baseUrls.getProdBalanceUrl();
+
+        if (url == null)
+            return;
+
+        PaymentApiHelper.getBalance(CredentialManager.getToken(), CredentialManager.getUserName(), url, new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
                 balanceLiveData.setValue(response.getData());

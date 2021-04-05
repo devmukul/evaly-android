@@ -13,12 +13,12 @@ public class PaymentApiHelper extends BaseApiHelper {
 
     // cashback claim
 
-    public static void claimCashback(String token, String username, ResponseListenerAuth<JsonObject, String> listener) {
-        getiApiClient().claimCashBack(token, username).enqueue(getResponseCallBackDefault(listener));
+    public static void claimCashback(String token, String username, String url, ResponseListenerAuth<JsonObject, String> listener) {
+        getiApiClient().claimCashBack(token, username, url).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getBalance(String token, String username, ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String> listener) {
-        getiApiClient().getBalance(token).enqueue(getResponseCallBackDefault(listener));
+    public static void getBalance(String token, String username, String url, ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String> listener) {
+        getiApiClient().getBalance(token, url).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void makePartialPayment(String token, ParitalPaymentModel body, ResponseListenerAuth<JsonObject, String> listener) {

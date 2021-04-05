@@ -361,8 +361,9 @@ public class AuthApiHelper extends BaseApiHelper {
     }
 
     // balance, transaction
-    public static void getTransactionHistory(String token, String username, int page, ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String> listener) {
-        getiApiClient().getTransactionHistory(token, username, page).enqueue(getResponseCallBackDefault(listener));
+    public static void getTransactionHistory(String token, String username, int page, String url, ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String> listener) {
+        url = url + username + "/";
+        getiApiClient().getTransactionHistory(token, url, page).enqueue(getResponseCallBackDefault(listener));
     }
 
     // forget password
