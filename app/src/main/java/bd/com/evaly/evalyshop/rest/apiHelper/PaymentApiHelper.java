@@ -14,7 +14,8 @@ public class PaymentApiHelper extends BaseApiHelper {
     // cashback claim
 
     public static void claimCashback(String token, String username, String url, ResponseListenerAuth<JsonObject, String> listener) {
-        getiApiClient().claimCashBack(token, username, url).enqueue(getResponseCallBackDefault(listener));
+        url += username + "/";
+        getiApiClient().claimCashBack(token, url).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void getBalance(String token, String username, String url, ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String> listener) {

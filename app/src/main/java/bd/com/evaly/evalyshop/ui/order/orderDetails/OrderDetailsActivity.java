@@ -280,7 +280,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     PurchaseRequestInfo purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), String.valueOf(dueAmount), invoiceNo, "bKash");
 
                     paymentWebBuilder.setToolbarTitle("Order Payment");
-                    paymentWebBuilder.loadPaymentURL(paymentUrl, BuildConfig.WEB_URL + "order/my-orders", purchaseRequestInfo);
+                    paymentWebBuilder.loadPaymentURL(paymentUrl, "order/my-orders", purchaseRequestInfo);
                 }
             }catch (Exception e){
                 e.printStackTrace();

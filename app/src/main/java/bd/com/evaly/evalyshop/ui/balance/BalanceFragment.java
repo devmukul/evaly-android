@@ -18,7 +18,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BalanceFragmentBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class BalanceFragment extends BottomSheetDialogFragment {
 
     private BalanceViewModel mViewModel;

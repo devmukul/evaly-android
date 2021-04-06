@@ -409,7 +409,6 @@ public interface IApiClient {
 
     @GET
     Call<JsonObject> claimCashBack(@Header("Authorization") String header,
-                                   @Path("username") String username,
                                    @Url String url);
 
     @PUT(UrlUtils.DOMAIN + "pay/withdraw_refund_request/{invoice}")

@@ -324,7 +324,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                     String paymentUrl = BuildConfig.WEB_URL + "giftcard-payment/init/" + giftCardInvoice + "?t="+CredentialManager.getTokenNoBearer()+"&context=gift_card_order_payment&amount=" + paymentAmountInputLayoutBinding.amountPay.getText().toString();
                     PurchaseRequestInfo purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), String.valueOf(amount), giftCardInvoice, "bKash");
                     paymentWebBuilder.setToolbarTitle("Gift Card Payment");
-                    paymentWebBuilder.loadPaymentURL(paymentUrl, BuildConfig.WEB_URL + "order/my-orders", purchaseRequestInfo);
+                    paymentWebBuilder.loadPaymentURL(paymentUrl, "success.html", purchaseRequestInfo);
                 }
             }catch (Exception e){
                 e.printStackTrace();

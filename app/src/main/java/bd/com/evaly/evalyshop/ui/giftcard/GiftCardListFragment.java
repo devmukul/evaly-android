@@ -23,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -440,13 +441,11 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         GiftCardApiHelper.placeGiftCardOrder(CredentialManager.getToken(), parameters, baseUrl, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-
                 dialog.hideDialog();
-
                 Toast.makeText(context, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
                 bottomSheetDialog.hide();
-                startActivity(requireActivity().getIntent());
-                getActivity().finish();
+                NavHostFragment.findNavController(GiftCardListFragment.this).popBackStack();
+                NavHostFragment.findNavController(GiftCardListFragment.this).navigate(R.id.giftCardFragment);
             }
 
             @Override
