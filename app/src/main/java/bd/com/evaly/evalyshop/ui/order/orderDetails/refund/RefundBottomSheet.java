@@ -2,11 +2,9 @@ package bd.com.evaly.evalyshop.ui.order.orderDetails.refund;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
@@ -14,14 +12,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
 
@@ -29,7 +25,6 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetRefundRequestBinding;
-import bd.com.evaly.evalyshop.databinding.ConfirmOtpViewBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -280,52 +275,17 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
         OrderApiHelper.requestRefund(CredentialManager.getToken(), body, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
-                Logger.d(statusCode);
                 dialog.hideDialog();
-                if (statusCode == 202 && getActivity() != null) {
-                    if (otpAlert == null || !otpAlert.isShowing()) {
-                        otpAlert = new Dialog(getActivity(), R.style.FullWidthTransparentDialog);
-                        otpAlert.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        otpAlert.setCancelable(true);
-                        final ConfirmOtpViewBinding dialogConfirmDeliveryBinding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.confirm_otp_view, null, false);
-                        dialogConfirmDeliveryBinding.resendOtp.setOnClickListener(v -> {
-                            requestRefund(body);
-                            startCountDown(dialogConfirmDeliveryBinding);
-                        });
-                        dialogConfirmDeliveryBinding.verify.setOnClickListener(v -> {
-                            if (dialogConfirmDeliveryBinding.code.getText().toString().trim().equals("")) {
-                                ToastUtils.show("Please enter OTP");
-                                return;
-                            } else {
-                                dialog.showDialog();
-                                selectedOtp = Integer.parseInt(dialogConfirmDeliveryBinding.code.getText().toString());
-                            }
-
-                            dismissAllowingStateLoss();
-                            submitOtp();
-                        });
-
-                        otpAlert.setContentView(dialogConfirmDeliveryBinding.getRoot());
-                        startCountDown(dialogConfirmDeliveryBinding);
-                        otpAlert.show();
-                    }
-                } else {
-                    if (getContext() != null) {
-                        dialog.hideDialog();
-                        ToastUtils.show(response.getMessage());
-                        if (response.getSuccess())
-                            onSuccess();
-                    }
-                }
+                ToastUtils.show(response.getMessage());
+                if (response.getSuccess())
+                    onSuccess();
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-                Logger.d(errorBody);
                 if (getContext() != null) {
-                    Logger.d(errorBody);
                     dialog.hideDialog();
-                    ToastUtils.show("Couldn't request refund, try again later");
+                    ToastUtils.show(errorBody);
                 }
             }
 
@@ -338,67 +298,6 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
     }
 
 
-    private void startCountDown(ConfirmOtpViewBinding binding) {
-
-        if (binding == null || otpAlert == null)
-            return;
-
-        binding.otpExpireText.setVisibility(View.VISIBLE);
-        binding.countDown.setVisibility(View.VISIBLE);
-        binding.resendOtp.setVisibility(View.GONE);
-
-        new CountDownTimer(120 * 1000 + 1000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                int seconds = (int) (millisUntilFinished / 1000);
-                int hours = seconds / (60 * 60);
-                int tempMint = (seconds - (hours * 60 * 60));
-                int minutes = tempMint / 60;
-                seconds = tempMint - (minutes * 60);
-
-                binding.countDown.setText(String.format("%02d", minutes) + ":" + String.format("%02d", seconds));
-            }
-
-            public void onFinish() {
-                binding.otpExpireText.setVisibility(View.GONE);
-                binding.countDown.setVisibility(View.GONE);
-                binding.resendOtp.setVisibility(View.VISIBLE);
-
-            }
-
-        }.start();
-    }
-
-    private void submitOtp() {
-        HashMap<String, Integer> otpBody = new HashMap<>();
-        otpBody.put("otp_token", selectedOtp);
-        OrderApiHelper.requestRefundConfirmOTP(CredentialManager.getToken(), invoice_no.toUpperCase(), otpBody, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
-                if (response.getSuccess()) {
-                    if (otpAlert != null && otpAlert.isShowing())
-                        otpAlert.dismiss();
-                    if (is_eligible)
-                        deleteRefundTransaction();
-                    orderDetailsViewModel.setRefreshPage();
-                }
-                dialog.hideDialog();
-                ToastUtils.show(response.getMessage());
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                dialog.hideDialog();
-                ToastUtils.show(R.string.something_wrong);
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-    }
-
     private void onSuccess() {
         if (getContext() != null) {
             if (isVisible()) {
@@ -410,11 +309,6 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
         }
     }
 
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
