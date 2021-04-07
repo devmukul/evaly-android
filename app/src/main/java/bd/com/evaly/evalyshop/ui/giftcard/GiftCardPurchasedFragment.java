@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +33,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -309,33 +309,37 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         }
     }
 
-    private void paymentAmountInput(){
+    private void paymentAmountInput() {
         PaymentAmountInputLayoutBinding paymentAmountInputLayoutBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.payment_amount_input_layout, null, false);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Enter your payable amount");
-        builder.setPositiveButton("Make Payment", (dialogInterface, i) -> {
+        builder.setView(paymentAmountInputLayoutBinding.getRoot());
+        AlertDialog dialog = builder.create();
+        double amountDouble = Double.parseDouble(amount);
+        paymentAmountInputLayoutBinding.amountPay.setText(String.format("%s", (int) (amountDouble)));
+        paymentAmountInputLayoutBinding.makePayment.setOnClickListener(view -> {
             try {
-                if (paymentAmountInputLayoutBinding.amountPay.getText().toString().trim().isEmpty()){
+                if (paymentAmountInputLayoutBinding.amountPay.getText().toString().trim().isEmpty()) {
                     paymentAmountInputLayoutBinding.amountPay.setError("Amount is required!");
-                }else if (Integer.parseInt(paymentAmountInputLayoutBinding.amountPay.getText().toString()) == 0){
+                } else if (Integer.parseInt(paymentAmountInputLayoutBinding.amountPay.getText().toString()) == 0) {
                     paymentAmountInputLayoutBinding.amountPay.setError("Invalid amount!");
+                } else if (Double.parseDouble(paymentAmountInputLayoutBinding.amountPay.getText().toString()) > Double.parseDouble(amount)) {
+                    paymentAmountInputLayoutBinding.amountPay.setError("You have entered more than due amount");
                 } else {
-                    String paymentUrl = BuildConfig.WEB_URL + "giftcard-payment/init/" + giftCardInvoice + "?t="+CredentialManager.getTokenNoBearer()+"&context=gift_card_order_payment&amount=" + paymentAmountInputLayoutBinding.amountPay.getText().toString();
+                    String paymentUrl = BuildConfig.WEB_URL + "giftcard-payment/init/" + giftCardInvoice + "?t=" + CredentialManager.getTokenNoBearer() + "&context=gift_card_order_payment&amount=" + paymentAmountInputLayoutBinding.amountPay.getText().toString();
                     PurchaseRequestInfo purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), String.valueOf(amount), giftCardInvoice, "bKash");
                     paymentWebBuilder.setToolbarTitle("Gift Card Payment");
                     paymentWebBuilder.loadPaymentURL(paymentUrl, "success.html", purchaseRequestInfo);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
-        builder.setNegativeButton("Close", null);
-        builder.setView(paymentAmountInputLayoutBinding.getRoot());
-
-        double amountDouble = Double.parseDouble(amount);
-        paymentAmountInputLayoutBinding.amountPay.setText(String.format("%s", (int) (amountDouble)));
-        AlertDialog dialog = builder.create();
+        paymentAmountInputLayoutBinding.close.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_white_round));
         dialog.show();
     }
 
@@ -502,7 +506,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             return;
         }
 
-        onPaymentRedirect(BuildConfig.WEB_URL+"sebl/payment?amount="+amount+"&invoice="+invoice+"&token="+CredentialManager.getToken().replace("Bearer ", "")+"&context_reference=gift_card_order_payment", amount, giftCardInvoice);
+        onPaymentRedirect(BuildConfig.WEB_URL + "sebl/payment?amount=" + amount + "&invoice=" + invoice + "&token=" + CredentialManager.getToken().replace("Bearer ", "") + "&context_reference=gift_card_order_payment", amount, giftCardInvoice);
 
 
 //        HashMap<String, String> payload = new HashMap<>();
@@ -588,7 +592,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             paymentWebBuilder.setToolbarTitle("Pay via Nagad");
             ToastUtils.show("Opening Nagad gateway");
         } else if (url.contains("sebl")) {
-            successURL = Constants.SSL_SUCCESS_URL+"===";
+            successURL = Constants.SSL_SUCCESS_URL + "===";
             paymentWebBuilder.setToolbarTitle("Pay via Visa / Master Card");
             purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no, "sebl");
             ToastUtils.show("Opening SEBL gateway");

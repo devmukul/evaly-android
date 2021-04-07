@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -76,7 +75,6 @@ import bd.com.evaly.evalyshop.ui.payment.model.PurchaseRequestInfo;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -237,7 +235,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             orderStatusAdapter.notifyDataSetChanged();
         });
 
-        binding.payViaGiftCard.setOnClickListener(view -> dialogGiftCardPayment());
         binding.withdrawRefund.setOnClickListener(view -> {
             new AlertDialog.Builder(this)
                     .setCancelable(false)
@@ -264,34 +261,38 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         });
     }
 
-    private void paymentAmountInput(){
+    private void paymentAmountInput() {
         PaymentAmountInputLayoutBinding paymentAmountInputLayoutBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.payment_amount_input_layout, null, false);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enter your payable amount");
-        builder.setPositiveButton("Make Payment", (dialogInterface, i) -> {
-            try {
-                if (paymentAmountInputLayoutBinding.amountPay.getText().toString().trim().isEmpty()){
-                    paymentAmountInputLayoutBinding.amountPay.setError("Amount is required!");
-                }else if (Integer.parseInt(paymentAmountInputLayoutBinding.amountPay.getText().toString()) == 0){
-                    paymentAmountInputLayoutBinding.amountPay.setError("Invalid amount!");
-                } else {
-                    String paymentUrl = BuildConfig.WEB_URL + "payment/init/" + invoiceNo + "?methods="+ TextUtils.join(",", orderDetailsModel.getAllowedPaymentMethods())+ "&t="+CredentialManager.getTokenNoBearer()+"&context=order_payment&amount=" + paymentAmountInputLayoutBinding.amountPay.getText().toString();
-                    PurchaseRequestInfo purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), String.valueOf(dueAmount), invoiceNo, "bKash");
+        builder.setView(paymentAmountInputLayoutBinding.getRoot());
 
+        AlertDialog dialog = builder.create();
+        paymentAmountInputLayoutBinding.amountPay.setText(String.format("%s", (int) (dueAmount)));
+        paymentAmountInputLayoutBinding.makePayment.setOnClickListener(view -> {
+            try {
+                if (paymentAmountInputLayoutBinding.amountPay.getText().toString().trim().isEmpty()) {
+                    paymentAmountInputLayoutBinding.amountPay.setError("Amount is required!");
+                } else if (Double.parseDouble(paymentAmountInputLayoutBinding.amountPay.getText().toString()) == 0) {
+                    paymentAmountInputLayoutBinding.amountPay.setError("Invalid amount!");
+                } else if (Double.parseDouble(paymentAmountInputLayoutBinding.amountPay.getText().toString()) > dueAmount) {
+                    paymentAmountInputLayoutBinding.amountPay.setError("You have entered more than due amount");
+                } else {
+                    String paymentUrl = BuildConfig.WEB_URL + "payment/init/" + invoiceNo + "?methods=" + TextUtils.join(",", orderDetailsModel.getAllowedPaymentMethods()) + "&t=" + CredentialManager.getTokenNoBearer() + "&context=order_payment&amount=" + paymentAmountInputLayoutBinding.amountPay.getText().toString();
+                    PurchaseRequestInfo purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), String.valueOf(dueAmount), invoiceNo, "bKash");
                     paymentWebBuilder.setToolbarTitle("Order Payment");
                     paymentWebBuilder.loadPaymentURL(paymentUrl, "order/my-orders", purchaseRequestInfo);
+                    dialog.dismiss();
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
-        builder.setNegativeButton("Close", null);
-        builder.setView(paymentAmountInputLayoutBinding.getRoot());
-
-        double amount = (totalAmount - paidAmount);
-        paymentAmountInputLayoutBinding.amountPay.setText(String.format("%s", (int) (amount)));
-        AlertDialog dialog = builder.create();
+        paymentAmountInputLayoutBinding.close.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_white_round));
         dialog.show();
     }
 
@@ -504,13 +505,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             binding.confirmOrder.setVisibility(View.GONE);
             if (response.getAllowedPaymentMethods() != null && response.getAllowedPaymentMethods().size() > 0) {
                 showPaymentButtons();
-                binding.payViaGiftCard.setVisibility(View.GONE);
-                for (int i = 0; i < response.getAllowedPaymentMethods().size(); i++) {
-                    if (response.getAllowedPaymentMethods().get(i).equalsIgnoreCase("gift_code")) {
-                        binding.payViaGiftCard.setVisibility(View.VISIBLE);
-                        break;
-                    }
-                }
             } else
                 hidePaymentButtons();
 
@@ -632,14 +626,12 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     private void hidePaymentButtons() {
         binding.makePayment.setVisibility(View.GONE);
-        binding.payViaGiftCard.setVisibility(View.GONE);
         binding.stickyButtons.setVisibility(View.GONE);
         binding.container.setPadding(0, 0, 0, 0);
     }
 
     private void showPaymentButtons() {
         binding.makePayment.setVisibility(View.VISIBLE);
-        binding.payViaGiftCard.setVisibility(View.VISIBLE);
         binding.stickyButtons.setVisibility(View.VISIBLE);
         binding.container.setPadding(0, 0, 0, Utils.convertDpToPixel(70));
     }

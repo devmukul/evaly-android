@@ -1036,24 +1036,6 @@
                     android:text="@string/make_payment"
                     android:textAlignment="center"
                     android:textColor="@color/fffh" />
-
-                <TextView
-                    android:id="@+id/payViaGiftCard"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="13dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/pay_via_gift_card"
-                    android:clickable="true"
-                    android:paddingLeft="15dp"
-                    android:paddingTop="8dp"
-                    android:paddingRight="15dp"
-                    android:paddingBottom="9dp"
-                    android:text="@string/pay_via_gift_card"
-                    android:textAlignment="center"
-                    android:textColor="@color/c333"
-                    android:visibility="visible" />
             </LinearLayout>
 
 
