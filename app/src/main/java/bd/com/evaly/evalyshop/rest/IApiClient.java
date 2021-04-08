@@ -50,6 +50,7 @@ import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
+import bd.com.evaly.evalyshop.models.issue.IssueAnswerResponse;
 import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
 import bd.com.evaly.evalyshop.models.issueNew.comment.IssueCommentBody;
 import bd.com.evaly.evalyshop.models.issueNew.comment.IssueTicketCommentModel;
@@ -240,6 +241,15 @@ public interface IApiClient {
                                                              @Path("username") String username);
 
     // issue ticket
+
+    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/categories/customer/subanswers")
+    Call<CommonDataResponse<List<IssueAnswerResponse>>> getIssueSubAnswers(@Header("Authorization") String token,
+                                                                          @Query("answer") String answerId);
+
+    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/categories/customer/answers")
+    Call<CommonDataResponse<List<IssueAnswerResponse>>> getIssueAnswers(@Header("Authorization") String token,
+                                                                        @Query("category") String categoryId);
+
     @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/categories/customer")
     Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Header("Authorization") String token,
                                                                               @Query("order_status") String orderStatus,

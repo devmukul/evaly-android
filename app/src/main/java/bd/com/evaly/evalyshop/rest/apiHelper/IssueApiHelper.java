@@ -6,6 +6,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.issue.IssueAnswerResponse;
 import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
 import bd.com.evaly.evalyshop.models.issueNew.comment.IssueCommentBody;
 import bd.com.evaly.evalyshop.models.issueNew.comment.IssueTicketCommentModel;
@@ -13,6 +14,14 @@ import bd.com.evaly.evalyshop.models.issueNew.create.IssueCreateBody;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 
 public class IssueApiHelper extends BaseApiHelper {
+
+    public static void getIssueSubAnswers(String answerId, ResponseListenerAuth<CommonDataResponse<List<IssueAnswerResponse>>, String> listener) {
+        getiApiClient().getIssueSubAnswers(CredentialManager.getToken(), answerId).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getIssueAnswers(String categoryId, ResponseListenerAuth<CommonDataResponse<List<IssueAnswerResponse>>, String> listener) {
+        getiApiClient().getIssueAnswers(CredentialManager.getToken(), categoryId).enqueue(getResponseCallBackDefault(listener));
+    }
 
     public static void getCategories(String orderStatus, ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String> listener) {
         getiApiClient().getIssueTicketCategory(CredentialManager.getToken(), orderStatus, "evaly_order", 250).enqueue(getResponseCallBackDefault(listener));

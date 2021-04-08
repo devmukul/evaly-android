@@ -40,6 +40,28 @@ public class IssueCreateBody implements Serializable {
     @SerializedName("customer")
     private String customer;
 
+    @SerializedName("answer")
+    private Integer answerId;
+
+    @SerializedName("sub_answer")
+    private Integer subAnswerId;
+
+    public Integer getAnswerId() {
+        return answerId;
+    }
+
+    public void setAnswerId(Integer answerId) {
+        this.answerId = answerId;
+    }
+
+    public Integer getSubAnswerId() {
+        return subAnswerId;
+    }
+
+    public void setSubAnswerId(Integer subAnswerId) {
+        this.subAnswerId = subAnswerId;
+    }
+
     public String getSeller() {
         return seller;
     }
