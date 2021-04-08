@@ -103,6 +103,7 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                 binding.answerHolder.setVisibility(View.VISIBLE);
                 model.setSubAnswerId(null);
                 model.setAnswerId(issueAnswerResponses.get(0).getId());
+                binding.descriptionHolder.setVisibility(issueAnswerResponses.get(0).isHasInputField() ? View.VISIBLE : View.GONE);
             }
 
             answerList = new ArrayList<>();
@@ -125,6 +126,7 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
             } else {
                 model.setSubAnswerId(issueAnswerResponses.get(0).getId());
                 binding.subAnswerHolder.setVisibility(View.VISIBLE);
+                binding.descriptionHolder.setVisibility(issueAnswerResponses.get(0).isHasInputField() ? View.VISIBLE : View.GONE);
             }
 
             subAnswerList = new ArrayList<>();
@@ -133,7 +135,6 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
 
             for (IssueAnswerResponse item : issueAnswerResponses) {
                 subAnswerList.add(item.getText());
-                Logger.d("loaded");
             }
             adapter.notifyDataSetChanged();
         });
