@@ -64,11 +64,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:layout_toRightOf="@+id/pictureHolder"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:paddingHorizontal="40dp"
                         android:text="Evaly User"
                         android:textColor="@color/c333"
-                        android:paddingHorizontal="40dp"
-                        android:maxLines="2"
-                        android:ellipsize="end"
                         android:textSize="22sp"
                         android:textStyle="bold" />
 
@@ -360,6 +360,43 @@
                             android:layout_marginLeft="20dp"
                             android:layout_weight="0"
                             android:text="Make Payment"
+                            android:textColor="@color/c333"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="77dp"
+                        android:background="@color/separator_light" />
+
+                    <LinearLayout
+                        android:id="@+id/refund_settlement"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="20dp"
+                        android:paddingTop="15dp"
+                        android:paddingRight="20dp"
+                        android:paddingBottom="15dp">
+
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/btn_circle_author"
+                            android:backgroundTint="#00E676"
+                            android:padding="8dp"
+                            app:srcCompat="@drawable/ic_refund"
+                            app:tint="@color/fffh" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_weight="0"
+                            android:text="@string/refund_settlement"
                             android:textColor="@color/c333"
                             android:textSize="18sp" />
                     </LinearLayout>

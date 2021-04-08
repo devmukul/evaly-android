@@ -28,6 +28,10 @@ import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.profile.AddressWholeResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
+import bd.com.evaly.evalyshop.models.refundSettlement.OtpResponse;
+import bd.com.evaly.evalyshop.models.refundSettlement.RefundSettlementResponse;
+import bd.com.evaly.evalyshop.models.refundSettlement.request.BankAccountRequest;
+import bd.com.evaly.evalyshop.models.refundSettlement.request.MFSAccountRequest;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
@@ -38,13 +42,33 @@ import retrofit2.Response;
 
 public class AuthApiHelper extends BaseApiHelper {
 
+    public static void saveSettlementMFSAccount(String type, MFSAccountRequest body, ResponseListenerAuth<CommonDataResponse<RefundSettlementResponse>, String> listener) {
+        if (type.equalsIgnoreCase("bkash"))
+            getiApiClient().saveSettlementBkashAccount(CredentialManager.getToken(), body).enqueue(getResponseCallBackDefault(listener));
+        else if (type.equalsIgnoreCase("nagad"))
+            getiApiClient().saveSettlementNagadAccount(CredentialManager.getToken(), body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void saveSettlementBankAccount(BankAccountRequest body, ResponseListenerAuth<CommonDataResponse<RefundSettlementResponse>, String> listener) {
+        getiApiClient().saveSettlementBankAccount(CredentialManager.getToken(), body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getSettlementAccounts(String token, String otp, String requestId, ResponseListenerAuth<CommonDataResponse<RefundSettlementResponse>, String> listener) {
+        HashMap<String, String> body = new HashMap<>();
+        body.put("otp", otp);
+        body.put("request_id", requestId);
+        getiApiClient().getSettlementAccounts(token, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void generateOtp(String token, ResponseListenerAuth<CommonDataResponse<OtpResponse>, String> listener) {
+        getiApiClient().generateOtp(token).enqueue(getResponseCallBackDefault(listener));
+    }
+
     public static void getCaptcha(ResponseListenerAuth<CommonDataResponse<CaptchaResponse>, String> listener) {
         getiApiClient().getCaptcha().enqueue(getResponseCallBackDefault(listener));
     }
 
-
     public static void checkUpdate(DataFetchingListener<Response<JsonObject>> listener) {
-
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call = iApiClient.checkUpdate();
         call.enqueue(new Callback<JsonObject>() {

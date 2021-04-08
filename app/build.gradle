@@ -177,6 +177,8 @@ dependencies {
     // libraries
     implementation project(path: ':richlinkpreview')
     implementation 'com.github.delight-im:Android-AdvancedWebView:v3.0.0'
+    // implementation 'com.github.rbro112:Android-Indefinite-Pager-Indicator:1.4'
 
-    // implementation "com.github.chahine:pageindicator:0.2.8"
+    implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.2.1"
+    implementation 'com.github.aabhasr1:OtpView:v1.1.2-ktx'
 }

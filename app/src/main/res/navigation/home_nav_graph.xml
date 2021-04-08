@@ -410,6 +410,19 @@
         android:id="@+id/codShopsFragment"
         android:name="bd.com.evaly.evalyshop.ui.shop.cod.CodShopsFragment"
         android:label="CodShopsFragment" />
+    <fragment
+        android:id="@+id/refundSettlementFragment"
+        android:name="bd.com.evaly.evalyshop.ui.refundSettlement.RefundSettlementFragment"
+        android:label="RefundSettlementFragment" />
+    <fragment
+        android:id="@+id/preOtpFragment"
+        android:name="bd.com.evaly.evalyshop.ui.refundSettlement.preOtp.PreOtpFragment"
+        android:label="PreOtpFragment" />
+
+    <dialog
+        android:id="@+id/editSettlementAccountBottomSheet"
+        android:name="bd.com.evaly.evalyshop.ui.refundSettlement.modals.EditSettlementAccountBottomSheet"
+        android:label="EditSettlementAccountBottomSheet" />
 
 
 </navigation>
