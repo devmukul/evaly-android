@@ -616,7 +616,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     @Override
     public void onPaymentSuccess(String message) {
-        Toast.makeText(getActivity(), R.string.payment_success_message, Toast.LENGTH_LONG).show();
         itemList.clear();
         adapter.notifyDataSetChanged();
         currentPage = 1;

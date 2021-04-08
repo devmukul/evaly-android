@@ -856,7 +856,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     @Override
     public void onPaymentSuccess(String message) {
         updatePage();
-        ToastUtils.show(R.string.payment_success_message);
     }
 
 }
