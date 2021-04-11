@@ -329,11 +329,15 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                         ToastUtils.show("Please enter description.");
                         return;
                     }
-                }
+                } else
+                    description = "";
             }
 
             if (!description.isEmpty())
                 model.setAdditionalInfo(description);
+            else
+                model.setAdditionalInfo("");
+
             viewModel.submitIssue(model);
             binding.btnSubmit.setEnabled(false);
         });

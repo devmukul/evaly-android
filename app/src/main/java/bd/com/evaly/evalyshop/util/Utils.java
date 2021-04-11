@@ -761,7 +761,7 @@ public class Utils {
         long outputDate = 0;
 
         SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
-        df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
+        df_input.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
 
         SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.getDefault());
         df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
