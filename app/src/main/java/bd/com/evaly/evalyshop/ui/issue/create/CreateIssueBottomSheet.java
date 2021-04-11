@@ -323,9 +323,8 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                         "Branch Name: " + branchName + "\n" +
                         "Routing Number: " + routingNumber;
             } else {
-                description = binding.etDescription.getText().toString();
-
-                if ((viewModel.subAnswerId > 0 || viewModel.answerId > 0) && binding.descriptionHolder.getVisibility() == View.VISIBLE) {
+                if (binding.descriptionHolder.getVisibility() == View.VISIBLE) {
+                    description = binding.etDescription.getText().toString();
                     if (description.isEmpty()) {
                         ToastUtils.show("Please enter description.");
                         return;
@@ -333,7 +332,8 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                 }
             }
 
-            model.setAdditionalInfo(description);
+            if (!description.isEmpty())
+                model.setAdditionalInfo(description);
             viewModel.submitIssue(model);
             binding.btnSubmit.setEnabled(false);
         });
