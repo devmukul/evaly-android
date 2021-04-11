@@ -475,32 +475,32 @@ public class ApiRepository {
     }
 
 
-    public void getGiftCard(int page, ResponseListenerAuth<CommonDataResponse<List<GiftCardListItem>>, String> listener) {
-
-        apiHandler.createCall(apiService.getGiftCardList(page), listener);
+    public void getGiftCard(int page, String url, ResponseListenerAuth<CommonDataResponse<List<GiftCardListItem>>, String> listener) {
+        url += "gift-cards/custom/list";
+        apiHandler.createCall(apiService.getGiftCardList(url, page), listener);
     }
 
-    public void placeGiftCardOrder(String token, JsonObject body, ResponseListenerAuth<JsonObject, String> listener) {
-
-        apiHandler.createCall(apiService.placeGiftCardOrder(body), listener);
+    public void placeGiftCardOrder(String token, JsonObject body, String url, ResponseListenerAuth<JsonObject, String> listener) {
+        url += "gift-card-orders/place/";
+        apiHandler.createCall(apiService.placeGiftCardOrder(url, body), listener);
     }
 
-    public void getGiftCardDetails(String slug, ResponseListenerAuth<JsonObject, String> listener) {
-
-        apiHandler.createCall(apiService.getGiftCardDetails(slug), listener);
+    public void getGiftCardDetails(String slug, String url, ResponseListenerAuth<JsonObject, String> listener) {
+        url += "gift-cards/retrieve/" + slug;
+        apiHandler.createCall(apiService.getGiftCardDetails(url), listener);
     }
 
-    public void getPurchasedGiftCardList(String show, int page, ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String> listener) {
-
-        apiHandler.createCall(apiService.getPurchasedGiftCardList(show, page), listener);
+    public void getPurchasedGiftCardList(String show, int page, String url, ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String> listener) {
+        url += "gift-card-orders";
+        apiHandler.createCall(apiService.getPurchasedGiftCardList(url, show, page), listener);
     }
 
-    public void redeem(String invoiceNo, ResponseListenerAuth<JsonObject, String> listener) {
+    public void redeem(String invoiceNo,  String url, ResponseListenerAuth<JsonObject, String> listener) {
 
         HashMap<String, String> body = new HashMap<>();
         body.put("invoice_no", invoiceNo);
-
-        apiHandler.createCall(apiService.redeemGiftCard(body), listener);
+        url += "gift-card-orders/gift-code/retrieve";
+        apiHandler.createCall(apiService.redeemGiftCard(url, body), listener);
     }
 
 
@@ -756,12 +756,13 @@ public class ApiRepository {
     /* ------------- Payment APIs ------------- */
 
 
-    public void claimCashback(String token, String username, ResponseListenerAuth<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.claimCashBack(username), listener);
+    public void claimCashback(String token, String username, String url, ResponseListenerAuth<JsonObject, String> listener) {
+        url += username + "/";
+        apiHandler.createCall(apiService.claimCashBack(url), listener);
     }
 
-    public void getBalance(String token, String username, ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String> listener) {
-        apiHandler.createCall(apiService.getBalance(), listener);
+    public void getBalance(String token, String username, String url, ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String> listener) {
+        apiHandler.createCall(apiService.getBalance(url), listener);
     }
 
     public void makePartialPayment(String token, ParitalPaymentModel body, ResponseListenerAuth<JsonObject, String> listener) {

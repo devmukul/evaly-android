@@ -53,19 +53,20 @@ android {
         }
 
         debug {
-            buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
-            buildConfigField "String", 'WEB_URL', "\"https://beta.evaly.com.bd/\""
-            buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
 
 //            buildConfigField "String", 'BASE_URL', "\"https://api.evaly.com.bd/\""
 //            buildConfigField "String", 'WEB_URL', "\"https://evaly.com.bd/\""
 //            buildConfigField "String", 'CHAT_BASE', "\"chat.evaly.com.bd\""
 
-            buildConfigField "String", 'EVALY_NUMBER', "\"09638111667\""
-            buildConfigField "String", 'BUILD', "\"dev\""
-            buildConfigField "String", 'BKASH_URL', "\"https://beta.evaly.com.bd/bkash_payment\""
-            buildConfigField "String", 'NAGAD_URL', "\"https://api-dev.evaly.com.bd/pay/nagad\""
-            buildConfigField "String", "APPOINTMENT_URL", "\"https://eappointment.evaly.com.bd/api/v1/\""
+            buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
+            buildConfigField "String", 'WEB_URL', "\"https://beta.evaly.com.bd/\""
+            buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
+
+            buildConfigField "String", 'EVALY_NUMBER', "\"09638111666\""
+            buildConfigField "String", 'BUILD', "\"prod\""
+            buildConfigField "String", 'BKASH_URL', "\"https://evaly.com.bd/bkash_payment\""
+            buildConfigField "String", 'NAGAD_URL', "\"https://nagad.evaly.com.bd/nagad\""
+            buildConfigField "String", "APPOINTMENT_URL", "\"https://api.evaly.com.bd/eappointment/api/v1/\""
         }
 
         lintOptions {
@@ -156,7 +157,6 @@ dependencies {
     kapt 'androidx.hilt:hilt-compiler:1.0.0-beta01'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.1'
     implementation 'androidx.hilt:hilt-navigation-fragment:1.0.0-beta01'
-
 
 
     // image helpers

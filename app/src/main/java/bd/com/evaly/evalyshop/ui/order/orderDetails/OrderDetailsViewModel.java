@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -19,6 +20,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
@@ -27,6 +29,7 @@ import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
+import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -48,12 +51,14 @@ public class OrderDetailsViewModel extends ViewModel {
     private MutableLiveData<CommonDataResponse<OrderDetailsModel>> updateAddress = new MutableLiveData<>();
     protected MutableLiveData<BalanceResponse> balanceLiveData = new MutableLiveData<>();
     private String invoiceNo;
+    private FirebaseRemoteConfig firebaseRemoteConfig;
 
     @Inject
-    public OrderDetailsViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
+    public OrderDetailsViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository, PreferenceRepository preferenceRepository, FirebaseRemoteConfig  firebaseRemoteConfig) {
         this.invoiceNo = savedStateHandle.get("orderID");
         this.apiRepository = apiRepository;
         this.preferenceRepository = preferenceRepository;
+        this.firebaseRemoteConfig = firebaseRemoteConfig;
         getOrderDetails();
         getDeliveryHero();
         getOrderHistory();
@@ -69,7 +74,19 @@ public class OrderDetailsViewModel extends ViewModel {
 
     public void updateBalance() {
 
-        apiRepository.getBalance(preferenceRepository.getToken(), preferenceRepository.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
+        String url = null;
+
+        RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
+
+        if (BuildConfig.DEBUG)
+            url = baseUrls.getDevBalanceUrl();
+        else
+            url = baseUrls.getProdBalanceUrl();
+
+        if (url == null)
+            return;
+
+        apiRepository.getBalance(preferenceRepository.getToken(), preferenceRepository.getUserName(), url, new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
                 balanceLiveData.setValue(response.getData());

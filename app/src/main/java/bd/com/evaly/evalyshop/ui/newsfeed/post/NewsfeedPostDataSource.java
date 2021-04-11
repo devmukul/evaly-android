@@ -24,6 +24,7 @@ public class NewsfeedPostDataSource extends PageKeyedDataSource<Integer, Newsfee
 
     public NewsfeedPostDataSource(String type, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         this.apiRepository = apiRepository;
+        this.preferenceRepository = preferenceRepository;
         this.type = type;
     }
 

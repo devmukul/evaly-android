@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,6 +50,7 @@ import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityOrderDetailsBinding;
 import bd.com.evaly.evalyshop.databinding.BottomSheetUpdateOrderAddressBinding;
 import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
+import bd.com.evaly.evalyshop.databinding.PaymentAmountInputLayoutBinding;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
@@ -215,13 +217,16 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 ToastUtils.show("Cash on delivery only");
                 return;
             }
-            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoiceNo,
-                    totalAmount,
-                    paidAmount,
-                    orderDetailsModel.getAllowedPaymentMethods(),
-                    orderDetailsModel.isApplyDeliveryCharge(),
-                    orderDetailsModel.getDeliveryCharge(), this);
-            paymentBottomSheet.show(getSupportFragmentManager(), "payment");
+
+            paymentAmountInput();
+
+//            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoiceNo,
+//                    totalAmount,
+//                    paidAmount,
+//                    orderDetailsModel.getAllowedPaymentMethods(),
+//                    orderDetailsModel.isApplyDeliveryCharge(),
+//                    orderDetailsModel.getDeliveryCharge(), this);
+//            paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
 
         binding.btnToggleTimeline.setOnClickListener(v -> {
@@ -235,7 +240,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             orderStatusAdapter.notifyDataSetChanged();
         });
 
-        binding.payViaGiftCard.setOnClickListener(view -> dialogGiftCardPayment());
         binding.withdrawRefund.setOnClickListener(view -> {
             new AlertDialog.Builder(this)
                     .setCancelable(false)
@@ -260,6 +264,41 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
             bottomSheet.show(getSupportFragmentManager(), "Create issue");
         });
+    }
+
+    private void paymentAmountInput() {
+        PaymentAmountInputLayoutBinding paymentAmountInputLayoutBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.payment_amount_input_layout, null, false);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter your payable amount");
+        builder.setView(paymentAmountInputLayoutBinding.getRoot());
+
+        AlertDialog dialog = builder.create();
+        paymentAmountInputLayoutBinding.amountPay.setText(String.format("%s", (int) (dueAmount)));
+        paymentAmountInputLayoutBinding.makePayment.setOnClickListener(view -> {
+            try {
+                if (paymentAmountInputLayoutBinding.amountPay.getText().toString().trim().isEmpty()) {
+                    paymentAmountInputLayoutBinding.amountPay.setError("Amount is required!");
+                } else if (Double.parseDouble(paymentAmountInputLayoutBinding.amountPay.getText().toString()) == 0) {
+                    paymentAmountInputLayoutBinding.amountPay.setError("Invalid amount!");
+                } else if (Double.parseDouble(paymentAmountInputLayoutBinding.amountPay.getText().toString()) > dueAmount) {
+                    paymentAmountInputLayoutBinding.amountPay.setError("You have entered more than due amount");
+                } else {
+                    String paymentUrl = BuildConfig.WEB_URL + "payment/init/" + invoiceNo + "?methods=" + TextUtils.join(",", orderDetailsModel.getAllowedPaymentMethods()) + "&t=" + preferenceRepository.getTokenNoBearer() + "&context=order_payment&amount=" + paymentAmountInputLayoutBinding.amountPay.getText().toString();
+                    PurchaseRequestInfo purchaseRequestInfo = new PurchaseRequestInfo(preferenceRepository.getTokenNoBearer(), String.valueOf(dueAmount), invoiceNo, "bKash");
+                    paymentWebBuilder.setToolbarTitle("Order Payment");
+                    paymentWebBuilder.loadPaymentURL(paymentUrl, "order/my-orders", purchaseRequestInfo);
+                    dialog.dismiss();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        paymentAmountInputLayoutBinding.close.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_white_round));
+        dialog.show();
     }
 
     private void liveEvents() {
@@ -471,13 +510,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             binding.confirmOrder.setVisibility(View.GONE);
             if (response.getAllowedPaymentMethods() != null && response.getAllowedPaymentMethods().size() > 0) {
                 showPaymentButtons();
-                binding.payViaGiftCard.setVisibility(View.GONE);
-                for (int i = 0; i < response.getAllowedPaymentMethods().size(); i++) {
-                    if (response.getAllowedPaymentMethods().get(i).equalsIgnoreCase("gift_code")) {
-                        binding.payViaGiftCard.setVisibility(View.VISIBLE);
-                        break;
-                    }
-                }
             } else
                 hidePaymentButtons();
 
@@ -599,14 +631,12 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     private void hidePaymentButtons() {
         binding.makePayment.setVisibility(View.GONE);
-        binding.payViaGiftCard.setVisibility(View.GONE);
         binding.stickyButtons.setVisibility(View.GONE);
         binding.container.setPadding(0, 0, 0, 0);
     }
 
     private void showPaymentButtons() {
         binding.makePayment.setVisibility(View.VISIBLE);
-        binding.payViaGiftCard.setVisibility(View.VISIBLE);
         binding.stickyButtons.setVisibility(View.VISIBLE);
         binding.container.setPadding(0, 0, 0, Utils.convertDpToPixel(70));
     }
@@ -831,7 +861,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     @Override
     public void onPaymentSuccess(String message) {
         updatePage();
-        ToastUtils.show(R.string.payment_success_message);
     }
 
 }

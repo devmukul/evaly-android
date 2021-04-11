@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,11 +27,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -39,11 +42,13 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetGiftCardPaymentBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentGiftcardListBinding;
+import bd.com.evaly.evalyshop.databinding.PaymentAmountInputLayoutBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
+import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
 import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
 import bd.com.evaly.evalyshop.ui.payment.listener.PaymentListener;
@@ -84,6 +89,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     private boolean isImageSelected = false;
 
     private PaymentWebBuilder paymentWebBuilder;
+    private String baseUrl = BuildConfig.BASE_URL + "cpn/";
 
 
     public GiftCardPurchasedFragment() {
@@ -110,6 +116,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         binding = FragmentGiftcardListBinding.inflate(inflater);
         return binding.getRoot();
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -150,6 +157,17 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
 
         getGiftCardList();
+
+        RemoteConfigBaseUrls baseUrls = new Gson().fromJson(remoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
+
+        String url;
+        if (BuildConfig.DEBUG)
+            url = baseUrls.getDevGiftCardBaseUrl();
+        else
+            url = baseUrls.getProdGiftCardBaseUrl();
+
+        if (url != null)
+            baseUrl = url;
 
     }
 
@@ -292,6 +310,40 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         }
     }
 
+    private void paymentAmountInput() {
+        PaymentAmountInputLayoutBinding paymentAmountInputLayoutBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.payment_amount_input_layout, null, false);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Enter your payable amount");
+        builder.setView(paymentAmountInputLayoutBinding.getRoot());
+        AlertDialog dialog = builder.create();
+        double amountDouble = Double.parseDouble(amount);
+        paymentAmountInputLayoutBinding.amountPay.setText(String.format("%s", (int) (amountDouble)));
+        paymentAmountInputLayoutBinding.makePayment.setOnClickListener(view -> {
+            try {
+                if (paymentAmountInputLayoutBinding.amountPay.getText().toString().trim().isEmpty()) {
+                    paymentAmountInputLayoutBinding.amountPay.setError("Amount is required!");
+                } else if (Integer.parseInt(paymentAmountInputLayoutBinding.amountPay.getText().toString()) == 0) {
+                    paymentAmountInputLayoutBinding.amountPay.setError("Invalid amount!");
+                } else if (Double.parseDouble(paymentAmountInputLayoutBinding.amountPay.getText().toString()) > Double.parseDouble(amount)) {
+                    paymentAmountInputLayoutBinding.amountPay.setError("You have entered more than due amount");
+                } else {
+                    String paymentUrl = BuildConfig.WEB_URL + "giftcard-payment/init/" + giftCardInvoice + "?t=" + preferenceRepository.getTokenNoBearer() + "&context=gift_card_order_payment&amount=" + paymentAmountInputLayoutBinding.amountPay.getText().toString();
+                    PurchaseRequestInfo purchaseRequestInfo = new PurchaseRequestInfo(preferenceRepository.getTokenNoBearer(), String.valueOf(amount), giftCardInvoice, "bKash");
+                    paymentWebBuilder.setToolbarTitle("Gift Card Payment");
+                    paymentWebBuilder.loadPaymentURL(paymentUrl, "success.html", purchaseRequestInfo);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        paymentAmountInputLayoutBinding.close.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_white_round));
+        dialog.show();
+    }
+
     public void initializeBottomSheet() {
 
         if (bottomSheetDialog == null) {
@@ -358,8 +410,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         giftCardInvoice = item.getInvoiceNo();
         paymentBinding.amountPay.setText(Utils.formatPrice(item.getTotal()));
         amount = item.getTotal() + "";
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        bottomSheetDialog.show();
+        paymentAmountInput();
 
     }
 
@@ -375,7 +426,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             binding.progressBar.setVisibility(View.VISIBLE);
         }
 
-        apiRepository.getPurchasedGiftCardList("purchased", currentPage,
+        apiRepository.getPurchasedGiftCardList("purchased", currentPage, baseUrl,
                 new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<GiftCardListPurchasedItem>> response, int statusCode) {
@@ -566,7 +617,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     @Override
     public void onPaymentSuccess(String message) {
-        Toast.makeText(getActivity(), R.string.payment_success_message, Toast.LENGTH_LONG).show();
         itemList.clear();
         adapter.notifyDataSetChanged();
         currentPage = 1;

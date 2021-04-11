@@ -10,14 +10,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.gson.Gson;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentGiftcardsBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
+import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseViewPagerAdapter;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -29,6 +33,8 @@ public class GiftCardFragment extends Fragment {
     PreferenceRepository preferenceRepository;
     @Inject
     ApiRepository apiRepository;
+    @Inject
+    FirebaseRemoteConfig firebaseRemoteConfig;
     private FragmentGiftcardsBinding binding;
     private BaseViewPagerAdapter pager;
 
@@ -68,8 +74,18 @@ public class GiftCardFragment extends Fragment {
 
 
     public void updateBalance() {
+        String url = null;
 
-        apiRepository.getBalance(preferenceRepository.getToken(), preferenceRepository.getUserName(), new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
+        RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
+
+        if (BuildConfig.DEBUG)
+            url = baseUrls.getDevBalanceUrl();
+        else
+            url = baseUrls.getProdBalanceUrl();
+
+        if (url == null)
+            return;
+        apiRepository.getBalance(preferenceRepository.getToken(), preferenceRepository.getUserName(), url, new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
                 binding.balance.setText(String.format("Gift Card: ৳ %s", response.getData().getGiftCardBalance()));

@@ -2,10 +2,12 @@ package bd.com.evaly.evalyshop.ui.auth.password;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +50,10 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     EditText etConfirmPassword;
     @BindView(R.id.tvPasswordWarning)
     TextView tvPasswordWarning;
+    @BindView(R.id.show_new_pass)
+    ImageView imageShowPassword;
+    @BindView(R.id.show_confirm_pass)
+    ImageView imageShowConfirmPassword;
 
     ViewDialog dialog;
     private boolean isFromSignUp;
@@ -59,6 +65,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     ApiRepository apiRepository;
     @Inject
     PreferenceRepository preferenceRepository;
+    private boolean isCurrentShowing, isNewShowing, isNewConfirmShowing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +172,33 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         });
 
     }
+
+    @OnClick(R.id.show_new_pass)
+    void onShowPassword() {
+        if (!isNewShowing) {
+            isNewShowing = true;
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+            imageShowPassword.setImageResource(R.drawable.ic_visibility_off);
+        } else {
+            isNewShowing = false;
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            imageShowPassword.setImageResource(R.drawable.ic_visibility);
+        }
+    }
+
+    @OnClick(R.id.show_confirm_pass)
+    void onShowConfirmPassword() {
+        if (!isNewConfirmShowing) {
+            isNewConfirmShowing = true;
+            etConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+            imageShowConfirmPassword.setImageResource(R.drawable.ic_visibility_off);
+        } else {
+            isNewConfirmShowing = false;
+            etConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            imageShowConfirmPassword.setImageResource(R.drawable.ic_visibility);
+        }
+    }
+
 
     @OnClick(R.id.btnResetPassword)
     void resetPassword() {

@@ -222,6 +222,8 @@ public class CheckoutFragment extends DialogFragment {
             if (Utils.isNumeric(cartItem.getProductID()))
                 productIdList.add(Integer.parseInt(cartItem.getProductID()));
             if (cartItem.isSelected()) {
+                if (cartItem.isExpressShop())
+                    isExpress = true;
                 String ss = cartItem.getShopSlug();
                 Integer am = shopAmountMap.get(ss);
                 if (shopAmountMap.containsKey(ss) && am != null)
