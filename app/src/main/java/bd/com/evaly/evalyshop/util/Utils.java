@@ -751,6 +751,8 @@ public class Utils {
     }
 
     public static long formattedDateFromStringToTimestampGMTIssue(String inputFormat, String outputFormat, String inputDate) {
+        if (inputDate.contains("+"))
+            inputDate = inputDate.split("\\+")[0]+"Z";
         if (inputFormat.equals("")) { // if inputFormat = "", set a default input format.
             inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         }
