@@ -20,7 +20,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.orhanobut.logger.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -324,10 +323,12 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                         "Branch Name: " + branchName + "\n" +
                         "Routing Number: " + routingNumber;
             } else {
-                description = binding.etDescription.getText().toString();
-                if (description.isEmpty()) {
-                    ToastUtils.show("Please enter description.");
-                    return;
+                if((viewModel.subAnswerId > 0 || viewModel.answerId > 0) && binding.descriptionHolder.getVisibility() == View.VISIBLE) {
+                    description = binding.etDescription.getText().toString();
+                    if (description.isEmpty()) {
+                        ToastUtils.show("Please enter description.");
+                        return;
+                    }
                 }
             }
 
