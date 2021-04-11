@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
+import bd.com.evaly.evalyshop.models.issue.IssueAnswerResponse;
 import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
 import bd.com.evaly.evalyshop.models.issueNew.create.IssueCreateBody;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
@@ -27,18 +28,62 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class CreateIssueViewModel extends ViewModel {
 
+    protected MutableLiveData<List<IssueAnswerResponse>> answerLiveList = new MutableLiveData<>();
+    protected MutableLiveData<List<IssueAnswerResponse>> subAnswerLiveList = new MutableLiveData<>();
     protected MutableLiveData<List<IssueCategoryModel>> categoryLiveList = new MutableLiveData<>();
     protected SingleLiveEvent<Boolean> issueCreatedLiveData = new SingleLiveEvent<>();
     protected MutableLiveData<ImageDataModel> imageLiveData = new SingleLiveEvent<>();
     protected SingleLiveEvent<String> imageErrorLiveData = new SingleLiveEvent<>();
     protected String orderStatus;
     private ApiRepository apiRepository;
+    protected int answerId = -1;
+    protected int subAnswerId = -1;
 
     @Inject
     public CreateIssueViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository) {
         this.orderStatus = savedStateHandle.get("orderStatus");
         this.apiRepository = apiRepository;
         loadCategories();
+    }
+
+    public void loadAnswers(String categoryId) {
+        apiRepository.getIssueAnswers(categoryId, new ResponseListenerAuth<CommonDataResponse<List<IssueAnswerResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<IssueAnswerResponse>> response, int statusCode) {
+                if (response.getData().size() > 0 && subAnswerId < 0)
+                    loadSubAnswers(String.valueOf(response.getData().get(0).getId()));
+                answerLiveList.setValue(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
+    public void loadSubAnswers(String answerId) {
+        apiRepository.getIssueSubAnswers(answerId, new ResponseListenerAuth<CommonDataResponse<List<IssueAnswerResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<IssueAnswerResponse>> response, int statusCode) {
+                subAnswerLiveList.setValue(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void submitIssue(IssueCreateBody model) {
@@ -74,6 +119,8 @@ public class CreateIssueViewModel extends ViewModel {
         apiRepository.getCategories(orderStatus, new ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<IssueCategoryModel>> response, int statusCode) {
+                if (response.getData().size() > 0)
+                    loadAnswers(String.valueOf(response.getData().get(0).getId()));
                 categoryLiveList.setValue(response.getData());
             }
 
@@ -110,10 +157,33 @@ public class CreateIssueViewModel extends ViewModel {
     }
 
     public IssueCategoryModel getCategoryModelByName(String name) {
+        if (categoryLiveList.getValue() == null)
+            return null;
         for (IssueCategoryModel item : categoryLiveList.getValue()) {
             if (item.getName().equals(name))
                 return item;
         }
         return null;
     }
+
+    public IssueAnswerResponse getAnswerModelModelByName(String name) {
+        if (answerLiveList.getValue() == null)
+            return null;
+        for (IssueAnswerResponse item : answerLiveList.getValue()) {
+            if (item.getText().equals(name))
+                return item;
+        }
+        return null;
+    }
+
+    public IssueAnswerResponse getSubAnswerModelModelByName(String name) {
+        if (subAnswerLiveList.getValue() == null)
+            return null;
+        for (IssueAnswerResponse item : subAnswerLiveList.getValue()) {
+            if (item.getText().equals(name))
+                return item;
+        }
+        return null;
+    }
+
 }

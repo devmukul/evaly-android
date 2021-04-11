@@ -50,6 +50,7 @@ import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
+import bd.com.evaly.evalyshop.models.issue.IssueAnswerResponse;
 import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
 import bd.com.evaly.evalyshop.models.issueNew.comment.IssueCommentBody;
 import bd.com.evaly.evalyshop.models.issueNew.comment.IssueTicketCommentModel;
@@ -248,6 +249,13 @@ public interface IApiClient {
     Call<CommonDataResponse<String>> getUnreadedMessageCount(@Path("username") String username);
 
     // issue ticket
+
+    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/categories/customer/subanswers")
+    Call<CommonDataResponse<List<IssueAnswerResponse>>> getIssueSubAnswers(@Query("answer") String answerId);
+
+    @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/categories/customer/answers")
+    Call<CommonDataResponse<List<IssueAnswerResponse>>> getIssueAnswers(@Query("category") String categoryId);
+
     @GET(UrlUtils.DOMAIN + "evaly-issue/api/v1/categories/customer")
     Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Query("order_status") String orderStatus,
                                                                               @Query("context") String context,

@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetCreateIssueBinding;
+import bd.com.evaly.evalyshop.models.issue.IssueAnswerResponse;
 import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
 import bd.com.evaly.evalyshop.models.issueNew.create.IssueCreateBody;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -47,10 +48,11 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
     PreferenceRepository preferenceRepository;
     private CreateIssueViewModel viewModel;
     private BottomSheetCreateIssueBinding binding;
-    private List<IssueCategoryModel> itemList = new ArrayList<>();
     private String orderStatus, invoice, seller, shop, imageUrl;
     private IssueCreateBody model;
     private List<String> options;
+    private List<String> answerList;
+    private List<String> subAnswerList;
     private ViewDialog dialog;
 
     public static CreateIssueBottomSheet newInstance(String invoiceNo, String orderStatus, String sellerName, String shopSlug) {
@@ -93,6 +95,55 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
 
     private void liveEvents() {
 
+        viewModel.answerLiveList.observe(getViewLifecycleOwner(), issueAnswerResponses -> {
+            if (issueAnswerResponses == null) {
+                ToastUtils.show(getResources().getString(R.string.something_wrong));
+                return;
+            }
+            if (issueAnswerResponses.size() == 0) {
+                binding.answerHolder.setVisibility(View.GONE);
+                binding.subAnswerHolder.setVisibility(View.GONE);
+                binding.descriptionHolder.setVisibility(View.VISIBLE);
+            } else {
+                binding.answerHolder.setVisibility(View.VISIBLE);
+                model.setSubAnswerId(null);
+                model.setAnswerId(issueAnswerResponses.get(0).getId());
+                binding.descriptionHolder.setVisibility(issueAnswerResponses.get(0).isHasInputField() ? View.VISIBLE : View.GONE);
+            }
+
+            answerList = new ArrayList<>();
+            ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, answerList);
+            binding.spnAnswers.setAdapter(adapter);
+            for (IssueAnswerResponse item : issueAnswerResponses) {
+                answerList.add(item.getText());
+            }
+            adapter.notifyDataSetChanged();
+        });
+
+        viewModel.subAnswerLiveList.observe(getViewLifecycleOwner(), issueAnswerResponses -> {
+            if (issueAnswerResponses == null) {
+                ToastUtils.show(getResources().getString(R.string.something_wrong));
+                return;
+            }
+
+            if (issueAnswerResponses.size() == 0) {
+                binding.subAnswerHolder.setVisibility(View.GONE);
+            } else {
+                model.setSubAnswerId(issueAnswerResponses.get(0).getId());
+                binding.subAnswerHolder.setVisibility(View.VISIBLE);
+                binding.descriptionHolder.setVisibility(issueAnswerResponses.get(0).isHasInputField() ? View.VISIBLE : View.GONE);
+            }
+
+            subAnswerList = new ArrayList<>();
+            ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, subAnswerList);
+            binding.spnSubAnswers.setAdapter(adapter);
+
+            for (IssueAnswerResponse item : issueAnswerResponses) {
+                subAnswerList.add(item.getText());
+            }
+            adapter.notifyDataSetChanged();
+        });
+
         viewModel.imageErrorLiveData.observe(getViewLifecycleOwner(), s -> {
             ToastUtils.show(s);
             dialog.hideDialog();
@@ -118,8 +169,6 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
             options = new ArrayList<>();
             ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, options);
             binding.spnDelivery.setAdapter(adapter);
-            itemList.clear();
-            itemList.addAll(issueCategoryModels);
             for (IssueCategoryModel item : issueCategoryModels) {
                 options.add(item.getName());
             }
@@ -130,9 +179,45 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
 
     private void updateViews() {
 
+        binding.spnAnswers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                viewModel.subAnswerId = -1;
+                IssueAnswerResponse item = viewModel.getAnswerModelModelByName(answerList.get(i));
+                binding.descriptionHolder.setVisibility(item.isHasInputField() ? View.VISIBLE : View.GONE);
+                model.setAnswerId(item.getId());
+                viewModel.loadSubAnswers(String.valueOf(item.getId()));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        binding.spnSubAnswers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                viewModel.subAnswerId = -1;
+                IssueAnswerResponse item = viewModel.getSubAnswerModelModelByName(subAnswerList.get(i));
+                binding.descriptionHolder.setVisibility(item.isHasInputField() ? View.VISIBLE : View.GONE);
+                model.setSubAnswerId(item.getId());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         binding.spnDelivery.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                viewModel.answerId = -1;
+                viewModel.subAnswerId = -1;
+                model.setAnswerId(null);
+                model.setSubAnswerId(null);
+                viewModel.loadAnswers(String.valueOf(viewModel.getCategoryModelByName(options.get(i)).getId()));
                 model.setCategory(viewModel.getCategoryModelByName(options.get(i)).getId());
                 String catName = options.get(i).toLowerCase();
                 if (catName.contains("payment") || catName.contains("bank") || catName.contains("cashback") || catName.contains("return"))
@@ -244,10 +329,12 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                         "Branch Name: " + branchName + "\n" +
                         "Routing Number: " + routingNumber;
             } else {
-                description = binding.etDescription.getText().toString();
-                if (description.isEmpty()) {
-                    ToastUtils.show("Please enter description.");
-                    return;
+                if((viewModel.subAnswerId > 0 || viewModel.answerId > 0) && binding.descriptionHolder.getVisibility() == View.VISIBLE) {
+                    description = binding.etDescription.getText().toString();
+                    if (description.isEmpty()) {
+                        ToastUtils.show("Please enter description.");
+                        return;
+                    }
                 }
             }
 

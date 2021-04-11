@@ -32,6 +32,9 @@ public class BuyNowViewModel extends ViewModel {
 
     @Inject
     public BuyNowViewModel(CartDao cartDao, SavedStateHandle savedStateHandle, ApiRepository apiRepository) {
+        this.cartDao = cartDao;
+        this.apiRepository = apiRepository;
+
         if (savedStateHandle.contains("shopSlug") && savedStateHandle.contains("productSlug")) {
             shopSlug = savedStateHandle.get("shopSlug");
             productSlug = savedStateHandle.get("productSlug");
@@ -41,8 +44,6 @@ public class BuyNowViewModel extends ViewModel {
             cartItem = savedStateHandle.get("cartItem");
             loadFromModel.setValue(true);
         }
-        this.cartDao = cartDao;
-        this.apiRepository = apiRepository;
     }
 
     public void insertCartEntity(CartEntity cartEntity){

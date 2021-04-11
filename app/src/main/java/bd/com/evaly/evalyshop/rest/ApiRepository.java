@@ -59,6 +59,7 @@ import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
+import bd.com.evaly.evalyshop.models.issue.IssueAnswerResponse;
 import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
 import bd.com.evaly.evalyshop.models.issueNew.comment.IssueCommentBody;
 import bd.com.evaly.evalyshop.models.issueNew.comment.IssueTicketCommentModel;
@@ -534,6 +535,13 @@ public class ApiRepository {
 
     /* ------------- IssueTicket APIs ------------- */
 
+    public void getIssueSubAnswers(String answerId, ResponseListenerAuth<CommonDataResponse<List<IssueAnswerResponse>>, String> listener) {
+        apiHandler.createCall(apiService.getIssueSubAnswers(answerId), listener);
+    }
+
+    public void getIssueAnswers(String categoryId, ResponseListenerAuth<CommonDataResponse<List<IssueAnswerResponse>>, String> listener) {
+        apiHandler.createCall(apiService.getIssueAnswers(categoryId), listener);
+    }
 
     public void getCategories(String orderStatus, ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String> listener) {
         apiHandler.createCall(apiService.getIssueTicketCategory(orderStatus, "evaly_order", 250), listener);
