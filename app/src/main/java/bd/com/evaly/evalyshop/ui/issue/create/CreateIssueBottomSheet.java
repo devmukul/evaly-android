@@ -323,8 +323,9 @@ public class CreateIssueBottomSheet extends BottomSheetDialogFragment {
                         "Branch Name: " + branchName + "\n" +
                         "Routing Number: " + routingNumber;
             } else {
-                if((viewModel.subAnswerId > 0 || viewModel.answerId > 0) && binding.descriptionHolder.getVisibility() == View.VISIBLE) {
-                    description = binding.etDescription.getText().toString();
+                description = binding.etDescription.getText().toString();
+
+                if ((viewModel.subAnswerId > 0 || viewModel.answerId > 0) && binding.descriptionHolder.getVisibility() == View.VISIBLE) {
                     if (description.isEmpty()) {
                         ToastUtils.show("Please enter description.");
                         return;
