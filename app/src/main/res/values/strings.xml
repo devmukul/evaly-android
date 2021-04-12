@@ -433,5 +433,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="select_address">Select Address</string>
     <string name="type_of_the_word">Type the word</string>
     <string name="attachments">Attachments</string>
+    <string name="express_delivery_text">Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service. For mobile express order, Delivery will be made within 2 hours</string>
+    <string name="delivery_text">Delivery will be made within 7 to 45 working days, depending on product and campaign</string>
 
 </resources>
