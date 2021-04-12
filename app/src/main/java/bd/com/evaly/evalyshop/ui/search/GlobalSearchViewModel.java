@@ -35,6 +35,7 @@ public class GlobalSearchViewModel extends BaseViewModel {
     private MutableLiveData<List<FilterRootItem>> filterRootLiveList = new MutableLiveData<>();
     private MutableLiveData<List<FilterSubItem>> filterSubLiveList = new MutableLiveData<>();
     protected MutableLiveData<Facets> facetsMutableLiveData = new MutableLiveData<>();
+    protected MutableLiveData<String> searchTypeLiveData = new MutableLiveData<>();
 
     protected List<FilterSubItem> filterBrandsList = new ArrayList<>();
     protected List<FilterSubItem> filterCategoriesList = new ArrayList<>();
@@ -63,6 +64,7 @@ public class GlobalSearchViewModel extends BaseViewModel {
         type = "product";
         if (bundle.contains("type"))
             type = bundle.get("type");
+        searchTypeLiveData.setValue(type);
         performSearch();
     }
 
@@ -97,6 +99,7 @@ public class GlobalSearchViewModel extends BaseViewModel {
     }
 
     public void setType(String type) {
+        searchTypeLiveData.setValue(type);
         this.type = type;
     }
 
