@@ -445,7 +445,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             binding.llCashCollect.setVisibility(View.GONE);
         }
 
-        if (orderStatus.equals("shipped") && paymentStatus.equals("paid"))
+        if (orderStatus.equals("shipped") && paymentStatus.equals("paid") && !orderDetailsModel.isDeliveryHeroAllowed())
             binding.confirmDelivery.setVisibility(View.VISIBLE);
         else
             binding.confirmDelivery.setVisibility(View.GONE);
