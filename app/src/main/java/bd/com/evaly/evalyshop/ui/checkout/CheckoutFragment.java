@@ -12,8 +12,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -26,8 +24,6 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -61,6 +57,7 @@ import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.address.AddressFragment;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseDialogFragment;
 import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
 import bd.com.evaly.evalyshop.ui.checkout.controller.CheckoutProductController;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
@@ -76,7 +73,7 @@ import static android.app.Activity.RESULT_OK;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 @AndroidEntryPoint
-public class CheckoutFragment extends DialogFragment {
+public class CheckoutFragment extends BaseDialogFragment<FragmentCheckoutBinding, CheckoutViewModel> {
 
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
@@ -85,12 +82,9 @@ public class CheckoutFragment extends DialogFragment {
     @Inject
     PreferenceRepository preferenceRepository;
 
-    String deliveryText = "";
-    String deliveryTextExpress = "";
-    private FragmentCheckoutBinding binding;
-    private CheckoutViewModel viewModel;
+    private String deliveryText = "";
+    private String deliveryTextExpress = "";
     private CartViewModel cartViewModel;
-    private NavController navController;
     private CheckoutProductController controller;
     private AddressResponse addressModel = null;
     private ViewDialog dialog;
@@ -101,30 +95,18 @@ public class CheckoutFragment extends DialogFragment {
     private double totalAmount = 0;
 
     public CheckoutFragment() {
-        //setCancelable(false);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentCheckoutBinding.inflate(inflater);
-        return binding.getRoot();
+        super(CheckoutViewModel.class, R.layout.fragment_checkout);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme);
-        viewModel = new ViewModelProvider(this).get(CheckoutViewModel.class);
         cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
-
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (getActivity() instanceof MainActivity)
-            navController = NavHostFragment.findNavController(CheckoutFragment.this);
+    protected void initViews() {
         deliveryTextExpress =  getString(R.string.express_delivery_text);
         deliveryText = getString(R.string.delivery_text);
         shopAmountMap = new HashMap<>();
@@ -133,9 +115,6 @@ public class CheckoutFragment extends DialogFragment {
         progressDialog = new ProgressDialog(getActivity());
         selectedImagesList = new ArrayList<>();
         startAnimation();
-        setupRecycler();
-        clickListeners();
-        liveEvents();
         updateInfo();
     }
 
@@ -153,14 +132,16 @@ public class CheckoutFragment extends DialogFragment {
         }
     }
 
-    private void setupRecycler() {
+    @Override
+    protected void setupRecycler() {
         if (controller == null)
             controller = new CheckoutProductController();
         binding.recyclerView.setAdapter(controller.getAdapter());
         controller.setViewModel(viewModel);
     }
 
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
 
         binding.toolbar.setNavigationOnClickListener(v -> {
             getActivity().onBackPressed();
@@ -360,7 +341,9 @@ public class CheckoutFragment extends DialogFragment {
                 });
     }
 
-    private void liveEvents() {
+
+    @Override
+    protected void liveEventsObservers() {
 
         viewModel.selectedAddress.observe(getViewLifecycleOwner(), addressResponse -> {
             if (addressResponse == null)
