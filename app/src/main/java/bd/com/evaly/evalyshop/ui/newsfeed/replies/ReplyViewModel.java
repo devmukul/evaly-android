@@ -12,7 +12,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
@@ -46,24 +46,20 @@ public class ReplyViewModel extends ViewModel {
 
     public void loadReplies(int page, String postSlug, int commentId) {
 
-        apiRepository.getRepliesList(preferenceRepository.getToken(), postSlug, commentId, page, new ResponseListenerAuth<CommonDataResponse<List<CommentItem>>, String>() {
-                    @Override
-                    public void onDataFetched(CommonDataResponse<List<CommentItem>> response, int statusCode) {
+        apiRepository.getRepliesList(preferenceRepository.getToken(), postSlug, commentId, page, new ResponseListener<CommonDataResponse<List<CommentItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<CommentItem>> response, int statusCode) {
 
-                        if (response.getData().size() > 0)
-                            replyListLiveData.setValue(response.getData().get(0).getReplies());
-                    }
+                if (response.getData().size() > 0)
+                    replyListLiveData.setValue(response.getData().get(0).getReplies());
+            }
 
-                    @Override
-                    public void onFailed(String errorBody, int errorCode) {
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
 
 
-                    }
+            }
 
-                    @Override
-                    public void onAuthError(boolean logout) {
-
-                    }
                 }
         );
 
@@ -73,7 +69,7 @@ public class ReplyViewModel extends ViewModel {
     public void createReply(JsonObject body, String postSlug, int commentId) {
 
 
-        apiRepository.postReply(preferenceRepository.getToken(), postSlug, commentId, body, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postReply(preferenceRepository.getToken(), postSlug, commentId, body, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 replyCreatedLiveData.setValue(response);
@@ -84,12 +80,6 @@ public class ReplyViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    createReply(body, postSlug, commentId);
-
-            }
         });
 
     }
@@ -98,7 +88,7 @@ public class ReplyViewModel extends ViewModel {
 
         String url = UrlUtils.BASE_URL_NEWSFEED + "comments/" + id;
 
-        apiRepository.deleteItem(preferenceRepository.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.deleteItem(preferenceRepository.getToken(), url, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -109,10 +99,6 @@ public class ReplyViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

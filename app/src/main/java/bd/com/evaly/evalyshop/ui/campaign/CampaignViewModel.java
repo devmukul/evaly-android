@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
@@ -51,7 +51,7 @@ public class CampaignViewModel extends ViewModel {
     }
 
     public void loadCampaignCategory() {
-        apiRepository.getCampaignCategory(new ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {
+        apiRepository.getCampaignCategory(new ResponseListener<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignCategoryResponse>> response, int statusCode) {
                 categoryArrayList = response.getData();
@@ -63,17 +63,13 @@ public class CampaignViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
 
     public void loadCampaignProducts() {
 
-        apiRepository.getCampaignAllProducts(currentPage, 20, search, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
+        apiRepository.getCampaignAllProducts(currentPage, 20, search, new ResponseListener<CommonDataResponse<List<CampaignProductResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
                 productsArrayList.addAll(response.getData());
@@ -86,10 +82,6 @@ public class CampaignViewModel extends ViewModel {
                 hideLoadingBar.setValue(true);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

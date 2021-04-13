@@ -11,7 +11,7 @@ import com.google.gson.JsonObject;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.ResponseViewModel;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
@@ -59,7 +59,7 @@ public class CreatePostViewModel extends ViewModel {
 
     public void createPost(CreatePostModel body, String slug) {
 
-        apiRepository.post(preferenceRepository.getToken(), body, slug, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.post(preferenceRepository.getToken(), body, slug, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -72,10 +72,6 @@ public class CreatePostViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }
@@ -84,7 +80,7 @@ public class CreatePostViewModel extends ViewModel {
     public void uploadImage(Bitmap bm) {
 
 
-        apiRepository.uploadImage(bm, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
+        apiRepository.uploadImage(bm, new ResponseListener<CommonDataResponse<ImageDataModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
 
@@ -99,13 +95,6 @@ public class CreatePostViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-                if (!logout)
-                    uploadImage(bm);
-
-            }
         });
 
     }

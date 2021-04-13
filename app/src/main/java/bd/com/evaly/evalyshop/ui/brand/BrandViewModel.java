@@ -10,7 +10,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandCatResponse;
@@ -88,7 +88,7 @@ public class BrandViewModel extends ViewModel {
 
     public void getProducts() {
 
-        apiRepository.getCampaignBrandProducts(currentPage, categorySlug, slug, campaignSlug, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
+        apiRepository.getCampaignBrandProducts(currentPage, categorySlug, slug, campaignSlug, new ResponseListener<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
                 arrayList.addAll(response.getData());
@@ -102,10 +102,6 @@ public class BrandViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }
@@ -113,7 +109,7 @@ public class BrandViewModel extends ViewModel {
     public void loadCampaignCategories() {
         if (campaignSlug == null)
             return;
-        apiRepository.getCampaignCategories(slug, campaignSlug, categoryCurrentPage, new ResponseListenerAuth<CommonDataResponse<List<CategoriesItem>>, String>() {
+        apiRepository.getCampaignCategories(slug, campaignSlug, categoryCurrentPage, new ResponseListener<CommonDataResponse<List<CategoriesItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CategoriesItem>> response, int statusCode) {
                 isCategoryLoading = false;
@@ -133,17 +129,13 @@ public class BrandViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void loadCategories() {
         isCategoryLoading = true;
         loadCampaignCategories();
-        apiRepository.getCategories(slug, categoryCurrentPage, new ResponseListenerAuth<CommonDataResponse<BrandCatResponse>, String>() {
+        apiRepository.getCategories(slug, categoryCurrentPage, new ResponseListener<CommonDataResponse<BrandCatResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BrandCatResponse> response, int statusCode) {
                 detailsLive.setValue(response.getData());
@@ -166,10 +158,6 @@ public class BrandViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

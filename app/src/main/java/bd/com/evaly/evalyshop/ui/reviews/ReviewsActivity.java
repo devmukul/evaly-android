@@ -41,7 +41,7 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -238,7 +238,7 @@ public class ReviewsActivity extends AppCompatActivity {
     public void getReviews(String slug) {
 
         progressBar.setVisibility(View.VISIBLE);
-        apiRepository.getReviews(preferenceRepository.getToken(), slug, currentPage, 20, isShop, new ResponseListenerAuth<CommonDataResponse<JsonObject>, String>() {
+        apiRepository.getReviews(preferenceRepository.getToken(), slug, currentPage, 20, isShop, new ResponseListener<CommonDataResponse<JsonObject>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<JsonObject> response, int statusCode) {
                 progressBar.setVisibility(View.INVISIBLE);
@@ -272,18 +272,13 @@ public class ReviewsActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    getReviews(slug);
-            }
         });
     }
 
     public void getRatings(String slug) {
 
         progressBar.setVisibility(View.VISIBLE);
-        apiRepository.getReviewSummary(preferenceRepository.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getReviewSummary(preferenceRepository.getToken(), slug, isShop, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 response = response.getAsJsonObject("data");
@@ -296,11 +291,6 @@ public class ReviewsActivity extends AppCompatActivity {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    getRatings(slug);
-            }
         });
     }
 
@@ -314,7 +304,7 @@ public class ReviewsActivity extends AppCompatActivity {
         parameters.addProperty("review_message", rating_text);
         parameters.addProperty("rating", rating_value);
 
-        apiRepository.postReview(preferenceRepository.getToken(), slug, parameters, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postReview(preferenceRepository.getToken(), slug, parameters, isShop, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 progressDialog.hideDialog();
@@ -338,18 +328,13 @@ public class ReviewsActivity extends AppCompatActivity {
                 Toast.makeText(ReviewsActivity.this, "Couldn't post review!", Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    postReview(alertDialog, slug, user_name, rating_value, rating_text);
-            }
         });
     }
 
 
     public void checkEligibility(String slug) {
 
-        apiRepository.checkReviewEligibility(preferenceRepository.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.checkReviewEligibility(preferenceRepository.getToken(), slug, isShop, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 boolean isEligible = false;
@@ -368,11 +353,6 @@ public class ReviewsActivity extends AppCompatActivity {
                 floatingActionButton.setVisibility(View.GONE);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    checkEligibility(slug);
-            }
         });
     }
 }

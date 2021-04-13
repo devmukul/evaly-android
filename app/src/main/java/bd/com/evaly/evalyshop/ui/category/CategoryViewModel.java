@@ -9,7 +9,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
@@ -43,7 +43,7 @@ public class CategoryViewModel extends ViewModel {
     }
 
     public void loadRootCategories() {
-        apiRepository.getRootCategories(new ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String>() {
+        apiRepository.getRootCategories(new ResponseListener<CommonDataResponse<List<CategoryEntity>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CategoryEntity>> response, int statusCode) {
 
@@ -55,16 +55,12 @@ public class CategoryViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void loadSubCategories() {
 
-        apiRepository.getSubCategories(rootCategory, new ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String>() {
+        apiRepository.getSubCategories(rootCategory, new ResponseListener<CommonDataResponse<List<CategoryEntity>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CategoryEntity>> response, int statusCode) {
                 subCategoryLiveData.setValue(response.getData());
@@ -74,15 +70,11 @@ public class CategoryViewModel extends ViewModel {
             public void onFailed(String errorBody, int errorCode) {
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void loadTopCategories() {
-        apiRepository.getTopCategories(new ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String>() {
+        apiRepository.getTopCategories(new ResponseListener<CommonDataResponse<List<CategoryEntity>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CategoryEntity>> response, int statusCode) {
                 subCategoryLiveData.setValue(response.getData());
@@ -93,10 +85,6 @@ public class CategoryViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

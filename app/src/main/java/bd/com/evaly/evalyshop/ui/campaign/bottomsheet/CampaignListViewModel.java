@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.BaseModel;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
@@ -52,7 +52,7 @@ public class CampaignListViewModel extends ViewModel {
     public void loadProductCategories() {
         if (getCategorySlug() == null)
             return;
-        apiRepository.getCampaignProductCategories(getCategorySlug(), null, search, currentPage, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String>() {
+        apiRepository.getCampaignProductCategories(getCategorySlug(), null, search, currentPage, new ResponseListener<CommonDataResponse<List<CampaignProductCategoryResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignProductCategoryResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
@@ -65,10 +65,6 @@ public class CampaignListViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -104,7 +100,7 @@ public class CampaignListViewModel extends ViewModel {
     }
 
     public void loadCampaignList() {
-        apiRepository.getCampaignCategoryCampaigns(currentPage, 20, search, getCategorySlug(), new ResponseListenerAuth<CommonDataResponse<List<SubCampaignResponse>>, String>() {
+        apiRepository.getCampaignCategoryCampaigns(currentPage, 20, search, getCategorySlug(), new ResponseListener<CommonDataResponse<List<SubCampaignResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<SubCampaignResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
@@ -117,10 +113,6 @@ public class CampaignListViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

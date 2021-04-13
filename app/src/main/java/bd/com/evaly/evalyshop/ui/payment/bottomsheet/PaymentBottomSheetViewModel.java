@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -39,7 +39,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         model.setInvoice_no(invoice);
         model.setAmount(Double.parseDouble(amount));
 
-        apiRepository.makePartialPayment(preferenceRepository.getToken(), model, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.makePartialPayment(preferenceRepository.getToken(), model, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -58,11 +58,6 @@ public class PaymentBottomSheetViewModel extends ViewModel {
                 navigator.onPaymentFailed("Payment failed, try again later");
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    makePartialPayment(invoice, amount);
-            }
         });
 
     }
@@ -71,7 +66,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
 
         HashMap<String, String> data = new HashMap<>();
         data.put("invoice_no", invoice);
-        apiRepository.makeCashOnDelivery(preferenceRepository.getToken(), data, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.makeCashOnDelivery(preferenceRepository.getToken(), data, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if (response != null) {
@@ -89,11 +84,6 @@ public class PaymentBottomSheetViewModel extends ViewModel {
                 navigator.onPaymentFailed("Payment failed, try again later");
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    makeCashOnDelivery(invoice);
-            }
         });
 
     }
@@ -110,7 +100,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         payload.put("context", "order_payment");
         payload.put("context_reference", invoice);
 
-        apiRepository.payViaCard(preferenceRepository.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaCard(preferenceRepository.getToken(), payload, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("payment_gateway_url")) && !response.get("payment_gateway_url").isJsonNull()) {
@@ -125,11 +115,6 @@ public class PaymentBottomSheetViewModel extends ViewModel {
                 navigator.payViaCard("");
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    payViaCard(invoice, amount);
-            }
         });
 
     }
@@ -142,7 +127,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         payload.put("context", "order_payment");
         payload.put("context_reference", invoice);
 
-        apiRepository.payViaCityBank(preferenceRepository.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaCityBank(preferenceRepository.getToken(), payload, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("url")) && !response.get("url").isJsonNull()) {
@@ -157,11 +142,6 @@ public class PaymentBottomSheetViewModel extends ViewModel {
                 navigator.payViaCard("");
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    payViaCityBank(invoice, amount);
-            }
         });
     }
 
@@ -173,7 +153,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         payload.put("context_reference", invoice);
         payload.put("source", "MOBILE_APP");
 
-        apiRepository.payViaNagad(preferenceRepository.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaNagad(preferenceRepository.getToken(), payload, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("callBackUrl")) && !response.get("callBackUrl").isJsonNull()) {
@@ -189,12 +169,6 @@ public class PaymentBottomSheetViewModel extends ViewModel {
                 navigator.payViaCard("");
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    payViaNagad(invoice, amount);
-
-            }
         });
 
     }

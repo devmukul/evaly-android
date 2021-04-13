@@ -10,7 +10,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
@@ -82,7 +82,7 @@ public class EvalyExpressViewModel extends ViewModel {
         } else
             area = preferenceRepository.getArea();
 
-        apiRepository.getShopList(serviceSlug, currentPage, 24, area, shopSearch, null, longitude, latitude, new ResponseListenerAuth<CommonResultResponse<List<GroupShopModel>>, String>() {
+        apiRepository.getShopList(serviceSlug, currentPage, 24, area, shopSearch, null, longitude, latitude, new ResponseListener<CommonResultResponse<List<GroupShopModel>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<GroupShopModel>> response, int statusCode) {
 
@@ -112,16 +112,12 @@ public class EvalyExpressViewModel extends ViewModel {
                 loading = false;
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void loadServiceDetails() {
 
-        apiRepository.getServiceDetails(serviceSlug, new ResponseListenerAuth<CommonDataResponse<ExpressServiceDetailsModel>, String>() {
+        apiRepository.getServiceDetails(serviceSlug, new ResponseListener<CommonDataResponse<ExpressServiceDetailsModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ExpressServiceDetailsModel> response, int statusCode) {
                 expressDetails.setValue(response.getData());
@@ -132,10 +128,6 @@ public class EvalyExpressViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }

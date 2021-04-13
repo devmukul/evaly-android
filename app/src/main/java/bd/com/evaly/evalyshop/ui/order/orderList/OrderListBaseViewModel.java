@@ -8,7 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -38,7 +38,7 @@ public class OrderListBaseViewModel extends ViewModel {
     }
 
     public void loadFromApi() {
-        apiRepository.getOrderRequestList(page, new ResponseListenerAuth<CommonDataResponse<List<OrderRequestResponse>>, String>() {
+        apiRepository.getOrderRequestList(page, new ResponseListener<CommonDataResponse<List<OrderRequestResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<OrderRequestResponse>> response, int statusCode) {
                 count = response.getCount();
@@ -52,13 +52,6 @@ public class OrderListBaseViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    loadFromApi();
-                else
-                    logoutLiveData.call();
-            }
         });
     }
 

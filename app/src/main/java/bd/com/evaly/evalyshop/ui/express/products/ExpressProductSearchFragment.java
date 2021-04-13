@@ -26,7 +26,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ActivityExpressProductSearchBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
@@ -148,7 +148,7 @@ public class ExpressProductSearchFragment extends Fragment {
     }
 
     private void getExpressServices() {
-        apiRepository.getExpressServicesList(new ResponseListenerAuth<CommonDataResponse<List<ExpressServiceModel>>, String>() {
+        apiRepository.getExpressServicesList(new ResponseListener<CommonDataResponse<List<ExpressServiceModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ExpressServiceModel>> response, int statusCode) {
                 viewModel.syncList(response.getData());
@@ -159,10 +159,6 @@ public class ExpressProductSearchFragment extends Fragment {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -189,7 +185,7 @@ public class ExpressProductSearchFragment extends Fragment {
         if (currentPage > 1)
             expressProductController.setLoadingMore(true);
 
-        apiRepository.getProductList(null, currentPage, 24, query, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
+        apiRepository.getProductList(null, currentPage, 24, query, new ResponseListener<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
 
@@ -231,10 +227,6 @@ public class ExpressProductSearchFragment extends Fragment {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }

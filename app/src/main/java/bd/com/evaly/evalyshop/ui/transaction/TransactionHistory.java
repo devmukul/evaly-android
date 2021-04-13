@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentTransactionHistoryBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
@@ -104,7 +104,7 @@ public class TransactionHistory extends Fragment {
         if (url == null)
             return;
         apiRepository.getTransactionHistory(preferenceRepository.getToken(), preferenceRepository.getUserName(), page,
-                new ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String>() {
+                new ResponseListener<CommonDataResponse<List<TransactionItem>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<TransactionItem>> response, int statusCode) {
                         binding.progressBar.setVisibility(View.INVISIBLE);
@@ -122,10 +122,6 @@ public class TransactionHistory extends Fragment {
                         binding.progressBar.setVisibility(View.GONE);
                     }
 
-                    @Override
-                    public void onAuthError(boolean logout) {
-
-                    }
                 });
     }
 

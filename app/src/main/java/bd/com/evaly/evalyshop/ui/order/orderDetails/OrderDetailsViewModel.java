@@ -19,17 +19,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.BuildConfig;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
-import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -86,7 +86,7 @@ public class OrderDetailsViewModel extends ViewModel {
         if (url == null)
             return;
 
-        apiRepository.getBalance(preferenceRepository.getToken(), preferenceRepository.getUserName(), url, new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
+        apiRepository.getBalance(preferenceRepository.getToken(), preferenceRepository.getUserName(), url, new ResponseListener<CommonDataResponse<BalanceResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
                 balanceLiveData.setValue(response.getData());
@@ -97,15 +97,11 @@ public class OrderDetailsViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void updateProductDeliveryStatus(HashMap<String, String> data) {
-        apiRepository.updateProductStatus(data, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.updateProductStatus(data, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 deliveryStatusUpdateLiveData.setValue(response.get("message").getAsString());
@@ -121,16 +117,12 @@ public class OrderDetailsViewModel extends ViewModel {
                 }
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }
 
     public void cancelOrder(String reason) {
-        apiRepository.cancelOrder(preferenceRepository.getToken(), invoiceNo, reason, new ResponseListenerAuth<CommonDataResponse, String>() {
+        apiRepository.cancelOrder(preferenceRepository.getToken(), invoiceNo, reason, new ResponseListener<CommonDataResponse, String>() {
             @Override
             public void onDataFetched(CommonDataResponse response, int statusCode) {
                 refresh();
@@ -142,16 +134,12 @@ public class OrderDetailsViewModel extends ViewModel {
                 ToastUtils.show("Can't cancel this order!");
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void getOrderHistory() {
 
-        apiRepository.getOrderHistories(preferenceRepository.getToken(), invoiceNo, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getOrderHistories(preferenceRepository.getToken(), invoiceNo, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 List<OrderStatus> orderStatuses = new ArrayList<>();
@@ -173,16 +161,12 @@ public class OrderDetailsViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void getOrderDetails() {
 
-        apiRepository.getOrderDetails(preferenceRepository.getToken(), invoiceNo, new ResponseListenerAuth<OrderDetailsModel, String>() {
+        apiRepository.getOrderDetails(preferenceRepository.getToken(), invoiceNo, new ResponseListener<OrderDetailsModel, String>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataFetched(OrderDetailsModel response, int statusCode) {
@@ -194,15 +178,11 @@ public class OrderDetailsViewModel extends ViewModel {
                 ToastUtils.show("Error occurred!");
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void confirmDelivery() {
-        apiRepository.confirmDelivery(preferenceRepository.getToken(), invoiceNo, new ResponseListenerAuth<CommonDataResponse, String>() {
+        apiRepository.confirmDelivery(preferenceRepository.getToken(), invoiceNo, new ResponseListener<CommonDataResponse, String>() {
             @Override
             public void onDataFetched(CommonDataResponse response, int statusCode) {
                 confirmDeliveryLiveData.setValue(response);
@@ -214,17 +194,12 @@ public class OrderDetailsViewModel extends ViewModel {
                 ToastUtils.show("Error occurred! Try again later");
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    confirmDelivery();
-            }
         });
     }
 
     private void getDeliveryHero() {
 
-        apiRepository.getDeliveryHero(invoiceNo, new ResponseListenerAuth<DeliveryHeroResponse, String>() {
+        apiRepository.getDeliveryHero(invoiceNo, new ResponseListener<DeliveryHeroResponse, String>() {
             @Override
             public void onDataFetched(DeliveryHeroResponse response, int statusCode) {
                 deliveryHeroLiveData.setValue(response);
@@ -235,11 +210,6 @@ public class OrderDetailsViewModel extends ViewModel {
                 deliveryHeroLiveData.setValue(null);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    getDeliveryHero();
-            }
         });
 
     }
@@ -257,7 +227,7 @@ public class OrderDetailsViewModel extends ViewModel {
     }
 
     public void withdrawRefundRequest(String invoice) {
-        apiRepository.withdrawRefundRequest(invoice, new ResponseListenerAuth<CommonDataResponse, String>() {
+        apiRepository.withdrawRefundRequest(invoice, new ResponseListener<CommonDataResponse, String>() {
             @Override
             public void onDataFetched(CommonDataResponse response, int statusCode) {
                 ToastUtils.show(response.getMessage());
@@ -269,16 +239,11 @@ public class OrderDetailsViewModel extends ViewModel {
                 ToastUtils.show(errorBody);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    withdrawRefundRequest(invoice);
-            }
         });
     }
 
     public void updateOrderAddress(UpdateOrderAddressRequest body) {
-        apiRepository.updateAddress(body, new ResponseListenerAuth<CommonDataResponse<OrderDetailsModel>, String>() {
+        apiRepository.updateAddress(body, new ResponseListener<CommonDataResponse<OrderDetailsModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<OrderDetailsModel> response, int statusCode) {
                 updateAddress.setValue(response);
@@ -289,15 +254,11 @@ public class OrderDetailsViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void checkRefundEligibility(String invoice) {
-        apiRepository.checkRefundEligibility(invoice, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.checkRefundEligibility(invoice, new ResponseListener<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 refundEligibilityLiveData.setValue(response);
@@ -313,15 +274,11 @@ public class OrderDetailsViewModel extends ViewModel {
                 }
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void deleteRefundTransaction(String invoice) {
-        apiRepository.deleteRefundTransaction(invoice, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.deleteRefundTransaction(invoice, new ResponseListener<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 refundDeleteLiveData.setValue(response);
@@ -332,10 +289,6 @@ public class OrderDetailsViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

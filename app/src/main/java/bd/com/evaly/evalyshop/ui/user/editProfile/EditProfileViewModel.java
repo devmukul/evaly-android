@@ -12,7 +12,7 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -33,7 +33,7 @@ public class EditProfileViewModel extends ViewModel {
 
     public void setUserData(HashMap<String, String> userInfo) {
 
-        apiRepository.setUserData(preferenceRepository.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+        apiRepository.setUserData(preferenceRepository.getToken(), userInfo, new ResponseListener<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
                 preferenceRepository.saveUserData(response.getData());
@@ -45,17 +45,12 @@ public class EditProfileViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    setUserData(userInfo);
-            }
         });
     }
 
     public void setUserData(JsonObject userInfo) {
 
-        apiRepository.setUserData(preferenceRepository.getToken(), userInfo, new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+        apiRepository.setUserData(preferenceRepository.getToken(), userInfo, new ResponseListener<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
                 preferenceRepository.saveUserData(response.getData());
@@ -67,17 +62,12 @@ public class EditProfileViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    setUserData(userInfo);
-            }
         });
     }
 
     public void updateToXMPP(HashMap<String, String> userInfo) {
 
-        apiRepository.setUserDataToXmpp(userInfo, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.setUserDataToXmpp(userInfo, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -96,13 +86,6 @@ public class EditProfileViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-                if (!logout)
-                    updateToXMPP(userInfo);
-
-            }
         });
 
     }

@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.order.AttachmentCheckResponse;
@@ -104,7 +104,7 @@ public class CheckoutViewModel extends ViewModel {
     }
 
     public void checkAttachmentRequirements(List<Integer> list) {
-        apiRepository.isAttachmentRequired(list, new ResponseListenerAuth<CommonDataResponse<List<AttachmentCheckResponse>>, String>() {
+        apiRepository.isAttachmentRequired(list, new ResponseListener<CommonDataResponse<List<AttachmentCheckResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AttachmentCheckResponse>> response, int statusCode) {
                 attachmentCheckLiveData.setValue(response.getData());
@@ -125,10 +125,6 @@ public class CheckoutViewModel extends ViewModel {
                 errorOrder.setValue(true);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -156,7 +152,7 @@ public class CheckoutViewModel extends ViewModel {
         JsonElement element = gson.fromJson(gson.toJson(attachmentMap), JsonElement.class);
         JsonObject jsonObj = element.getAsJsonObject();
         payload.setAttachments(jsonObj);
-        apiRepository.placeOrder(payload, new ResponseListenerAuth<CommonDataResponse<List<JsonObject>>, String>() {
+        apiRepository.placeOrder(payload, new ResponseListener<CommonDataResponse<List<JsonObject>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<JsonObject>> response, int statusCode) {
                 orderPlacedLiveData.setValue(response);
@@ -168,11 +164,6 @@ public class CheckoutViewModel extends ViewModel {
                 ToastUtils.show((errorBody != null && !errorBody.equals("")) ? errorBody : "Couldn't place order, try again later.");
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    placeOrder(payload);
-            }
         });
     }
 
@@ -186,7 +177,7 @@ public class CheckoutViewModel extends ViewModel {
     }
 
     public void uploadImage(Bitmap bitmap) {
-        apiRepository.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
+        apiRepository.uploadImage(bitmap, new ResponseListener<CommonDataResponse<ImageDataModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
                 List<String> attachmentList = new ArrayList<>();
@@ -203,10 +194,6 @@ public class CheckoutViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

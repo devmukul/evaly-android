@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.cart.Cart;
 import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
@@ -67,7 +67,7 @@ public final class CartViewModel extends ViewModel {
         if (preferenceRepository.getToken().equals(""))
             return;
 
-        apiRepository.getCartList(new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
+        apiRepository.getCartList(new ResponseListener<CommonDataResponse<CartHolderModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<CartHolderModel> response, int statusCode) {
 
@@ -94,10 +94,6 @@ public final class CartViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -177,7 +173,7 @@ public final class CartViewModel extends ViewModel {
         Cart cart = new Cart();
         cart.setItems(list);
         body.setCart(cart);
-        apiRepository.syncCartList(body, new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
+        apiRepository.syncCartList(body, new ResponseListener<CommonDataResponse<CartHolderModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<CartHolderModel> response, int statusCode) {
 
@@ -188,10 +184,6 @@ public final class CartViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

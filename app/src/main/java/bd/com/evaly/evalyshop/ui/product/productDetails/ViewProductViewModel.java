@@ -15,7 +15,7 @@ import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
@@ -72,7 +72,7 @@ public class ViewProductViewModel extends ViewModel {
 
     public void getProductDetails(String slug) {
 
-        apiRepository.getProductDetails(slug, new ResponseListenerAuth<ProductDetailsModel, String>() {
+        apiRepository.getProductDetails(slug, new ResponseListener<ProductDetailsModel, String>() {
             @Override
             public void onDataFetched(ProductDetailsModel response, int statusCode) {
                 productDetailsModel.setValue(response);
@@ -83,17 +83,13 @@ public class ViewProductViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
 
     public void getVariantsByShop(String shop_slug, String shop_item_slug) {
 
-        apiRepository.getProductVariants(shop_slug, shop_item_slug, new ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String>() {
+        apiRepository.getProductVariants(shop_slug, shop_item_slug, new ResponseListener<CommonDataResponse<List<ShopItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopItem>> response, int statusCode) {
                 productsVariantsOfShop.setValue(response);
@@ -104,17 +100,13 @@ public class ViewProductViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
 
     public void loadRatings(String slug) {
 
-        apiRepository.getReviewSummary(preferenceRepository.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getReviewSummary(preferenceRepository.getToken(), slug, isShop, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 ratingSummary.setValue(response);
@@ -125,18 +117,12 @@ public class ViewProductViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    loadRatings(slug);
-
-            }
         });
     }
 
     public void loadShopDetails(String shopSlug, String campaignSlug) {
 
-        apiRepository.getShopDetailsItem(preferenceRepository.getToken(), shopSlug, 1, 0, null, campaignSlug, null, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        apiRepository.getShopDetailsItem(preferenceRepository.getToken(), shopSlug, 1, 0, null, campaignSlug, null, null, new ResponseListener<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 shopDetails.setValue(response);
@@ -147,18 +133,13 @@ public class ViewProductViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    loadShopDetails(shopSlug, campaignSlug);
-            }
         });
     }
 
 
     public void getAvailableShops(int variationID) {
 
-        apiRepository.getAvailableShops(variationID, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
+        apiRepository.getAvailableShops(variationID, new ResponseListener<CommonDataResponse<List<AvailableShopModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
                 availableShops.setValue(response);
@@ -169,16 +150,12 @@ public class ViewProductViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void getNearestAvailableShops(int variationID, double longitude, double latitude) {
 
-        apiRepository.getNearestAvailableShops(variationID, longitude, latitude, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
+        apiRepository.getNearestAvailableShops(variationID, longitude, latitude, new ResponseListener<CommonDataResponse<List<AvailableShopModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
                 availableNearestShops.setValue(response);
@@ -189,16 +166,12 @@ public class ViewProductViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
 
     public void createPost(CreatePostModel createPostModel) {
-        apiRepository.post(preferenceRepository.getToken(), createPostModel, null, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.post(preferenceRepository.getToken(), createPostModel, null, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 createPostResponse.setValue(response);
@@ -209,11 +182,6 @@ public class ViewProductViewModel extends ViewModel {
                 createPostResponse.setValue(null);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    createPost(createPostModel);
-            }
         });
     }
 

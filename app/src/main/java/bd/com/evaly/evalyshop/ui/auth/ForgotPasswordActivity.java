@@ -18,7 +18,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityForgotPasswordBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.auth.captcha.CaptchaResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -76,7 +76,7 @@ public class ForgotPasswordActivity extends BaseActivity {
         body.put("captcha_value", binding.captchaInput.getText().toString().trim());
         body.put("service_name", "evaly");
 
-        apiRepository.forgetPassword(body, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.forgetPassword(body, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.hideDialog();
@@ -99,17 +99,11 @@ public class ForgotPasswordActivity extends BaseActivity {
                     ToastUtils.show(R.string.something_wrong);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                ToastUtils.show("Invalid captcha");
-                dialog.hideDialog();
-                getCaptcha();
-            }
         });
     }
 
     private void getCaptcha() {
-        apiRepository.getCaptcha(new ResponseListenerAuth<CommonDataResponse<CaptchaResponse>, String>() {
+        apiRepository.getCaptcha(new ResponseListener<CommonDataResponse<CaptchaResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<CaptchaResponse> response, int statusCode) {
                 captchaModel = response.getData();
@@ -125,10 +119,6 @@ public class ForgotPasswordActivity extends BaseActivity {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

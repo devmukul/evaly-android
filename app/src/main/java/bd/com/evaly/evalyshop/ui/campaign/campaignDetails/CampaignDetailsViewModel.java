@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
@@ -96,7 +96,7 @@ public class CampaignDetailsViewModel extends ViewModel {
             return;
         isProductCategoryLoading = true;
 
-        apiRepository.getCampaignProductCategories(getCategorySlug(), campaign, null, productCategoryPage, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductCategoryResponse>>, String>() {
+        apiRepository.getCampaignProductCategories(getCategorySlug(), campaign, null, productCategoryPage, new ResponseListener<CommonDataResponse<List<CampaignProductCategoryResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignProductCategoryResponse>> response, int statusCode) {
                 productCategoriesList.addAll(response.getData());
@@ -110,15 +110,11 @@ public class CampaignDetailsViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void loadSubCampaignDetails(String campaign_slug) {
-        apiRepository.getSubCampaignDetails(campaign_slug, new ResponseListenerAuth<CommonDataResponse<SubCampaignDetailsResponse>, String>() {
+        apiRepository.getSubCampaignDetails(campaign_slug, new ResponseListener<CommonDataResponse<SubCampaignDetailsResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<SubCampaignDetailsResponse> response, int statusCode) {
                 SubCampaignDetailsResponse data = response.getData();
@@ -140,15 +136,11 @@ public class CampaignDetailsViewModel extends ViewModel {
                 subCampaignLiveData.setValue(null);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void findCampaignCategoryDetails(String slug) {
-        apiRepository.getCampaignCategory(new ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {
+        apiRepository.getCampaignCategory(new ResponseListener<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignCategoryResponse>> response, int statusCode) {
                 boolean found = false;
@@ -176,10 +168,6 @@ public class CampaignDetailsViewModel extends ViewModel {
                 hideProgressDialog.setValue(true);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -199,7 +187,7 @@ public class CampaignDetailsViewModel extends ViewModel {
 
     public void loadCampaignList() {
         apiRepository.getCampaignCategoryCampaigns(currentPage, 20, search, campaign,
-                new ResponseListenerAuth<CommonDataResponse<List<SubCampaignResponse>>, String>() {
+                new ResponseListener<CommonDataResponse<List<SubCampaignResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<SubCampaignResponse>> response, int statusCode) {
                         arrayList.addAll(response.getData());
@@ -212,16 +200,12 @@ public class CampaignDetailsViewModel extends ViewModel {
 
                     }
 
-                    @Override
-                    public void onAuthError(boolean logout) {
-
-                    }
                 });
     }
 
     public void loadProductList() {
         apiRepository.getCampaignCategoryProducts(currentPage, 20, search, getCategorySlug(), campaign, getSelectedCategorySlug(), sort,
-                new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
+                new ResponseListener<CommonDataResponse<List<CampaignProductResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
                         arrayList.addAll(response.getData());
@@ -234,16 +218,12 @@ public class CampaignDetailsViewModel extends ViewModel {
                         hideLoadingBar.setValue(true);
                     }
 
-                    @Override
-                    public void onAuthError(boolean logout) {
-
-                    }
                 });
     }
 
     public void loadBrandList() {
         apiRepository.getCampaignCategoryBrands(currentPage, 20, search, getCategorySlug(), campaign,
-                new ResponseListenerAuth<CommonDataResponse<List<CampaignBrandResponse>>, String>() {
+                new ResponseListener<CommonDataResponse<List<CampaignBrandResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignBrandResponse>> response, int statusCode) {
                         arrayList.addAll(response.getData());
@@ -256,16 +236,12 @@ public class CampaignDetailsViewModel extends ViewModel {
                         hideLoadingBar.setValue(true);
                     }
 
-                    @Override
-                    public void onAuthError(boolean logout) {
-
-                    }
                 });
     }
 
     public void loadShopList() {
         apiRepository.getCampaignCategoryShops(currentPage, 20, search, getCategorySlug(), campaign,
-                new ResponseListenerAuth<CommonDataResponse<List<CampaignShopResponse>>, String>() {
+                new ResponseListener<CommonDataResponse<List<CampaignShopResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignShopResponse>> response, int statusCode) {
                         arrayList.addAll(response.getData());
@@ -278,10 +254,6 @@ public class CampaignDetailsViewModel extends ViewModel {
                         hideLoadingBar.setValue(true);
                     }
 
-                    @Override
-                    public void onAuthError(boolean logout) {
-
-                    }
                 });
     }
 

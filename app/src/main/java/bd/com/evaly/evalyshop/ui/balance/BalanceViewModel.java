@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
@@ -52,7 +52,7 @@ public class BalanceViewModel extends ViewModel {
         if (url == null)
             return;
 
-        apiRepository.getBalance(preferenceRepository.getToken(), preferenceRepository.getUserName(), url, new ResponseListenerAuth<CommonDataResponse<BalanceResponse>, String>() {
+        apiRepository.getBalance(preferenceRepository.getToken(), preferenceRepository.getUserName(), url, new ResponseListener<CommonDataResponse<BalanceResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
                 data.setValue(response.getData());
@@ -63,10 +63,6 @@ public class BalanceViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -80,7 +76,7 @@ public class BalanceViewModel extends ViewModel {
         if (url == null)
             return;
 
-        apiRepository.claimCashback(preferenceRepository.getToken(), preferenceRepository.getUserName(), url, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.claimCashback(preferenceRepository.getToken(), preferenceRepository.getUserName(), url, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 updateBalance();
@@ -91,10 +87,6 @@ public class BalanceViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

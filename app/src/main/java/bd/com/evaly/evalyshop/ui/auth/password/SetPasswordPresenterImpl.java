@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.util.Utils;
 
@@ -60,7 +60,7 @@ public class SetPasswordPresenterImpl implements SetPasswordPresenter {
             data.put("phone_number", phoneNumber);
             data.put("request_id", requestId);
 
-            apiRepository.setPassword(data, new ResponseListenerAuth<JsonObject, String>() {
+            apiRepository.setPassword(data, new ResponseListener<JsonObject, String>() {
                 @Override
                 public void onDataFetched(JsonObject response, int statusCode) {
                     if (view != null)
@@ -77,10 +77,6 @@ public class SetPasswordPresenterImpl implements SetPasswordPresenter {
 
                 }
 
-                @Override
-                public void onAuthError(boolean logout) {
-
-                }
             });
         }
     }

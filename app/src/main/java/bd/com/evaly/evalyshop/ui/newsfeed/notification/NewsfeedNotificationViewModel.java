@@ -11,7 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.notification.NotificationItem;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -35,7 +35,7 @@ public class NewsfeedNotificationViewModel extends ViewModel {
     }
 
     public void getNotification(int page) {
-        apiRepository.getNewsfeedNotification(preferenceRepository.getToken(), page, new ResponseListenerAuth<CommonResultResponse<List<NotificationItem>>, String>() {
+        apiRepository.getNewsfeedNotification(preferenceRepository.getToken(), page, new ResponseListener<CommonResultResponse<List<NotificationItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<NotificationItem>> response, int statusCode) {
                 notificationsMutableLiveData.setValue(response.getData());
@@ -46,13 +46,6 @@ public class NewsfeedNotificationViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-                if (!logout)
-                    getNotification(page);
-
-            }
         });
 
     }
@@ -60,7 +53,7 @@ public class NewsfeedNotificationViewModel extends ViewModel {
 
     public void markAsRead() {
 
-        apiRepository.markNotificationAsRead(preferenceRepository.getToken(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.markNotificationAsRead(preferenceRepository.getToken(), new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -71,13 +64,6 @@ public class NewsfeedNotificationViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-                if (!logout)
-                    markAsRead();
-
-            }
         });
 
     }

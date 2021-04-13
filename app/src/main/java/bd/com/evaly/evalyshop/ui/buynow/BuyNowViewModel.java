@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
@@ -66,7 +66,7 @@ public class BuyNowViewModel extends ViewModel {
 
     public void getProductDetails() {
 
-        apiRepository.getProductVariants(shopSlug, productSlug, new ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String>() {
+        apiRepository.getProductVariants(shopSlug, productSlug, new ResponseListener<CommonDataResponse<List<ShopItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopItem>> response, int statusCode) {
 
@@ -78,10 +78,6 @@ public class BuyNowViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

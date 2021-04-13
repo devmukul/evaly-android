@@ -38,7 +38,7 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.CommentBottomSheetFragmentBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -213,7 +213,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
 
     private void loadDetailsFromApi() {
 
-        apiRepository.getPostDetails(preferenceRepository.getToken(), newsfeedPostModel.getSlug(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getPostDetails(preferenceRepository.getToken(), newsfeedPostModel.getSlug(), new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject ob, int statusCode) {
                 if (ob != null && ob.has("body")) {
@@ -245,10 +245,6 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
                 dismiss();
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }

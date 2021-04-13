@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
@@ -113,7 +113,7 @@ public class FollowedShopActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        apiRepository.getCampaignShops(slug, p, new ResponseListenerAuth<CommonDataResponse<List<CampaignShopItem>>, String>() {
+        apiRepository.getCampaignShops(slug, p, new ResponseListener<CommonDataResponse<List<CampaignShopItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignShopItem>> response, int statusCode) {
 
@@ -164,10 +164,6 @@ public class FollowedShopActivity extends AppCompatActivity {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -178,7 +174,7 @@ public class FollowedShopActivity extends AppCompatActivity {
         isLoading = true;
         progressBar.setVisibility(View.VISIBLE);
 
-        apiRepository.getFollowedShop(preferenceRepository.getToken(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getFollowedShop(preferenceRepository.getToken(), new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -219,13 +215,6 @@ public class FollowedShopActivity extends AppCompatActivity {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-                if (!logout)
-                    getFollowedShops(p);
-
-            }
         });
 
     }

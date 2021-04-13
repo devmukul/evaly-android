@@ -12,7 +12,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.issue.IssueAnswerResponse;
@@ -47,7 +47,7 @@ public class CreateIssueViewModel extends ViewModel {
     }
 
     public void loadAnswers(String categoryId) {
-        apiRepository.getIssueAnswers(categoryId, new ResponseListenerAuth<CommonDataResponse<List<IssueAnswerResponse>>, String>() {
+        apiRepository.getIssueAnswers(categoryId, new ResponseListener<CommonDataResponse<List<IssueAnswerResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<IssueAnswerResponse>> response, int statusCode) {
                 if (response.getData().size() > 0 && subAnswerId < 0)
@@ -60,15 +60,11 @@ public class CreateIssueViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void loadSubAnswers(String answerId) {
-        apiRepository.getIssueSubAnswers(answerId, new ResponseListenerAuth<CommonDataResponse<List<IssueAnswerResponse>>, String>() {
+        apiRepository.getIssueSubAnswers(answerId, new ResponseListener<CommonDataResponse<List<IssueAnswerResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<IssueAnswerResponse>> response, int statusCode) {
                 subAnswerLiveList.setValue(response.getData());
@@ -79,16 +75,12 @@ public class CreateIssueViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void submitIssue(IssueCreateBody model) {
 
-        apiRepository.createIssue(model, new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
+        apiRepository.createIssue(model, new ResponseListener<CommonDataResponse<IssueListModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<IssueListModel> response, int statusCode) {
                 issueCreatedLiveData.setValue(true);
@@ -106,17 +98,12 @@ public class CreateIssueViewModel extends ViewModel {
                 }
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    submitIssue(model);
-            }
         });
     }
 
     public void loadCategories() {
 
-        apiRepository.getCategories(orderStatus, new ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String>() {
+        apiRepository.getCategories(orderStatus, new ResponseListener<CommonDataResponse<List<IssueCategoryModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<IssueCategoryModel>> response, int statusCode) {
                 if (response.getData().size() > 0)
@@ -129,16 +116,12 @@ public class CreateIssueViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
 
     public void uploadImage(Bitmap bitmap) {
-        apiRepository.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
+        apiRepository.uploadImage(bitmap, new ResponseListener<CommonDataResponse<ImageDataModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
                 imageLiveData.setValue(response.getData());
@@ -149,10 +132,6 @@ public class CreateIssueViewModel extends ViewModel {
                 imageErrorLiveData.setValue(errorBody);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

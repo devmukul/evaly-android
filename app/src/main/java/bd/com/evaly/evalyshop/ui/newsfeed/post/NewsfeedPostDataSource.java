@@ -7,7 +7,7 @@ import androidx.paging.PageKeyedDataSource;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
@@ -52,7 +52,7 @@ public class NewsfeedPostDataSource extends PageKeyedDataSource<Integer, Newsfee
         else
             url = UrlUtils.BASE_URL_NEWSFEED + "posts?type=" + type + "&page=" + currentPage;
 
-        apiRepository.getNewsfeedPostsList(preferenceRepository.getToken(), url, new ResponseListenerAuth<CommonDataResponse<List<NewsfeedPost>>, String>() {
+        apiRepository.getNewsfeedPostsList(preferenceRepository.getToken(), url, new ResponseListener<CommonDataResponse<List<NewsfeedPost>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<NewsfeedPost>> response, int statusCode) {
                 callback.onResult(response.getPosts(), null, 2);
@@ -66,13 +66,6 @@ public class NewsfeedPostDataSource extends PageKeyedDataSource<Integer, Newsfee
                 networkState.postValue(new NetworkState(NetworkState.Status.FAILED, errorBody));
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-                if (!logout)
-                    loadInitial(params, callback);
-
-            }
         });
 
 
@@ -100,7 +93,7 @@ public class NewsfeedPostDataSource extends PageKeyedDataSource<Integer, Newsfee
         else
             url = UrlUtils.BASE_URL_NEWSFEED + "posts?type=" + type + "&page=" + currentPage;
 
-        apiRepository.getNewsfeedPostsList(preferenceRepository.getToken(), url, new ResponseListenerAuth<CommonDataResponse<List<NewsfeedPost>>, String>() {
+        apiRepository.getNewsfeedPostsList(preferenceRepository.getToken(), url, new ResponseListener<CommonDataResponse<List<NewsfeedPost>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<NewsfeedPost>> response, int statusCode) {
 
@@ -115,12 +108,6 @@ public class NewsfeedPostDataSource extends PageKeyedDataSource<Integer, Newsfee
                 networkState.postValue(new NetworkState(NetworkState.Status.FAILED, errorBody));
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-                if (!logout)
-                    loadAfter(params, callback);
-            }
         });
 
 

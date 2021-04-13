@@ -43,12 +43,12 @@ import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetGiftCardPaymentBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentGiftcardListBinding;
 import bd.com.evaly.evalyshop.databinding.PaymentAmountInputLayoutBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
-import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
 import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
 import bd.com.evaly.evalyshop.ui.payment.listener.PaymentListener;
@@ -233,7 +233,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         parameters.put("context_reference", giftCardInvoice);
         parameters.put("bank_receipt_copy", image);
 
-        apiRepository.payViaBank(preferenceRepository.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaBank(preferenceRepository.getToken(), parameters, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.dismiss();
@@ -255,12 +255,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                     Toast.makeText(getContext(), "Error occurred!", Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    paymentViaBank(image);
-
-            }
         });
     }
 
@@ -269,7 +263,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         ProgressDialog dialog = ProgressDialog.show(getContext(), "",
                 "Uploading image...", true);
 
-        apiRepository.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
+        apiRepository.uploadImage(bitmap, new ResponseListener<CommonDataResponse<ImageDataModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
                 dialog.dismiss();
@@ -281,11 +275,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    uploadBankDepositImage(bitmap);
-            }
         });
 
     }
@@ -427,7 +416,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         }
 
         apiRepository.getPurchasedGiftCardList("purchased", currentPage, baseUrl,
-                new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
+                new ResponseListener<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<GiftCardListPurchasedItem>> response, int statusCode) {
 
@@ -458,11 +447,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
                     }
 
-                    @Override
-                    public void onAuthError(boolean logout) {
-                        if (!logout)
-                            getGiftCardList();
-                    }
                 });
 
     }
@@ -476,7 +460,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         payload.put("context_reference", invoice);
         payload.put("source", "MOBILE_APP");
 
-        apiRepository.payViaNagad(preferenceRepository.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaNagad(preferenceRepository.getToken(), payload, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if ((response != null && response.has("callBackUrl")) && !response.get("callBackUrl").isJsonNull()) {
@@ -490,12 +474,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    payViaNagad(invoice, amount);
-
-            }
         });
 
     }
@@ -556,7 +534,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         dialog.showDialog();
 
-        apiRepository.payViaCard(preferenceRepository.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payViaCard(preferenceRepository.getToken(), payload, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -574,10 +552,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                     Toast.makeText(getContext(), "Error occurred!", Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

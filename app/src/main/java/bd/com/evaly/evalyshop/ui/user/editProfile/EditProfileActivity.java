@@ -43,7 +43,7 @@ import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoDao;
 import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoEntity;
 import bd.com.evaly.evalyshop.databinding.ActivityEditProfileBinding;
 import bd.com.evaly.evalyshop.databinding.DialogContinueAsBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.user.UserModel;
@@ -187,7 +187,7 @@ public class EditProfileActivity extends BaseActivity {
         payload.put("username", getIntent().getStringExtra("user"));
         payload.put("password", getIntent().getStringExtra("password"));
 
-        apiRepository.login(payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.login(payload, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int code) {
                 dialog.hideDialog();
@@ -214,17 +214,13 @@ public class EditProfileActivity extends BaseActivity {
                 ToastUtils.show(body);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
 
     public void updateUserInfo() {
         dialog.showDialog();
-        apiRepository.getUserProfile(preferenceRepository.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+        apiRepository.getUserProfile(preferenceRepository.getToken(), new ResponseListener<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
                 dialog.hideDialog();
@@ -253,11 +249,6 @@ public class EditProfileActivity extends BaseActivity {
                 finish();
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    updateUserInfo();
-            }
         });
 
     }
@@ -401,7 +392,7 @@ public class EditProfileActivity extends BaseActivity {
 
         ProgressDialog dialog = ProgressDialog.show(EditProfileActivity.this, "",
                 "Uploading image...", true);
-        apiRepository.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
+        apiRepository.uploadImage(bitmap, new ResponseListener<CommonDataResponse<ImageDataModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
 
@@ -431,11 +422,6 @@ public class EditProfileActivity extends BaseActivity {
                 Toast.makeText(EditProfileActivity.this, "Upload error, try again!", Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    uploadPicture(bitmap);
-            }
         });
     }
 

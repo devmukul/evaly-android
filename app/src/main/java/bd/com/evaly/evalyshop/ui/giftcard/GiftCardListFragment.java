@@ -43,16 +43,14 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import javax.inject.Inject;
-
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
-import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListAdapter;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -339,7 +337,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        apiRepository.getGiftCard(currentPage, baseUrl, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListItem>>, String>() {
+        apiRepository.getGiftCard(currentPage, baseUrl, new ResponseListener<CommonDataResponse<List<GiftCardListItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<GiftCardListItem>> response, int statusCode) {
 
@@ -365,10 +363,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }
@@ -384,7 +378,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         initializeBottomSheet();
 
 
-        apiRepository.getGiftCardDetails(slug, baseUrl, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getGiftCardDetails(slug, baseUrl, new ResponseListener<JsonObject, String>() {
             @SuppressLint("DefaultLocale")
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
@@ -423,10 +417,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
 
@@ -444,7 +434,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         int q = Integer.parseInt(quantity.getText().toString());
         parameters.addProperty("quantity", q);
 
-        apiRepository.placeGiftCardOrder(preferenceRepository.getToken(), parameters, baseUrl, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.placeGiftCardOrder(preferenceRepository.getToken(), parameters, baseUrl, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.hideDialog();
@@ -459,10 +449,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }

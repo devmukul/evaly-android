@@ -37,7 +37,7 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
@@ -213,7 +213,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        apiRepository.getPurchasedGiftCardList("gifts", currentPage, baseUrl, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
+        apiRepository.getPurchasedGiftCardList("gifts", currentPage, baseUrl, new ResponseListener<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<GiftCardListPurchasedItem>> response, int statusCode) {
 
@@ -247,11 +247,6 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    getGiftCardList();
-            }
         });
     }
 
@@ -259,7 +254,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
 
         dialog.showDialog();
 
-        apiRepository.redeem(invoice_no, baseUrl, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.redeem(invoice_no, baseUrl, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.hideDialog();
@@ -273,11 +268,6 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
                 dialog.hideDialog();
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    redeemCard(invoice_no);
-            }
         });
     }
 

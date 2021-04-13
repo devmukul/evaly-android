@@ -14,9 +14,8 @@ import com.google.gson.Gson;
 import java.util.Calendar;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
@@ -73,7 +72,7 @@ public class InitializeActionBar {
             return;
         }
 
-        apiRepository.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.getMessageCount(new ResponseListener<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 updateHotCount(response.getCount());
@@ -86,13 +85,6 @@ public class InitializeActionBar {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    getNotificationCount();
-                else if (context != null)
-                    AppController.onLogoutEvent();
-            }
         });
 
     }

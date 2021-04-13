@@ -10,7 +10,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -43,7 +43,7 @@ public class OrderListViewModel extends ViewModel {
     }
 
     public void getOrderData() {
-        apiRepository.getOrderList(preferenceRepository.getToken(), page, statusType, new ResponseListenerAuth<CommonResultResponse<List<OrderListItem>>, String>() {
+        apiRepository.getOrderList(preferenceRepository.getToken(), page, statusType, new ResponseListener<CommonResultResponse<List<OrderListItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<OrderListItem>> response, int statusCode) {
                 arrayList.addAll(response.getData());
@@ -56,11 +56,6 @@ public class OrderListViewModel extends ViewModel {
                 hideLoading.setValue(true);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    getOrderData();
-            }
         });
     }
 

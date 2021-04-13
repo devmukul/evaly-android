@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.refundSettlement.OtpResponse;
 import bd.com.evaly.evalyshop.models.refundSettlement.RefundSettlementResponse;
@@ -37,7 +37,7 @@ public class EditSettlementAccountViewModel extends ViewModel {
     }
 
     public void generateOtp() {
-        apiRepository.generateOtp(preferenceRepository.getToken(), new ResponseListenerAuth<CommonDataResponse<OtpResponse>, String>() {
+        apiRepository.generateOtp(preferenceRepository.getToken(), new ResponseListener<CommonDataResponse<OtpResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<OtpResponse> response, int statusCode) {
                 ToastUtils.show("An OTP has been sent to your phone number");
@@ -49,10 +49,6 @@ public class EditSettlementAccountViewModel extends ViewModel {
                 ToastUtils.show(errorBody);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -63,7 +59,7 @@ public class EditSettlementAccountViewModel extends ViewModel {
         }
         body.setRequestId(requestId);
 
-        apiRepository.saveSettlementBankAccount(body, new ResponseListenerAuth<CommonDataResponse<RefundSettlementResponse>, String>() {
+        apiRepository.saveSettlementBankAccount(body, new ResponseListener<CommonDataResponse<RefundSettlementResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<RefundSettlementResponse> response, int statusCode) {
                 responseLiveData.setValue(response.getData());
@@ -74,10 +70,6 @@ public class EditSettlementAccountViewModel extends ViewModel {
                 ToastUtils.show(errorBody);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }
@@ -88,7 +80,7 @@ public class EditSettlementAccountViewModel extends ViewModel {
             ToastUtils.show("Please try again");
         }
         body.setRequestId(requestId);
-        apiRepository.saveSettlementMFSAccount(typeLiveData.getValue(), body, new ResponseListenerAuth<CommonDataResponse<RefundSettlementResponse>, String>() {
+        apiRepository.saveSettlementMFSAccount(typeLiveData.getValue(), body, new ResponseListener<CommonDataResponse<RefundSettlementResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<RefundSettlementResponse> response, int statusCode) {
                 responseLiveData.setValue(response.getData());
@@ -99,10 +91,6 @@ public class EditSettlementAccountViewModel extends ViewModel {
                 ToastUtils.show(errorBody);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }

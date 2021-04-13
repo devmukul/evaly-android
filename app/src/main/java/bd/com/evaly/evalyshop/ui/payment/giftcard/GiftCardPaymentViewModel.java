@@ -10,7 +10,7 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
@@ -35,7 +35,7 @@ public class GiftCardPaymentViewModel extends ViewModel {
         payload.put("invoice_no", invoice);
         payload.put("gift_code", giftCode);
         payload.put("amount", amount);
-        apiRepository.payWithGiftCard(preferenceRepository.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.payWithGiftCard(preferenceRepository.getToken(), payload, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 CommonDataResponse data = new Gson().fromJson(response, CommonDataResponse.class);
@@ -52,11 +52,6 @@ public class GiftCardPaymentViewModel extends ViewModel {
                 }
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    makePaymentViaGiftCard(giftCode, invoice, amount);
-            }
         });
     }
 }

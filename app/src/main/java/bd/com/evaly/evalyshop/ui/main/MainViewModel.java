@@ -17,7 +17,7 @@ import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
@@ -35,11 +35,6 @@ import io.reactivex.schedulers.Schedulers;
 @HiltViewModel
 public class MainViewModel extends ViewModel {
 
-    protected SingleLiveEvent<Boolean> onLogoutResponse = new SingleLiveEvent<>();
-    private MutableLiveData<Boolean> drawerOnClick = new MutableLiveData<>();
-    private MutableLiveData<Boolean> backOnClick = new MutableLiveData<>();
-    private MutableLiveData<Boolean> updateNewsfeed = new MutableLiveData<>();
-    public MutableLiveData<Boolean> registered = new MutableLiveData<>();
     public SubCampaignResponse selectedCampaignModel;
     public CampaignProductCategoryResponse selectedCampaignProductCategoryModel;
     public SingleLiveEvent<Void> campaignFilterUpdated = new SingleLiveEvent<>();
@@ -47,6 +42,10 @@ public class MainViewModel extends ViewModel {
     public SingleLiveEvent<RefundSettlementResponse> refundSettlementUpdated = new SingleLiveEvent<>();
     public LiveData<Integer> wishListLiveCount;
     public LiveData<Integer> cartLiveCount;
+    protected SingleLiveEvent<Boolean> onLogoutResponse = new SingleLiveEvent<>();
+    private final MutableLiveData<Boolean> drawerOnClick = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> backOnClick = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> updateNewsfeed = new MutableLiveData<>();
     private CompositeDisposable compositeDisposable;
     private CartDao cartDao;
     private ApiRepository apiRepository;
@@ -65,7 +64,7 @@ public class MainViewModel extends ViewModel {
 
 
     public void onLogoutFromServer() {
-        apiRepository.logout(new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.logout(new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 onLogoutResponse.setValue(true);
@@ -84,10 +83,6 @@ public class MainViewModel extends ViewModel {
                 onLogoutResponse.setValue(true);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -95,7 +90,7 @@ public class MainViewModel extends ViewModel {
         if (preferenceRepository.getToken().equals(""))
             return;
 
-        apiRepository.getCartList(new ResponseListenerAuth<CommonDataResponse<CartHolderModel>, String>() {
+        apiRepository.getCartList(new ResponseListener<CommonDataResponse<CartHolderModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<CartHolderModel> response, int statusCode) {
 
@@ -122,10 +117,6 @@ public class MainViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -163,10 +154,14 @@ public class MainViewModel extends ViewModel {
         return backOnClick;
     }
 
+    public void setBackOnClick(boolean backOnClick) {
+        this.backOnClick.setValue(backOnClick);
+    }
+
     public void registerXMPP() {
         HashMap<String, String> data = new HashMap<>();
         data.put("password", preferenceRepository.getPassword());
-        apiRepository.registerXMPP(data, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.registerXMPP(data, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -177,15 +172,7 @@ public class MainViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
-    }
-
-    public void setBackOnClick(boolean backOnClick) {
-        this.backOnClick.setValue(backOnClick);
     }
 
     public LiveData<Boolean> getUpdateNewsfeed() {

@@ -12,7 +12,7 @@ import com.google.gson.JsonObject;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -74,7 +74,7 @@ public class NewsfeedPostViewModel extends ViewModel {
 
     public void sendLike(String slug, boolean like) {
 
-        apiRepository.postLike(preferenceRepository.getToken(), slug, like, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postLike(preferenceRepository.getToken(), slug, like, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -85,12 +85,6 @@ public class NewsfeedPostViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    sendLike(slug, like);
-
-            }
         });
     }
 
@@ -106,7 +100,7 @@ public class NewsfeedPostViewModel extends ViewModel {
 
         String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + postId;
 
-        apiRepository.deleteItem(preferenceRepository.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.deleteItem(preferenceRepository.getToken(), url, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -117,10 +111,6 @@ public class NewsfeedPostViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

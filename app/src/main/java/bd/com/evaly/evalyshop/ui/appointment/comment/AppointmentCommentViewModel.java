@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.appointment.comment.AppointmentCommentRequest;
 import bd.com.evaly.evalyshop.models.appointment.comment.AppointmentCommentResponse;
@@ -44,7 +44,7 @@ public class AppointmentCommentViewModel extends ViewModel {
         isLoading = true;
         isLoadingLiveData.setValue(true);
         apiRepository.getAppointmentCommentList(appointmentLiveData.getValue().getAppointmentId(), page,
-                new ResponseListenerAuth<CommonDataResponse<List<AppointmentCommentResponse>>, String>() {
+                new ResponseListener<CommonDataResponse<List<AppointmentCommentResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<AppointmentCommentResponse>> response, int statusCode) {
                         isLoading = false;
@@ -60,17 +60,11 @@ public class AppointmentCommentViewModel extends ViewModel {
                         isLoadingLiveData.setValue(false);
                     }
 
-                    @Override
-                    public void onAuthError(boolean logout) {
-                        if (!logout)
-                            loadFromApi();
-
-                    }
                 });
     }
 
     public void createComment(AppointmentCommentRequest body) {
-        apiRepository.createAppointmentComment(body, new ResponseListenerAuth<CommonDataResponse<AppointmentCommentResponse>, String>() {
+        apiRepository.createAppointmentComment(body, new ResponseListener<CommonDataResponse<AppointmentCommentResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AppointmentCommentResponse> response, int statusCode) {
                 if (response.getSuccess()) {
@@ -85,10 +79,6 @@ public class AppointmentCommentViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

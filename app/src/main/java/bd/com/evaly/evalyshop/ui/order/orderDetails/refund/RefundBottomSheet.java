@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetRefundRequestBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
@@ -247,7 +247,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
     private void deleteRefundTransaction() {
 
-        apiRepository.deleteRefundTransaction(invoice_no, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.deleteRefundTransaction(invoice_no, new ResponseListener<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 if (response.getSuccess() && statusCode == 202) {
@@ -262,12 +262,6 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    deleteRefundTransaction();
-
-            }
         });
 
     }
@@ -276,7 +270,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
         dialog.showDialog();
 
-        apiRepository.requestRefund(preferenceRepository.getToken(), body, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.requestRefund(preferenceRepository.getToken(), body, new ResponseListener<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 dialog.hideDialog();
@@ -293,11 +287,6 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                 }
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    requestRefund(body);
-            }
         });
     }
 

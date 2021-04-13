@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentCategoryResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentRequest;
@@ -35,7 +35,7 @@ public class CreateAppointmentViewModel extends ViewModel {
     }
 
     public void loadCategoryList() {
-        apiRepository.getAppointmentCategoryList(new ResponseListenerAuth<CommonDataResponse<List<AppointmentCategoryResponse>>, String>() {
+        apiRepository.getAppointmentCategoryList(new ResponseListener<CommonDataResponse<List<AppointmentCategoryResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AppointmentCategoryResponse>> response, int statusCode) {
                 categoryLiveList.setValue(response.getData());
@@ -46,10 +46,6 @@ public class CreateAppointmentViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -64,7 +60,7 @@ public class CreateAppointmentViewModel extends ViewModel {
     }
 
     public void getTimeSlot(String date) {
-        apiRepository.getAppointmentTimeSlotList(date, new ResponseListenerAuth<CommonDataResponse<List<AppointmentTimeSlotResponse>>, String>() {
+        apiRepository.getAppointmentTimeSlotList(date, new ResponseListener<CommonDataResponse<List<AppointmentTimeSlotResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AppointmentTimeSlotResponse>> response, int statusCode) {
                 timeSlotLiveList.setValue(response.getData());
@@ -79,15 +75,11 @@ public class CreateAppointmentViewModel extends ViewModel {
                     timeErrorMessage.setValue("Error occurred");
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void createAppointment(AppointmentRequest body) {
-        apiRepository.createAppointment(body, new ResponseListenerAuth<CommonDataResponse<AppointmentResponse>, String>() {
+        apiRepository.createAppointment(body, new ResponseListener<CommonDataResponse<AppointmentResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AppointmentResponse> response, int statusCode) {
                 createdLiveList.setValue(response);
@@ -98,10 +90,6 @@ public class CreateAppointmentViewModel extends ViewModel {
                 createErrorMessage.setValue(errorBody);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

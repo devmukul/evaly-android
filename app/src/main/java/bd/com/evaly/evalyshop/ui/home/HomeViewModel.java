@@ -16,7 +16,7 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.roomdb.banner.BannerDao;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
@@ -101,7 +101,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void loadCampaignTopProducts() {
-        apiRepository.getCampaignCategoryTopProducts(new ResponseListenerAuth<CommonDataResponse<List<CampaignTopProductResponse>>, String>() {
+        apiRepository.getCampaignCategoryTopProducts(new ResponseListener<CommonDataResponse<List<CampaignTopProductResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignTopProductResponse>> response, int statusCode) {
                 topCampaignProductsLiveList.setValue(response.getData());
@@ -112,15 +112,11 @@ public class HomeViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void loadCodShops() {
-        apiRepository.getShops(null, null, 1, "cod", new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
+        apiRepository.getShops(null, null, 1, "cod", new ResponseListener<CommonDataResponse<List<ShopListResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
                 codShopList.setValue(response.getData());
@@ -131,10 +127,6 @@ public class HomeViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -157,7 +149,7 @@ public class HomeViewModel extends ViewModel {
     public void loadFlashSaleProductList() {
 
         apiRepository.getCampaignCategoryProducts(1, 20, null, Constants.FLASH_SALE_SLUG, null, null, null,
-                new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
+                new ResponseListener<CommonDataResponse<List<CampaignProductResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
                         flashSaleProductList.setValue(response.getData());
@@ -168,17 +160,13 @@ public class HomeViewModel extends ViewModel {
 
                     }
 
-                    @Override
-                    public void onAuthError(boolean logout) {
-
-                    }
                 });
     }
 
     public void loadFlashSaleBrandsList() {
 
         apiRepository.getCampaignCategoryBrands(1, 20, null, Constants.FLASH_SALE_SLUG, null,
-                new ResponseListenerAuth<CommonDataResponse<List<CampaignBrandResponse>>, String>() {
+                new ResponseListener<CommonDataResponse<List<CampaignBrandResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignBrandResponse>> response, int statusCode) {
                         flashSaleBrandList.setValue(response.getData());
@@ -189,17 +177,13 @@ public class HomeViewModel extends ViewModel {
 
                     }
 
-                    @Override
-                    public void onAuthError(boolean logout) {
-
-                    }
                 });
     }
 
     public void loadFlashSaleShopList() {
 
         apiRepository.getCampaignCategoryShops(1, 20, null, Constants.FLASH_SALE_SLUG, null,
-                new ResponseListenerAuth<CommonDataResponse<List<CampaignShopResponse>>, String>() {
+                new ResponseListener<CommonDataResponse<List<CampaignShopResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignShopResponse>> response, int statusCode) {
                         flashSaleShopList.setValue(response.getData());
@@ -210,15 +194,11 @@ public class HomeViewModel extends ViewModel {
 
                     }
 
-                    @Override
-                    public void onAuthError(boolean logout) {
-
-                    }
                 });
     }
 
     public void loadCampaignCategory() {
-        apiRepository.getCampaignCategory(new ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {
+        apiRepository.getCampaignCategory(new ResponseListener<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignCategoryResponse>> response, int statusCode) {
                 categoryLiveList.setValue(response.getData());
@@ -229,16 +209,12 @@ public class HomeViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void loadBanners() {
 
-        apiRepository.getBanners(new ResponseListenerAuth<CommonResultResponse<JsonObject>, String>() {
+        apiRepository.getBanners(new ResponseListener<CommonResultResponse<JsonObject>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<JsonObject> response, int statusCode) {
                 if (response.getData() == null || !response.getData().has("advertisement_list"))
@@ -274,10 +250,6 @@ public class HomeViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }
@@ -305,7 +277,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     private void loadExpressServices() {
-        apiRepository.getExpressServicesList(new ResponseListenerAuth<CommonDataResponse<List<ExpressServiceModel>>, String>() {
+        apiRepository.getExpressServicesList(new ResponseListener<CommonDataResponse<List<ExpressServiceModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ExpressServiceModel>> response, int statusCode) {
                 expressListLive.setValue(response.getData());
@@ -316,16 +288,12 @@ public class HomeViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void loadProducts() {
 
-        apiRepository.getCampaignAllProducts(currentPageProducts, 20, null, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
+        apiRepository.getCampaignAllProducts(currentPageProducts, 20, null, new ResponseListener<CommonDataResponse<List<CampaignProductResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
                 productArrayList.addAll(response.getData());
@@ -338,10 +306,6 @@ public class HomeViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }

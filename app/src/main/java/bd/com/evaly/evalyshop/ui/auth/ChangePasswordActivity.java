@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityChangePasswordBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
@@ -116,7 +116,7 @@ public class ChangePasswordActivity extends BaseActivity {
         parameters.put("new_password", binding.newPassword.getText().toString());
         parameters.put("old_password", binding.currentPassword.getText().toString());
 
-        apiRepository.changePassword(preferenceRepository.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.changePassword(preferenceRepository.getToken(), parameters, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.hideDialog();
@@ -127,7 +127,7 @@ public class ChangePasswordActivity extends BaseActivity {
                     data.put("user", preferenceRepository.getUserName());
                     data.put("host", Constants.XMPP_HOST);
                     data.put("newpass", binding.newPassword.getText().toString());
-                    apiRepository.changeXmppPassword(data, new ResponseListenerAuth<JsonPrimitive, String>() {
+                    apiRepository.changeXmppPassword(data, new ResponseListener<JsonPrimitive, String>() {
                         @Override
                         public void onDataFetched(JsonPrimitive response, int statusCode) {
                             dialog.hideDialog();
@@ -146,10 +146,6 @@ public class ChangePasswordActivity extends BaseActivity {
                             ToastUtils.show(errorBody);
                         }
 
-                        @Override
-                        public void onAuthError(boolean logout) {
-
-                        }
                     });
                 }
             }
@@ -163,10 +159,6 @@ public class ChangePasswordActivity extends BaseActivity {
                     ToastUtils.show("Couldn't change password.");
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -177,7 +169,7 @@ public class ChangePasswordActivity extends BaseActivity {
         payload.put("phone_number", preferenceRepository.getUserName());
         payload.put("password", preferenceRepository.getPassword());
 
-        apiRepository.login(payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.login(payload, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int code) {
                 switch (code) {
@@ -203,10 +195,6 @@ public class ChangePasswordActivity extends BaseActivity {
                 ToastUtils.show(body);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

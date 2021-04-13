@@ -10,7 +10,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -33,7 +33,7 @@ public class AppointmentViewModel extends ViewModel {
     }
 
     public void loadList() {
-        apiRepository.getAppointmentList(page, new ResponseListenerAuth<CommonDataResponse<List<AppointmentResponse>>, String>() {
+        apiRepository.getAppointmentList(page, new ResponseListener<CommonDataResponse<List<AppointmentResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AppointmentResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
@@ -46,15 +46,11 @@ public class AppointmentViewModel extends ViewModel {
                 hideLoadingBar.call();
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void cancelAppointment(String id) {
-        apiRepository.cancelAppointment(id, new ResponseListenerAuth<CommonDataResponse<AppointmentResponse>, String>() {
+        apiRepository.cancelAppointment(id, new ResponseListener<CommonDataResponse<AppointmentResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AppointmentResponse> response, int statusCode) {
                 cancelResponse.setValue(response);
@@ -68,10 +64,6 @@ public class AppointmentViewModel extends ViewModel {
                 }
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

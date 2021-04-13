@@ -14,7 +14,7 @@ import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoDao;
 import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoEntity;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -26,7 +26,7 @@ public class Balance {
 
 
     public static void updateUserInfo(Activity context, boolean openDashboard, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
-        apiRepository.getUserProfile(preferenceRepository.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+        apiRepository.getUserProfile(preferenceRepository.getToken(), new ResponseListener<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
                 preferenceRepository.saveUserData(response.getData());
@@ -60,18 +60,13 @@ public class Balance {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    updateUserInfo(context, openDashboard, apiRepository, preferenceRepository);
-            }
         });
 
     }
 
     public static void update(Activity context, TextView textView, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
 
-        apiRepository.getUserInfoPay(preferenceRepository.getToken(), preferenceRepository.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getUserInfoPay(preferenceRepository.getToken(), preferenceRepository.getUserName(), new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 response = response.getAsJsonObject("data");
@@ -89,10 +84,6 @@ public class Balance {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

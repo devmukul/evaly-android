@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.BaseModel;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.catalog.brands.BrandResponse;
@@ -188,7 +188,7 @@ public class GlobalSearchViewModel extends BaseViewModel {
         body.setMinPrice(minPrice);
         body.setMaxPrice(maxPrice);
 
-        apiRepository.searchProducts(body, page, new ResponseListenerAuth<CommonDataResponse<ProductSearchResponse>, String>() {
+        apiRepository.searchProducts(body, page, new ResponseListener<CommonDataResponse<ProductSearchResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ProductSearchResponse> response, int statusCode) {
                 productList.addAll(response.getData().getProducts());
@@ -207,17 +207,13 @@ public class GlobalSearchViewModel extends BaseViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
 
     public void getShops() {
 
-        apiRepository.getShops(null, query, page, null, new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
+        apiRepository.getShops(null, query, page, null, new ResponseListener<CommonDataResponse<List<ShopListResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
                 productList.addAll(response.getData());
@@ -230,15 +226,11 @@ public class GlobalSearchViewModel extends BaseViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void getBrands() {
-        apiRepository.getBrands(null, query, page, new ResponseListenerAuth<CommonDataResponse<List<BrandResponse>>, String>() {
+        apiRepository.getBrands(null, query, page, new ResponseListener<CommonDataResponse<List<BrandResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<BrandResponse>> response, int statusCode) {
                 productList.addAll(response.getData());
@@ -251,10 +243,6 @@ public class GlobalSearchViewModel extends BaseViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

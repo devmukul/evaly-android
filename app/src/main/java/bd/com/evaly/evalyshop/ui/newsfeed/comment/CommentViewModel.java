@@ -11,7 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
@@ -64,7 +64,7 @@ public class CommentViewModel extends ViewModel {
     }
 
     public void loadComments(int page, String postSlug) {
-        apiRepository.getCommentList(preferenceRepository.getToken(), postSlug, page, new ResponseListenerAuth<CommonDataResponse<List<CommentItem>>, String>() {
+        apiRepository.getCommentList(preferenceRepository.getToken(), postSlug, page, new ResponseListener<CommonDataResponse<List<CommentItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CommentItem>> response, int statusCode) {
                 commentItemMutableLiveData.setValue(response.getData());
@@ -76,16 +76,12 @@ public class CommentViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void createComment(JsonObject body, String slug) {
 
-        apiRepository.postComment(preferenceRepository.getToken(), slug, body, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postComment(preferenceRepository.getToken(), slug, body, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 commentCreatedLiveData.setValue(response);
@@ -96,11 +92,6 @@ public class CommentViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    createComment(body, slug);
-            }
         });
 
     }
@@ -109,7 +100,7 @@ public class CommentViewModel extends ViewModel {
 
         String url = UrlUtils.BASE_URL_NEWSFEED + "comments/" + commentId;
 
-        apiRepository.deleteItem(preferenceRepository.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.deleteItem(preferenceRepository.getToken(), url, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -120,10 +111,6 @@ public class CommentViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

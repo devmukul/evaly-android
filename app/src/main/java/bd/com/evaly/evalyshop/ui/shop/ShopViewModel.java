@@ -14,7 +14,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
@@ -80,7 +80,7 @@ public class ShopViewModel extends ViewModel {
         if (campaignSlug == null)
             return;
 
-        apiRepository.getSubCampaignDetails(campaignSlug, new ResponseListenerAuth<CommonDataResponse<SubCampaignDetailsResponse>, String>() {
+        apiRepository.getSubCampaignDetails(campaignSlug, new ResponseListener<CommonDataResponse<SubCampaignDetailsResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<SubCampaignDetailsResponse> response, int statusCode) {
                 campaignDetailsLiveData.setValue(response.getData());
@@ -91,10 +91,6 @@ public class ShopViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -224,7 +220,7 @@ public class ShopViewModel extends ViewModel {
 
     public void subscribe(boolean subscribe) {
 
-        apiRepository.subscribeToShop(preferenceRepository.getToken(), shopSlug, subscribe, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.subscribeToShop(preferenceRepository.getToken(), shopSlug, subscribe, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -235,11 +231,6 @@ public class ShopViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    subscribe(subscribe);
-            }
         });
 
     }
@@ -247,7 +238,7 @@ public class ShopViewModel extends ViewModel {
 
     public void loadRatings() {
 
-        apiRepository.getReviewSummary(preferenceRepository.getToken(), shopSlug, new ResponseListenerAuth<CommonDataResponse<ReviewSummaryModel>, String>() {
+        apiRepository.getReviewSummary(preferenceRepository.getToken(), shopSlug, new ResponseListener<CommonDataResponse<ReviewSummaryModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ReviewSummaryModel> response, int statusCode) {
                 ratingSummary.setValue(response.getData());
@@ -258,16 +249,12 @@ public class ShopViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }
 
     public void loadShopDetails() {
-        apiRepository.getShopDetails(shopSlug, campaignSlug, new ResponseListenerAuth<CommonDataResponse<ShopDetailsResponse>, String>() {
+        apiRepository.getShopDetails(shopSlug, campaignSlug, new ResponseListener<CommonDataResponse<ShopDetailsResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ShopDetailsResponse> response, int statusCode) {
                 shopDetailsLive.setValue(response.getData());
@@ -278,16 +265,12 @@ public class ShopViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void loadShopProducts() {
 
-        apiRepository.getShopDetailsItem(preferenceRepository.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        apiRepository.getShopDetailsItem(preferenceRepository.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, brandSlug, new ResponseListener<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 shopDetailsModelLiveData.setValue(response);
@@ -301,11 +284,6 @@ public class ShopViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    loadShopProducts();
-            }
         });
     }
 
@@ -321,7 +299,7 @@ public class ShopViewModel extends ViewModel {
 
         isCategoryLoading = true;
 
-        apiRepository.getCategoriesOfShop(shopSlug, campaignSlug, categoryCurrentPage, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getCategoriesOfShop(shopSlug, campaignSlug, categoryCurrentPage, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 isCategoryLoading = false;
@@ -349,10 +327,6 @@ public class ShopViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }

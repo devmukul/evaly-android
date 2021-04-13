@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.refundSettlement.OtpResponse;
 import bd.com.evaly.evalyshop.models.refundSettlement.RefundSettlementResponse;
@@ -30,7 +30,7 @@ public class PreOtpViewModel extends ViewModel {
     }
 
     public void generateOtp() {
-        apiRepository.generateOtp(preferenceRepository.getToken(), new ResponseListenerAuth<CommonDataResponse<OtpResponse>, String>() {
+        apiRepository.generateOtp(preferenceRepository.getToken(), new ResponseListener<CommonDataResponse<OtpResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<OtpResponse> response, int statusCode) {
                 ToastUtils.show("An OTP has been sent to your phone number");
@@ -42,10 +42,6 @@ public class PreOtpViewModel extends ViewModel {
                 ToastUtils.show(errorBody);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -54,7 +50,7 @@ public class PreOtpViewModel extends ViewModel {
             generateOtp();
             ToastUtils.show("Please try again");
         }
-        apiRepository.getSettlementAccounts(preferenceRepository.getToken(), otp, requestId, new ResponseListenerAuth<CommonDataResponse<RefundSettlementResponse>, String>() {
+        apiRepository.getSettlementAccounts(preferenceRepository.getToken(), otp, requestId, new ResponseListener<CommonDataResponse<RefundSettlementResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<RefundSettlementResponse> response, int statusCode) {
                 settlementResponse.setValue(response.getData());
@@ -66,10 +62,6 @@ public class PreOtpViewModel extends ViewModel {
                 settlementResponse.setValue(null);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

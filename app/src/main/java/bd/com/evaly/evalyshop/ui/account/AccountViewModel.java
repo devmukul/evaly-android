@@ -8,7 +8,7 @@ import java.util.Calendar;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -37,7 +37,7 @@ public class AccountViewModel extends ViewModel {
             return;
         }
 
-        apiRepository.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+        apiRepository.getMessageCount(new ResponseListener<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 messageCount.setValue(response.getCount());
@@ -50,17 +50,13 @@ public class AccountViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }
 
     private void updateUserDetails() {
 
-        apiRepository.getUserProfile(preferenceRepository.getToken(), new ResponseListenerAuth<CommonDataResponse<UserModel>, String>() {
+        apiRepository.getUserProfile(preferenceRepository.getToken(), new ResponseListener<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
                 if (response.getData() != null)
@@ -72,10 +68,6 @@ public class AccountViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 }

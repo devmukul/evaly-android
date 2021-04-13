@@ -48,7 +48,7 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
@@ -653,7 +653,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyNot.setVisibility(View.GONE);
         NestedScrollView scrollView = replyDialog.findViewById(R.id.stickyScrollView);
 
-        apiRepository.getReplies(preferenceRepository.getToken(), selectedPostID, comment_id, currentReplyPage, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getReplies(preferenceRepository.getToken(), selectedPostID, comment_id, currentReplyPage, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 assert scrollView != null;
@@ -688,10 +688,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }
@@ -710,7 +706,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         parameters.addProperty("body", replyInput.getText().toString());
         parametersPost.add("comment", parameters);
 
-        apiRepository.postReply(preferenceRepository.getToken(), selectedPostID, selectedCommentID, parametersPost, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postReply(preferenceRepository.getToken(), selectedPostID, selectedCommentID, parametersPost, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if (response.has("data")) {
@@ -727,12 +723,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    createReply();
-
-            }
         });
 
     }
@@ -752,7 +742,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         else
             url = UrlUtils.BASE_URL_NEWSFEED + "comments/" + id;
 
-        apiRepository.deleteItem(preferenceRepository.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.deleteItem(preferenceRepository.getToken(), url, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if (type.equals("post")) {
@@ -778,12 +768,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    deletePost(id, type);
-
-            }
         });
 
     }
@@ -817,7 +801,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         NestedScrollView scrollView = commentDialog.findViewById(R.id.stickyScrollView);
 
 
-        apiRepository.getComments(preferenceRepository.getToken(), post_id, currentCommentPage, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getComments(preferenceRepository.getToken(), post_id, currentCommentPage, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -856,11 +840,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    loadComments(post_id);
-            }
         });
 
 
@@ -875,7 +854,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .color(R.color.ddd)
                 .show();
 
-        apiRepository.getPostDetails(preferenceRepository.getToken(), post_id, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getPostDetails(preferenceRepository.getToken(), post_id, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 skeletonCommentHeader.hide();
@@ -906,10 +885,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }
@@ -936,7 +911,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             bottomProgressBar.setVisibility(View.VISIBLE);
 
 
-        apiRepository.getNewsfeedPosts(preferenceRepository.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.getNewsfeedPosts(preferenceRepository.getToken(), url, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -988,11 +963,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 bottomProgressBar.setVisibility(View.INVISIBLE);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    getPosts(page);
-            }
         });
 
     }
@@ -1032,7 +1002,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         parameters.addProperty("body", commentInput.getText().toString());
         parametersPost.add("comment", parameters);
 
-        apiRepository.postComment(preferenceRepository.getToken(), selectedPostID, parametersPost, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postComment(preferenceRepository.getToken(), selectedPostID, parametersPost, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 if (response.has("data")) {
@@ -1049,12 +1019,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    createComment();
-
-            }
         });
 
     }
@@ -1062,7 +1026,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void sendLike(String slug, boolean like) {
 
-        apiRepository.postLike(preferenceRepository.getToken(), slug, like, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.postLike(preferenceRepository.getToken(), slug, like, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -1073,12 +1037,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    sendLike(slug, like);
-
-            }
         });
     }
 

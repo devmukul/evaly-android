@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopListResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -46,7 +46,7 @@ public class CodShopsViewModel extends BaseViewModel {
         if (isLoading)
             return;
         isLoading = true;
-        apiRepository.getShops(null, search, page, "cod", new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
+        apiRepository.getShops(null, search, page, "cod", new ResponseListener<CommonDataResponse<List<ShopListResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
                 isLoading = false;
@@ -60,10 +60,6 @@ public class CodShopsViewModel extends BaseViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

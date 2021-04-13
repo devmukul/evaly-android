@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
@@ -311,7 +311,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         payload.put("phone_number", preferenceRepository.getUserName());
         payload.put("password", preferenceRepository.getPassword());
 
-        apiRepository.login(payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.login(payload, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int code) {
                 switch (code) {
@@ -337,10 +337,6 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
                 Toast.makeText(PasswordActivity.this, body, Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 }

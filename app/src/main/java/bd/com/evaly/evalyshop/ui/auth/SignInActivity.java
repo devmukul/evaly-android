@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
@@ -120,7 +120,7 @@ public class SignInActivity extends BaseActivity {
         payload.put("phone_number", phoneNumber.getText().toString());
         payload.put("password", password.getText().toString());
 
-        apiRepository.login(payload, new ResponseListenerAuth<JsonObject, String>() {
+        apiRepository.login(payload, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int code) {
                 alert.hideDialog();
@@ -152,10 +152,6 @@ public class SignInActivity extends BaseActivity {
                     ToastUtils.show(R.string.something_wrong);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.BaseModel;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
@@ -93,7 +93,7 @@ public class BrowseProductViewModel extends ViewModel {
 
     private void getProducts() {
 
-        apiRepository.getCategoryBrandProducts(currentPage, categorySlug, null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
+        apiRepository.getCategoryBrandProducts(currentPage, categorySlug, null, new ResponseListener<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
                 arrayList.addAll(response.getData());
@@ -107,10 +107,6 @@ public class BrowseProductViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }
@@ -118,7 +114,7 @@ public class BrowseProductViewModel extends ViewModel {
 
     public void getSubCategories() {
 
-        apiRepository.getChildCategories(categorySlug, new ResponseListenerAuth<CommonDataResponse<List<ChildCategoryResponse>>, String>() {
+        apiRepository.getChildCategories(categorySlug, new ResponseListener<CommonDataResponse<List<ChildCategoryResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ChildCategoryResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
@@ -132,16 +128,12 @@ public class BrowseProductViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }
 
     public void getBrands() {
-        apiRepository.getBrands(categorySlug, null, currentPage, new ResponseListenerAuth<CommonDataResponse<List<BrandResponse>>, String>() {
+        apiRepository.getBrands(categorySlug, null, currentPage, new ResponseListener<CommonDataResponse<List<BrandResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<BrandResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
@@ -155,16 +147,12 @@ public class BrowseProductViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
 
     public void getShops() {
-        apiRepository.getShops(categorySlug, null, currentPage, null, new ResponseListenerAuth<CommonDataResponse<List<ShopListResponse>>, String>() {
+        apiRepository.getShops(categorySlug, null, currentPage, null, new ResponseListener<CommonDataResponse<List<ShopListResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ShopListResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
@@ -178,10 +166,6 @@ public class BrowseProductViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
 
     }

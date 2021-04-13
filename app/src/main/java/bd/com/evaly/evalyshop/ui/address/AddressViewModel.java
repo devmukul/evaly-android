@@ -10,7 +10,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.data.roomdb.address.AddressListDao;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.catalog.location.LocationResponse;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
@@ -51,7 +51,7 @@ public class AddressViewModel extends ViewModel {
     }
 
     public void loadLocationList(String parent, String type) {
-        apiRepository.getLocations(parent, new ResponseListenerAuth<CommonDataResponse<List<LocationResponse>>, String>() {
+        apiRepository.getLocations(parent, new ResponseListener<CommonDataResponse<List<LocationResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<LocationResponse>> response, int statusCode) {
                 if (type.equals("division"))
@@ -67,15 +67,11 @@ public class AddressViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void loadAddressList() {
-        apiRepository.getUserAddress(new ResponseListenerAuth<CommonDataResponse<AddressWholeResponse>, String>() {
+        apiRepository.getUserAddress(new ResponseListener<CommonDataResponse<AddressWholeResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AddressWholeResponse> response, int statusCode) {
                 if (response.getData().getAddresses() != null)
@@ -105,10 +101,6 @@ public class AddressViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -129,7 +121,7 @@ public class AddressViewModel extends ViewModel {
     }
 
     public void addAddress(AddressRequest item) {
-        apiRepository.addAddress(item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
+        apiRepository.addAddress(item, new ResponseListener<CommonDataResponse<AddressResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AddressResponse> response, int statusCode) {
                 compositeDisposable.add(addressListDao.insert(response.getData())
@@ -142,15 +134,11 @@ public class AddressViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
     public void editAddress(AddressRequest item, String id) {
-        apiRepository.updateAddress(id, item, new ResponseListenerAuth<CommonDataResponse<AddressResponse>, String>() {
+        apiRepository.updateAddress(id, item, new ResponseListener<CommonDataResponse<AddressResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<AddressResponse> response, int statusCode) {
                 compositeDisposable.add(addressListDao.insert(response.getData())
@@ -163,10 +151,6 @@ public class AddressViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -175,7 +159,7 @@ public class AddressViewModel extends ViewModel {
     }
 
     public void deleteAddress(String id) {
-        apiRepository.removeAddress(id, new ResponseListenerAuth<CommonDataResponse, String>() {
+        apiRepository.removeAddress(id, new ResponseListener<CommonDataResponse, String>() {
             @Override
             public void onDataFetched(CommonDataResponse response, int statusCode) {
                 loadAddressList();
@@ -186,10 +170,6 @@ public class AddressViewModel extends ViewModel {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.util.Utils;
 import retrofit2.Call;
@@ -24,7 +24,7 @@ import retrofit2.Response;
 public class ApiHandler {
 
     @SuppressWarnings("unchecked")
-    public <T, V> void createCall(Call<T> call, ResponseListenerAuth<T, V> responseListener) {
+    public <T, V> void createCall(Call<T> call, ResponseListener<T, V> responseListener) {
         if (!Utils.isNetworkAvailable(AppController.getContext())) {
             responseListener.onFailed((V) AppController.getContext().getString(R.string.networkError), 500);
             return;
@@ -59,7 +59,7 @@ public class ApiHandler {
     }
 
     @SuppressWarnings("unchecked")
-    private <T, V> void successProcessor(Call<T> call, Response<T> response, ResponseListenerAuth<T, V> responseListener) {
+    private <T, V> void successProcessor(Call<T> call, Response<T> response, ResponseListener<T, V> responseListener) {
         int statusCode = response.code();
         if (statusCode >= 200 && statusCode < 400) {
             if (response.body() != null) {

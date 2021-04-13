@@ -18,7 +18,7 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.RecyclerViewOnItemClickListener;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
@@ -79,7 +79,7 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
     }
 
     private void getIssuesList() {
-        apiRepository.getIssueList(invoice, page, new ResponseListenerAuth<CommonDataResponse<List<IssueListModel>>, String>() {
+        apiRepository.getIssueList(invoice, page, new ResponseListener<CommonDataResponse<List<IssueListModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<IssueListModel>> response, int statusCode) {
                 dialog.hideDialog();
@@ -102,10 +102,6 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
                 ToastUtils.show(errorBody);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 

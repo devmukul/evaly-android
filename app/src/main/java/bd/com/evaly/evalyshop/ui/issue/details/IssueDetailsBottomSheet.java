@@ -30,7 +30,7 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetIssueDetailsBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.issueNew.comment.IssueTicketCommentModel;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
@@ -114,7 +114,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
     private void loadReplies() {
 
 
-        apiRepository.getIssueCommentList(issueModel.getId(), new ResponseListenerAuth<CommonDataResponse<List<IssueTicketCommentModel>>, String>() {
+        apiRepository.getIssueCommentList(issueModel.getId(), new ResponseListener<CommonDataResponse<List<IssueTicketCommentModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<IssueTicketCommentModel>> response, int statusCode) {
                 binding.progressContainer.setVisibility(View.GONE);
@@ -132,10 +132,6 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
 
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -154,7 +150,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         ProgressDialog dialog = new ProgressDialog(getContext());
         dialog.show();
 
-        apiRepository.createIssueComment(issueModel.getId(), binding.commentInput.getText().toString(), new ResponseListenerAuth<CommonDataResponse<IssueTicketCommentModel>, String>() {
+        apiRepository.createIssueComment(issueModel.getId(), binding.commentInput.getText().toString(), new ResponseListener<CommonDataResponse<IssueTicketCommentModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<IssueTicketCommentModel> response, int statusCode) {
                 binding.commentInput.setText("");
@@ -172,10 +168,6 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
                 ToastUtils.show(R.string.something_wrong);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
@@ -187,7 +179,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         ProgressDialog dialog = new ProgressDialog(getContext());
         dialog.show();
 
-        apiRepository.resolveIssue("resolved", (int) issueModel.getId(), new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
+        apiRepository.resolveIssue("resolved", (int) issueModel.getId(), new ResponseListener<CommonDataResponse<IssueListModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<IssueListModel> response, int statusCode) {
                 dialog.dismiss();
@@ -208,10 +200,6 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
                 ToastUtils.show(R.string.something_wrong);
             }
 
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
         });
     }
 
