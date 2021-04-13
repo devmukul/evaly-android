@@ -109,7 +109,7 @@ public class ExpressProductSearchFragment extends Fragment {
                     ApiClient.getUnsafeOkHttpClient().dispatcher().cancelAll();
                     performSearch(binding.search.getText().toString().trim());
                     query = binding.search.getText().toString().trim();
-                    binding.searchClear.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_close));
+                    binding.searchClear.setImageDrawable(AppController.getContext().getDrawable(R.drawable.ic_close));
                 } else {
                     // binding.noItem.setVisibility(View.VISIBLE);
                     expressProductController.clear();
@@ -130,7 +130,7 @@ public class ExpressProductSearchFragment extends Fragment {
 
         binding.searchClear.setOnClickListener(v -> {
             if (!binding.search.getText().toString().trim().equals("")) {
-                binding.searchClear.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_search));
+                binding.searchClear.setImageDrawable(AppController.getContext().getDrawable(R.drawable.ic_search));
                 binding.search.setText("");
                 query = null;
                 currentPage = 1;
@@ -195,7 +195,7 @@ public class ExpressProductSearchFragment extends Fragment {
 
 
                 if (!binding.search.getText().toString().equals(""))
-                    binding.searchClear.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_close));
+                    binding.searchClear.setImageDrawable(AppController.getContext().getDrawable(R.drawable.ic_close));
 
                 expressProductController.setLoadingMore(false);
 

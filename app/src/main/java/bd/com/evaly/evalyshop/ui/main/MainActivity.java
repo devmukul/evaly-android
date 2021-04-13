@@ -49,6 +49,7 @@ import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.databinding.ActivityMainBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -69,7 +70,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
 
 @AndroidEntryPoint
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements AppController.AppEvent {
 
     public boolean isLaunchActivity = true;
 
@@ -95,6 +96,8 @@ public class MainActivity extends BaseActivity {
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
 
+        AppController.setAppEvent(this);
+
         if (preferenceRepository.getLanguage().equalsIgnoreCase("bn"))
             changeLanguage("BN");
 
@@ -104,7 +107,7 @@ public class MainActivity extends BaseActivity {
                 (preferenceRepository.getUserData() == null ||
                         preferenceRepository.getUserName().equals("") ||
                         preferenceRepository.getPassword().equals(""))) {
-            AppController.getInstance().logout(this);
+            AppController.onLogoutEvent();
             return;
         }
 
@@ -206,6 +209,13 @@ public class MainActivity extends BaseActivity {
     }
 
     private void liveEvents() {
+
+        viewModel.onLogoutResponse.observe(this, aBoolean -> {
+            ProviderDatabase providerDatabase = ProviderDatabase.getInstance(getApplicationContext());
+            providerDatabase.userInfoDao().deleteAll();
+            startActivity(new Intent(this, SignInActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        });
 
         viewModel.getBackOnClick().observe(this, aBoolean -> {
             if (aBoolean)
@@ -732,4 +742,10 @@ public class MainActivity extends BaseActivity {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
         }
     }
+
+    @Override
+    public void onLogout() {
+        viewModel.onLogoutFromServer();
+    }
+
 }

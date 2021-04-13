@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryRe
 import bd.com.evaly.evalyshop.models.cart.CartHolderModel;
 import bd.com.evaly.evalyshop.models.refundSettlement.RefundSettlementResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.annotations.NonNull;
@@ -33,6 +35,7 @@ import io.reactivex.schedulers.Schedulers;
 @HiltViewModel
 public class MainViewModel extends ViewModel {
 
+    protected SingleLiveEvent<Boolean> onLogoutResponse = new SingleLiveEvent<>();
     private MutableLiveData<Boolean> drawerOnClick = new MutableLiveData<>();
     private MutableLiveData<Boolean> backOnClick = new MutableLiveData<>();
     private MutableLiveData<Boolean> updateNewsfeed = new MutableLiveData<>();
@@ -58,6 +61,34 @@ public class MainViewModel extends ViewModel {
         wishListLiveCount = wishListDao.getLiveCount();
         compositeDisposable = new CompositeDisposable();
         getCartList();
+    }
+
+
+    public void onLogoutFromServer() {
+        apiRepository.logout(new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                onLogoutResponse.setValue(true);
+                try {
+                    String email = preferenceRepository.getUserName();
+                    String strNew = email.replaceAll("[^A-Za-z0-9]", "");
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.BUILD + "_" + strNew);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                preferenceRepository.clearAll();
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                onLogoutResponse.setValue(true);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void getCartList() {

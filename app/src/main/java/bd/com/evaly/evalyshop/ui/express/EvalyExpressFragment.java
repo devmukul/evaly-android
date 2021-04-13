@@ -247,7 +247,7 @@ public class EvalyExpressFragment extends Fragment {
                         if (addresses.size() > 0) {
                             Address obj = addresses.get(0);
                             String myAddress = obj.toString();
-                            String[] districts = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
+                            String[] districts = AppController.getContext().getResources().getStringArray(R.array.districtsList);
                             for (String district : districts) {
                                 if (myAddress.contains(district)) {
                                     getMainExecutor(getContext()).execute(() -> {
@@ -301,7 +301,7 @@ public class EvalyExpressFragment extends Fragment {
 
         RecyclerView districtRecyclerView = dialog.findViewById(R.id.recyclerView);
 
-        String[] districtList = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
+        String[] districtList = AppController.getContext().getResources().getStringArray(R.array.districtsList);
         ArrayList<String> districts = new ArrayList<>(Arrays.asList(districtList));
 
         ExpressDistrictAdapter adapter = new ExpressDistrictAdapter(districts, object -> {

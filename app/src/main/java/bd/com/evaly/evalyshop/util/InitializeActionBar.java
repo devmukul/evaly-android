@@ -90,7 +90,8 @@ public class InitializeActionBar {
             public void onAuthError(boolean logout) {
                 if (!logout)
                     getNotificationCount();
-                else if (context != null) AppController.getInstance().logout(context);
+                else if (context != null)
+                    AppController.onLogoutEvent();
             }
         });
 

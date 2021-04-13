@@ -93,7 +93,7 @@ public class VariantsController extends EpoxyController {
             new VariantCarouselModel_()
                     .id("var_carousel", rootItem.getAttributeName())
                     .models(models)
-                    .padding(new Carousel.Padding((int) Utils.convertDpToPixel(20, AppController.getmContext()), 0, 0, 0, 0))
+                    .padding(new Carousel.Padding((int) Utils.convertDpToPixel(20, AppController.getContext()), 0, 0, 0, 0))
                     .addTo(this);
         }
     }

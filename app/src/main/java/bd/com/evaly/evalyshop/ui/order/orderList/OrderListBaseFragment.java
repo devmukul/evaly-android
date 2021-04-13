@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentOrderListBaseBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
@@ -143,9 +142,6 @@ public class OrderListBaseFragment extends Fragment {
             requestListController.setList(orderRequestResponses);
             requestListController.requestModelBuild();
         });
-
-        viewModel.logoutLiveData.observe(getViewLifecycleOwner(), aVoid -> AppController.getInstance().logout(getActivity()));
-
     }
 
 }

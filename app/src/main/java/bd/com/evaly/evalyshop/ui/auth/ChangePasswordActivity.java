@@ -16,7 +16,6 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityChangePasswordBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -167,10 +166,6 @@ public class ChangePasswordActivity extends BaseActivity {
             @Override
             public void onAuthError(boolean logout) {
 
-                if (logout)
-                    AppController.getInstance().logout(ChangePasswordActivity.this);
-                else
-                    updatePassword();
             }
         });
     }

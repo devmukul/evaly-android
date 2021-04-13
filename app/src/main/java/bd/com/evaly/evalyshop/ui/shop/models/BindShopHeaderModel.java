@@ -35,10 +35,10 @@ public class BindShopHeaderModel {
 
         if (description == null) {
             binding.btn3Title.setText("Delivery");
-            binding.btn3Image.setImageDrawable(AppController.getmContext().getResources().getDrawable(R.drawable.ic_delivery));
+            binding.btn3Image.setImageDrawable(AppController.getContext().getResources().getDrawable(R.drawable.ic_delivery));
         } else {
             binding.btn3Title.setText("T&C");
-            binding.btn3Image.setImageDrawable(AppController.getmContext().getResources().getDrawable(R.drawable.ic_terms_and_conditions));
+            binding.btn3Image.setImageDrawable(AppController.getContext().getResources().getDrawable(R.drawable.ic_terms_and_conditions));
         }
 
         if (shopInfo.isCodAllowed()) {

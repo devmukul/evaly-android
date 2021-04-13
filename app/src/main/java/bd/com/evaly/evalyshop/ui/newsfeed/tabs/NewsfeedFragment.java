@@ -96,7 +96,7 @@ public class NewsfeedFragment extends Fragment {
 
         viewModel.getLogoutLiveData().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean)
-                AppController.getInstance().logout(getActivity());
+                AppController.onLogoutEvent();
         });
 
         pager = new NewsfeedTabPager(getChildFragmentManager(), getLifecycle());

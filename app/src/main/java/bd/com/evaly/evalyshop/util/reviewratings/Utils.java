@@ -12,8 +12,8 @@ import bd.com.evaly.evalyshop.controller.AppController;
 
 
 class Utils {
-    static int DEFAULT_BAR_COLOR = ContextCompat.getColor(AppController.getmContext(), R.color.c333);
-    static int DEFAULT_BAR_TEXT_COLOR = ContextCompat.getColor(AppController.getmContext(), R.color.c333);
+    static int DEFAULT_BAR_COLOR = ContextCompat.getColor(AppController.getContext(), R.color.c333);
+    static int DEFAULT_BAR_TEXT_COLOR = ContextCompat.getColor(AppController.getContext(), R.color.c333);
     static int DEFAULT_BAR_SPACE = 5;
 
 

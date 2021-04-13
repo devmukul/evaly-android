@@ -509,7 +509,7 @@ public class ApiRepository {
 
     public void uploadImage(Bitmap imageBitmap, ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String> listener) {
 
-        File f = new File(AppController.getmContext().getCacheDir(), "image.jpg");
+        File f = new File(AppController.getContext().getCacheDir(), "image.jpg");
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 80 /*ignored for PNG*/, bos);

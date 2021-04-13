@@ -25,8 +25,8 @@ public class ApiHandler {
 
     @SuppressWarnings("unchecked")
     public <T, V> void createCall(Call<T> call, ResponseListenerAuth<T, V> responseListener) {
-        if (!Utils.isNetworkAvailable(AppController.getmContext())) {
-            responseListener.onFailed((V) AppController.getmContext().getString(R.string.networkError), 500);
+        if (!Utils.isNetworkAvailable(AppController.getContext())) {
+            responseListener.onFailed((V) AppController.getContext().getString(R.string.networkError), 500);
             return;
         }
 
@@ -46,15 +46,15 @@ public class ApiHandler {
 
     private String getCustomErrorMessage(Throwable error) {
         if (error instanceof SocketTimeoutException) {
-            return AppController.getmContext().getString(R.string.requestTimeOutError);
+            return AppController.getContext().getString(R.string.requestTimeOutError);
         } else if (error instanceof MalformedJsonException) {
-            return AppController.getmContext().getString(R.string.responseMalformedJson);
+            return AppController.getContext().getString(R.string.responseMalformedJson);
         } else if (error instanceof IOException) {
-            return AppController.getmContext().getString(R.string.networkError);
+            return AppController.getContext().getString(R.string.networkError);
         } else if (error instanceof HttpException) {
             return (((HttpException) error).response().message());
         } else {
-            return AppController.getmContext().getString(R.string.unknownError);
+            return AppController.getContext().getString(R.string.unknownError);
         }
     }
 
@@ -90,15 +90,15 @@ public class ApiHandler {
                         if (error != null) {
                             responseListener.onFailed((V) error, statusCode);
                         } else {
-                            responseListener.onFailed((V) AppController.getmContext().getString(R.string.unknownError), statusCode);
+                            responseListener.onFailed((V) AppController.getContext().getString(R.string.unknownError), statusCode);
                         }
                     } catch (JsonSyntaxException ex) {
-                        responseListener.onFailed((V) AppController.getmContext().getString(R.string.unknownError), statusCode);
+                        responseListener.onFailed((V) AppController.getContext().getString(R.string.unknownError), statusCode);
                         ex.printStackTrace();
                     }
                 }
             } catch (IOException e) {
-                responseListener.onFailed((V) AppController.getmContext().getString(R.string.unknownError), statusCode);
+                responseListener.onFailed((V) AppController.getContext().getString(R.string.unknownError), statusCode);
                 e.printStackTrace();
             }
         }

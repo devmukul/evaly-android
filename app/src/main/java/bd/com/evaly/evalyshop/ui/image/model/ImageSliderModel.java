@@ -32,7 +32,7 @@ public abstract class ImageSliderModel extends DataBindingEpoxyModel {
         ItemTouchImageBinding binding = (ItemTouchImageBinding) holder.getDataBinding();
 
         try {
-            Glide.with(AppController.getmContext())
+            Glide.with(AppController.getContext())
                     .asBitmap()
                     .load(image)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)

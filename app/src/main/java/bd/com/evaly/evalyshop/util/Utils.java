@@ -247,7 +247,7 @@ public class Utils {
     }
 
     public static int convertDpToPixel(int dp) {
-        return (int) (dp * ((float) AppController.getmContext().getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+        return (int) (dp * ((float) AppController.getContext().getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     public static String capitalize(String capString) {

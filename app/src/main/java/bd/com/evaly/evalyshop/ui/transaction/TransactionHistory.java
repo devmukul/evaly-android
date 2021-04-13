@@ -17,9 +17,10 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.BuildConfig;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentTransactionHistoryBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -123,10 +124,7 @@ public class TransactionHistory extends Fragment {
 
                     @Override
                     public void onAuthError(boolean logout) {
-                        if (logout)
-                            AppController.getInstance().logout(getActivity());
-                        else
-                            getTransactionHistory(page);
+
                     }
                 });
     }
