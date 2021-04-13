@@ -64,7 +64,6 @@ public abstract class HomeWidgetModel extends BaseDataBindingEpoxyModel {
         binding.btn1Indicator.setVisibility(View.GONE);
     }
 
-
     @Override
     protected void setDataBindingVariables(ViewDataBinding binding) {
     }

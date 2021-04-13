@@ -359,7 +359,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_weight="0"
                         android:paddingLeft="5dp"
-                        android:text="@string/delivery_of_the_products_will_be_completed_within_approximately_15_working_days_after_payment"
+                        android:text="@string/express_delivery_text"
                         android:textColor="@color/c666"
                         android:textSize="13sp" />
 

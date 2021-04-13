@@ -84,6 +84,9 @@ public class CheckoutFragment extends DialogFragment {
     SharedObservers sharedObservers;
     @Inject
     PreferenceRepository preferenceRepository;
+
+    String deliveryText = "";
+    String deliveryTextExpress = "";
     private FragmentCheckoutBinding binding;
     private CheckoutViewModel viewModel;
     private CartViewModel cartViewModel;
@@ -114,6 +117,7 @@ public class CheckoutFragment extends DialogFragment {
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme);
         viewModel = new ViewModelProvider(this).get(CheckoutViewModel.class);
         cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
+
     }
 
     @Override
@@ -121,6 +125,8 @@ public class CheckoutFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(CheckoutFragment.this);
+        deliveryTextExpress =  getString(R.string.express_delivery_text);
+        deliveryText = getString(R.string.delivery_text);
         shopAmountMap = new HashMap<>();
         dialog = new ViewDialog(getActivity());
         dialog.showDialog();
@@ -203,15 +209,13 @@ public class CheckoutFragment extends DialogFragment {
     }
 
     private void updateViews() {
-
         binding.privacyText.setText(Html.fromHtml("Upon clicking on 'Place Order', I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
         binding.privacyText.setMovementMethod(LinkMovementMethod.getInstance());
-
         boolean isExpress = false;
+        boolean isNormalOrder = false;
         totalDeliveryCharge = 0;
 
         List<CartEntity> itemList = viewModel.liveList.getValue();
-
         List<Integer> productIdList = new ArrayList<>();
 
         if (itemList == null)
@@ -222,8 +226,6 @@ public class CheckoutFragment extends DialogFragment {
             if (Utils.isNumeric(cartItem.getProductID()))
                 productIdList.add(Integer.parseInt(cartItem.getProductID()));
             if (cartItem.isSelected()) {
-                if (cartItem.isExpressShop())
-                    isExpress = true;
                 String ss = cartItem.getShopSlug();
                 Integer am = shopAmountMap.get(ss);
                 if (shopAmountMap.containsKey(ss) && am != null)
@@ -231,16 +233,48 @@ public class CheckoutFragment extends DialogFragment {
                 else
                     shopAmountMap.put(ss, (int) cartItem.getDiscountedPriceD() * cartItem.getQuantity());
             }
+            if (!isExpress && cartItem.isExpressShop()) {
+                isExpress = true;
+            }
+            if (!isNormalOrder && !cartItem.isExpressShop()) {
+                isNormalOrder = true;
+            }
+            setDeliveryTimeText(isExpress, isNormalOrder);
         }
 
         viewModel.checkAttachmentRequirements(productIdList);
 
         checkLocationPermission();
+    }
 
-        if (isExpress) {
-            binding.deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
-        } else {
-            binding.deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
+    private void setDeliveryTimeText(boolean isExpress, boolean isNormalOrder) {
+        if (Utils.isNetworkAvailable(requireActivity())) {
+            mFirebaseRemoteConfig
+                    .fetchAndActivate()
+                    .addOnCompleteListener(requireActivity(), task -> {
+                        if (task.isSuccessful()) {
+                            deliveryTextExpress = mFirebaseRemoteConfig.getString("delivery_time_text_express");
+                            deliveryText = mFirebaseRemoteConfig.getString("delivery_time_text");
+                            updateDeliveryView(deliveryTextExpress, deliveryText, isExpress, isNormalOrder);
+                        }
+                    });
+            updateDeliveryView(deliveryTextExpress, deliveryText, isExpress, isNormalOrder);
+        }
+
+    }
+
+    private void updateDeliveryView(String deliveryTextExpress, String deliveryText, boolean isExpress, boolean isNormalOrder) {
+        if (isExpress && isNormalOrder) {
+            String text = deliveryText + "\n" + deliveryTextExpress;
+            binding.deliveryDuration.setText(text);
+            return;
+        }
+        if (isExpress && !isNormalOrder) {
+            binding.deliveryDuration.setText(deliveryTextExpress);
+            return;
+        }
+        if (isNormalOrder && !isExpress) {
+            binding.deliveryDuration.setText(deliveryText);
         }
     }
 

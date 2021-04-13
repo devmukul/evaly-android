@@ -13,7 +13,6 @@ public abstract class EpoxyModelStaggeredGrid<T extends View> extends EpoxyModel
 
     @Override
     public void bind(@NonNull T view) {
-
         StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT

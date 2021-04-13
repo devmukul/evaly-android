@@ -128,7 +128,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="checkout_information">Checkout Information</string>
     <string name="enter_your_number">Enter your number</string>
     <string name="add_new_address">Add New Address</string>
-    <string name="delivery_of_the_products_will_be_completed_within_approximately_15_working_days_after_payment">Delivery of the products will be completed within approximately 15 working days after payment. For mobile express order, delivery will be made within 2 hours</string>
+    <string name="delivery_of_the_products_will_be_completed_within_approximately_15_working_days_after_payment">Delivery of the products will be completed within approximately 15 working days after payment.</string>
     <string name="place_order">PLACE ORDER</string>
     <string name="delivery_options">Delivery Options</string>
     <string name="bkash">bKash</string>
@@ -433,6 +433,8 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="select_address">Select Address</string>
     <string name="type_of_the_word">Type the word</string>
     <string name="attachments">Attachments</string>
+    <string name="express_delivery_text">Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service. For mobile express order, Delivery will be made within 2 hours</string>
+    <string name="delivery_text">Delivery will be made within 7 to 45 working days, depending on product and campaign</string>
     <string name="refund_settlement">Refund Settlement</string>
     <string name="unknownError">Something went wrong!</string>
     <string name="requestTimeOutError" translatable="false">Oops! We couldn\'t capture your request in time. Please try again.</string>
