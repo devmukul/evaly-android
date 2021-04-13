@@ -80,6 +80,17 @@ public class OrderDetailsModel {
     @SerializedName("attachments")
     private List<String> attachments;
 
+    @SerializedName("is_delivery_hero_allowed")
+    private boolean deliveryHeroAllowed;
+
+    public void setDeliveryHeroAllowed(boolean deliveryHeroAllowed) {
+        this.deliveryHeroAllowed = deliveryHeroAllowed;
+    }
+
+    public boolean isDeliveryHeroAllowed() {
+        return deliveryHeroAllowed;
+    }
+
     public ArrayList<String> getAllowedPaymentMethods() {
         if (allowed_payment_methods == null)
             return new ArrayList<>();

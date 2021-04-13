@@ -80,18 +80,20 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
     @Override
     protected void initViews() {
         initSearchViews();
-        initFilterTopSheet();
         handleArguments();
+        initFilterTopSheet();
     }
 
     private void handleArguments() {
         if (getArguments() != null && getArguments().containsKey("type")) {
             String type = getArguments().getString("type");
             if (type != null) {
-                if (type.contains("brand"))
+                if (type.contains("brand")) {
                     binding.filterTypeRadioGroup.check(R.id.filterTypeBrands);
-                else if (type.contains("shop"))
+                } else if (type.contains("shop")) {
                     binding.filterTypeRadioGroup.check(R.id.filterTypeShops);
+                } else
+                    binding.filterSearchType.setText(R.string.products);
             }
         }
     }
@@ -459,6 +461,15 @@ public class GlobalSearchFragment extends BaseFragment<FragmentGlobalSearchBindi
 
     @Override
     protected void liveEventsObservers() {
+
+        viewModel.searchTypeLiveData.observe(getViewLifecycleOwner(), s -> {
+            if (s.contains("product"))
+                binding.filterSearchType.setText(R.string.products);
+            else if (s.contains("brand"))
+                binding.filterSearchType.setText(R.string.brands);
+            else if (s.contains("shop"))
+                binding.filterSearchType.setText(R.string.shops);
+        });
 
         viewModel.facetsMutableLiveData.observe(getViewLifecycleOwner(), facets -> {
             if (facets != null &&
