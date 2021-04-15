@@ -22,7 +22,7 @@ public class TokenInterceptor implements Interceptor {
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         Request originalRequest = chain.request();
-        if (!preferenceRepository.getToken().isEmpty()) {
+        if (!preferenceRepository.getToken().isEmpty() && !originalRequest.url().toString().contains("/public")) {
             Request.Builder builder = originalRequest.newBuilder();
             builder.addHeader("Authorization", preferenceRepository.getToken());
             Request request = builder.build();

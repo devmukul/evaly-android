@@ -29,12 +29,10 @@ public class TokenAuthenticator implements Authenticator {
 
     @Override
     public Request authenticate(Route route, Response response) throws IOException {
-        if (apiServiceHolder.getApiService() == null)
-            return null;
-        apiService = apiServiceHolder.getApiService();
 
         if (!isRefreshApiCalled) {
-
+            if (apiServiceHolder.getApiService() == null) return null;
+            apiService = apiServiceHolder.getApiService();
             isRefreshApiCalled = true;
 
             HashMap<String, String> loginRequest = new HashMap<>();
@@ -50,8 +48,8 @@ public class TokenAuthenticator implements Authenticator {
                     return response.request().newBuilder()
                             .addHeader("Authorization", preferencesHelper.getToken())
                             .build();
-                } else
-                    AppController.onLogoutEvent();
+                }
+
             } else {
                 if (!response.request().url().toString().contains("ecaptcha"))
                     AppController.onLogoutEvent();
