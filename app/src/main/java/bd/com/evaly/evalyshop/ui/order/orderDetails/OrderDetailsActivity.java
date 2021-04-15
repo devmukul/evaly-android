@@ -73,7 +73,6 @@ import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
 import bd.com.evaly.evalyshop.ui.payment.giftcard.GiftCardPaymentBottomSheet;
 import bd.com.evaly.evalyshop.ui.payment.listener.PaymentListener;
 import bd.com.evaly.evalyshop.ui.payment.model.PurchaseRequestInfo;
-import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -764,7 +763,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     public void updatePage() {
         binding.scroll.postDelayed(() -> binding.scroll.fullScroll(View.FOCUS_UP), 50);
-        Balance.update(this, binding.balance, apiRepository, preferenceRepository);
+        viewModel.updateBalance();
         viewModel.getOrderHistory();
         viewModel.getOrderDetails();
     }
