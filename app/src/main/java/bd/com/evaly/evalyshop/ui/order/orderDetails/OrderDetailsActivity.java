@@ -411,7 +411,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         } else if (paymentStatus.equals("refunded")) {
             binding.paymentStatus.setTextColor(Color.parseColor("#333333"));
             binding.paymentStatus.setBackgroundColor(Color.parseColor("#eeeeee"));
-            viewModel.checkRefundEligibility(invoiceNo);
+            // viewModel.checkRefundEligibility(invoiceNo);
         } else if (paymentStatus.equals("refund_requested")) {
             binding.paymentStatus.setBackgroundColor(Color.parseColor("#c45da8"));
             binding.paymentStatus.setTextColor(Color.parseColor("#ffffff"));
@@ -568,6 +568,21 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             } catch (Exception ignore) {
             }
         }
+
+        String newPaymentMethods = orderDetailsModel.getPaymentMethod();
+        if (newPaymentMethods == null)
+            newPaymentMethods = "";
+
+        newPaymentMethods = newPaymentMethods
+                .replaceAll("balance", "")
+                .replaceAll("gift_card", "")
+                .replaceAll(",", "")
+                .replaceAll(" ", "");
+
+        if (!orderStatus.equals("picked") && !orderStatus.equals("shipped") && !orderStatus.equals("delivered") &&
+                !paymentStatus.equals("unpaid") && !paymentStatus.equals("refund_requested") &&
+                newPaymentMethods.length() > 0)
+            isRefundEligible = true;
 
         inflateMenu();
         updateProducts();
@@ -765,18 +780,19 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     private void inflateMenu() {
-        if (refundMenuItem == null || cancelMenuItem == null)
-            return;
+        if (refundMenuItem != null) {
+            if (isRefundEligible)
+                refundMenuItem.setVisible(true);
+            else
+                refundMenuItem.setVisible(false);
+        }
 
-        if (Utils.canRefundRequest(paymentStatus, orderStatus, paymentMethod))
-            refundMenuItem.setVisible(true);
-        else
-            refundMenuItem.setVisible(false);
-
-        if (orderStatus.equals("pending") && paidAmount < 1)
-            cancelMenuItem.setVisible(true);
-        else
-            cancelMenuItem.setVisible(false);
+        if (cancelMenuItem != null) {
+            if (orderStatus.equals("pending") && paidAmount < 1)
+                cancelMenuItem.setVisible(true);
+            else
+                cancelMenuItem.setVisible(false);
+        }
     }
 
     public void cancelOrder() {

@@ -257,41 +257,6 @@ public class OrderDetailsViewModel extends ViewModel {
         });
     }
 
-    public void checkRefundEligibility(String invoice) {
-        apiRepository.checkRefundEligibility(invoice, new ResponseListener<CommonDataResponse<String>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
-                refundEligibilityLiveData.setValue(response);
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                if (errorCode == 404) {
-                    CommonDataResponse<String> response = new CommonDataResponse<>();
-                    response.setSuccess(false);
-                    response.setMessage("Not eligible");
-                    refundEligibilityLiveData.setValue(response);
-                }
-            }
-
-        });
-    }
-
-    public void deleteRefundTransaction(String invoice) {
-        apiRepository.deleteRefundTransaction(invoice, new ResponseListener<CommonDataResponse<String>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
-                refundDeleteLiveData.setValue(response);
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-        });
-    }
-
     public void setRefreshPage() {
         this.refreshPage.setValue(true);
     }

@@ -319,6 +319,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
     private void initRelatedProductsRecycler() {
         relatedProductsController = new RelatedProductsController();
         relatedProductsController.setFilterDuplicates(true);
+        relatedProductsController.setClickListener(this);
         int spacing = (int) Utils.convertDpToPixel(10, this);
         binding.products.addItemDecoration(new StaggeredSpacingItemDecoration(2, spacing, true));
         binding.products.setAdapter(relatedProductsController.getAdapter());

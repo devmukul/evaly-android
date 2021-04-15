@@ -55,6 +55,21 @@ public class Utils {
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
+
+    public static boolean contains(String str, String words) {
+        if (str == null)
+            return false;
+        if (str.contains("|")) {
+            String[] list = str.split("|");
+            for (String word : list) {
+                if (word != null && str.toLowerCase().contains(word.toLowerCase()))
+                    return true;
+            }
+            return false;
+        } else
+            return str.toLowerCase().contains(words.toLowerCase());
+    }
+
     public static int randInt(int min, int max) {
         Random rand = new Random();
         return rand.nextInt((max - min) + 1) + min;

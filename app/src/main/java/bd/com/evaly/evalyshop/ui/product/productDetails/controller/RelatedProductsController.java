@@ -6,13 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.ui.browseProduct.controller.BrowseProductController;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 
 public class RelatedProductsController extends EpoxyController {
 
     private List<ProductItem> productList = new ArrayList<>();
-    private BrowseProductController.ClickListener clickListener;
+    private ClickListener clickListener;
 
     @Override
     protected void buildModels() {
@@ -34,7 +33,7 @@ public class RelatedProductsController extends EpoxyController {
         this.productList = productList;
     }
 
-    public void setClickListener(BrowseProductController.ClickListener clickListener) {
+    public void setClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
