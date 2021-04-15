@@ -53,6 +53,7 @@ import bd.com.evaly.evalyshop.databinding.ActivityViewProductBinding;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.Post;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributesItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.Data;
@@ -72,6 +73,7 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.AvailableShopAda
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SpecificationAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSliderAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.bottomsheet.SkuBottomSheetFragment;
+import bd.com.evaly.evalyshop.ui.product.productDetails.controller.RelatedProductsController;
 import bd.com.evaly.evalyshop.ui.product.productDetails.controller.VariantsController;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
@@ -80,12 +82,13 @@ import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
+import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
 @AndroidEntryPoint
-public class ViewProductActivity extends BaseActivity implements VariantsController.SelectListener, AvailableShopAdapter.AvailableShopClickListener {
+public class ViewProductActivity extends BaseActivity implements VariantsController.SelectListener, AvailableShopAdapter.AvailableShopClickListener, RelatedProductsController.ClickListener {
 
     @Inject
     RecommenderViewModel recommenderViewModel;
@@ -95,6 +98,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
     long startTime = 0;
     ProductVariantsItem firstProductVariantsItem;
+    private RelatedProductsController relatedProductsController;
     private String slug = "", category = "", name = "", productImage = "";
     private double productPrice;
     private ArrayList<AvailableShop> availableShops;
@@ -157,56 +161,46 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         getSupportActionBar().setTitle("View Product");
 
-        productPrice = getIntent().getDoubleExtra("product_price", -1);
-        productImage = getIntent().getStringExtra("product_image");
-        slug = getIntent().getStringExtra("slug");
-
-        if (getIntent().hasExtra("shop_slug"))
-            shopSlug = getIntent().getStringExtra("shop_slug");
-
-        if (getIntent().hasExtra("cashback_text"))
-            cashbackText = getIntent().getStringExtra("cashback_text");
-
-        viewModel.cartLiveCount.observe(this, integer -> binding.cartCount.setText(integer.toString()));
+        handleIntent();
 
         wishListItem = new WishList();
         cartItem = new CartEntity();
+        availableShops = new ArrayList<>();
 
         binding.specList.setLayoutManager(new LinearLayoutManager(this));
         specificationAdapter = new SpecificationAdapter(this, specificationsItemList);
         binding.specList.setAdapter(specificationAdapter);
-        availableShops = new ArrayList<>();
-        sliderImages = new ArrayList<>();
 
-        sliderAdapter = new ViewProductSliderAdapter(context, this, sliderImages);
-        binding.sliderPager.setAdapter(sliderAdapter);
-        binding.sliderIndicator.setupWithViewPager(binding.sliderPager, true);
-        viewModel.productDetailsModel.observe(this, this::populateShopDetails);
-        viewModel.ratingSummary.observe(this, this::populateRatingsSummary);
 
+        initProductImageSlider();
+        liveEvents();
+        loadFromApis();
+        hideProductHolder();
+        clickListeners();
+        initVariantRecycler();
+        initRelatedProductsRecycler();
+    }
+
+    private void loadFromApis() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             if (extras.containsKey("product_slug"))
                 slug = extras.getString("product_slug");
-
             if (extras.containsKey("product_name"))
                 name = extras.getString("product_name");
-
-            // binding.productName.setVisibility(View.GONE);
-
             if (name != null) {
                 binding.productName.setText(Html.fromHtml(name));
                 binding.collapsingToolbar.setTitle(Html.fromHtml(name));
             }
-
             viewModel.getProductDetails(slug);
             viewModel.loadRatings(slug);
             binding.collapsingToolbar.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void clickListeners() {
 
         binding.back.setOnClickListener(v -> onBackPressed());
-        hideProductHolder();
-
         binding.cart.setOnClickListener(v -> {
             Intent intent = new Intent(context, CartActivity.class);
             context.startActivity(intent);
@@ -301,8 +295,48 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             builder.show();
 
         });
+    }
 
-        initVariantRecycler();
+    private void initProductImageSlider() {
+        sliderImages = new ArrayList<>();
+        sliderAdapter = new ViewProductSliderAdapter(context, this, sliderImages);
+        binding.sliderPager.setAdapter(sliderAdapter);
+        binding.sliderIndicator.setupWithViewPager(binding.sliderPager, true);
+    }
+
+    private void handleIntent() {
+        productPrice = getIntent().getDoubleExtra("product_price", -1);
+        productImage = getIntent().getStringExtra("product_image");
+        slug = getIntent().getStringExtra("slug");
+
+        if (getIntent().hasExtra("shop_slug"))
+            shopSlug = getIntent().getStringExtra("shop_slug");
+
+        if (getIntent().hasExtra("cashback_text"))
+            cashbackText = getIntent().getStringExtra("cashback_text");
+    }
+
+    private void initRelatedProductsRecycler() {
+        relatedProductsController = new RelatedProductsController();
+        relatedProductsController.setFilterDuplicates(true);
+        int spacing = (int) Utils.convertDpToPixel(10, this);
+        binding.products.addItemDecoration(new StaggeredSpacingItemDecoration(2, spacing, true));
+        binding.products.setAdapter(relatedProductsController.getAdapter());
+    }
+
+    private void liveEvents() {
+
+        viewModel.cartLiveCount.observe(this, integer -> binding.cartCount.setText(integer.toString()));
+
+        viewModel.relatedProductLiveList.observe(this, productItems -> {
+            relatedProductsController.setProductList(productItems);
+            relatedProductsController.requestModelBuild();
+            binding.products.setVisibility(View.VISIBLE);
+            binding.progressBar.setVisibility(View.GONE);
+        });
+
+        viewModel.productDetailsModel.observe(this, this::populateShopDetails);
+        viewModel.ratingSummary.observe(this, this::populateRatingsSummary);
     }
 
     private void initRecommender() {
@@ -518,10 +552,8 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         specificationAdapter.notifyDataSetChanged();
         shareURL = "https://evaly.com.bd/products/" + slug;
         populateProductByVariant(firstProductVariantsItem);
-        getRelatedProducts(firstProductVariantsItem.getCategorySlug());
+        viewModel.getRelatedProducts(firstProductVariantsItem.getCategorySlug());
         initRecommender();
-
-
     }
 
     private void populateProductByVariant(ProductVariantsItem item) {
@@ -602,24 +634,6 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             val = val.replaceAll(", $", "");
             cartItem.setVariantDetails(val);
         }
-    }
-
-    private void getRelatedProducts(String categorySlug) {
-
-
-//        ProductGrid productGrid = new ProductGrid(this, binding.products, categorySlug, binding.progressBar);
-//        productGrid.setListener(new ProductListener() {
-//            @Override
-//            public void onSuccess(int count) {
-//                binding.products.setVisibility(View.VISIBLE);
-//                binding.progressBar.setVisibility(View.GONE);
-//            }
-//
-//            @Override
-//            public void buyNow(String product_slug) {
-//
-//            }
-//        });
     }
 
     private void inflateShopDetails(AvailableShopModel shop) {
@@ -940,4 +954,16 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         });
         snackBar.show();
     }
+
+    @Override
+    public void onProductClick(ProductItem model) {
+        Intent intent = new Intent(this, ViewProductActivity.class);
+        intent.putExtra("product_slug", model.getSlug());
+        intent.putExtra("product_name", model.getName());
+        intent.putExtra("product_price", model.getMaxPrice());
+        if (model.getImageUrls().size() > 0)
+            intent.putExtra("product_image", model.getImageUrls().get(0));
+        startActivity(intent);
+    }
+
 }

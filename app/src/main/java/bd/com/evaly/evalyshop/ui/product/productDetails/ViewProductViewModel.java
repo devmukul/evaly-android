@@ -17,7 +17,9 @@ import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
@@ -31,6 +33,7 @@ public class ViewProductViewModel extends ViewModel {
     private PreferenceRepository preferenceRepository;
     public LiveData<Integer> wishListLiveCount;
     public LiveData<Integer> cartLiveCount;
+    protected MutableLiveData<List<ProductItem>> relatedProductLiveList = new MutableLiveData<>();
     protected MutableLiveData<ProductDetailsModel> productDetailsModel = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse<List<ShopItem>>> productsVariantsOfShop = new MutableLiveData<>();
     protected MutableLiveData<ShopDetailsModel> shopDetails = new MutableLiveData<>();
@@ -169,7 +172,6 @@ public class ViewProductViewModel extends ViewModel {
         });
     }
 
-
     public void createPost(CreatePostModel createPostModel) {
         apiRepository.post(preferenceRepository.getToken(), createPostModel, null, new ResponseListener<JsonObject, String>() {
             @Override
@@ -182,6 +184,20 @@ public class ViewProductViewModel extends ViewModel {
                 createPostResponse.setValue(null);
             }
 
+        });
+    }
+
+    public void getRelatedProducts(String category){
+        apiRepository.getCategoryBrandProducts(1, category, null, new ResponseListener<CommonResultResponse<List<ProductItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
+                relatedProductLiveList.setValue(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
         });
     }
 
