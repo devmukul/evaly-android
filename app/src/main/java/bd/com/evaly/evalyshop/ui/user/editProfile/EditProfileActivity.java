@@ -299,7 +299,7 @@ public class EditProfileActivity extends BaseActivity {
     }
 
     private void setProfilePic() {
-        if (preferenceRepository.getUserData().getProfilePicUrl() != null)
+        if (preferenceRepository.getUserData().getProfilePicUrl() != null && !isFinishing())
             Glide.with(this)
                     .asBitmap()
                     .load(preferenceRepository.getUserData().getProfilePicUrl())

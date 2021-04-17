@@ -1,16 +1,10 @@
 package bd.com.evaly.evalyshop.ui.shop.quickView;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,39 +20,28 @@ import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.rest.ApiClient;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.shop.quickView.controllers.ShopQuickViewCategoryController;
 import bd.com.evaly.evalyshop.ui.shop.quickView.controllers.ShopQuickViewProductController;
+import dagger.hilt.android.AndroidEntryPoint;
 
-public class ShopQuickViewFragment extends Fragment {
+@AndroidEntryPoint
+public class ShopQuickViewFragment extends BaseFragment<FragmentShopQuickCategoryBinding, ShopQuickViewModel> {
 
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
-    private int pastVisiblesItems2, visibleItemCount2, totalItemCount2;
-    private FragmentShopQuickCategoryBinding binding;
-    private ShopQuickViewModel viewModel;
     private String shopSlug = "chaldal", shopName = "Chaldal", campaignSlug = null, categorySlug = null;
-
     private ShopQuickViewCategoryController categoryController;
     private ShopQuickViewProductController productController;
     private boolean isLoading = false, isLoadingCategory = false;
     private int currentPage = 1, totalCount = 0, totalCountCategory = 0;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(ShopQuickViewModel.class);
+    public ShopQuickViewFragment(){
+        super(ShopQuickViewModel.class, R.layout.fragment_shop_quick_category);
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentShopQuickCategoryBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    protected void initViews() {
         if (getArguments() != null) {
             shopName = getArguments().getString("shop_name");
             campaignSlug = getArguments().getString("campaign_slug");
@@ -76,63 +59,11 @@ public class ShopQuickViewFragment extends Fragment {
         String brandSlug = null;
         if (getArguments().containsKey("brand_slug"))
             brandSlug = getArguments().getString("brand_slug");
+    }
 
-        categoryController = new ShopQuickViewCategoryController();
-        categoryController.setActivity((AppCompatActivity) getActivity());
-        categoryController.setFragment(this);
-        categoryController.setViewModel(viewModel);
-        categoryController.setFilterDuplicates(true);
 
-        productController = new ShopQuickViewProductController();
-        productController.setActivity((AppCompatActivity) getActivity());
-        productController.setFragment(this);
-        productController.setShopSlug(shopSlug);
-        productController.setViewModel(viewModel);
-        productController.setLoadingMore(true);
-        productController.setFilterDuplicates(true);
-
-        binding.rvCategory.setAdapter(categoryController.getAdapter());
-        binding.rvProducts.setAdapter(productController.getAdapter());
-
-        viewModelLiveDataObservers();
-
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        binding.rvProducts.setLayoutManager(layoutManager);
-        binding.rvProducts.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {
-                    visibleItemCount = layoutManager.getChildCount();
-                    totalItemCount = layoutManager.getItemCount();
-                    int[] firstVisibleItems = null;
-                    firstVisibleItems = layoutManager.findFirstVisibleItemPositions(null);
-                    if (firstVisibleItems != null && firstVisibleItems.length > 0)
-                        pastVisiblesItems = firstVisibleItems[0];
-
-                    if (!isLoading && totalItemCount < totalCount)
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            productController.showEmptyPage(false, false);
-                            productController.setLoadingMore(true);
-                            viewModel.loadShopProducts();
-                            isLoading = true;
-                        }
-                }
-            }
-        });
-
-        LinearLayoutManager layoutManagerCategory = new LinearLayoutManager(getContext());
-        binding.rvCategory.setLayoutManager(layoutManagerCategory);
-
-        binding.rvCategory.addOnScrollListener(new PaginationScrollListener(layoutManagerCategory) {
-            @Override
-            public void loadMoreItem() {
-                if (!isLoadingCategory) {
-                    isLoadingCategory = true;
-                    categoryController.setLoadingMore(true, true);
-                    viewModel.loadShopCategories();
-                }
-            }
-        });
+    @Override
+    protected void clickListeners() {
 
     }
 
@@ -151,10 +82,11 @@ public class ShopQuickViewFragment extends Fragment {
             }
             return true;
         });
-
     }
 
-    private void viewModelLiveDataObservers() {
+
+    @Override
+    protected void liveEventsObservers() {
 
         viewModel.getBuyNowLiveData().observe(getViewLifecycleOwner(), s -> {
             if (getActivity() != null) {
@@ -236,5 +168,63 @@ public class ShopQuickViewFragment extends Fragment {
             productController.addData(tempList);
         });
 
+    }
+
+    @Override
+    protected void setupRecycler() {
+        categoryController = new ShopQuickViewCategoryController();
+        categoryController.setActivity((AppCompatActivity) getActivity());
+        categoryController.setFragment(this);
+        categoryController.setViewModel(viewModel);
+        categoryController.setFilterDuplicates(true);
+
+        productController = new ShopQuickViewProductController();
+        productController.setActivity((AppCompatActivity) getActivity());
+        productController.setFragment(this);
+        productController.setShopSlug(shopSlug);
+        productController.setViewModel(viewModel);
+        productController.setLoadingMore(true);
+        productController.setFilterDuplicates(true);
+
+        binding.rvCategory.setAdapter(categoryController.getAdapter());
+        binding.rvProducts.setAdapter(productController.getAdapter());
+
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        binding.rvProducts.setLayoutManager(layoutManager);
+        binding.rvProducts.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    visibleItemCount = layoutManager.getChildCount();
+                    totalItemCount = layoutManager.getItemCount();
+                    int[] firstVisibleItems = null;
+                    firstVisibleItems = layoutManager.findFirstVisibleItemPositions(null);
+                    if (firstVisibleItems != null && firstVisibleItems.length > 0)
+                        pastVisiblesItems = firstVisibleItems[0];
+
+                    if (!isLoading && totalItemCount < totalCount)
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            productController.showEmptyPage(false, false);
+                            productController.setLoadingMore(true);
+                            viewModel.loadShopProducts();
+                            isLoading = true;
+                        }
+                }
+            }
+        });
+
+        LinearLayoutManager layoutManagerCategory = new LinearLayoutManager(getContext());
+        binding.rvCategory.setLayoutManager(layoutManagerCategory);
+
+        binding.rvCategory.addOnScrollListener(new PaginationScrollListener(layoutManagerCategory) {
+            @Override
+            public void loadMoreItem() {
+                if (!isLoadingCategory) {
+                    isLoadingCategory = true;
+                    categoryController.setLoadingMore(true, true);
+                    viewModel.loadShopCategories();
+                }
+            }
+        });
     }
 }
