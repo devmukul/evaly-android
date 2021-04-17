@@ -34,9 +34,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Logger.e(new Gson().toJson(remoteMessage.getData()));
-        Logger.d(new Gson().toJson(remoteMessage));
-        Logger.d(new Gson().toJson(remoteMessage.getNotification()));
         if (BuildConfig.DEBUG)
             Logger.d(new Gson().toJson(remoteMessage.getData()));
         Map<String, String> data = remoteMessage.getData();
