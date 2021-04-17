@@ -43,10 +43,11 @@ public class TokenAuthenticator implements Authenticator {
             if (refreshApiResponse.code() != 401) {
                 if (refreshApiResponse.body() != null && !response.request().url().toString().contains("ecaptcha")) {
                     JsonObject loginResponse = refreshApiResponse.body();
-                    preferencesHelper.saveToken(loginResponse.get("data").getAsJsonObject().get("access_token").getAsString());
+                    String accessToken = loginResponse.get("data").getAsJsonObject().get("access_token").getAsString();
+                    preferencesHelper.saveToken(accessToken);
                     preferencesHelper.saveRefreshToken(loginResponse.get("data").getAsJsonObject().get("refresh_token").getAsString());
                     return response.request().newBuilder()
-                            .addHeader("Authorization", preferencesHelper.getToken())
+                            .addHeader("Authorization", accessToken)
                             .build();
                 }
 

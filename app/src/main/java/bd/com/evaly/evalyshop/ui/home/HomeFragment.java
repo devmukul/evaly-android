@@ -378,13 +378,11 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     public void onCampaignBrandClick(CampaignBrandResponse model) {
         Bundle bundle = new Bundle();
         bundle.putInt("type", 1);
-        bundle.putString("shop_name", model.getName());
+        bundle.putString("brand_name", model.getName());
         bundle.putString("logo_image", model.getImage());
-        bundle.putString("shop_slug", model.getShopSlug());
-        bundle.putString("category", "root");
         bundle.putString("brand_slug", model.getSlug());
         bundle.putString("campaign_slug", model.getCampaignSlug());
-        navController.navigate(R.id.shopFragment, bundle);
+        navController.navigate(R.id.brandFragment, bundle);
     }
 
     @Override
