@@ -741,7 +741,8 @@ public class MainActivity extends BaseActivity implements AppController.AppEvent
 
     @Override
     public void onLogout() {
-        viewModel.onLogoutFromServer();
+        if (viewModel != null)
+            viewModel.onLogoutFromServer();
     }
 
 }
