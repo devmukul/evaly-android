@@ -97,13 +97,20 @@ public class TransactionHistory extends Fragment {
         binding.progressBar.setVisibility(View.VISIBLE);
         String url = null;
         RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
+
+        if (baseUrls == null)
+            return;
+
         if (BuildConfig.DEBUG)
             url = baseUrls.getDevTransectionHistoryUrl();
         else
             url = baseUrls.getProdTransectionHistoryUrl();
         if (url == null)
             return;
-        apiRepository.getTransactionHistory(preferenceRepository.getToken(), preferenceRepository.getUserName(), page,
+
+        url += preferenceRepository.getUserName();
+
+        apiRepository.getTransactionHistory(preferenceRepository.getToken(), url, page,
                 new ResponseListener<CommonDataResponse<List<TransactionItem>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<TransactionItem>> response, int statusCode) {

@@ -172,11 +172,13 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
         RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
 
-        String url;
-        if (BuildConfig.DEBUG)
-            url = baseUrls.getDevGiftCardBaseUrl();
-        else
-            url = baseUrls.getProdGiftCardBaseUrl();
+        String url = null;
+        if (baseUrls != null) {
+            if (BuildConfig.DEBUG)
+                url = baseUrls.getDevGiftCardBaseUrl();
+            else
+                url = baseUrls.getProdGiftCardBaseUrl();
+        }
 
         if (url != null)
             baseUrl = url;

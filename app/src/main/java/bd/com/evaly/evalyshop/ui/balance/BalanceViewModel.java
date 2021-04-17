@@ -17,6 +17,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
@@ -44,6 +45,10 @@ public class BalanceViewModel extends ViewModel {
         String url = null;
 
         RemoteConfigBaseUrls baseUrls = new Gson().fromJson(remoteConfigLiveData.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
+
+        if (baseUrls == null)
+            return;
+
         if (BuildConfig.DEBUG)
             url = baseUrls.getDevBalanceUrl();
         else
@@ -69,6 +74,12 @@ public class BalanceViewModel extends ViewModel {
     public void claimCashback() {
         String url = null;
         RemoteConfigBaseUrls baseUrls = new Gson().fromJson(remoteConfigLiveData.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
+
+        if (baseUrls == null){
+            ToastUtils.show("Please try again");
+            return;
+        }
+
         if (BuildConfig.DEBUG)
             url = baseUrls.getDevCashbackClaimUrl();
         else

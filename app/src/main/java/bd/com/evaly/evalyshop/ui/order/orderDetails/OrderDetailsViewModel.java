@@ -78,6 +78,9 @@ public class OrderDetailsViewModel extends ViewModel {
 
         RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
 
+        if (baseUrls == null)
+            return;
+
         if (BuildConfig.DEBUG)
             url = baseUrls.getDevBalanceUrl();
         else
