@@ -23,6 +23,7 @@
         app:popUpTo="@id/homeFragment"
         app:popUpToInclusive="true" />
 
+
     <fragment
         android:id="@+id/homeFragment"
         android:name="bd.com.evaly.evalyshop.ui.home.HomeFragment"
@@ -424,5 +425,9 @@
         android:name="bd.com.evaly.evalyshop.ui.refundSettlement.modals.EditSettlementAccountBottomSheet"
         android:label="EditSettlementAccountBottomSheet" />
 
+    <fragment
+        android:id="@+id/followedShopsFragment"
+        android:name="bd.com.evaly.evalyshop.ui.followedShops.FollowedShopsFragment"
+        android:label="FollowedShopsFragment" />
 
 </navigation>

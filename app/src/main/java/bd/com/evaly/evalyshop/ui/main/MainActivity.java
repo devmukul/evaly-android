@@ -58,7 +58,6 @@ import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
-import bd.com.evaly.evalyshop.ui.followedShops.FollowedShopActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
 import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
@@ -582,10 +581,7 @@ public class MainActivity extends BaseActivity implements AppController.AppEvent
                         openEconnect();
                         break;
                     case R.id.nav_followed_shops:
-                        Intent inf = new Intent(MainActivity.this, FollowedShopActivity.class);
-                        inf.putExtra("title", "Followed Shops");
-                        inf.putExtra("slug", "shop-subscriptions");
-                        startActivity(inf);
+                        navController.navigate(R.id.followedShopsFragment);
                         break;
                     case R.id.nav_dark_mode:
                         showDarkModeDialog();

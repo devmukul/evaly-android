@@ -213,7 +213,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="order_details">Order Details</string>
     <string name="bill_from">Bill From</string>
     <string name="bill_to">Bill To</string>
-    <string name="favorite_shops">Favorite Shops</string>
+    <string name="favorite_shops">Followed Shops</string>
     <string name="vouchers">Vouchers</string>
     <string name="contact_us_short">Contact Us</string>
     <string name="announcement_cap">ANNOUNCEMENT</string>
