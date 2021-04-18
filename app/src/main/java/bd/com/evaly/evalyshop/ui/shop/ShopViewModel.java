@@ -19,17 +19,22 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.subcampaign.SubCampaignDetailsResponse;
 import bd.com.evaly.evalyshop.models.catalog.shop.ShopDetailsResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
+import bd.com.evaly.evalyshop.models.shop.FollowResponse;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class ShopViewModel extends ViewModel {
 
+    protected MutableLiveData<FollowResponse> followStatusLive = new MutableLiveData<>();
     protected MutableLiveData<ShopDetailsResponse> shopDetailsLive = new MutableLiveData<>();
+    protected MutableLiveData<ShopDetailsModel> shopDetailsModelLiveData = new MutableLiveData<>();
+    protected MutableLiveData<SubCampaignDetailsResponse> campaignDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> onChatClickLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> onFollowClickLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> onResetLiveData = new MutableLiveData<>();
@@ -51,8 +56,6 @@ public class ShopViewModel extends ViewModel {
     private List<TabsItem> categoryArrayList = new ArrayList<>();
     private List<ItemsItem> productArrayList = new ArrayList<>();
     private boolean isShop = true;
-    protected MutableLiveData<ShopDetailsModel> shopDetailsModelLiveData = new MutableLiveData<>();
-    protected MutableLiveData<SubCampaignDetailsResponse> campaignDetailsLiveData = new MutableLiveData<>();
     private ApiRepository apiRepository;
     private PreferenceRepository preferenceRepository;
 
@@ -74,6 +77,7 @@ public class ShopViewModel extends ViewModel {
         loadShopProducts();
         loadShopCategories();
         loadRatings();
+        loadFollowResponse();
     }
 
     private void loadCampaignDetails() {
@@ -108,6 +112,7 @@ public class ShopViewModel extends ViewModel {
         loadShopProducts();
         loadShopCategories();
         loadRatings();
+        loadFollowResponse();
     }
 
     public void setSearch(String search) {
@@ -220,7 +225,12 @@ public class ShopViewModel extends ViewModel {
 
     public void subscribe(boolean subscribe) {
 
-        apiRepository.subscribeToShop(preferenceRepository.getToken(), shopSlug, subscribe, new ResponseListener<JsonObject, String>() {
+        if (shopDetailsLive.getValue() == null) {
+            ToastUtils.show("Please reload the page");
+            return;
+        }
+
+        apiRepository.subscribeToShop(shopDetailsLive.getValue().getShopName(), shopDetailsLive.getValue().getShopImage(), shopSlug, subscribe, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -233,6 +243,21 @@ public class ShopViewModel extends ViewModel {
 
         });
 
+    }
+
+
+    public void loadFollowResponse(){
+        apiRepository.getFollowStatus(shopSlug, new ResponseListener<CommonDataResponse<FollowResponse>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<FollowResponse> response, int statusCode) {
+                followStatusLive.setValue(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+        });
     }
 
 

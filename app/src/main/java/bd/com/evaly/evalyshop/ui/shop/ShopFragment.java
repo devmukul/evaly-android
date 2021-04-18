@@ -134,6 +134,12 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
     @Override
     protected void liveEventsObservers() {
 
+        viewModel.followStatusLive.observe(getViewLifecycleOwner(), followResponse -> {
+            controller.setSubscribed(followResponse.isStatus());
+            if (controller.getShopInfo() != null)
+                controller.requestModelBuild();
+        });
+
         viewModel.getRatingSummary().observe(getViewLifecycleOwner(), reviewSummaryModel -> {
             // reviewSummaryModel.setTotalRatings(10);
             controller.setReviewSummaryModel(reviewSummaryModel);

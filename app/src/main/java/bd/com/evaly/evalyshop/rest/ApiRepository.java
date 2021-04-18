@@ -92,6 +92,7 @@ import bd.com.evaly.evalyshop.models.refundSettlement.request.MFSAccountRequest;
 import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 import bd.com.evaly.evalyshop.models.search.product.SearchRequest;
 import bd.com.evaly.evalyshop.models.search.product.response.ProductSearchResponse;
+import bd.com.evaly.evalyshop.models.shop.FollowResponse;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
@@ -450,15 +451,13 @@ public class ApiRepository {
     }
 
 
-    public void subscribeToShop(String token, String shopSlug, boolean subscribe, ResponseListener<JsonObject, String> listener) {
-        if (subscribe) {
-
-            HashMap<String, String> body = new HashMap<>();
-            body.put("shop_slug", shopSlug);
-
-            apiHandler.createCall(apiService.subscribeToShop(body), listener);
-        } else
-            apiHandler.createCall(apiService.unsubscribeShop(shopSlug), listener);
+    public void subscribeToShop(String shopName, String shopImage, String shopSlug, boolean subscribe, ResponseListener<JsonObject, String> listener) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("shop_name", shopName);
+        body.put("shop_image_url", shopImage);
+        body.put("shop_slug", shopSlug);
+        body.put("status", subscribe);
+        apiHandler.createCall(apiService.subscribeToShop(body), listener);
     }
 
 
@@ -910,6 +909,10 @@ public class ApiRepository {
             apiHandler.createCall(apiService.checkShopReviewEligibility(slug), listener);
         else
             apiHandler.createCall(apiService.checkProductReviewEligibility(slug), listener);
+    }
+
+    public void getFollowStatus(String slug, ResponseListener<CommonDataResponse<FollowResponse>, String> listener) {
+        apiHandler.createCall(apiService.getFollowStatus(slug), listener);
     }
 
 

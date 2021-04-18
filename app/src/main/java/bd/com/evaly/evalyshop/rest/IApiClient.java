@@ -86,6 +86,7 @@ import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
 import bd.com.evaly.evalyshop.models.search.product.SearchRequest;
 import bd.com.evaly.evalyshop.models.search.product.response.ProductSearchResponse;
+import bd.com.evaly.evalyshop.models.shop.FollowResponse;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
@@ -593,8 +594,8 @@ public interface IApiClient {
     @GET
     Call<ShopDetailsModel> getShopDetailsItems(@Url String url);
 
-    @POST(UrlUtils.BASE_URL + "shop-subscriptions")
-    Call<JsonObject> subscribeToShop(@Body HashMap<String, String> shopSlug);
+    @POST(UrlUtils.DOMAIN + "ratings/api/v1/user/follow/set-status")
+    Call<JsonObject> subscribeToShop(@Body HashMap<String, Object> shopSlug);
 
 
     @DELETE(UrlUtils.BASE_URL + "unsubscribe-shop/{shop_slug}/")
@@ -606,6 +607,9 @@ public interface IApiClient {
     @GET(UrlUtils.DOMAIN + "ratings/api/v1/public/overview")
     Call<CommonDataResponse<ReviewSummaryModel>> getReviews(@Query("slug") String slug);
 
+    @GET(UrlUtils.DOMAIN + "ratings/api/v1/user/follow/get-status/{slug}")
+    Call<CommonDataResponse<FollowResponse>> getFollowStatus(@Path("slug") String slug);
+
     @GET(UrlUtils.BASE_URL + "shop-subscriptions")
     Call<JsonObject> getFollowedShops();
 
@@ -615,7 +619,6 @@ public interface IApiClient {
     Call<JsonObject> checkReferral(@Query("device_id") String deviceId,
                                    @Query("referred_by") String referredBy,
                                    @Query("token") String token);
-
 
     // order apis
 
