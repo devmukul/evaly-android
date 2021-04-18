@@ -29,9 +29,9 @@ public class BindShopHeaderModel {
                 .into(binding.logo);
 
         if (isSubscribed)
-            binding.followText.setText(String.format(Locale.ENGLISH, "Unfollow (%d)", subCount));
+            binding.followText.setText("Unfollow");
         else
-            binding.followText.setText(String.format(Locale.ENGLISH, "Follow (%d)", subCount));
+            binding.followText.setText("Follow");
 
         if (description == null) {
             binding.btn3Title.setText("Delivery");

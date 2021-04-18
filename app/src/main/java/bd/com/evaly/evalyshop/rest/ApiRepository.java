@@ -949,8 +949,8 @@ public class ApiRepository {
         apiHandler.createCall(apiService.getShopDetails(slug), listener);
     }
 
-    public void getFollowedShop(String token, ResponseListener<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.getFollowedShops(), listener);
+    public void getFollowedShop(int page, ResponseListener<CommonDataResponse<JsonObject>, String> listener) {
+        apiHandler.createCall(apiService.getFollowedShops(page, 40), listener);
     }
 
     public void getShopsByGroup(String group, int page, int limit, String area, String search, ResponseListener<CommonDataResponse<List<GroupShopModel>>, String> listener) {

@@ -610,8 +610,9 @@ public interface IApiClient {
     @GET(UrlUtils.DOMAIN + "ratings/api/v1/user/follow/get-status/{slug}")
     Call<CommonDataResponse<FollowResponse>> getFollowStatus(@Path("slug") String slug);
 
-    @GET(UrlUtils.BASE_URL + "shop-subscriptions")
-    Call<JsonObject> getFollowedShops();
+    @GET(UrlUtils.DOMAIN + "ratings/api/v1/user/follow/get-shops")
+    Call<CommonDataResponse<JsonObject>> getFollowedShops(@Query("page") int page,
+                                                                    @Query("limit") int limit);
 
     // referral
 

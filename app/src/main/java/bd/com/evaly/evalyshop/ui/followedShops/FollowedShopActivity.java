@@ -10,12 +10,14 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.JsonArray;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
+import bd.com.evaly.evalyshop.models.shop.FollowResponse;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.util.ImagePreview;
@@ -39,6 +42,8 @@ public class FollowedShopActivity extends AppCompatActivity {
 
     @Inject
     PreferenceRepository preferenceRepository;
+    @Inject
+    ApiRepository apiRepository;
     private TabsAdapter adapter;
     private ArrayList<TabsItem> itemList;
     private ProgressBar progressBar;
@@ -51,8 +56,6 @@ public class FollowedShopActivity extends AppCompatActivity {
     private String slug = "evaly1919";
     private LinearLayout not, layoutImageHolder;
     private ImageView cover;
-    @Inject
-    ApiRepository apiRepository;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,7 +88,6 @@ public class FollowedShopActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         dialog = new ViewDialog(FollowedShopActivity.this);
 
-
         if (slug.equals("shop-subscriptions"))
             getFollowedShops(page);
         else
@@ -95,17 +97,16 @@ public class FollowedShopActivity extends AppCompatActivity {
 
         nestedSV = findViewById(R.id.sticky);
 
-//        if (nestedSV != null) {
-//            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-//                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-//                    if (slug.equals("shop-subscriptions"))
-//                        getFollowedShops(page);
-//                    else
-//                        getEvalyShops(page);
-//                }
-//            });
-//        }
-
+        nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                if (!isLoading) {
+                    if (slug.equals("shop-subscriptions"))
+                        getFollowedShops(page);
+                    else
+                        getEvalyShops(page);
+                }
+            }
+        });
     }
 
 
@@ -174,47 +175,38 @@ public class FollowedShopActivity extends AppCompatActivity {
         isLoading = true;
         progressBar.setVisibility(View.VISIBLE);
 
-        apiRepository.getFollowedShop(preferenceRepository.getToken(), new ResponseListener<JsonObject, String>() {
+        apiRepository.getFollowedShop(page, new ResponseListener<CommonDataResponse<JsonObject>, String>() {
             @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
+            public void onDataFetched(CommonDataResponse<JsonObject> response, int statusCode) {
                 isLoading = false;
-                JsonArray jsonArray;
 
-                if (slug.equals("shop-subscriptions"))
-                    jsonArray = response.getAsJsonArray("data");
-                else
-                    jsonArray = response.getAsJsonArray("shops");
+                List<FollowResponse> list = new Gson().fromJson(response.getData().get("shop_list").getAsJsonArray(), new TypeToken<List<FollowResponse>>() {
+                }.getType());
 
-                boolean b = false;
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    JsonObject ob = jsonArray.get(i).getAsJsonObject();
+                for (FollowResponse item : list) {
                     TabsItem tabsItem = new TabsItem();
-                    tabsItem.setTitle(ob.get("name").getAsString());
-                    tabsItem.setImage(ob.get("logo_image").getAsString());
-                    tabsItem.setSlug(ob.get("slug").getAsString());
+                    tabsItem.setTitle(item.getShopName());
+                    tabsItem.setImage(item.getShopImageUrl());
+                    tabsItem.setSlug(item.getShopSlug());
                     tabsItem.setCategory("root");
                     itemList.add(tabsItem);
                     adapter.notifyItemInserted(itemList.size());
                 }
 
-                if (jsonArray.size() == 0)
+                if (response.getData().get("count").getAsInt() == 0)
                     not.setVisibility(View.VISIBLE);
                 else {
                     not.setVisibility(View.GONE);
                     page++;
                 }
 
-
                 progressBar.setVisibility(View.INVISIBLE);
-
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
 
             }
-
         });
 
     }

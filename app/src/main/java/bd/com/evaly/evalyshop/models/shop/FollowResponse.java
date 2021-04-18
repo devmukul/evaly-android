@@ -28,8 +28,20 @@ public class FollowResponse{
 	@SerializedName("shop_slug")
 	private String shopSlug;
 
+
+	@SerializedName("shop_image_url")
+	private String shopImageUrl;
+
 	@SerializedName("status")
 	private boolean status;
+
+	public String getShopImageUrl() {
+		return shopImageUrl;
+	}
+
+	public void setShopImageUrl(String shopImageUrl) {
+		this.shopImageUrl = shopImageUrl;
+	}
 
 	public void setUpdatedAt(String updatedAt){
 		this.updatedAt = updatedAt;
