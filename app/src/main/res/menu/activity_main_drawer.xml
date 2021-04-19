@@ -11,7 +11,7 @@
     <item
         android:id="@+id/nav_account"
         android:icon="@drawable/ic_user"
-        android:title="@string/dashboard" />
+        android:title="@string/account" />
     <item
         android:id="@+id/nav_orders"
         android:icon="@drawable/ic_order_thin"
@@ -32,16 +32,15 @@
         android:icon="@drawable/ic_favorite"
         android:title="@string/wish_list" />
 
-
     <item
         android:id="@+id/nav_followed_shops"
         android:icon="@drawable/ic_menu_store"
         android:title="@string/favorite_shops" />
 
-<!--    <item-->
-<!--        android:id="@+id/nav_voucher"-->
-<!--        android:icon="@drawable/ic_menu_voucher"-->
-<!--        android:title="@string/vouchers" />-->
+    <!--    <item-->
+    <!--        android:id="@+id/nav_voucher"-->
+    <!--        android:icon="@drawable/ic_menu_voucher"-->
+    <!--        android:title="@string/vouchers" />-->
 
     <item
         android:id="@+id/nav_contact"

@@ -30,6 +30,7 @@ import com.badoualy.stepperindicator.StepperIndicator;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
@@ -58,6 +59,8 @@ import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
+import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
+import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigPaymentBaseUrl;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.image.ImageSliderActivity;
@@ -275,6 +278,22 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         AlertDialog dialog = builder.create();
         paymentAmountInputLayoutBinding.amountPay.setText(String.format("%s", (int) (dueAmount)));
         paymentAmountInputLayoutBinding.makePayment.setOnClickListener(view -> {
+            String url;
+            RemoteConfigPaymentBaseUrl baseUrls = new Gson().fromJson(mFirebaseRemoteConfig.getValue("payment_base_url").asString(), RemoteConfigPaymentBaseUrl.class);
+
+            if (baseUrls == null) {
+                ToastUtils.show("Please reload the page");
+                return;
+            }
+
+            if (BuildConfig.DEBUG)
+                url = baseUrls.getDevPaymentBaseUrl();
+            else
+                url = baseUrls.getProdPaymentBaseUrl();
+
+            if (url == null)
+                return;
+
             try {
                 if (paymentAmountInputLayoutBinding.amountPay.getText().toString().trim().isEmpty()) {
                     paymentAmountInputLayoutBinding.amountPay.setError("Amount is required!");
@@ -283,7 +302,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 } else if (Double.parseDouble(paymentAmountInputLayoutBinding.amountPay.getText().toString()) > dueAmount) {
                     paymentAmountInputLayoutBinding.amountPay.setError("You have entered more than due amount");
                 } else {
-                    String paymentUrl = BuildConfig.WEB_URL + "payment/init/" + invoiceNo + "?methods=" + TextUtils.join(",", orderDetailsModel.getAllowedPaymentMethods()) + "&t=" + preferenceRepository.getTokenNoBearer() + "&context=order_payment&amount=" + paymentAmountInputLayoutBinding.amountPay.getText().toString();
+                    String paymentUrl = url + invoiceNo + "?methods=" + TextUtils.join(",", orderDetailsModel.getAllowedPaymentMethods()) + "&t=" + preferenceRepository.getTokenNoBearer() + "&context=order_payment&amount=" + paymentAmountInputLayoutBinding.amountPay.getText().toString();
                     PurchaseRequestInfo purchaseRequestInfo = new PurchaseRequestInfo(preferenceRepository.getTokenNoBearer(), String.valueOf(dueAmount), invoiceNo, "bKash");
                     paymentWebBuilder.setToolbarTitle("Order Payment");
                     paymentWebBuilder.loadPaymentURL(paymentUrl, "order/my-orders", purchaseRequestInfo);

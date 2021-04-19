@@ -48,6 +48,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
+import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigPaymentBaseUrl;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
 import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
@@ -311,6 +312,23 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         double amountDouble = Double.parseDouble(amount);
         paymentAmountInputLayoutBinding.amountPay.setText(String.format("%s", (int) (amountDouble)));
         paymentAmountInputLayoutBinding.makePayment.setOnClickListener(view -> {
+
+            String url;
+            RemoteConfigPaymentBaseUrl baseUrls = new Gson().fromJson(remoteConfig.getValue("gift_card_payment_url").asString(), RemoteConfigPaymentBaseUrl.class);
+
+            if (baseUrls == null) {
+                ToastUtils.show("Please reload the page");
+                return;
+            }
+
+            if (BuildConfig.DEBUG)
+                url = baseUrls.getDevPaymentBaseUrl();
+            else
+                url = baseUrls.getProdPaymentBaseUrl();
+
+            if (url == null)
+                return;
+
             try {
                 if (paymentAmountInputLayoutBinding.amountPay.getText().toString().trim().isEmpty()) {
                     paymentAmountInputLayoutBinding.amountPay.setError("Amount is required!");
@@ -319,7 +337,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                 } else if (Double.parseDouble(paymentAmountInputLayoutBinding.amountPay.getText().toString()) > Double.parseDouble(amount)) {
                     paymentAmountInputLayoutBinding.amountPay.setError("You have entered more than due amount");
                 } else {
-                    String paymentUrl = BuildConfig.WEB_URL + "giftcard-payment/init/" + giftCardInvoice + "?t=" + preferenceRepository.getTokenNoBearer() + "&context=gift_card_order_payment&amount=" + paymentAmountInputLayoutBinding.amountPay.getText().toString();
+                    String paymentUrl = url + giftCardInvoice + "?t=" + preferenceRepository.getTokenNoBearer() + "&context=gift_card_order_payment&amount=" + paymentAmountInputLayoutBinding.amountPay.getText().toString();
                     PurchaseRequestInfo purchaseRequestInfo = new PurchaseRequestInfo(preferenceRepository.getTokenNoBearer(), String.valueOf(amount), giftCardInvoice, "bKash");
                     paymentWebBuilder.setToolbarTitle("Gift Card Payment");
                     paymentWebBuilder.loadPaymentURL(paymentUrl, "success.html", purchaseRequestInfo);
