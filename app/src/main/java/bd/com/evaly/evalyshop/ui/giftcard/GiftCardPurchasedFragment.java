@@ -306,7 +306,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         PaymentAmountInputLayoutBinding paymentAmountInputLayoutBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.payment_amount_input_layout, null, false);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Enter your payable amount");
         builder.setView(paymentAmountInputLayoutBinding.getRoot());
         AlertDialog dialog = builder.create();
         double amountDouble = Double.parseDouble(amount);

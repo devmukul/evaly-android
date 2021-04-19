@@ -59,7 +59,6 @@ import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
-import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigPaymentBaseUrl;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
@@ -272,7 +271,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         PaymentAmountInputLayoutBinding paymentAmountInputLayoutBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.payment_amount_input_layout, null, false);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter your payable amount");
         builder.setView(paymentAmountInputLayoutBinding.getRoot());
 
         AlertDialog dialog = builder.create();
