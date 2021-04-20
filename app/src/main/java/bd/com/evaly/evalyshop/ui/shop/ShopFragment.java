@@ -65,7 +65,6 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
     private ShopController controller;
     private boolean clickFromCategory = false;
     private ShopDetailsResponse shopDetailsModel;
-    private ShopDetailsModel fullShopDetailsModel;
     private String brandSlug;
 
     public ShopFragment() {
@@ -279,9 +278,6 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
         controller.setCampaignSlug(campaign_slug);
         controller.setFilterDuplicates(true);
 
-        if (fullShopDetailsModel != null)
-            controller.setAttr(shopDetailsModel);
-
         int spanCount = 2;
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         controller.setSpanCount(spanCount);
@@ -327,12 +323,9 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
 
         if (preferenceRepository.getToken().equals("")) {
             startActivity(new Intent(getActivity(), SignInActivity.class));
-            requireActivity().finish();
         } else {
-
             Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
             try {
-
                 Logger.d(new Gson().toJson(shopDetailsModel));
                 RosterTable rosterTable = new RosterTable();
                 rosterTable.name = shopDetailsModel.getShopName();
@@ -346,7 +339,6 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
                 rosterTable.status = 0;
                 rosterTable.lastMessage = "";
                 rosterTable.time = 0;
-                Logger.d(new Gson().toJson(rosterTable));
 
                 launchIntent.putExtra("to", "OPEN_CHAT_DETAILS");
                 launchIntent.putExtra("from", "shop");
@@ -368,19 +360,15 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
         }
     }
 
-
     @Override
     public void onRefresh() {
         binding.swipeRefresh.setRefreshing(false);
         viewModel.setCategorySlug(null);
-
         binding.shimmerHolder.setVisibility(View.VISIBLE);
         binding.shimmerHolder.setAlpha(1);
-
         controller.clear();
         viewModel.reload();
     }
-
 
     @Override
     public void onDestroy() {

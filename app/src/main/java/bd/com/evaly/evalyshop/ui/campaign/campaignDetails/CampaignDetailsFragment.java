@@ -323,9 +323,6 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
             controller.setCategoryLoading(false);
             controller.setCategoryList(campaignProductCategoryResponses);
             controller.requestModelBuild();
-            if (viewModel.getCurrentPage() <= 2) {
-                binding.recyclerView.postDelayed(() -> binding.recyclerView.smoothScrollToPosition(0), 200);
-            }
         });
 
         viewModel.switchTab.observe(getViewLifecycleOwner(), s -> {
