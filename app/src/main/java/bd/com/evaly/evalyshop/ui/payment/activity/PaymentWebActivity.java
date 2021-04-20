@@ -4,15 +4,16 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.orhanobut.logger.Logger;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
@@ -22,6 +23,7 @@ import im.delight.android.webview.AdvancedWebView;
 public final class PaymentWebActivity extends AppCompatActivity implements AdvancedWebView.Listener {
 
     private AdvancedWebView mWebView;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,17 @@ public final class PaymentWebActivity extends AppCompatActivity implements Advan
     }
 
     private void openWebView() {
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setMax(100);
         mWebView = findViewById(R.id.webview);
+
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView view, int newProgress) {
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setProgress(newProgress);
+            }
+        });
+
         mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mWebView.getSettings().setAppCacheEnabled(true);
 
@@ -72,6 +84,8 @@ public final class PaymentWebActivity extends AppCompatActivity implements Advan
 
     @Override
     public void onPageStarted(String url, Bitmap favicon) {
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setProgress(0);
 //         if (url.contains(PaymentWebBuilder.getSuccessUrl()) && !(PaymentWebBuilder.getPurchaseInformation() != null && PaymentWebBuilder.getPurchaseInformation().getGateway().equalsIgnoreCase("sebl"))) {
 //            if (PaymentWebBuilder.getUpayListener() != null) {
 //                try {
@@ -96,7 +110,7 @@ public final class PaymentWebActivity extends AppCompatActivity implements Advan
 //             finish();
 //         }
         Logger.e(url);
-        if (url.toLowerCase().contains(PaymentWebBuilder.getSuccessUrl())){
+        if (url.toLowerCase().contains(PaymentWebBuilder.getSuccessUrl())) {
             if (PaymentWebBuilder.getUpayListener() != null) {
                 try {
                     URL successURL = new URL(url);
@@ -107,7 +121,7 @@ public final class PaymentWebActivity extends AppCompatActivity implements Advan
             }
             mWebView.destroy();
             finish();
-        }else if (url.toLowerCase().equals(BuildConfig.WEB_URL)){
+        } else if (url.toLowerCase().equals(BuildConfig.WEB_URL)) {
             if (PaymentWebBuilder.getUpayListener() != null) {
                 try {
                     URL successURL = new URL(url);
@@ -135,13 +149,15 @@ public final class PaymentWebActivity extends AppCompatActivity implements Advan
 
     @Override
     public void onPageFinished(String url) {
-
+        progressBar.setProgress(100);
+        progressBar.setVisibility(View.GONE);
     }
 
 
     @Override
     public void onPageError(int errorCode, String description, String failingUrl) {
-
+        progressBar.setProgress(100);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
