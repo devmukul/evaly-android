@@ -67,23 +67,28 @@ public class MainViewModel extends ViewModel {
         apiRepository.logout(new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
+                clearUserData();
                 onLogoutResponse.setValue(true);
-                try {
-                    String email = preferenceRepository.getUserName();
-                    String strNew = email.replaceAll("[^A-Za-z0-9]", "");
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.BUILD + "_" + strNew);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                preferenceRepository.clearAll();
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
+                clearUserData();
                 onLogoutResponse.setValue(true);
             }
 
         });
+    }
+
+    private void clearUserData() {
+        try {
+            String email = preferenceRepository.getUserName();
+            String strNew = email.replaceAll("[^A-Za-z0-9]", "");
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.BUILD + "_" + strNew);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        preferenceRepository.clearAll();
     }
 
     public void getCartList() {

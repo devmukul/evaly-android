@@ -242,11 +242,12 @@ public class ShopViewModel extends ViewModel {
             }
 
         });
-
     }
 
 
-    public void loadFollowResponse(){
+    public void loadFollowResponse() {
+        if (!preferenceRepository.isLogged())
+            return;
         apiRepository.getFollowStatus(shopSlug, new ResponseListener<CommonDataResponse<FollowResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<FollowResponse> response, int statusCode) {

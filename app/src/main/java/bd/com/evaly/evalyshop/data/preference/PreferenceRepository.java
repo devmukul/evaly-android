@@ -27,6 +27,10 @@ public class PreferenceRepository {
         this.gson = gson;
     }
 
+    public boolean isLogged(){
+        return !getToken().isEmpty();
+    }
+
     public void saveToken(String token) {
         preferenceEditor.putString(ConstantUtils.TOKEN, token).commit();
     }
