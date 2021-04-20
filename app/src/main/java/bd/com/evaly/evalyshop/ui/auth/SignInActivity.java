@@ -23,14 +23,14 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseOldActivity;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class SignInActivity extends BaseActivity {
+public class SignInActivity extends BaseOldActivity {
 
     @Inject
     ApiRepository apiRepository;

@@ -7,11 +7,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseOldActivity;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class OrderListActivity extends BaseActivity {
+public class OrderListActivity extends BaseOldActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

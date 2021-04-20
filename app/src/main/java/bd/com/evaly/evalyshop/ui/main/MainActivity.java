@@ -25,9 +25,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.GravityCompat;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -69,7 +67,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
 
 @AndroidEntryPoint
-public class MainActivity extends BaseActivity implements AppController.AppEvent {
+public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> implements AppController.AppEvent {
 
     public boolean isLaunchActivity = true;
 
@@ -83,25 +81,30 @@ public class MainActivity extends BaseActivity implements AppController.AppEvent
     private AlertDialog exitDialog;
     private AlertDialog.Builder exitDialogBuilder;
     private NavController navController;
-    private ActivityMainBinding binding;
-    private MainViewModel viewModel;
+
+
+    public MainActivity() {
+        super(MainViewModel.class, R.layout.activity_main);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void preSuper() {
         if (AppController.getInstance().getPreferenceRepository().isDarkMode())
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         else
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setTheme(R.style.AppTheme_NoActionBar);
-        super.onCreate(savedInstanceState);
+    }
 
+    @Override
+    protected void preBind() {
         AppController.setAppEvent(this);
-
         if (preferenceRepository.getLanguage().equalsIgnoreCase("bn"))
             changeLanguage("BN");
+    }
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
+    @Override
+    protected void initViews() {
         if (!preferenceRepository.getToken().equals("") &&
                 (preferenceRepository.getUserData() == null ||
                         preferenceRepository.getUserName().equals("") ||
@@ -110,7 +113,6 @@ public class MainActivity extends BaseActivity implements AppController.AppEvent
             return;
         }
 
-        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         if (!preferenceRepository.getToken().isEmpty() && !preferenceRepository.isUserRegistered())
             viewModel.registerXMPP();
 
@@ -118,10 +120,14 @@ public class MainActivity extends BaseActivity implements AppController.AppEvent
         setupBottomNav();
         checkRemoteConfig();
         setupFirebase();
-        liveEvents();
         setupDialogs();
         handleNotificationNavigation(getIntent());
         handleOtherIntent();
+    }
+
+    @Override
+    protected void clickListeners() {
+
     }
 
     private void transparentStatusBarColor() {
@@ -207,7 +213,8 @@ public class MainActivity extends BaseActivity implements AppController.AppEvent
         handleNotificationNavigation(intent);
     }
 
-    private void liveEvents() {
+    @Override
+    protected void liveEventsObservers() {
 
         viewModel.onLogoutResponse.observe(this, aBoolean -> {
             ProviderDatabase providerDatabase = ProviderDatabase.getInstance(getApplicationContext());

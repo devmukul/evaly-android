@@ -20,7 +20,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentShopSearchBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseOldActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.shop.search.controller.ShopSearchController;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -28,7 +28,7 @@ import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class ShopSearchActivity extends BaseActivity {
+public class ShopSearchActivity extends BaseOldActivity {
 
     private FragmentShopSearchBinding binding;
     private ShopSearchController controller;

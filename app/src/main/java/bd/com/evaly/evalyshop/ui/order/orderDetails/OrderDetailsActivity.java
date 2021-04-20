@@ -61,7 +61,7 @@ import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigPaymentBaseUrl;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseOldActivity;
 import bd.com.evaly.evalyshop.ui.image.ImageSliderActivity;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.issue.create.CreateIssueBottomSheet;
@@ -82,7 +82,7 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class OrderDetailsActivity extends BaseActivity implements PaymentBottomSheet.PaymentOptionListener, PaymentListener {
+public class OrderDetailsActivity extends BaseOldActivity implements PaymentBottomSheet.PaymentOptionListener, PaymentListener {
 
     @Inject
     SharedObservers sharedObservers;

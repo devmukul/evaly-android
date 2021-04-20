@@ -22,7 +22,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseOldActivity;
 import bd.com.evaly.evalyshop.ui.issue.adapter.IssuesAdapter;
 import bd.com.evaly.evalyshop.ui.issue.details.IssueDetailsBottomSheet;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemClickListener {
+public class IssuesActivity extends BaseOldActivity implements RecyclerViewOnItemClickListener {
 
     @Inject
     ApiRepository apiRepository;

@@ -23,13 +23,13 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.auth.captcha.CaptchaResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseOldActivity;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class ForgotPasswordActivity extends BaseActivity {
+public class ForgotPasswordActivity extends BaseOldActivity {
 
 
     @Inject

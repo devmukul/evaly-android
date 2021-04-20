@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.base;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -14,39 +13,21 @@ import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
-import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
-import androidx.databinding.library.baseAdapters.BR;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorActivity;
 
-@SuppressLint("SetTextI18n")
-public abstract class BaseActivity<DATA_BINDING extends ViewDataBinding, VIEW_MODEL extends ViewModel> extends AppCompatActivity {
+public class BaseOldActivity extends AppCompatActivity {
 
-    protected VIEW_MODEL viewModel;
-    protected DATA_BINDING binding;
-    protected Intent intent;
-    private Class<VIEW_MODEL> viewModelClassType;
-    @LayoutRes
-    private int layoutId;
+    /*
+        H. M. Tamim
+        24/Jun/2019
+     */
 
-    public BaseActivity(Class<VIEW_MODEL> viewModelClassType, int layoutId) {
-        this.viewModelClassType = viewModelClassType;
-        this.layoutId = layoutId;
-    }
-
-    public BaseActivity() {
-
-    }
-
-    public void adjustFontScale(Configuration configuration) {
+    public  void adjustFontScale( Configuration configuration) {
 
         try {
 
@@ -58,45 +39,32 @@ public abstract class BaseActivity<DATA_BINDING extends ViewDataBinding, VIEW_MO
             metrics.scaledDensity = configuration.fontScale * metrics.density;
             try {
                 if (!(Build.MANUFACTURER.toLowerCase().contains("meizu")) && Build.MODEL.contains("RNE-L22"))
-                    configuration.densityDpi = ((int) getResources().getDisplayMetrics().xdpi);
-            } catch (Exception e) {
+                        configuration.densityDpi = ((int) getResources().getDisplayMetrics().xdpi);
+            } catch (Exception e){
                 configuration.densityDpi = ((int) getResources().getDisplayMetrics().xdpi);
             }
             getBaseContext().getResources().updateConfiguration(configuration, metrics);
 
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 getWindow().setStatusBarColor(Color.BLACK);
             }
-        } catch (Exception e) {
+        }catch (Exception e){
 
         }
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        preSuper();
         super.onCreate(savedInstanceState);
-        adjustFontScale(getResources().getConfiguration());
+        adjustFontScale( getResources().getConfiguration());
 
-        if (!isNetworkAvailable(this)) {
+        if(!isNetworkAvailable(this)){
             Context context = this;
-            if (!((context instanceof CartActivity) || (context instanceof MainActivity))) {
+            if(!((context instanceof CartActivity) || (context instanceof MainActivity))) {
                 Intent intent = new Intent(this, NetworkErrorActivity.class);
                 startActivityForResult(intent, 9187);
             }
         }
-        preBind();
-
-        binding = DataBindingUtil.setContentView(this, layoutId);
-        viewModel = new ViewModelProvider(this).get(viewModelClassType);
-        binding.setVariable(BR.viewModel, viewModel);
-        binding.setLifecycleOwner(this);
-        binding.executePendingBindings();
-        intent = getIntent();
-
-        initViews();
-        clickListeners();
-        liveEventsObservers();
     }
 
     @Override
@@ -128,20 +96,5 @@ public abstract class BaseActivity<DATA_BINDING extends ViewDataBinding, VIEW_MO
         }
         return super.dispatchTouchEvent(ev);
     }
-
-
-    protected void preSuper() {
-
-    }
-
-    protected void preBind() {
-
-    }
-
-    protected abstract void initViews();
-
-    protected abstract void liveEventsObservers();
-
-    protected abstract void clickListeners();
 
 }

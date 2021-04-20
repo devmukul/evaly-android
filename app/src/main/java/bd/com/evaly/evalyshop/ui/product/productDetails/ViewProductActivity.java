@@ -64,7 +64,7 @@ import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.models.wishlist.WishList;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseOldActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
@@ -88,7 +88,7 @@ import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
 @AndroidEntryPoint
-public class ViewProductActivity extends BaseActivity implements VariantsController.SelectListener, AvailableShopAdapter.AvailableShopClickListener, RelatedProductsController.ClickListener {
+public class ViewProductActivity extends BaseOldActivity implements VariantsController.SelectListener, AvailableShopAdapter.AvailableShopClickListener, RelatedProductsController.ClickListener {
 
     @Inject
     RecommenderViewModel recommenderViewModel;

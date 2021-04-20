@@ -21,7 +21,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityContactBinding;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseOldActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -31,7 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import static bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity.setWindowFlag;
 
 @AndroidEntryPoint
-public class ContactActivity extends BaseActivity {
+public class ContactActivity extends BaseOldActivity {
 
     @Inject
     PreferenceRepository preferenceRepository;
