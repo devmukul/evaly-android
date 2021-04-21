@@ -170,7 +170,7 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name=".ui.auth.SignUpActivity"
+            android:name=".ui.auth.signup.SignUpActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
 

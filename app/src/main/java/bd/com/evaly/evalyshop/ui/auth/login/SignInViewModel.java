@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.ui.auth.login;
 
-import android.content.Intent;
-
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
@@ -20,8 +18,6 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseViewModel;
-import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.lifecycle.HiltViewModel;
