@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ActivitySignInNewBinding;
-import bd.com.evaly.evalyshop.ui.auth.ForgotPasswordActivity;
+import bd.com.evaly.evalyshop.ui.auth.forgetPassword.ForgotPasswordActivity;
 import bd.com.evaly.evalyshop.ui.auth.signup.SignUpActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;

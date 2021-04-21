@@ -142,7 +142,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.auth.ForgotPasswordActivity"
+            android:name=".ui.auth.forgetPassword.ForgotPasswordActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
 
