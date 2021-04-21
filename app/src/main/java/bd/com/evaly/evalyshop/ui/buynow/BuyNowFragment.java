@@ -42,7 +42,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentBuyNowBinding;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.auth.login.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
 import bd.com.evaly.evalyshop.ui.checkout.CheckoutFragment;

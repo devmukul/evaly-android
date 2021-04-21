@@ -18,7 +18,7 @@ import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.auth.login.SignInActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 
 public class InitializeActionBar {

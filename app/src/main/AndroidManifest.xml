@@ -165,7 +165,7 @@
         <activity android:name=".ui.payment.activity.PaymentWebActivity" />
 
         <activity
-            android:name=".ui.auth.SignInActivity"
+            android:name=".ui.auth.login.SignInActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
 

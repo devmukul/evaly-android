@@ -26,7 +26,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.FragmentCartBinding;
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.auth.login.SignInActivity;
 import bd.com.evaly.evalyshop.ui.cart.controller.CartController;
 import bd.com.evaly.evalyshop.ui.checkout.CheckoutFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
