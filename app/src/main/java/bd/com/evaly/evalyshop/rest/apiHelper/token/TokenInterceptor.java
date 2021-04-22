@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import java.io.IOException;
 
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.util.Utils;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -22,7 +23,7 @@ public class TokenInterceptor implements Interceptor {
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         Request originalRequest = chain.request();
-        if (!preferenceRepository.getToken().isEmpty() && !originalRequest.url().toString().contains("/public")) {
+        if (!preferenceRepository.getToken().isEmpty() && !Utils.contains(originalRequest.url().toString(), "/public|/api/change_password")) {
             Request.Builder builder = originalRequest.newBuilder();
             builder.addHeader("Authorization", preferenceRepository.getToken());
             Request request = builder.build();

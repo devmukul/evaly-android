@@ -59,13 +59,13 @@ public class Utils {
     public static boolean contains(String str, String words) {
         if (str == null)
             return false;
-        if (str.contains("|")) {
-            String[] list = str.split("|");
+        if (words.contains("|")) {
+            String[] list = words.split("\\|");
             for (String word : list) {
                 if (word != null && str.toLowerCase().contains(word.toLowerCase()))
                     return true;
             }
-            return false;
+           return false;
         } else
             return str.toLowerCase().contains(words.toLowerCase());
     }

@@ -31,7 +31,11 @@ public class TokenAuthenticator implements Authenticator {
     public Request authenticate(Route route, Response response) throws IOException {
 
         if (!isRefreshApiCalled) {
-            if (apiServiceHolder.getApiService() == null) return null;
+
+            if (apiServiceHolder.getApiService() == null ||
+                    preferencesHelper.getToken().isEmpty())
+                return null;
+
             apiService = apiServiceHolder.getApiService();
             isRefreshApiCalled = true;
 
@@ -41,7 +45,6 @@ public class TokenAuthenticator implements Authenticator {
 
             retrofit2.Response<JsonObject> refreshApiResponse = apiService.refreshToken(loginRequest).execute();
             if (refreshApiResponse.code() != 401) {
-
                 if (refreshApiResponse.body() != null &&
                         !response.request().url().toString().contains("ecaptcha") &&
                         !response.request().url().toString().contains("logout")) {
@@ -50,8 +53,12 @@ public class TokenAuthenticator implements Authenticator {
                     String accessToken = loginResponse.get("data").getAsJsonObject().get("access_token").getAsString();
                     preferencesHelper.saveToken(accessToken);
                     preferencesHelper.saveRefreshToken(loginResponse.get("data").getAsJsonObject().get("refresh_token").getAsString());
+
+                    isRefreshApiCalled = false;
+
                     if (accessToken == null || accessToken.isEmpty())
                         return null;
+
                     return response.request().newBuilder()
                             .addHeader("Authorization", accessToken)
                             .build();
