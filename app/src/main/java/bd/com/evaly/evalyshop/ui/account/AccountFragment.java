@@ -19,7 +19,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentAccountBinding;
-import bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity;
+import bd.com.evaly.evalyshop.ui.auth.changePassword.ChangePasswordActivity;
 import bd.com.evaly.evalyshop.ui.balance.BalanceFragment;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;

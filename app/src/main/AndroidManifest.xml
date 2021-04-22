@@ -124,7 +124,7 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".ui.auth.ChangePasswordActivity"
+            android:name=".ui.auth.changePassword.ChangePasswordActivity"
             android:theme="@style/AppTheme" />
 
         <activity

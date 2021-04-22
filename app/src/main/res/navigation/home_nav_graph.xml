@@ -364,7 +364,7 @@
     </activity>
     <activity
         android:id="@+id/changePasswordActivity"
-        android:name="bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity"
+        android:name="bd.com.evaly.evalyshop.ui.auth.changePassword.ChangePasswordActivity"
         android:label="ChangePasswordActivity">
         <deepLink
             android:autoVerify="true"
