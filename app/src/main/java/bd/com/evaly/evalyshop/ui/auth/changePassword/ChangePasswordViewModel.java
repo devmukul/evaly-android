@@ -8,7 +8,6 @@ import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
@@ -50,34 +49,11 @@ public class ChangePasswordViewModel extends BaseViewModel {
         apiRepository.changePassword(preferenceRepository.getToken(), parameters, new ResponseListener<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-                loadingDialog.setValue(false);
+                loadingDialog.setValue(true);
                 ToastUtils.show(response.get("message").getAsString());
                 if (response.get("success").getAsBoolean()) {
                     preferenceRepository.savePassword(newPassword);
-                    HashMap<String, String> data = new HashMap<>();
-                    data.put("user", preferenceRepository.getUserName());
-                    data.put("host", Constants.XMPP_HOST);
-                    data.put("newpass", newPassword);
-                    apiRepository.changeXmppPassword(data, new ResponseListener<JsonPrimitive, String>() {
-                        @Override
-                        public void onDataFetched(JsonPrimitive response, int statusCode) {
-                            loadingDialog.setValue(true);
-                            if (statusCode == 200 || statusCode == 201) {
-                                preferenceRepository.savePassword(newPassword);
-                                ToastUtils.show("Password change successfully!");
-                                signInUser();
-                            } else {
-                                ToastUtils.show(R.string.something_wrong);
-                            }
-                        }
-
-                        @Override
-                        public void onFailed(String errorBody, int errorCode) {
-                            loadingDialog.setValue(false);
-                            ToastUtils.show(errorBody);
-                        }
-
-                    });
+                    signInUser();
                 }
             }
 
@@ -89,10 +65,28 @@ public class ChangePasswordViewModel extends BaseViewModel {
                 else
                     ToastUtils.show("Couldn't change password.");
             }
-
         });
     }
 
+
+    public void syncXmpp() {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("user", preferenceRepository.getUserName());
+        data.put("host", Constants.XMPP_HOST);
+        data.put("newpass", preferenceRepository.getPassword());
+        apiRepository.changeXmppPassword(data, new ResponseListener<JsonPrimitive, String>() {
+            @Override
+            public void onDataFetched(JsonPrimitive response, int statusCode) {
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+        });
+    }
 
     public void signInUser() {
         loadingDialog.setValue(true);
@@ -111,6 +105,7 @@ public class ChangePasswordViewModel extends BaseViewModel {
                         String token = response.get("access_token").getAsString();
                         preferenceRepository.saveToken(token);
                         preferenceRepository.saveRefreshToken(response.get("refresh_token").getAsString());
+                        syncXmpp();
                         updateUserInfo();
                         ToastUtils.show("Successfully signed in.");
                         break;

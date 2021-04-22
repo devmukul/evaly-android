@@ -19,6 +19,10 @@ public class ChangePasswordActivity extends BaseActivity<ActivityChangePasswordB
     private ViewDialog dialog;
     private boolean isCurrentShowing, isNewShowing, isNewConfirmShowing;
 
+    public ChangePasswordActivity(){
+        super(ChangePasswordViewModel.class, R.layout.activity_change_password);
+    }
+
     @Override
     protected void initViews() {
         getSupportActionBar().setElevation(0f);
