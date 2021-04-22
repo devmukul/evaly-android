@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.widget.Toast;
-
-import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ActivitySignupNewBinding;
 import bd.com.evaly.evalyshop.ui.auth.login.SignInActivity;
@@ -46,6 +44,8 @@ public class SignUpActivity extends BaseActivity<ActivitySignupNewBinding, SignU
         });
 
         viewModel.signUpSuccess.observe(this, response -> {
+            if (BuildConfig.DEBUG && response.get("data").getAsJsonObject().has("test_otp"))
+                ToastUtils.show(response.get("data").getAsJsonObject().get("test_otp").getAsString());
             Intent intent = new Intent(SignUpActivity.this, PasswordActivity.class);
             intent.putExtra("phone", binding.number.getText().toString());
             intent.putExtra("name", binding.fName.getText().toString() + " " + binding.lName.getText().toString());
@@ -76,7 +76,6 @@ public class SignUpActivity extends BaseActivity<ActivitySignupNewBinding, SignU
             } else if (TextUtils.isEmpty(binding.captchaInput.getText().toString())) {
                 ToastUtils.show("Please enter captcha verification code");
             } else {
-
                 alert.showDialog();
                 viewModel.signUpUser(binding.fName.getText().toString(),
                         binding.lName.getText().toString(),
