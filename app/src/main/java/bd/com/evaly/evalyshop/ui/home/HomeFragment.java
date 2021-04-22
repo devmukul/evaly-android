@@ -167,7 +167,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         new InitializeActionBar(binding.header.headerLogo, getActivity(), "home", mainViewModel, apiRepository, preferenceRepository);
         binding.header.homeSearch.setOnClickListener(view1 -> {
             navController.navigate(R.id.globalSearchFragment);
-            // startActivity(new Intent(getContext(), GlobalSearchActivity.class));
         });
     }
 
@@ -193,7 +192,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         homeController.setSpanCount(2);
 
         homeController.setCycloneOngoing(firebaseRemoteConfig.getBoolean("cyclone_ongoing"));
-        // homeController.setCycloneOngoing(true);
         homeController.setCycloneBanner(firebaseRemoteConfig.getString("cyclone_banner"));
 
         if (BuildConfig.DEBUG)

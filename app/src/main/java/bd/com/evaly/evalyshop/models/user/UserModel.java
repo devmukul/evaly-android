@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.models.user;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserModel {
@@ -302,6 +303,8 @@ public class UserModel {
     }
 
     public List<String> getGroups() {
+        if (groups == null)
+            return new ArrayList<>();
         return groups;
     }
 

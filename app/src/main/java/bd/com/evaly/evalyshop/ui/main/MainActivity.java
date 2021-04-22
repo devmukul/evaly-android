@@ -475,7 +475,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     public void onBackPressed() {
         if (!isLaunchActivity) {
-            if (!(navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.shopQuickViewFragment)) {
+            if (navController != null && !(navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.shopQuickViewFragment)) {
                 finish();
                 super.onBackPressed();
             }

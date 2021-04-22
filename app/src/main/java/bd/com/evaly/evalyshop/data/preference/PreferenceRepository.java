@@ -85,7 +85,10 @@ public class PreferenceRepository {
     }
 
     public UserModel getUserData() {
-        return gson.fromJson(preference.getString(ConstantUtils.USER_MODEL, ""), UserModel.class);
+        UserModel model =  gson.fromJson(preference.getString(ConstantUtils.USER_MODEL, ""), UserModel.class);
+        if (model == null)
+            return new UserModel();
+        return model;
     }
 
     public void saveUserInfo(UserInfoResponse userModel) {
