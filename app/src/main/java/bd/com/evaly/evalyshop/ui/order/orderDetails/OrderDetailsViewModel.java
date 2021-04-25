@@ -37,24 +37,24 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class OrderDetailsViewModel extends ViewModel {
 
-    private PreferenceRepository preferenceRepository;
-    private ApiRepository apiRepository;
     protected MutableLiveData<DeliveryHeroResponse> deliveryHeroLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse> confirmDeliveryLiveData = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse> cancelOrderLiveData = new MutableLiveData<>();
     protected MutableLiveData<OrderDetailsModel> orderDetailsLiveData = new MutableLiveData<>();
     protected MutableLiveData<List<OrderStatus>> orderStatusListLiveData = new MutableLiveData<>();
     protected MutableLiveData<String> deliveryStatusUpdateLiveData = new MutableLiveData<>();
+    protected MutableLiveData<BalanceResponse> balanceLiveData = new MutableLiveData<>();
+    private PreferenceRepository preferenceRepository;
+    private ApiRepository apiRepository;
     private SingleLiveEvent<Boolean> refreshPage = new SingleLiveEvent<>();
     private MutableLiveData<CommonDataResponse<String>> refundEligibilityLiveData = new MutableLiveData<>();
     private MutableLiveData<CommonDataResponse<String>> refundDeleteLiveData = new MutableLiveData<>();
     private MutableLiveData<CommonDataResponse<OrderDetailsModel>> updateAddress = new MutableLiveData<>();
-    protected MutableLiveData<BalanceResponse> balanceLiveData = new MutableLiveData<>();
     private String invoiceNo;
     private FirebaseRemoteConfig firebaseRemoteConfig;
 
     @Inject
-    public OrderDetailsViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository, PreferenceRepository preferenceRepository, FirebaseRemoteConfig  firebaseRemoteConfig) {
+    public OrderDetailsViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository, PreferenceRepository preferenceRepository, FirebaseRemoteConfig firebaseRemoteConfig) {
         this.invoiceNo = savedStateHandle.get("orderID");
         this.apiRepository = apiRepository;
         this.preferenceRepository = preferenceRepository;
@@ -218,18 +218,6 @@ public class OrderDetailsViewModel extends ViewModel {
 
     }
 
-    public LiveData<CommonDataResponse<OrderDetailsModel>> getUpdateAddress() {
-        return updateAddress;
-    }
-
-    public LiveData<CommonDataResponse<String>> getRefundEligibilityLiveData() {
-        return refundEligibilityLiveData;
-    }
-
-    public LiveData<CommonDataResponse<String>> getRefundDeleteLiveData() {
-        return refundDeleteLiveData;
-    }
-
     public void withdrawRefundRequest(String invoice) {
         apiRepository.withdrawRefundRequest(invoice, new ResponseListener<CommonDataResponse, String>() {
             @Override
@@ -259,6 +247,18 @@ public class OrderDetailsViewModel extends ViewModel {
             }
 
         });
+    }
+
+    public LiveData<CommonDataResponse<OrderDetailsModel>> getUpdateAddress() {
+        return updateAddress;
+    }
+
+    public LiveData<CommonDataResponse<String>> getRefundEligibilityLiveData() {
+        return refundEligibilityLiveData;
+    }
+
+    public LiveData<CommonDataResponse<String>> getRefundDeleteLiveData() {
+        return refundDeleteLiveData;
     }
 
     public void setRefreshPage() {

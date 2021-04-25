@@ -23,7 +23,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.badoualy.stepperindicator.StepperIndicator;
@@ -60,8 +59,7 @@ import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigPaymentBaseUrl;
-import bd.com.evaly.evalyshop.rest.ApiRepository;
-import bd.com.evaly.evalyshop.ui.base.BaseOldActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.image.ImageSliderActivity;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.issue.create.CreateIssueBottomSheet;
@@ -72,7 +70,6 @@ import bd.com.evaly.evalyshop.ui.order.orderDetails.controller.OrderAttachmentCo
 import bd.com.evaly.evalyshop.ui.order.orderDetails.refund.RefundBottomSheet;
 import bd.com.evaly.evalyshop.ui.payment.bottomsheet.PaymentBottomSheet;
 import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
-import bd.com.evaly.evalyshop.ui.payment.giftcard.GiftCardPaymentBottomSheet;
 import bd.com.evaly.evalyshop.ui.payment.listener.PaymentListener;
 import bd.com.evaly.evalyshop.ui.payment.model.PurchaseRequestInfo;
 import bd.com.evaly.evalyshop.util.Constants;
@@ -82,21 +79,18 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class OrderDetailsActivity extends BaseOldActivity implements PaymentBottomSheet.PaymentOptionListener, PaymentListener {
+public class OrderDetailsActivity extends BaseActivity<ActivityOrderDetailsBinding, OrderDetailsViewModel> implements PaymentBottomSheet.PaymentOptionListener, PaymentListener {
 
     @Inject
     SharedObservers sharedObservers;
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
     @Inject
-    ApiRepository apiRepository;
-    @Inject
     PreferenceRepository preferenceRepository;
-    private ActivityOrderDetailsBinding binding;
+
     private double totalAmount = 0.0, paidAmount = 0.0, dueAmount = 0.0;
     private String invoiceNo = "", shopSlug = "", orderStatus = "pending", paymentStatus = "unpaid", paymentMethod = "";
     private String deliveryChargeText = null, deliveryChargeApplicable = null;
-    private StepperIndicator indicator;
     private List<OrderStatus> orderStatuses;
     private OrderStatusAdapter orderStatusAdapter;
     private ArrayList<OrderDetailsProducts> orderDetailsProducts;
@@ -105,23 +99,25 @@ public class OrderDetailsActivity extends BaseOldActivity implements PaymentBott
     private MenuItem cancelMenuItem, refundMenuItem;
     private OrderDetailsModel orderDetailsModel;
     private PaymentWebBuilder paymentWebBuilder;
-    private OrderDetailsViewModel viewModel;
     private boolean isRefundEligible = false;
     private ProgressDialog progressDialog;
     private Dialog confirmDeliveryDialog;
     private BottomSheetDialog cancelOrderDialog;
 
+    public OrderDetailsActivity(){
+        super(OrderDetailsViewModel.class, R.layout.activity_order_details);
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_order_details);
-        viewModel = new ViewModelProvider(this).get(OrderDetailsViewModel.class);
-        checkRemoteConfig();
-        paymentWebBuilder = new PaymentWebBuilder(OrderDetailsActivity.this);
-        paymentWebBuilder.setPaymentListener(this);
+    protected void initViews() {
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setTitle(R.string.order_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        checkRemoteConfig();
+        paymentWebBuilder = new PaymentWebBuilder(OrderDetailsActivity.this);
+        paymentWebBuilder.setPaymentListener(this);
+
         dialog = new ViewDialog(this);
         dialog.showDialog();
         binding.orderId.setText(invoiceNo);
@@ -140,18 +136,10 @@ public class OrderDetailsActivity extends BaseOldActivity implements PaymentBott
         }
 
         binding.balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(preferenceRepository.getBalance()) + "</b>"));
-        indicator = findViewById(R.id.indicator);
-        indicator.setStepCount(6);
+        binding.indicator.setStepCount(6);
 
         setupOrderHistoryRecycler();
         setupProductListRecycler();
-        liveEvents();
-        clickListeners();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     private void setupProductListRecycler() {
@@ -204,7 +192,8 @@ public class OrderDetailsActivity extends BaseOldActivity implements PaymentBott
         }
     }
 
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
         binding.shopInfo.setOnClickListener(v -> {
             Intent intent = new Intent(OrderDetailsActivity.this, MainActivity.class);
             intent.putExtra("type", 3);
@@ -218,16 +207,7 @@ public class OrderDetailsActivity extends BaseOldActivity implements PaymentBott
                 ToastUtils.show("Cash on delivery only");
                 return;
             }
-
             paymentAmountInput();
-
-//            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoiceNo,
-//                    totalAmount,
-//                    paidAmount,
-//                    orderDetailsModel.getAllowedPaymentMethods(),
-//                    orderDetailsModel.isApplyDeliveryCharge(),
-//                    orderDetailsModel.getDeliveryCharge(), this);
-//            paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
 
         binding.btnToggleTimeline.setOnClickListener(v -> {
@@ -254,7 +234,6 @@ public class OrderDetailsActivity extends BaseOldActivity implements PaymentBott
                     .show();
         });
         binding.confirmDelivery.setOnClickListener(v -> confirmDeliveryDialog());
-
         binding.updateDeliveryAddress.setOnClickListener(view -> updateDeliveryAddressDialog());
         binding.tvViewIssue.setOnClickListener(view -> viewIssues());
         binding.tvReport.setOnClickListener(v -> {
@@ -317,7 +296,8 @@ public class OrderDetailsActivity extends BaseOldActivity implements PaymentBott
         dialog.show();
     }
 
-    private void liveEvents() {
+    @Override
+    protected void liveEventsObservers() {
 
         viewModel.balanceLiveData.observe(this, response -> {
             preferenceRepository.setBalance(response.getBalance());
@@ -437,24 +417,24 @@ public class OrderDetailsActivity extends BaseOldActivity implements PaymentBott
 
         if (orderStatus.equals("pending")) {
             binding.updateDeliveryAddress.setVisibility(View.VISIBLE);
-            indicator.setCurrentStep(1);
+            binding.indicator.setCurrentStep(1);
         } else if (orderStatus.equals("confirmed")) {
             binding.updateDeliveryAddress.setVisibility(View.VISIBLE);
-            indicator.setCurrentStep(2);
+            binding.indicator.setCurrentStep(2);
         } else if (orderStatus.equals("processing")) {
             binding.updateDeliveryAddress.setVisibility(View.VISIBLE);
-            indicator.setCurrentStep(3);
+            binding.indicator.setCurrentStep(3);
         } else if (orderStatus.equals("picked")) {
             binding.updateDeliveryAddress.setVisibility(View.GONE);
-            indicator.setCurrentStep(4);
+            binding.indicator.setCurrentStep(4);
             binding.deliveryHeroStatus.setText("Picked the order for delivery");
         } else if (orderStatus.equals("shipped")) {
             binding.updateDeliveryAddress.setVisibility(View.GONE);
-            indicator.setCurrentStep(5);
+            binding.indicator.setCurrentStep(5);
             binding.deliveryHeroStatus.setText("Picked the order for delivery");
             binding.updateDeliveryAddress.setVisibility(View.GONE);
         } else if (orderStatus.equals("delivered")) {
-            indicator.setCurrentStep(6);
+            binding.indicator.setCurrentStep(6);
             binding.deliveryHeroStatus.setText("Delivered the products");
         }
 
@@ -511,8 +491,8 @@ public class OrderDetailsActivity extends BaseOldActivity implements PaymentBott
             StepperIndicator indicatorCancelled = findViewById(R.id.indicatorCancelled);
             indicatorCancelled.setVisibility(View.VISIBLE);
             indicatorCancelled.setCurrentStep(6);
-            indicator.setDoneIcon(getDrawable(R.drawable.ic_close_smallest));
-            indicator.setVisibility(View.GONE);
+            binding.indicator.setDoneIcon(getDrawable(R.drawable.ic_close_smallest));
+            binding.indicator.setVisibility(View.GONE);
             binding.confirmOrder.setVisibility(View.GONE);
             hidePaymentButtons();
         } else if (orderStatus.equals("delivered") ||
@@ -773,11 +753,6 @@ public class OrderDetailsActivity extends BaseOldActivity implements PaymentBott
         startActivity(new Intent(OrderDetailsActivity.this, IssuesActivity.class).putExtra("invoice", invoiceNo));
     }
 
-    public void dialogGiftCardPayment() {
-        GiftCardPaymentBottomSheet giftCardPaymentBottomSheet = GiftCardPaymentBottomSheet.newInstance(invoiceNo, dueAmount);
-        giftCardPaymentBottomSheet.show(getSupportFragmentManager(), "Gift card payment");
-    }
-
     public void updatePage() {
         binding.scroll.postDelayed(() -> binding.scroll.fullScroll(View.FOCUS_UP), 50);
         viewModel.updateBalance();
@@ -794,6 +769,7 @@ public class OrderDetailsActivity extends BaseOldActivity implements PaymentBott
             }
         }
     }
+
 
     private void inflateMenu() {
         if (refundMenuItem != null) {
