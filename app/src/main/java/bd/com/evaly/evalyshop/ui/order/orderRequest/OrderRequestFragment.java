@@ -1,67 +1,54 @@
 package bd.com.evaly.evalyshop.ui.order.orderRequest;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentOrderRequestsBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListBaseViewModel;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class OrderRequestFragment extends Fragment {
+public class OrderRequestFragment extends BaseFragment<FragmentOrderRequestsBinding, OrderListBaseViewModel> {
 
-    private OrderListBaseViewModel viewModel;
-    private FragmentOrderRequestsBinding binding;
     private OrderRequestListController requestListController;
     private boolean isLoading = true;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentOrderRequestsBinding.inflate(inflater);
-        viewModel = new ViewModelProvider(this).get(OrderListBaseViewModel.class);
-        return binding.getRoot();
+    public OrderRequestFragment() {
+        super(OrderListBaseViewModel.class, R.layout.fragment_order_requests);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        setupAdapter();
-        liveEvents();
-        clickListeners();
+    protected void initViews() {
         viewModel.loadFromApi();
     }
 
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
         binding.toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
     }
 
-    private void liveEvents() {
+    @Override
+    protected void liveEventsObservers() {
         viewModel.liveData.observe(getViewLifecycleOwner(), orderRequestResponses -> {
+            isLoading = false;
             requestListController.setList(orderRequestResponses);
             requestListController.setLoading(false);
             requestListController.requestModelBuild();
         });
     }
 
-    private void setupAdapter() {
+    @Override
+    protected void setupRecycler() {
+
         requestListController = new OrderRequestListController();
         requestListController.setFilterDuplicates(true);
         requestListController.setClickListener(invoice -> {
-
+            ToastUtils.show("You will get notification/SMS when your order is accepted, after that your can pay.", true);
         });
         binding.recycle.setAdapter(requestListController.getAdapter());
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         binding.recycle.setLayoutManager(layoutManager);
         binding.recycle.addOnScrollListener(new PaginationScrollListener(layoutManager) {
@@ -75,5 +62,4 @@ public class OrderRequestFragment extends Fragment {
             }
         });
     }
-
 }

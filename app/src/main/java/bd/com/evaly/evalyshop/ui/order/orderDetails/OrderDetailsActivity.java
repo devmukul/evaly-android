@@ -387,6 +387,8 @@ public class OrderDetailsActivity extends BaseActivity<ActivityOrderDetailsBindi
         paymentMethod = response.getPaymentMethod();
         paymentStatus = response.getPaymentStatus().toLowerCase();
 
+        binding.paymentStatus.setVisibility(View.VISIBLE);
+
         if (paymentStatus.toLowerCase().equals("refund_requested")) {
             binding.paymentStatus.setText("Refund Requested");
             binding.withdrawRefund.setVisibility(View.VISIBLE);

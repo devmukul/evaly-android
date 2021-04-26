@@ -669,7 +669,9 @@
                                     android:paddingBottom="5dp"
                                     android:text="Unpaid"
                                     android:textColor="@color/white"
-                                    android:textSize="14sp" />
+                                    android:textSize="14sp"
+                                    android:visibility="gone"
+                                    tools:visibility="visible" />
 
                             </androidx.cardview.widget.CardView>
 
@@ -688,7 +690,9 @@
                                 android:paddingBottom="5dp"
                                 android:text="X"
                                 android:textColor="@color/white"
-                                android:textSize="14sp" />
+                                android:textSize="14sp"
+                                android:visibility="gone"
+                                tools:visibility="visible" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -907,8 +911,8 @@
                         android:id="@+id/attachmentsHolder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
 
                         <TextView
