@@ -1,14 +1,10 @@
 package bd.com.evaly.evalyshop.ui.shop.search;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 
-import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import java.util.ArrayList;
@@ -20,7 +16,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentShopSearchBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
-import bd.com.evaly.evalyshop.ui.base.BaseOldActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.shop.search.controller.ShopSearchController;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -28,45 +24,39 @@ import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class ShopSearchActivity extends BaseOldActivity {
+public class ShopSearchActivity extends BaseActivity<FragmentShopSearchBinding, ShopSearchViewModel> {
 
-    private FragmentShopSearchBinding binding;
     private ShopSearchController controller;
-    private int cashbackRate;
-    private String campaignSlug = "", shopSlug = "sumash-tech", shopName;
+    private String shopName;
     private boolean isLoading = false;
     private String query;
-    private ShopSearchViewModel viewModel;
     private boolean firstLoad = true;
-    private String brandSlug = null;
 
     public ShopSearchActivity() {
-
+        super(ShopSearchViewModel.class, R.layout.fragment_shop_search);
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void initViews() {
         Intent bundle = getIntent();
-        shopSlug = bundle.getStringExtra("shop_slug");
-        campaignSlug = bundle.getStringExtra("campaign_slug");
-        brandSlug = bundle.getStringExtra("brand_slug");
         shopName = bundle.getStringExtra("shop_name");
-        binding = DataBindingUtil.setContentView(this, R.layout.fragment_shop_search);
-        viewModel = new ViewModelProvider(this).get(ShopSearchViewModel.class);
 
         if (shopName != null && !shopName.equals(""))
             binding.search.setHint("Search in " + shopName + "...");
         else
             binding.search.setHint("Search in store...");
 
-        binding.back.setOnClickListener(v -> finish());
         setupRecycler();
         searchActions();
-        liveEvents();
     }
 
-    private void liveEvents() {
+    @Override
+    protected void clickListeners() {
+        binding.back.setOnClickListener(v -> finish());
+    }
+
+    @Override
+    protected void liveEventsObservers() {
         viewModel.getProductListLiveData().observe(this, shopItems -> {
             isLoading = false;
             binding.recyclerView.setVisibility(View.VISIBLE);
@@ -94,7 +84,7 @@ public class ShopSearchActivity extends BaseOldActivity {
 
         viewModel.getBuyNowLiveData().observe(this, s -> {
             BuyNowFragment addPhotoBottomDialogFragment =
-                    BuyNowFragment.newInstance(shopSlug, s);
+                    BuyNowFragment.newInstance(viewModel.getShopSlug(), s);
             addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
                     "BuyNow");
         });

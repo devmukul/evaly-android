@@ -71,18 +71,6 @@ public class ShopSearchViewModel extends ViewModel {
         return productListLiveData;
     }
 
-    public void setProductListLiveData(MutableLiveData<List<ItemsItem>> productListLiveData) {
-        this.productListLiveData = productListLiveData;
-    }
-
-    public int getCategoryCurrentPage() {
-        return categoryCurrentPage;
-    }
-
-    public void setCategoryCurrentPage(int categoryCurrentPage) {
-        this.categoryCurrentPage = categoryCurrentPage;
-    }
-
     public String getCategorySlug() {
         return categorySlug;
     }
@@ -115,7 +103,6 @@ public class ShopSearchViewModel extends ViewModel {
         this.currentPage = currentPage;
     }
 
-
     public SingleLiveEvent<String> getBuyNowLiveData() {
         return buyNowLiveData;
     }
@@ -127,15 +114,6 @@ public class ShopSearchViewModel extends ViewModel {
     public void setBrandSlug(String brandSlug) {
         this.brandSlug = brandSlug;
     }
-
-    public MutableLiveData<Boolean> getOnResetLiveData() {
-        return onResetLiveData;
-    }
-
-    public void setOnResetLiveData(boolean onResetLiveData) {
-        this.onResetLiveData.setValue(onResetLiveData);
-    }
-
 
     public void loadShopProducts() {
 
@@ -155,8 +133,4 @@ public class ShopSearchViewModel extends ViewModel {
         });
     }
 
-
-    public void clearProductList() {
-        productArrayList.clear();
-    }
 }
