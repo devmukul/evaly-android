@@ -3,33 +3,26 @@ package bd.com.evaly.evalyshop.ui.order.orderList;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentOrderListBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.controller.OrderListController;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class OrderListFragment extends Fragment implements OrderListController.ClickListener {
+public class OrderListFragment extends BaseFragment<FragmentOrderListBinding, OrderListViewModel> implements OrderListController.ClickListener {
 
-    private OrderListViewModel viewModel;
-    private FragmentOrderListBinding binding;
     private OrderListController controller;
     private String statusType = "all";
     private boolean isLoading = true;
 
     public OrderListFragment() {
-        // Required empty public constructor
+        super(OrderListViewModel.class, R.layout.fragment_order_list);
     }
 
     public static OrderListFragment getInstance(String type) {
@@ -41,24 +34,19 @@ public class OrderListFragment extends Fragment implements OrderListController.C
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        binding = FragmentOrderListBinding.inflate(inflater);
+    protected void initViews() {
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey("type"))
             statusType = bundle.getString("type");
-        return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(statusType, OrderListViewModel.class);
-        initRecycler();
-        liveEvents();
+    protected void clickListeners() {
+
     }
 
-    private void liveEvents() {
+    @Override
+    protected void liveEventsObservers() {
         viewModel.liveData.observe(getViewLifecycleOwner(), orderListItems -> {
             isLoading = false;
             controller.setList(orderListItems);
@@ -73,7 +61,9 @@ public class OrderListFragment extends Fragment implements OrderListController.C
         });
     }
 
-    private void initRecycler() {
+    @Override
+    protected void setupRecycler() {
+
         if (controller == null)
             controller = new OrderListController();
         controller.setFilterDuplicates(true);
