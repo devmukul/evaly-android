@@ -1,15 +1,8 @@
 package bd.com.evaly.evalyshop.ui.order.orderList;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +17,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentOrderListBaseBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.adapter.OrderListTabAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderRequest.OrderRequestFragment;
@@ -32,26 +26,18 @@ import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class OrderListBaseFragment extends Fragment {
+public class OrderListBaseFragment extends BaseFragment<FragmentOrderListBaseBinding, OrderListBaseViewModel> {
 
-    private OrderListBaseViewModel viewModel;
-    private FragmentOrderListBaseBinding binding;
     private OrderRequestListController requestListController;
     private boolean isLoading = true;
     private NavController navController;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentOrderListBaseBinding.inflate(inflater);
-        viewModel = new ViewModelProvider(this).get(OrderListBaseViewModel.class);
-        return binding.getRoot();
+    public OrderListBaseFragment() {
+        super(OrderListBaseViewModel.class, R.layout.fragment_order_list_base);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    protected void initViews() {
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(this);
         OrderListTabAdapter pager = new OrderListTabAdapter(this);
@@ -73,9 +59,40 @@ public class OrderListBaseFragment extends Fragment {
                 (tab, position) -> tab.setText(pager.getTitle(position))
         ).attach();
 
-        binding.toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
         setupBottomSheet();
+    }
 
+    @Override
+    protected void liveEventsObservers() {
+        viewModel.liveData.observe(getViewLifecycleOwner(), orderRequestResponses -> {
+            isLoading = false;
+            if (orderRequestResponses.size() > 0) {
+                binding.hotlistHot.setVisibility(View.VISIBLE);
+                binding.hotlistHot.setText(orderRequestResponses.size() + "");
+            } else
+                binding.hotlistHot.setVisibility(View.GONE);
+
+            List<OrderRequestResponse> pendingList = new ArrayList<>();
+            for (OrderRequestResponse item : orderRequestResponses) {
+                if (item.getStatus() != null && item.getStatus().equalsIgnoreCase("pending"))
+                    pendingList.add(item);
+            }
+
+            if (pendingList.size() > 0) {
+                binding.orderRequestBottomSheet.setVisibility(View.VISIBLE);
+                binding.orderRequestCount.setText(pendingList.size() + "");
+            } else {
+                binding.orderRequestBottomSheet.setVisibility(View.GONE);
+            }
+            requestListController.setLoading(false);
+            requestListController.setList(orderRequestResponses);
+            requestListController.requestModelBuild();
+        });
+    }
+
+    @Override
+    protected void clickListeners() {
+        binding.toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
         binding.orderRequestHolder.setOnClickListener(view1 -> {
             if (getActivity() != null && getContext() != null && navController != null)
                 navController.navigate(R.id.orderRequestFragment);
@@ -86,7 +103,6 @@ public class OrderListBaseFragment extends Fragment {
                 ft.commit();
             }
         });
-
     }
 
     private void setupBottomSheet() {
@@ -117,31 +133,6 @@ public class OrderListBaseFragment extends Fragment {
         });
 
         binding.recyclerView.setAdapter(requestListController.getAdapter());
-
-        viewModel.liveData.observe(getViewLifecycleOwner(), orderRequestResponses -> {
-            isLoading = false;
-            if (orderRequestResponses.size() > 0) {
-                binding.hotlistHot.setVisibility(View.VISIBLE);
-                binding.hotlistHot.setText(orderRequestResponses.size() + "");
-            } else
-                binding.hotlistHot.setVisibility(View.GONE);
-
-            List<OrderRequestResponse> pendingList = new ArrayList<>();
-            for (OrderRequestResponse item : orderRequestResponses) {
-                if (item.getStatus() != null && item.getStatus().equalsIgnoreCase("pending"))
-                    pendingList.add(item);
-            }
-
-            if (pendingList.size() > 0) {
-                binding.orderRequestBottomSheet.setVisibility(View.VISIBLE);
-                binding.orderRequestCount.setText(pendingList.size() + "");
-            } else {
-                binding.orderRequestBottomSheet.setVisibility(View.GONE);
-            }
-            requestListController.setLoading(false);
-            requestListController.setList(orderRequestResponses);
-            requestListController.requestModelBuild();
-        });
     }
 
 }
