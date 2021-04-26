@@ -22,7 +22,6 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -64,7 +63,7 @@ import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.models.wishlist.WishList;
 import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
-import bd.com.evaly.evalyshop.ui.base.BaseOldActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
@@ -88,7 +87,7 @@ import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
 @AndroidEntryPoint
-public class ViewProductActivity extends BaseOldActivity implements VariantsController.SelectListener, AvailableShopAdapter.AvailableShopClickListener, RelatedProductsController.ClickListener {
+public class ViewProductActivity extends BaseActivity<ActivityViewProductBinding, ViewProductViewModel> implements VariantsController.SelectListener, AvailableShopAdapter.AvailableShopClickListener, RelatedProductsController.ClickListener {
 
     @Inject
     RecommenderViewModel recommenderViewModel;
@@ -111,8 +110,6 @@ public class ViewProductActivity extends BaseOldActivity implements VariantsCont
     private SpecificationAdapter specificationAdapter;
     private String shareURL = "https://evaly.com.bd";
     private BottomSheetDialog newsfeedShareDialog;
-    private ActivityViewProductBinding binding;
-    private ViewProductViewModel viewModel;
     private CartViewModel cartViewModel;
     private List<ProductSpecificationsItem> specificationsItemList = new ArrayList<>();
     private List<AttributesItem> productAttributesItemList;
@@ -125,6 +122,10 @@ public class ViewProductActivity extends BaseOldActivity implements VariantsCont
     private String cashbackText = null;
     private AvailableShopModel toRemoveModel = null;
     private VariantsController variantsController;
+
+    public ViewProductActivity() {
+        super(ViewProductViewModel.class, R.layout.activity_view_product);
+    }
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
 
@@ -140,13 +141,8 @@ public class ViewProductActivity extends BaseOldActivity implements VariantsCont
 
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityViewProductBinding.inflate(getLayoutInflater());
+    protected void initViews() {
         startTime = System.currentTimeMillis();
-        View view = binding.getRoot();
-        setContentView(view);
-
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
@@ -173,10 +169,8 @@ public class ViewProductActivity extends BaseOldActivity implements VariantsCont
 
 
         initProductImageSlider();
-        liveEvents();
         loadFromApis();
         hideProductHolder();
-        clickListeners();
         initVariantRecycler();
         initRelatedProductsRecycler();
     }
@@ -198,7 +192,8 @@ public class ViewProductActivity extends BaseOldActivity implements VariantsCont
         }
     }
 
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
 
         binding.back.setOnClickListener(v -> onBackPressed());
         binding.cart.setOnClickListener(v -> {
@@ -243,13 +238,6 @@ public class ViewProductActivity extends BaseOldActivity implements VariantsCont
             popup.getMenuInflater().inflate(R.menu.share_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
-//                    case R.id.action_share_contacts:
-//                        if (preferenceRepository.getUserName().equals("") && preferenceRepository.getPassword().equalsIgnoreCase("")) {
-//                            Toast.makeText(getApplicationContext(), "Please login to share products", Toast.LENGTH_LONG).show();
-//                        } else {
-//                            shareWithContacts();
-//                        }
-//                        break;
                     case R.id.action_share_newsfeed:
                         if (preferenceRepository.getUserName().equals("") && preferenceRepository.getPassword().equalsIgnoreCase("")) {
                             Toast.makeText(getApplicationContext(), "Please login to share products", Toast.LENGTH_LONG).show();
@@ -325,7 +313,8 @@ public class ViewProductActivity extends BaseOldActivity implements VariantsCont
         binding.products.setAdapter(relatedProductsController.getAdapter());
     }
 
-    private void liveEvents() {
+    @Override
+    protected void liveEventsObservers() {
 
         viewModel.cartLiveCount.observe(this, integer -> binding.cartCount.setText(integer.toString()));
 
