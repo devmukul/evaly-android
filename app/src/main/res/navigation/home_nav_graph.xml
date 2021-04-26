@@ -334,7 +334,7 @@
         android:label="GiftCardPaymentBottomSheet" />
     <fragment
         android:id="@+id/transactionHistory"
-        android:name="bd.com.evaly.evalyshop.ui.transaction.TransactionHistory"
+        android:name="bd.com.evaly.evalyshop.ui.transaction.TransactionHistoryFragment"
         android:label="TransactionHistory">
         <deepLink
             android:autoVerify="true"

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
@@ -18,10 +18,10 @@ import bd.com.evaly.evalyshop.util.Utils;
 
 public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionHistoryAdapter.MyViewHolder> {
 
-    private ArrayList<TransactionItem> itemList;
+    private List<TransactionItem> itemList;
     private Context context;
 
-    public TransactionHistoryAdapter(ArrayList<TransactionItem> itemList, Context context) {
+    public TransactionHistoryAdapter(List<TransactionItem> itemList, Context context) {
         this.itemList = itemList;
         this.context = context;
     }
