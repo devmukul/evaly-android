@@ -18,6 +18,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
+
 @SuppressLint("SetTextI18n")
 public abstract class BaseFragment<DATA_BINDING extends ViewDataBinding, VIEW_MODEL extends ViewModel> extends Fragment {
 
@@ -48,7 +50,8 @@ public abstract class BaseFragment<DATA_BINDING extends ViewDataBinding, VIEW_MO
         binding.setLifecycleOwner(getViewLifecycleOwner());
         binding.executePendingBindings();
         bundle = getArguments();
-        navController = NavHostFragment.findNavController(this);
+        if (getActivity() instanceof MainActivity)
+            navController = NavHostFragment.findNavController(this);
         return binding.getRoot();
     }
 

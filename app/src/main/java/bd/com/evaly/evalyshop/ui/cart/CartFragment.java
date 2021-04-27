@@ -3,16 +3,7 @@ package bd.com.evaly.evalyshop.ui.cart;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -27,6 +18,7 @@ import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.FragmentCartBinding;
 import bd.com.evaly.evalyshop.ui.auth.login.SignInActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.cart.controller.CartController;
 import bd.com.evaly.evalyshop.ui.checkout.CheckoutFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
@@ -37,23 +29,21 @@ import bd.com.evaly.evalyshop.views.smoothCheckBox.SmoothCheckBox;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class CartFragment extends Fragment implements CartController.CartClickListener {
+public class CartFragment extends BaseFragment<FragmentCartBinding, CartViewModel> implements CartController.CartClickListener {
+
     @Inject
     PreferenceRepository preferenceRepository;
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
-    private FragmentCartBinding binding;
     private LinearLayoutManager manager;
     private CartController controller;
-    private CartViewModel viewModel;
-    private NavController navController;
 
     private SmoothCheckBox.OnCheckedChangeListener allCheckedListener = (compoundButton, isChecked) -> {
         viewModel.selectAll(isChecked);
     };
 
     public CartFragment() {
-
+        super(CartViewModel.class, R.layout.fragment_cart);
     }
 
     public static CartFragment newInstance() {
@@ -61,37 +51,20 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        binding = FragmentCartBinding.inflate(inflater);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(CartViewModel.class);
-        if (getActivity() instanceof MainActivity)
-            navController = NavHostFragment.findNavController(this);
+    protected void initViews() {
         setupToolbar();
-        setupRecycler();
-        liveEvents();
-        clickListeners();
     }
 
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
         binding.checkoutBtn.setOnClickListener(v -> {
             checkoutClicked();
         });
         binding.checkBox.setOnCheckedChangeListener(allCheckedListener);
     }
 
-    private void liveEvents() {
+    @Override
+    protected void liveEventsObservers() {
         viewModel.liveList.observe(getViewLifecycleOwner(), cartEntities -> {
             controller.setList(cartEntities);
             controller.requestModelBuild();
@@ -110,7 +83,8 @@ public class CartFragment extends Fragment implements CartController.CartClickLi
         });
     }
 
-    private void setupRecycler() {
+    @Override
+    protected void setupRecycler() {
         if (controller == null)
             controller = new CartController();
         controller.setCartClickListener(this);
