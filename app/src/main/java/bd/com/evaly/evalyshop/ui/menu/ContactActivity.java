@@ -4,13 +4,9 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
-
-import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -21,37 +17,40 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityContactBinding;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
-import bd.com.evaly.evalyshop.ui.base.BaseOldActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseViewModel;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
 import static bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity.setWindowFlag;
 
 @AndroidEntryPoint
-public class ContactActivity extends BaseOldActivity {
+public class ContactActivity extends BaseActivity<ActivityContactBinding, BaseViewModel> {
 
     @Inject
     PreferenceRepository preferenceRepository;
 
-    private ActivityContactBinding binding;
-    private ViewDialog dialog;
+    public ContactActivity() {
+        super(BaseViewModel.class, R.layout.activity_contact);
+    }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_contact);
-
-        dialog = new ViewDialog(this);
-
+    protected void initViews() {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
-
-
         Glide.with(this).load(R.drawable.map_high_res).into(binding.mapImage);
+    }
+
+    @Override
+    protected void liveEventsObservers() {
+
+    }
+
+    @Override
+    protected void clickListeners() {
 
         binding.callBox.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -87,16 +86,9 @@ public class ContactActivity extends BaseOldActivity {
             }
         };
 
-
         binding.mapsBox.setOnClickListener(openMaps);
         binding.mapOpener.setOnClickListener(openMaps);
         binding.backArrow.setOnClickListener(v -> finish());
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     private void openEconnect() {
