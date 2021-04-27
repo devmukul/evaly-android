@@ -54,7 +54,7 @@ public class OrderDetailsViewModel extends ViewModel {
     private FirebaseRemoteConfig firebaseRemoteConfig;
 
     @Inject
-    public OrderDetailsViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository, PreferenceRepository preferenceRepository, FirebaseRemoteConfig  firebaseRemoteConfig) {
+    public OrderDetailsViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository, PreferenceRepository preferenceRepository, FirebaseRemoteConfig firebaseRemoteConfig) {
         this.invoiceNo = savedStateHandle.get("orderID");
         this.apiRepository = apiRepository;
         this.preferenceRepository = preferenceRepository;
@@ -231,7 +231,23 @@ public class OrderDetailsViewModel extends ViewModel {
     }
 
     public void withdrawRefundRequest(String invoice) {
-        apiRepository.withdrawRefundRequest(invoice, new ResponseListener<CommonDataResponse, String>() {
+
+        String url = null;
+
+        RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
+
+        if (baseUrls == null)
+            return;
+
+        if (BuildConfig.DEBUG)
+            url = baseUrls.getDevRefundRequestWithdrawUrl();
+        else
+            url = baseUrls.getProdRefundRequestWithdrawUrl();
+
+        if (url == null)
+            return;
+
+        apiRepository.withdrawRefundRequest(url, invoice, new ResponseListener<CommonDataResponse, String>() {
             @Override
             public void onDataFetched(CommonDataResponse response, int statusCode) {
                 ToastUtils.show(response.getMessage());

@@ -179,8 +179,9 @@ public class ApiRepository {
         apiHandler.createCall(apiService.getUserProfile(), listener);
     }
 
-    public void withdrawRefundRequest(String invoice, ResponseListener<CommonDataResponse, String> listener) {
-        apiHandler.createCall(apiService.withdrawRefundRequest(invoice), listener);
+    public void withdrawRefundRequest(String url, String invoice, ResponseListener<CommonDataResponse, String> listener) {
+        url += invoice;
+        apiHandler.createCall(apiService.withdrawRefundRequest(url), listener);
     }
 
     // change password

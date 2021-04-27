@@ -400,12 +400,11 @@ public interface IApiClient {
     Call<CommonDataResponse<List<TransactionItem>>> getTransactionHistory(@Url String url,
                                                                           @Query("page") int page);
 
-
     @GET
     Call<JsonObject> claimCashBack(@Url String url);
 
-    @PUT(UrlUtils.DOMAIN + "pay/withdraw_refund_request/{invoice}")
-    Call<CommonDataResponse> withdrawRefundRequest(@Path("invoice") String invoice);
+    @PUT
+    Call<CommonDataResponse> withdrawRefundRequest(@Url String url);
 
     // product APIs
 
