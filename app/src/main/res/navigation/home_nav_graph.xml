@@ -162,7 +162,7 @@
 
     <fragment
         android:id="@+id/evalyExpressFragment"
-        android:name="bd.com.evaly.evalyshop.ui.express.EvalyExpressFragment"
+        android:name="bd.com.evaly.evalyshop.ui.express.ExpressShopsFragment"
         android:label="fragment_evaly_express"
         tools:layout="@layout/fragment_evaly_express">
         <deepLink

@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:background="@color/fff"
         android:fitsSystemWindows="false"
-        tools:context=".ui.express.EvalyExpressFragment">
+        tools:context=".ui.express.ExpressShopsFragment">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

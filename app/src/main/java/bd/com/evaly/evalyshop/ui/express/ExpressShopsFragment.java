@@ -6,22 +6,16 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,6 +32,7 @@ import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentEvalyExpressBinding;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.express.adapter.EvalyExpressAdapter;
 import bd.com.evaly.evalyshop.ui.express.adapter.ExpressDistrictAdapter;
@@ -49,13 +44,11 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static androidx.core.content.ContextCompat.getMainExecutor;
 
 @AndroidEntryPoint
-public class EvalyExpressFragment extends Fragment {
+public class ExpressShopsFragment extends BaseFragment<FragmentEvalyExpressBinding, ExpressShopsViewModel> {
 
     @Inject
     PreferenceRepository preferenceRepository;
-    private FragmentEvalyExpressBinding binding;
     private EvalyExpressAdapter adapter;
-    private EvalyExpressViewModel viewModel;
     private boolean written = false;
     TextWatcher textWatcher = new TextWatcher() {
 
@@ -84,22 +77,13 @@ public class EvalyExpressFragment extends Fragment {
     private ExpressServiceModel model;
     private GridLayoutManager layoutManager;
 
-    public EvalyExpressFragment() {
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        binding = FragmentEvalyExpressBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+    public ExpressShopsFragment() {
+        super(ExpressShopsViewModel.class, R.layout.fragment_evaly_express);
     }
 
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    protected void initViews() {
 
         if (getArguments() == null)
             return;
@@ -120,44 +104,21 @@ public class EvalyExpressFragment extends Fragment {
 
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         binding.toolbar.setTitle(model.getName());
-        binding.toolbar.setNavigationOnClickListener(view1 -> {
-            if (getActivity() != null)
-                getActivity().onBackPressed();
+        binding.districtName.setText(preferenceRepository.getArea() == null ? "All District" : preferenceRepository.getArea());
+
+        binding.search.addTextChangedListener(textWatcher);
+
+        binding.search.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) written = true;
         });
 
+        if (preferenceRepository.getArea() == null)
+            checkPermissionAndLoad();
 
-        viewModel = new ViewModelProvider(this).get(EvalyExpressViewModel.class);
+    }
 
-        adapter = new EvalyExpressAdapter(getContext(), NavHostFragment.findNavController(this));
-
-        written = false;
-
-        layoutManager = new GridLayoutManager(getContext(), 2);
-        binding.recyclerView.setLayoutManager(layoutManager);
-        binding.recyclerView.setHasFixedSize(false);
-        binding.recyclerView.setAdapter(adapter);
-        binding.progressBar.setVisibility(View.VISIBLE);
-
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {
-                    visibleItemCount = layoutManager.getChildCount();
-                    totalItemCount = layoutManager.getItemCount();
-                    pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
-
-                    if (!viewModel.isLoading() && viewModel.isHasNext())
-                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                            if (viewModel.getCurrentPage() > 1)
-                                binding.progressBarBottom.setVisibility(View.VISIBLE);
-                            else
-                                binding.progressBarBottom.setVisibility(View.INVISIBLE);
-                            viewModel.loadShops();
-                        }
-                }
-            }
-        });
-
+    @Override
+    protected void liveEventsObservers() {
         viewModel.getLiveData().observe(getViewLifecycleOwner(), list -> {
 
             if (list == null)
@@ -187,18 +148,51 @@ public class EvalyExpressFragment extends Fragment {
             });
 
         });
+    }
 
-        binding.districtSelector.setOnClickListener(v -> showLocationSelector());
-        binding.districtName.setText(preferenceRepository.getArea() == null ? "All District" : preferenceRepository.getArea());
-
-        binding.search.addTextChangedListener(textWatcher);
-
-        binding.search.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) written = true;
+    @Override
+    protected void clickListeners() {
+        binding.toolbar.setNavigationOnClickListener(view1 -> {
+            if (getActivity() != null)
+                getActivity().onBackPressed();
         });
 
-        if (preferenceRepository.getArea() == null)
-            checkPermissionAndLoad();
+        binding.districtSelector.setOnClickListener(v -> showLocationSelector());
+
+    }
+
+
+    @Override
+    protected void setupRecycler() {
+        adapter = new EvalyExpressAdapter(getContext(), NavHostFragment.findNavController(this));
+
+        written = false;
+
+        layoutManager = new GridLayoutManager(getContext(), 2);
+        binding.recyclerView.setLayoutManager(layoutManager);
+        binding.recyclerView.setHasFixedSize(false);
+        binding.recyclerView.setAdapter(adapter);
+        binding.progressBar.setVisibility(View.VISIBLE);
+
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    visibleItemCount = layoutManager.getChildCount();
+                    totalItemCount = layoutManager.getItemCount();
+                    pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+
+                    if (!viewModel.isLoading() && viewModel.isHasNext())
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            if (viewModel.getCurrentPage() > 1)
+                                binding.progressBarBottom.setVisibility(View.VISIBLE);
+                            else
+                                binding.progressBarBottom.setVisibility(View.INVISIBLE);
+                            viewModel.loadShops();
+                        }
+                }
+            }
+        });
 
     }
 

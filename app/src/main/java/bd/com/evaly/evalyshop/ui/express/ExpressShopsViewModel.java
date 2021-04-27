@@ -21,7 +21,7 @@ import bd.com.evaly.evalyshop.rest.ApiRepository;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
-public class EvalyExpressViewModel extends ViewModel {
+public class ExpressShopsViewModel extends ViewModel {
 
     private ApiRepository apiRepository;
     private PreferenceRepository preferenceRepository;
@@ -35,7 +35,7 @@ public class EvalyExpressViewModel extends ViewModel {
     private boolean shouldClear = true;
 
     @Inject
-    public EvalyExpressViewModel(SavedStateHandle arg, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
+    public ExpressShopsViewModel(SavedStateHandle arg, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
         if (arg.contains("model"))
             serviceSlug = ((ExpressServiceModel) arg.get("model")).getSlug();
         else if (arg.contains("slug"))
