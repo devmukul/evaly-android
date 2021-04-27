@@ -178,11 +178,6 @@
             android:name=".ui.menu.ContactActivity"
             android:theme="@style/AppThemeViewProduct" />
 
-        <activity
-            android:name=".ui.followedShops.FollowedShopActivity"
-            android:label="Evaly Store"
-            android:theme="@style/AppTheme" />
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />

@@ -195,7 +195,7 @@
     </fragment>
     <fragment
         android:id="@+id/expressProductSearchFragment"
-        android:name="bd.com.evaly.evalyshop.ui.express.products.ExpressProductSearchFragment"
+        android:name="bd.com.evaly.evalyshop.ui.express.products.ExpressServiceFragment"
         android:label="activity_express_product_search"
         tools:layout="@layout/activity_express_product_search">
         <deepLink
