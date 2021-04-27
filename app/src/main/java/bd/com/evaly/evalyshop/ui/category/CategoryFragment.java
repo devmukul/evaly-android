@@ -1,15 +1,8 @@
 package bd.com.evaly.evalyshop.ui.category;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,39 +10,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCategoryBinding;
 import bd.com.evaly.evalyshop.rest.ApiClient;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.category.controllers.RootCategoryController;
 import bd.com.evaly.evalyshop.ui.category.controllers.SubCategoryController;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class CategoryFragment extends Fragment {
+public class CategoryFragment extends BaseFragment<FragmentCategoryBinding, CategoryViewModel> {
 
-    private FragmentCategoryBinding binding;
-    private CategoryViewModel viewModel;
     private RootCategoryController categoryController;
     private SubCategoryController subCategoryController;
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        binding = FragmentCategoryBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+    public CategoryFragment() {
+        super(CategoryViewModel.class, R.layout.fragment_category);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view,
-                              @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    protected void initViews() {
         binding.toolbar.setTitle("Categories");
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
-        binding.toolbar.setNavigationOnClickListener(view1 -> {
-            if (getActivity() != null)
-                getActivity().onBackPressed();
-        });
         inflateSearchMenu();
-        viewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
 
         if (categoryController == null)
             categoryController = new RootCategoryController();
@@ -66,8 +46,6 @@ public class CategoryFragment extends Fragment {
         binding.rvCategory.setAdapter(categoryController.getAdapter());
         binding.rvProducts.setAdapter(subCategoryController.getAdapter());
 
-        viewModelLiveDataObservers();
-
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         binding.rvProducts.setLayoutManager(layoutManager);
         layoutManager.setSpanSizeLookup(subCategoryController.getSpanSizeLookup());
@@ -79,24 +57,21 @@ public class CategoryFragment extends Fragment {
             binding.selectedBrd.setVisibility(View.VISIBLE);
         else
             binding.selectedBrd.setVisibility(View.GONE);
-    }
-
-    private void inflateSearchMenu() {
-//        binding.toolbar.inflateMenu(R.menu.search_btn);
-//        MenuItem item = binding.toolbar.getMenu().findItem(R.id.action_search);
-//
-//        binding.toolbar.setOnMenuItemClickListener(item1 -> {
-//            switch (item1.getItemId()) {
-//                case R.id.action_search:
-//                    Bundle bundle = new Bundle();
-//                    NavHostFragment.findNavController(CategoryFragment.this).navigate(R.id.shopSearchActivity, bundle);
-//            }
-//            return true;
-//        });
 
     }
 
-    private void viewModelLiveDataObservers() {
+
+    @Override
+    protected void clickListeners() {
+        binding.toolbar.setNavigationOnClickListener(view1 -> {
+            if (getActivity() != null)
+                getActivity().onBackPressed();
+        });
+    }
+
+
+    @Override
+    protected void liveEventsObservers() {
 
         viewModel.getRootCategoryLiveData().observe(getViewLifecycleOwner(), tabsItems -> {
             categoryController.setLoadingMore(false, true);
@@ -131,5 +106,20 @@ public class CategoryFragment extends Fragment {
             categoryController.deselectCategory();
             viewModel.loadTopCategories();
         });
+    }
+
+    private void inflateSearchMenu() {
+//        binding.toolbar.inflateMenu(R.menu.search_btn);
+//        MenuItem item = binding.toolbar.getMenu().findItem(R.id.action_search);
+//
+//        binding.toolbar.setOnMenuItemClickListener(item1 -> {
+//            switch (item1.getItemId()) {
+//                case R.id.action_search:
+//                    Bundle bundle = new Bundle();
+//                    NavHostFragment.findNavController(CategoryFragment.this).navigate(R.id.shopSearchActivity, bundle);
+//            }
+//            return true;
+//        });
+
     }
 }
