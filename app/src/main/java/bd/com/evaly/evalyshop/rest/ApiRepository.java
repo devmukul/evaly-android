@@ -426,7 +426,7 @@ public class ApiRepository {
     }
 
     public void markNotificationAsRead(String token, ResponseListener<JsonObject, String> listener) {
-        apiHandler.createCall(apiService.markNewsfeedNotificationAsRead(), listener);
+        apiHandler.createCall(apiService.markNotificationAsRead(), listener);
     }
 
     public void getRootCategories(ResponseListener<CommonDataResponse<List<CategoryEntity>>, String> listener) {

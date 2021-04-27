@@ -815,7 +815,6 @@ public interface IApiClient {
     Call<CommonDataResponse<String>> postRequestRefundConfirmOTP(@Body HashMap<String, Integer> body,
                                                                  @Path("invoice") String slug);
 
-
     @GET(UrlUtils.DOMAIN + "pay/refund-eligibility/{invoice}")
     Call<CommonDataResponse<String>> checkRefundEligibility(@Path("invoice") String slug);
 
