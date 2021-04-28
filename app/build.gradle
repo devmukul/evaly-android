@@ -13,8 +13,8 @@ android {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 299
-        versionName "2.9.9"
+        versionCode 300
+        versionName "3.0.0"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
