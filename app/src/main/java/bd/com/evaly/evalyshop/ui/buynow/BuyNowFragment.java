@@ -2,18 +2,12 @@ package bd.com.evaly.evalyshop.ui.buynow;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -27,7 +21,6 @@ import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import java.util.ArrayList;
@@ -43,27 +36,26 @@ import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.ui.auth.login.SignInActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.ui.cart.CartViewModel;
 import bd.com.evaly.evalyshop.ui.checkout.CheckoutFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class BuyNowFragment extends BottomSheetDialogFragment implements VariationAdapter.ClickListenerVariation {
+public class BuyNowFragment extends BaseBottomSheetFragment<FragmentBuyNowBinding, BuyNowViewModel> implements VariationAdapter.ClickListenerVariation {
 
     @Inject
     FirebaseRemoteConfig mFirebaseRemoteConfig;
     @Inject
     PreferenceRepository preferenceRepository;
 
-    private BuyNowViewModel viewModel;
     private CartViewModel cartViewModel;
-    private FragmentBuyNowBinding binding;
     private SkeletonScreen skeleton;
-    private Context context;
     private ArrayList<ShopItem> itemsList;
     private String shop_item_slug = "tvs-apache-rtr-160cc-single-disc";
     private int quantityCount = 1;
@@ -91,6 +83,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         args.putSerializable("shopItem", shopItemModel);
         f.setArguments(args);
         return f;
+    }
+
+    public BuyNowFragment() {
+        super(BuyNowViewModel.class, R.layout.fragment_buy_now);
     }
 
     @Override
@@ -128,17 +124,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         if (args.containsKey("cartItem"))
             cartItem = (CartEntity) args.getSerializable("cartItem");
 
-        viewModel = new ViewModelProvider(this).get(BuyNowViewModel.class);
         cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        binding = FragmentBuyNowBinding.inflate(inflater, container, false);
-
-        return binding.getRoot();
     }
 
 
@@ -164,13 +150,13 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         binding.addCart.setOnClickListener(v -> {
             cartViewModel.insert(getCartItem());
-            Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
+            ToastUtils.show("Added to cart");
             dismiss();
         });
 
         binding.buyNow.setOnClickListener(view1 -> {
             if (preferenceRepository.getToken().equals("")) {
-                startActivity(new Intent(context, SignInActivity.class));
+                startActivity(new Intent(getContext(), SignInActivity.class));
                 return;
             }
             if (isVisible())
@@ -227,28 +213,26 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             binding.priceTotalDiscounted.setVisibility(View.GONE);
     }
 
-    @SuppressLint("DefaultLocale")
+
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        context = view.getContext();
-
+    protected void initViews() {
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(this);
 
-        skeleton = Skeleton.bind((LinearLayout) view.findViewById(R.id.linearLayout))
+        skeleton = Skeleton.bind(binding.linearLayout)
                 .load(R.layout.skeleton_buy_now_modal)
                 .color(R.color.ddd)
                 .shimmer(true).show();
 
-        itemsList = new ArrayList<>();
-        adapterVariation = new VariationAdapter(itemsList, context, this);
+        setupRecycler();
+        if (shopItem == null) {
+            skeleton.show();
+        } else
+            inflateFromModel();
+    }
 
-        LinearLayoutManager managerVariation = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        binding.recyclerViewVariation.setLayoutManager(managerVariation);
-        binding.recyclerViewVariation.setAdapter(adapterVariation);
-
+    @Override
+    protected void clickListeners() {
         binding.minus.setOnClickListener(view1 -> {
             if (quantityCount > 1) {
                 quantityCount--;
@@ -260,18 +244,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             quantityCount++;
             inflateQuantity();
         });
-
-
-        if (shopItem == null) {
-            skeleton.show();
-        } else
-            inflateFromModel();
-
-        liveEvents();
-
     }
 
-    private void liveEvents() {
+    @Override
+    protected void liveEventsObservers() {
         viewModel.liveList.observe(getViewLifecycleOwner(), shopItems -> {
             skeleton.hide();
             itemsList.clear();
@@ -282,6 +258,16 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 loadProductById(0);
             }
         });
+    }
+
+    private void setupRecycler() {
+        itemsList = new ArrayList<>();
+        adapterVariation = new VariationAdapter(itemsList, getContext(), this);
+
+        LinearLayoutManager managerVariation = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        binding.recyclerViewVariation.setLayoutManager(managerVariation);
+        binding.recyclerViewVariation.setAdapter(adapterVariation);
+
     }
 
     @Override
@@ -331,14 +317,14 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         binding.addCart.setOnClickListener(v -> {
             CartEntity cartEntity = getCartEntity(firstItem);
             cartViewModel.insert(getCartEntity(firstItem));
-            Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
+            ToastUtils.show("Added to cart");
             dismiss();
         });
 
 
         binding.buyNow.setOnClickListener(view1 -> {
             if (preferenceRepository.getToken().equals("")) {
-                startActivity(new Intent(context, SignInActivity.class));
+                startActivity(new Intent(getContext(), SignInActivity.class));
                 return;
             }
 
@@ -389,13 +375,4 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         return cartEntity;
     }
-
-
-    private void dismissDialog() {
-        if (getActivity() != null) {
-            if (isVisible() && isCancelable() && !getActivity().isDestroyed() && !getActivity().isFinishing())
-                dismissAllowingStateLoss();
-        }
-    }
-
 }
