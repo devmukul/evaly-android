@@ -388,18 +388,17 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
             viewModel.loadListFromApi();
             binding.recyclerView.scrollToPosition(0);
         });
+
+        mainViewModel.transparentStatusBarInitiated.observe(getViewLifecycleOwner(), aVoid -> {
+            loadCampaignDetails(viewModel.getCampaignCategoryLiveData().getValue());
+        });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
 
     private void loadCampaignDetails(CampaignCategoryResponse model) {
-
-        if (model == null)
+        if (model == null) {
             return;
+        }
 
         if (Utils.isValidColor(model.getBannerPrimaryBgColor())) {
             ViewCompat.setBackgroundTintList(

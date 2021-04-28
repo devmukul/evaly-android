@@ -35,6 +35,7 @@ import io.reactivex.schedulers.Schedulers;
 @HiltViewModel
 public class MainViewModel extends ViewModel {
 
+    public SingleLiveEvent<Void> transparentStatusBarInitiated = new SingleLiveEvent<>();
     public SubCampaignResponse selectedCampaignModel;
     public CampaignProductCategoryResponse selectedCampaignProductCategoryModel;
     public SingleLiveEvent<Void> campaignFilterUpdated = new SingleLiveEvent<>();

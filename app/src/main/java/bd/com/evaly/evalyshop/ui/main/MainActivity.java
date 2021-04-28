@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -354,9 +355,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         navController.createDeepLink();
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getLabel() != null && !destination.getLabel().toString().toLowerCase().contains("bottomsheet")) {
-                if (destination.getId() == R.id.campaignFragment || destination.getId() == R.id.campaignDetails)
+                if (destination.getId() == R.id.campaignFragment || destination.getId() == R.id.campaignDetails) {
                     transparentStatusBarColor();
-                else {
+                    viewModel.transparentStatusBarInitiated.call();
+                } else {
                     resetStatusBarColor();
                 }
             }
