@@ -393,6 +393,7 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
     @Override
     public void onResume() {
         super.onResume();
+
     }
 
     private void loadCampaignDetails(CampaignCategoryResponse model) {

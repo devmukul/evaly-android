@@ -156,9 +156,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             }
         });
 
-
-        getGiftCardList();
-
         RemoteConfigBaseUrls baseUrls = new Gson().fromJson(remoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
 
         String url = null;
@@ -172,6 +169,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         if (url != null)
             baseUrl = url;
 
+        getGiftCardList();
     }
 
     public void buildBankDialog(Bitmap bitmap) {

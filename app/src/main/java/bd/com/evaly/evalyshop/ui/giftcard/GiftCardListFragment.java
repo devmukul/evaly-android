@@ -117,6 +117,25 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_giftcard_list, container, false);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
+
+        String url = null;
+        if (baseUrls != null) {
+            if (BuildConfig.DEBUG)
+                url = baseUrls.getDevGiftCardBaseUrl();
+            else
+                url = baseUrls.getProdGiftCardBaseUrl();
+        }
+
+        if (url != null)
+            baseUrl = url;
 
         recyclerView = view.findViewById(R.id.recyclerView);
         swipeLayout = view.findViewById(R.id.swipe_container);
@@ -162,26 +181,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         });
 
         getGiftCardList();
-
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
-
-        String url = null;
-        if (baseUrls != null) {
-            if (BuildConfig.DEBUG)
-                url = baseUrls.getDevGiftCardBaseUrl();
-            else
-                url = baseUrls.getProdGiftCardBaseUrl();
-        }
-
-        if (url != null)
-            baseUrl = url;
     }
 
     public void initializeBottomSheet() {
