@@ -18,8 +18,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -33,7 +33,6 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -42,7 +41,6 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetGiftCardPaymentBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentGiftcardListBinding;
-import bd.com.evaly.evalyshop.databinding.PaymentAmountInputLayoutBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
@@ -386,7 +384,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         String paymentUrl = url + giftCardInvoice + "?t=" + preferenceRepository.getTokenNoBearer() + "&context=gift_card_order_payment&amount=" + amount;
         PurchaseRequestInfo purchaseRequestInfo = new PurchaseRequestInfo(preferenceRepository.getTokenNoBearer(), String.valueOf(amount), giftCardInvoice, "bKash");
         paymentWebBuilder.setToolbarTitle("Gift Card Payment");
-        paymentWebBuilder.loadPaymentURL(paymentUrl, "success.html", purchaseRequestInfo);
+        paymentWebBuilder.loadPaymentURL(paymentUrl, "evaly.com.bd/gift-card", purchaseRequestInfo);
     }
 
     public void getGiftCardList() {
@@ -567,7 +565,10 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     @Override
     public void onPaymentSuccess(HashMap<String, String> values) {
-
+        NavHostFragment.findNavController(this).popBackStack();
+        Bundle bundle = new Bundle();
+        bundle.putString("type", "purchased");
+        NavHostFragment.findNavController(this).navigate(R.id.giftCardFragment, bundle);
     }
 
     @Override

@@ -36,13 +36,22 @@ public class GiftCardFragment extends BaseFragment<FragmentGiftcardsBinding, Gif
             pager.addFragment(new GiftCardMyFragment(), "MY GIFTS");
             pager.addFragment(new GiftCardPurchasedFragment(), "PURCHASED");
         }
-
         binding.tabLayout.setupWithViewPager(binding.viewPager);
         binding.viewPager.setAdapter(pager);
         binding.viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tabLayout));
         binding.viewPager.setOffscreenPageLimit(1);
 
         binding.balance.setVisibility(View.GONE);
+
+        if (bundle != null && bundle.containsKey("type")) {
+            String type = bundle.getString("type");
+            if (type == null)
+                type = "";
+            if (type.equals("my"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
+            else if (type.equals("purchased"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(2));
+        }
     }
 
     @Override

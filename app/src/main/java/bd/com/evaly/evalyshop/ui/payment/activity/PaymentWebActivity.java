@@ -2,6 +2,8 @@ package bd.com.evaly.evalyshop.ui.payment.activity;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Debug;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -84,6 +86,10 @@ public final class PaymentWebActivity extends AppCompatActivity implements Advan
 
     @Override
     public void onPageStarted(String url, Bitmap favicon) {
+        if (BuildConfig.DEBUG) {
+            Logger.d(url);
+            Log.e("hmtz", url);
+        }
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setProgress(0);
 //         if (url.contains(PaymentWebBuilder.getSuccessUrl()) && !(PaymentWebBuilder.getPurchaseInformation() != null && PaymentWebBuilder.getPurchaseInformation().getGateway().equalsIgnoreCase("sebl"))) {

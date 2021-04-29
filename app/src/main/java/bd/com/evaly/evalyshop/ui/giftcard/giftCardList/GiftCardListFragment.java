@@ -440,7 +440,9 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                 Toast.makeText(context, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
                 bottomSheetDialog.hide();
                 NavHostFragment.findNavController(GiftCardListFragment.this).popBackStack();
-                NavHostFragment.findNavController(GiftCardListFragment.this).navigate(R.id.giftCardFragment);
+                Bundle bundle = new Bundle();
+                bundle.putString("type", "purchased");
+                NavHostFragment.findNavController(GiftCardListFragment.this).navigate(R.id.giftCardFragment, bundle);
             }
 
             @Override
