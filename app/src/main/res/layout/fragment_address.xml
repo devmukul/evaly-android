@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bottom_sheet_round_create_post">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/fff"
-        app:theme="@style/ToolBarStyle"
-        android:paddingRight="5dp"
-        app:menu="@menu/plus_btn"
-        app:navigationIcon="@drawable/ic_arrow_back"
-        app:title="@string/addresses" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="56dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_address" />
+        android:background="@drawable/bottom_sheet_round_create_post">
 
-</FrameLayout>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/fff"
+            android:paddingRight="5dp"
+            app:menu="@menu/plus_btn"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:theme="@style/ToolBarStyle"
+            app:title="@string/addresses" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="56dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_address" />
+
+    </FrameLayout>
+</layout>

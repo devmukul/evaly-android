@@ -1,51 +1,38 @@
 package bd.com.evaly.evalyshop.ui.address.addAddress;
 
 import android.app.AlertDialog;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetAddAddressBinding;
 import bd.com.evaly.evalyshop.models.catalog.location.LocationResponse;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
+import bd.com.evaly.evalyshop.ui.base.BaseBottomSheetFragment;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class AddAddressBottomSheet extends BottomSheetDialogFragment {
+public class AddAddressBottomSheet extends BaseBottomSheetFragment<BottomSheetAddAddressBinding, AddAddressViewModel> {
 
     @Inject
     PreferenceRepository preferenceRepository;
-    private AddAddressViewModel viewModel;
-    private BottomSheetAddAddressBinding binding;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = BottomSheetAddAddressBinding.inflate(inflater);
-        viewModel = new ViewModelProvider(this).get(AddAddressViewModel.class);
-        return binding.getRoot();
+    public AddAddressBottomSheet() {
+        super(AddAddressViewModel.class, R.layout.bottom_sheet_add_address);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void initViews() {
 
-        liveEvents();
+    }
 
+    @Override
+    protected void clickListeners() {
         binding.region.setOnClickListener(view1 -> {
             if (viewModel.divisionLiveData.getValue() != null)
                 showSingleChoiceDialog(viewModel.divisionLiveData.getValue(), "Division");
@@ -123,7 +110,6 @@ public class AddAddressBottomSheet extends BottomSheetDialogFragment {
             return model.getName();
     }
 
-
     private void showSingleChoiceDialog(List<LocationResponse> list, String type) {
         String[] listItems = new String[list.size()];
         for (int i = 0; i < list.size(); i++)
@@ -146,7 +132,8 @@ public class AddAddressBottomSheet extends BottomSheetDialogFragment {
         mDialog.show();
     }
 
-    private void liveEvents() {
+    @Override
+    protected void liveEventsObservers() {
         viewModel.dismissBottomSheet.observe(getViewLifecycleOwner(), aVoid -> dismissAllowingStateLoss());
 
         viewModel.selectedDivisionLiveData.observe(getViewLifecycleOwner(), model -> {

@@ -1,16 +1,8 @@
 package bd.com.evaly.evalyshop.ui.address;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import javax.inject.Inject;
 
@@ -20,43 +12,31 @@ import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
 import bd.com.evaly.evalyshop.ui.address.addAddress.AddAddressBottomSheet;
 import bd.com.evaly.evalyshop.ui.address.controller.AddressController;
+import bd.com.evaly.evalyshop.ui.base.BaseBottomSheetFragment;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class AddressFragment extends BottomSheetDialogFragment implements AddressController.ClickListener {
+public class AddressFragment extends BaseBottomSheetFragment<FragmentAddressBinding, AddressViewModel> implements AddressController.ClickListener {
 
     @Inject
     SharedObservers sharedObservers;
-    private AddressViewModel viewModel;
-    private FragmentAddressBinding binding;
     private AddressController controller;
     private boolean isPicker = false;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentAddressBinding.inflate(inflater);
-        return binding.getRoot();
+    public AddressFragment() {
+        super(AddressViewModel.class, R.layout.fragment_address);
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void initViews() {
         if (getArguments() != null && getArguments().containsKey("is_picker"))
             isPicker = true;
-        viewModel = new ViewModelProvider(this).get(AddressViewModel.class);
+        updateViews();
+        setupAdapter();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        updateViews();
-        setupAdapter();
-        clickListeners();
-        liveEvents();
-    }
-
-    private void liveEvents() {
+    protected void liveEventsObservers() {
         viewModel.addressLiveData.observe(getViewLifecycleOwner(), addressResponses -> {
             controller.setLoading(false);
             controller.setList(addressResponses);
@@ -79,7 +59,8 @@ public class AddressFragment extends BottomSheetDialogFragment implements Addres
             binding.toolbar.setTitle(getString(R.string.addresses));
     }
 
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
         binding.toolbar.setNavigationOnClickListener(view -> {
             if (isPicker)
                 dismissAllowingStateLoss();
