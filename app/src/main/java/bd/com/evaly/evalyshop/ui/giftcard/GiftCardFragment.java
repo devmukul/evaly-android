@@ -11,6 +11,7 @@ import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentGiftcardsBinding;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.base.BaseViewPagerAdapter;
+import bd.com.evaly.evalyshop.ui.giftcard.giftCardList.GiftCardListFragment;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint

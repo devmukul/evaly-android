@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.giftcard;
+package bd.com.evaly.evalyshop.ui.giftcard.giftCardList;
 
 
 import android.annotation.SuppressLint;
@@ -52,6 +52,7 @@ import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListAdapter;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -417,10 +418,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
             public void onFailed(String errorBody, int errorCode) {
 
             }
-
         });
-
-
     }
 
 
@@ -447,12 +445,11 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
+                dialog.hideDialog();
+                ToastUtils.show(errorBody);
             }
 
         });
-
     }
-
 
 }
