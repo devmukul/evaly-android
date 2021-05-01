@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -17,7 +15,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -25,7 +22,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import bd.com.evaly.evalyshop.R;
@@ -34,6 +30,7 @@ import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignProductCategoryResponse;
+import bd.com.evaly.evalyshop.ui.base.BaseBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -41,12 +38,10 @@ import bd.com.evaly.evalyshop.views.StaggeredSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class CampaignListBottomSheet extends BottomSheetDialogFragment {
+public class CampaignFilterBottomSheet extends BaseBottomSheetFragment<BottomsheetCampaignListBinding, CampaignFilterViewModel> {
 
-    private BottomsheetCampaignListBinding binding;
-    private CampaignListViewModel viewModel;
     private MainViewModel mainViewModel;
-    private CampaignListController controller;
+    private CampaignFilterController controller;
     private NavController navController;
     private boolean isLoading = true;
     private boolean showClear = false;
@@ -54,20 +49,13 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private boolean updateGridAfterLoad = false;
 
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = BottomsheetCampaignListBinding.inflate(inflater);
-        navController = NavHostFragment.findNavController(this);
-        return binding.getRoot();
+    public CampaignFilterBottomSheet() {
+        super(CampaignFilterViewModel.class, R.layout.bottomsheet_campaign_list);
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog);
-        viewModel = new ViewModelProvider(this).get(CampaignListViewModel.class);
+    protected void initViews() {
+        navController = NavHostFragment.findNavController(this);
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         assert getArguments() != null;
         if (getArguments().containsKey("show_clear"))
@@ -76,13 +64,7 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
             viewModel.setCategory((CampaignCategoryResponse) getArguments().getSerializable("category"));
             viewModel.loadFromApi();
         }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         initToolbar();
-        liveEventObservers();
         clickListeners();
         initRecycler();
         initSearch();
@@ -190,10 +172,10 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
 
     private void initRecycler() {
         if (controller == null)
-            controller = new CampaignListController();
+            controller = new CampaignFilterController();
         controller.setFilterDuplicates(true);
         controller.setSpanCount(3);
-        controller.setClickListener(new CampaignListController.ClickListener() {
+        controller.setClickListener(new CampaignFilterController.ClickListener() {
             @Override
             public void onClick(SubCampaignResponse model) {
                 mainViewModel.selectedCampaignModel = model;
@@ -231,17 +213,19 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
         controller.requestModelBuild();
     }
 
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
         binding.clearFilter.setOnClickListener(view -> {
             mainViewModel.selectedCampaignProductCategoryModel = null;
             mainViewModel.selectedCampaignModel = null;
             mainViewModel.campaignFilterUpdated.call();
             dismissAllowingStateLoss();
         });
-        binding.toolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
+        binding.toolbar.setNavigationOnClickListener(v -> dismissAllowingStateLoss());
     }
 
-    private void liveEventObservers() {
+    @Override
+    protected void liveEventsObservers() {
 
         viewModel.getLiveData().observe(getViewLifecycleOwner(), list -> {
             isLoading = false;

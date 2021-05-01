@@ -28,7 +28,7 @@ import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
-import bd.com.evaly.evalyshop.ui.campaign.bottomsheet.CampaignListBottomSheet;
+import bd.com.evaly.evalyshop.ui.campaign.bottomsheet.CampaignFilterBottomSheet;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller.CampaignCategoryController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.BindingUtils;
@@ -301,7 +301,7 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
                 bundle.putSerializable("product_category", Objects.requireNonNull(viewModel.getSelectedCategoryModel()));
             bundle.putBoolean("show_clear", viewModel.getCampaign() != null || viewModel.getSelectedCategorySlug() != null);
             // navController.navigate(R.id.campaignListBottomSheet, bundle);
-            CampaignListBottomSheet bottomSheet = new CampaignListBottomSheet();
+            CampaignFilterBottomSheet bottomSheet = new CampaignFilterBottomSheet();
             bottomSheet.setArguments(bundle);
             bottomSheet.show(getParentFragmentManager(), "FilterBottomSheet");
         }

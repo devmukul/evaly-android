@@ -279,7 +279,7 @@
         android:label="CategoryFragment" />
     <dialog
         android:id="@+id/campaignListBottomSheet"
-        android:name="bd.com.evaly.evalyshop.ui.campaign.bottomsheet.CampaignListBottomSheet"
+        android:name="bd.com.evaly.evalyshop.ui.campaign.bottomsheet.CampaignFilterBottomSheet"
         android:label="CampaignListBottomSheet" />
     <fragment
         android:id="@+id/globalSearchFragment"

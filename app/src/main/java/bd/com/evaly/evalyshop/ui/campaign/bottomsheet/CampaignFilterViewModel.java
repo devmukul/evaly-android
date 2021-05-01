@@ -20,7 +20,7 @@ import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
-public class CampaignListViewModel extends ViewModel {
+public class CampaignFilterViewModel extends ViewModel {
 
     private MutableLiveData<List<BaseModel>> liveData = new MutableLiveData<>();
     private SingleLiveEvent<Boolean> hideLoadingBar = new SingleLiveEvent<>();
@@ -33,7 +33,7 @@ public class CampaignListViewModel extends ViewModel {
     private ApiRepository apiRepository;
 
     @Inject
-    public CampaignListViewModel(ApiRepository apiRepository) {
+    public CampaignFilterViewModel(ApiRepository apiRepository) {
         this.apiRepository = apiRepository;
         if (category != null)
             loadFromApi();
