@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
-import bd.com.evaly.evalyshop.ui.giftcard.giftCardList.GiftCardListFragment;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapter.MyViewHolder> {
@@ -49,7 +48,9 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
             Glide.with(context).load(itemList.get(i).getImageUrl()).into(myViewHolder.iv);
 
         myViewHolder.amount.setText("৳ " + Utils.formatPrice(itemList.get(i).getPrice()));
-        myViewHolder.button.setOnClickListener(v -> GiftCardListFragment.getInstance().toggleBottomSheet(itemList.get(i)));
+        myViewHolder.button.setOnClickListener(v -> {
+            // GiftCardListFragment.getInstance().toggleBottomSheet(itemList.get(i));
+        });
 
     }
 
