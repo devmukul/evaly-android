@@ -14,7 +14,7 @@ import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSubModel_;
 import bd.com.evaly.evalyshop.ui.epoxy.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxy.NoItemModel_;
 
-public class CampaignListController extends EpoxyController {
+public class CampaignFilterController extends EpoxyController {
 
     private List<BaseModel> list = new ArrayList<>();
     private boolean isLoading = true;

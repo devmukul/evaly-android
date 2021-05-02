@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
-import bd.com.evaly.evalyshop.ui.giftcard.GiftCardListFragment;
+import bd.com.evaly.evalyshop.ui.giftcard.giftCardList.GiftCardListFragment;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapter.MyViewHolder> {

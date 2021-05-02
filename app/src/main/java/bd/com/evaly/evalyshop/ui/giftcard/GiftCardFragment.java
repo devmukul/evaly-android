@@ -1,55 +1,33 @@
 package bd.com.evaly.evalyshop.ui.giftcard;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.gson.Gson;
 
 import javax.inject.Inject;
 
-import bd.com.evaly.evalyshop.BuildConfig;
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.FragmentGiftcardsBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListener;
-import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
-import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
-import bd.com.evaly.evalyshop.rest.ApiRepository;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.base.BaseViewPagerAdapter;
+import bd.com.evaly.evalyshop.ui.giftcard.giftCardList.GiftCardListFragment;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class GiftCardFragment extends Fragment {
+public class GiftCardFragment extends BaseFragment<FragmentGiftcardsBinding, GiftCardViewModel> {
 
     @Inject
     PreferenceRepository preferenceRepository;
-    @Inject
-    ApiRepository apiRepository;
-    @Inject
-    FirebaseRemoteConfig firebaseRemoteConfig;
-    private FragmentGiftcardsBinding binding;
+
     private BaseViewPagerAdapter pager;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentGiftcardsBinding.inflate(inflater);
-        return binding.getRoot();
+    public GiftCardFragment() {
+        super(GiftCardViewModel.class, R.layout.fragment_giftcards);
     }
 
-
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    protected void initViews() {
 
         pager = new BaseViewPagerAdapter(getParentFragmentManager());
         pager.addFragment(new GiftCardListFragment(), "STORE");
@@ -58,7 +36,6 @@ public class GiftCardFragment extends Fragment {
             pager.addFragment(new GiftCardMyFragment(), "MY GIFTS");
             pager.addFragment(new GiftCardPurchasedFragment(), "PURCHASED");
         }
-
         binding.tabLayout.setupWithViewPager(binding.viewPager);
         binding.viewPager.setAdapter(pager);
         binding.viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tabLayout));
@@ -66,41 +43,28 @@ public class GiftCardFragment extends Fragment {
 
         binding.balance.setVisibility(View.GONE);
 
-        updateBalance();
-
-        binding.toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
-
+        if (bundle != null && bundle.containsKey("type")) {
+            String type = bundle.getString("type");
+            if (type == null)
+                type = "";
+            if (type.equals("my"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
+            else if (type.equals("purchased"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(2));
+        }
     }
 
-
-    public void updateBalance() {
-        String url = null;
-
-        RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
-
-        if (baseUrls == null)
-            return;
-
-        if (BuildConfig.DEBUG)
-            url = baseUrls.getDevBalanceUrl();
-        else
-            url = baseUrls.getProdBalanceUrl();
-
-        if (url == null)
-            return;
-        apiRepository.getBalance(preferenceRepository.getToken(), preferenceRepository.getUserName(), url, new ResponseListener<CommonDataResponse<BalanceResponse>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<BalanceResponse> response, int statusCode) {
-                binding.balance.setText(String.format("Gift Card: ৳ %s", response.getData().getGiftCardBalance()));
-                binding.balance.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
+    @Override
+    protected void liveEventsObservers() {
+        viewModel.balanceLiveData.observe(getViewLifecycleOwner(), balanceResponse -> {
+            binding.balance.setText(String.format("Gift Card: ৳ %s", balanceResponse.getGiftCardBalance()));
+            binding.balance.setVisibility(View.VISIBLE);
         });
+    }
+
+    @Override
+    protected void clickListeners() {
+        binding.toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
     }
 
 }

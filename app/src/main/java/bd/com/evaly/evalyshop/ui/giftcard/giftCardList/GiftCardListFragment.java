@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.giftcard;
+package bd.com.evaly.evalyshop.ui.giftcard.giftCardList;
 
 
 import android.annotation.SuppressLint;
@@ -52,6 +52,7 @@ import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListAdapter;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -417,10 +418,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
             public void onFailed(String errorBody, int errorCode) {
 
             }
-
         });
-
-
     }
 
 
@@ -442,17 +440,18 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                 Toast.makeText(context, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
                 bottomSheetDialog.hide();
                 NavHostFragment.findNavController(GiftCardListFragment.this).popBackStack();
-                NavHostFragment.findNavController(GiftCardListFragment.this).navigate(R.id.giftCardFragment);
+                Bundle bundle = new Bundle();
+                bundle.putString("type", "purchased");
+                NavHostFragment.findNavController(GiftCardListFragment.this).navigate(R.id.giftCardFragment, bundle);
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
+                dialog.hideDialog();
+                ToastUtils.show(errorBody);
             }
 
         });
-
     }
-
 
 }

@@ -23,7 +23,9 @@ public class TokenInterceptor implements Interceptor {
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         Request originalRequest = chain.request();
-        if (!preferenceRepository.getToken().isEmpty() && !Utils.contains(originalRequest.url().toString(), "/public|/api/change_password")) {
+        if (!preferenceRepository.getToken().isEmpty() && (
+                !Utils.contains(originalRequest.url().toString(), "/public|/api/change_password") ||
+                Utils.contains(originalRequest.url().toString(), "epay-gift-cards|epay-wallet|epay-core|epay-reader|/pay/|"))) {
             Request.Builder builder = originalRequest.newBuilder();
             builder.addHeader("Authorization", preferenceRepository.getToken());
             Request request = builder.build();
