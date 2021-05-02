@@ -1,15 +1,19 @@
 package bd.com.evaly.evalyshop.ui.giftcard.giftCardList.details;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.Locale;
 
@@ -81,7 +85,7 @@ public class GiftCardDetailsBottomSheet extends BaseBottomSheetFragment<BottomSh
         viewModel.onResponse.observe(getViewLifecycleOwner(), aBoolean -> {
             dialog.hideDialog();
             if (aBoolean) {
-                NavHostFragment.findNavController(this).popBackStack();
+                NavHostFragment.findNavController(this).popBackStack(R.id.giftCardFragment, true);
                 Bundle bundle = new Bundle();
                 bundle.putString("type", "purchased");
                 NavHostFragment.findNavController(this).navigate(R.id.giftCardFragment, bundle);
@@ -177,5 +181,20 @@ public class GiftCardDetailsBottomSheet extends BaseBottomSheetFragment<BottomSh
 
             viewModel.createOrder(binding.phone.getText().toString(), binding.quantity.getText().toString());
         });
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+        bottomSheetDialog.setOnShowListener(dialog -> {
+            BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
+            FrameLayout bottomSheet = dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+                BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
+                BottomSheetBehavior.from(bottomSheet).setHideable(true);
+            }
+        });
+        return bottomSheetDialog;
     }
 }

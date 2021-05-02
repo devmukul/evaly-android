@@ -24,10 +24,19 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
 
     Context context;
     ArrayList<GiftCardListItem> itemList;
+    ClickListener clickListener;
+
+    public interface ClickListener{
+        void onClick(GiftCardListItem item);
+    }
 
     public GiftCardListAdapter(Context context, ArrayList<GiftCardListItem> itemList) {
         this.context = context;
         this.itemList = itemList;
+    }
+
+    public void setClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -49,7 +58,7 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
 
         myViewHolder.amount.setText("৳ " + Utils.formatPrice(itemList.get(i).getPrice()));
         myViewHolder.button.setOnClickListener(v -> {
-            // GiftCardListFragment.getInstance().toggleBottomSheet(itemList.get(i));
+            clickListener.onClick(itemList.get(i));
         });
 
     }

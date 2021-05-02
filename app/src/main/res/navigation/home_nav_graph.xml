@@ -430,4 +430,9 @@
         android:name="bd.com.evaly.evalyshop.ui.followedShops.FollowedShopsFragment"
         android:label="FollowedShopsFragment" />
 
+    <dialog
+        android:id="@+id/giftCardDetailsBottomSheet"
+        android:name="bd.com.evaly.evalyshop.ui.giftcard.giftCardList.details.GiftCardDetailsBottomSheet"
+        android:label="GiftCardDetailsBottomSheet" />
+
 </navigation>
