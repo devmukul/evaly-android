@@ -652,7 +652,7 @@ public interface IApiClient {
                                         @Body JsonObject body);
 
     @GET
-    Call<JsonObject> getGiftCardDetails(@Url String url);
+    Call<CommonDataResponse<GiftCardListItem>> getGiftCardDetails(@Url String url);
 
     @GET
     Call<CommonDataResponse<List<GiftCardListPurchasedItem>>> getPurchasedGiftCardList(@Url String url,

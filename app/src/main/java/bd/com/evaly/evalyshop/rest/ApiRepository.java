@@ -486,7 +486,7 @@ public class ApiRepository {
         apiHandler.createCall(apiService.placeGiftCardOrder(url, body), listener);
     }
 
-    public void getGiftCardDetails(String slug, String url, ResponseListener<JsonObject, String> listener) {
+    public void getGiftCardDetails(String slug, String url, ResponseListener<CommonDataResponse<GiftCardListItem>, String> listener) {
         url += "gift-cards/retrieve/" + slug;
         apiHandler.createCall(apiService.getGiftCardDetails(url), listener);
     }

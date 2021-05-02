@@ -1,35 +1,25 @@
 package bd.com.evaly.evalyshop.ui.giftcard.giftCardList;
 
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -46,57 +36,48 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
+import bd.com.evaly.evalyshop.databinding.FragmentGiftcardListBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.remoteConfig.RemoteConfigBaseUrls;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListAdapter;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
+();
+
 
 @AndroidEntryPoint
-public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class GiftCardListFragment extends BaseFragment<FragmentGiftcardListBinding, GiftCardListViewModel> implements SwipeRefreshLayout.OnRefreshListener {
 
+    static GiftCardListFragment instance;
     @Inject
     PreferenceRepository preferenceRepository;
     @Inject
     ApiRepository apiRepository;
     @Inject
     FirebaseRemoteConfig firebaseRemoteConfig;
-    static GiftCardListFragment instance;
-    private View view;
-    private RecyclerView recyclerView;
     private ArrayList<GiftCardListItem> itemList;
     private GiftCardListAdapter adapter;
-    private RequestQueue rq;
     private ViewDialog dialog;
-    private ImageView image, plus, minus;
-    private TextView details, name, amount, total, cardValue;
-    private EditText quantity, phoneNumber;
     private int voucherAmount = 0;
-    private Button placeOrder;
     private String giftCardSlug = "";
-    private LinearLayout noItem;
-    private Context context;
     private BottomSheetBehavior sheetBehavior;
-    private LinearLayout layoutBottomSheet;
     private BottomSheetDialog bottomSheetDialog;
     private BottomSheetBehavior bottomSheetBehavior;
     private View bottomSheetInternal;
-    private LinearLayout progressContainer;
-    private ProgressBar progressBar;
     private int currentPage;
     private boolean loading = true;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
-    private SwipeRefreshLayout swipeLayout;
     private String baseUrl = BuildConfig.BASE_URL + "cpn/";
 
     public GiftCardListFragment() {
-        // Required empty public constructor
+        super(GiftCardListViewModel.class, R.layout.fragment_giftcard_list);
     }
 
     public static GiftCardListFragment getInstance() {
@@ -105,26 +86,15 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
-
         itemList.clear();
         adapter.notifyDataSetChanged();
         currentPage = 1;
-        swipeLayout.setRefreshing(false);
-
+        binding.swipeContainer.setRefreshing(false);
         getGiftCardList();
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_giftcard_list, container, false);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    protected void initViews() {
         RemoteConfigBaseUrls baseUrls = new Gson().fromJson(firebaseRemoteConfig.getValue("temp_urls").asString(), RemoteConfigBaseUrls.class);
 
         String url = null;
@@ -138,32 +108,40 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         if (url != null)
             baseUrl = url;
 
-        recyclerView = view.findViewById(R.id.recyclerView);
-        swipeLayout = view.findViewById(R.id.swipe_container);
-        swipeLayout.setOnRefreshListener(this);
+
+        binding.swipeContainer.setOnRefreshListener(this);
 
         itemList = new ArrayList<>();
         dialog = new ViewDialog(getActivity());
 
-        context = getContext();
-        rq = Volley.newRequestQueue(context);
 
-        progressContainer = view.findViewById(R.id.progressContainer);
-        progressBar = view.findViewById(R.id.progressBar);
         currentPage = 1;
 
         initializeBottomSheet();
 
-        noItem = view.findViewById(R.id.noItem);
+        getGiftCardList();
+    }
 
-        LinearLayoutManager manager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(manager);
+    @Override
+    protected void liveEventsObservers() {
+
+    }
+
+    @Override
+    protected void clickListeners() {
+
+    }
+
+    @Override
+    protected void setupRecycler() {
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        binding.recyclerView.setLayoutManager(manager);
 
         instance = this;
-        adapter = new GiftCardListAdapter(context, itemList);
-        recyclerView.setAdapter(adapter);
+        adapter = new GiftCardListAdapter(getContext(), itemList);
+        binding.recyclerView.setAdapter(adapter);
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) //check for scroll down
@@ -180,14 +158,12 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                 }
             }
         });
-
-        getGiftCardList();
     }
 
     public void initializeBottomSheet() {
 
 
-        bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
+        bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_gift_cards);
 
         bottomSheetInternal = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
@@ -197,20 +173,20 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
-        layoutBottomSheet = bottomSheetDialog.findViewById(R.id.bottom_sheet);
+        LinearLayout layoutBottomSheet = bottomSheetDialog.findViewById(R.id.bottom_sheet);
 
-        image = bottomSheetDialog.findViewById(R.id.image);
-        plus = bottomSheetDialog.findViewById(R.id.plus);
-        minus = bottomSheetDialog.findViewById(R.id.minus);
-        quantity = bottomSheetDialog.findViewById(R.id.quantity);
-        details = bottomSheetDialog.findViewById(R.id.details);
-        name = bottomSheetDialog.findViewById(R.id.name);
-        amount = bottomSheetDialog.findViewById(R.id.amount);
-        cardValue = bottomSheetDialog.findViewById(R.id.cardValue);
+        ImageView image = bottomSheetDialog.findViewById(R.id.image);
+        TextView plus = bottomSheetDialog.findViewById(R.id.plus);
+        TextView minus = bottomSheetDialog.findViewById(R.id.minus);
+        TextView quantity = bottomSheetDialog.findViewById(R.id.quantity);
+        TextView details = bottomSheetDialog.findViewById(R.id.details);
+        TextView name = bottomSheetDialog.findViewById(R.id.name);
+        TextView amount = bottomSheetDialog.findViewById(R.id.amount);
+        TextView cardValue = bottomSheetDialog.findViewById(R.id.cardValue);
 
-        total = bottomSheetDialog.findViewById(R.id.total);
-        placeOrder = bottomSheetDialog.findViewById(R.id.place_order);
-        phoneNumber = bottomSheetDialog.findViewById(R.id.phone);
+        TextView total = bottomSheetDialog.findViewById(R.id.total);
+        Button placeOrder = bottomSheetDialog.findViewById(R.id.place_order);
+        EditText phoneNumber = bottomSheetDialog.findViewById(R.id.phone);
 
         TextView privacyText = bottomSheetDialog.findViewById(R.id.privacyText);
 
@@ -219,7 +195,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         privacyText.setMovementMethod(LinkMovementMethod.getInstance());
 
         CheckBox checkBox = bottomSheetDialog.findViewById(R.id.checkBox);
-
 
         plus.setOnClickListener(v -> {
             int quan;
@@ -276,48 +251,38 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         placeOrder.setOnClickListener(v -> {
 
             if (phoneNumber.getText().toString().equals(preferenceRepository.getUserName())) {
-                Toast.makeText(context, "You can't buy gift cards for yourself", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "You can't buy gift cards for yourself", Toast.LENGTH_LONG).show();
                 return;
             }
 
             if (phoneNumber.getText().toString().equals("")) {
-                Toast.makeText(context, "Please enter a number", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Please enter a number", Toast.LENGTH_LONG).show();
                 return;
             }
 
             if (!Utils.isValidNumber(phoneNumber.getText().toString())) {
-                Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (Utils.isNumeric(quantity.getText().toString())) {
                 if (Integer.parseInt(quantity.getText().toString()) > 10) {
-                    Toast.makeText(context, "Quantity must be less than 10", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Quantity must be less than 10", Toast.LENGTH_LONG).show();
                     return;
                 }
             } else {
-                Toast.makeText(context, "Enter valid quantity", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Enter valid quantity", Toast.LENGTH_LONG).show();
                 return;
             }
 
             assert checkBox != null;
             if (!checkBox.isChecked()) {
-                Toast.makeText(context, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
                 return;
             }
 
             createOrder(giftCardSlug);
         });
-
-    }
-
-    public void catchError() {
-        try {
-            dialog.hideDialog();
-        } catch (Exception e) {
-        }
-
-        Toast.makeText(context, "Sorry something went wrong. Please try again.", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -332,11 +297,11 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         loading = false;
 
         if (currentPage == 1) {
-            progressContainer.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
+            binding.progressContainer.setVisibility(View.VISIBLE);
+            binding.progressBar.setVisibility(View.GONE);
         } else {
-            progressContainer.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
+            binding.progressContainer.setVisibility(View.GONE);
+            binding.progressBar.setVisibility(View.VISIBLE);
         }
 
         apiRepository.getGiftCard(currentPage, baseUrl, new ResponseListener<CommonDataResponse<List<GiftCardListItem>>, String>() {
@@ -344,7 +309,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
             public void onDataFetched(CommonDataResponse<List<GiftCardListItem>> response, int statusCode) {
 
                 loading = true;
-                progressBar.setVisibility(View.GONE);
+                binding.progressBar.setVisibility(View.GONE);
 
                 List<GiftCardListItem> list = response.getData();
 
@@ -352,10 +317,10 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                 adapter.notifyItemRangeChanged(itemList.size() - list.size(), list.size());
 
                 if (currentPage == 1)
-                    progressContainer.setVisibility(View.GONE);
+                    binding.progressContainer.setVisibility(View.GONE);
 
                 if (list.size() == 0 && currentPage == 1)
-                    noItem.setVisibility(View.VISIBLE);
+                    binding.noItem.setVisibility(View.VISIBLE);
 
                 currentPage++;
             }
@@ -372,24 +337,19 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
     public void getGiftCardDetails(String slug) {
 
         if (preferenceRepository.getToken().equals("")) {
-            Toast.makeText(context, "You need to login first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "You need to login first", Toast.LENGTH_SHORT).show();
             return;
         }
 
         dialog.showDialog();
         initializeBottomSheet();
 
-
-        apiRepository.getGiftCardDetails(slug, baseUrl, new ResponseListener<JsonObject, String>() {
-            @SuppressLint("DefaultLocale")
+        apiRepository.getGiftCardDetails(slug, baseUrl, new ResponseListener<CommonDataResponse<GiftCardListItem>, String>() {
             @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
+            public void onDataFetched(CommonDataResponse<GiftCardListItem> response, int statusCode) {
                 dialog.hideDialog();
-                if (response.get("success").getAsBoolean()) {
-
-                    Gson gson = new Gson();
-                    GiftCardListItem item = gson.fromJson(response.get("data").toString(), GiftCardListItem.class);
+                if (response.getSuccess()) {
+                    GiftCardListItem item = response.getData();
 
                     name.setText(item.getName());
                     details.setText(item.getDescription());
@@ -409,9 +369,8 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
 
                 } else {
-                    Toast.makeText(context, "Sorry the gift card is not available", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Sorry the gift card is not available", Toast.LENGTH_SHORT).show();
                 }
-
             }
 
             @Override
@@ -437,7 +396,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.hideDialog();
-                Toast.makeText(context, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
                 bottomSheetDialog.hide();
                 NavHostFragment.findNavController(GiftCardListFragment.this).popBackStack();
                 Bundle bundle = new Bundle();

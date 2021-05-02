@@ -1,298 +1,301 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:cardBackgroundColor="@color/transparent"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="0dp"
-    app:cardPreventCornerOverlap="true">
+<layout>
 
-    <bd.com.evaly.evalyshop.views.StickyScrollView
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/fff">
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="true">
 
-        <LinearLayout
-            android:id="@+id/bottom_sheet"
+        <bd.com.evaly.evalyshop.views.StickyScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="bottom"
-            android:orientation="vertical">
-
-
-            <ImageView
-                android:id="@+id/image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="-1dp"
-                android:layout_marginTop="-1dp"
-                android:layout_marginRight="-1dp"
-                android:adjustViewBounds="true" />
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/fff"
-                android:paddingLeft="15dp"
-                android:paddingTop="15dp"
-                android:paddingRight="15dp"
-                android:paddingBottom="15dp"
-                android:tag="sticky"
-                android:text="@string/gift_card"
-                android:textAlignment="textStart"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:visibility="visible" />
-
+            android:layout_height="match_parent"
+            android:background="@color/fff">
 
             <LinearLayout
+                android:id="@+id/bottom_sheet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:gravity="bottom"
+                android:orientation="vertical">
 
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="15dp"
-                    android:text="@string/price_colon"
-                    android:textColor="@color/c666"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/amount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="5dp"
-                    android:text="BDT 500"
-                    android:textColor="#f57224"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-
-                <TextView
+                <ImageView
+                    android:id="@+id/image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingLeft="15dp"
-                    android:text="@string/value_colon"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/c666"
-                    android:textSize="14sp" />
+                    android:layout_marginLeft="-1dp"
+                    android:layout_marginTop="-1dp"
+                    android:layout_marginRight="-1dp"
+                    android:adjustViewBounds="true" />
 
                 <TextView
-                    android:id="@+id/cardValue"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="5dp"
+                    android:background="@color/fff"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="15dp"
                     android:paddingRight="15dp"
-                    android:text="BDT 500"
-                    android:textColor="#f57224"
+                    android:paddingBottom="15dp"
+                    android:tag="sticky"
+                    android:text="@string/gift_card"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="visible" />
 
-
-            </LinearLayout>
-
-
-            <TextView
-                android:id="@+id/details"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="15dp"
-                android:textColor="@color/c333"
-                android:textSize="17sp"
-                android:visibility="visible" />
-
-
-            <TextView
-                android:id="@+id/textView54"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:text="@string/phone_number"
-                android:textColor="@color/c666"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/input_brd"
-                android:ems="10"
-                android:hint="@string/gift_card_will_be_sent_to_this_number"
-                android:inputType="number"
-                android:maxLength="11"
-                android:maxLines="1"
-                android:padding="10dp"
-                android:singleLine="true"
-                android:textColor="@color/c555"
-                android:textColorHint="@color/c777"
-                android:textSize="16sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="horizontal"
-                android:paddingRight="15dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
 
                     <TextView
-                        android:id="@+id/textView25"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="@string/quantity"
-                        android:textColor="@color/c555"
+                        android:paddingLeft="15dp"
+                        android:text="@string/price_colon"
+                        android:textColor="@color/c666"
                         android:textSize="14sp" />
 
-                    <LinearLayout
-                        android:id="@+id/countHolder"
+                    <TextView
+                        android:id="@+id/amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/priceTotal"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentBottom="false"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="20dp"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:orientation="horizontal">
+                        android:paddingLeft="5dp"
+                        android:text="BDT 500"
+                        android:textColor="#f57224"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
-                        <ImageView
-                            android:id="@+id/minus"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_weight="0"
-                            android:background="@color/eee"
-                            android:clickable="true"
-                            android:padding="5dp"
-                            app:srcCompat="@drawable/ic_minus" />
-
-                        <EditText
-                            android:id="@+id/quantity"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@null"
-                            android:imeOptions="actionDone"
-                            android:inputType="number"
-                            android:maxLength="4"
-                            android:maxLines="1"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
-                            android:text="1"
-                            android:textColor="@color/black"
-                            android:textSize="22sp" />
-
-                        <ImageView
-                            android:id="@+id/plus"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_weight="0"
-                            android:background="@color/eee"
-                            android:clickable="true"
-                            android:padding="5dp"
-                            app:srcCompat="@drawable/ic_plus" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="15dp"
-                    android:layout_weight="0">
 
                     <TextView
-                        android:id="@+id/total_amount"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/total_price"
+                        android:layout_weight="1"
+                        android:paddingLeft="15dp"
+                        android:text="@string/value_colon"
                         android:textAlignment="textEnd"
                         android:textColor="@color/c666"
                         android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/total"
+                        android:id="@+id/cardValue"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_below="@+id/total_amount"
-                        android:layout_marginTop="2dp"
-                        android:textColor="@color/c333"
-                        android:textSize="25dp"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="15dp"
+                        android:text="BDT 500"
+                        android:textColor="#f57224"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
-                </RelativeLayout>
 
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="top"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp"
-                android:paddingRight="15dp">
-
-
-                <CheckBox
-                    android:id="@+id/checkBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:buttonTint="@color/colorAccent"
-                    android:text="" />
+                </LinearLayout>
 
 
                 <TextView
-                    android:id="@+id/privacyText"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/details"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-4dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="0"
-                    android:paddingLeft="5dp"
-                    android:text="@string/i_agree_to_the_terms_amp_conditions_and_purchasing_policy_of_evaly"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="15dp"
                     android:textColor="@color/c333"
+                    android:textSize="17sp"
+                    android:visibility="visible" />
+
+
+                <TextView
+                    android:id="@+id/textView54"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/phone_number"
+                    android:textColor="@color/c666"
                     android:textSize="14sp" />
 
+                <EditText
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/input_brd"
+                    android:ems="10"
+                    android:hint="@string/gift_card_will_be_sent_to_this_number"
+                    android:inputType="number"
+                    android:maxLength="11"
+                    android:maxLines="1"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/c555"
+                    android:textColorHint="@color/c777"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal"
+                    android:paddingRight="15dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textView25"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:text="@string/quantity"
+                            android:textColor="@color/c555"
+                            android:textSize="14sp" />
+
+                        <LinearLayout
+                            android:id="@+id/countHolder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/priceTotal"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentBottom="false"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="20dp"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/minus"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="0"
+                                android:background="@color/eee"
+                                android:clickable="true"
+                                android:padding="5dp"
+                                app:srcCompat="@drawable/ic_minus" />
+
+                            <EditText
+                                android:id="@+id/quantity"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@null"
+                                android:imeOptions="actionDone"
+                                android:inputType="number"
+                                android:maxLength="4"
+                                android:maxLines="1"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:text="1"
+                                android:textColor="@color/black"
+                                android:textSize="22sp" />
+
+                            <ImageView
+                                android:id="@+id/plus"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="0"
+                                android:background="@color/eee"
+                                android:clickable="true"
+                                android:padding="5dp"
+                                app:srcCompat="@drawable/ic_plus" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="15dp"
+                        android:layout_weight="0">
+
+                        <TextView
+                            android:id="@+id/total_amount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total_price"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/c666"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/total"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_below="@+id/total_amount"
+                            android:layout_marginTop="2dp"
+                            android:textColor="@color/c333"
+                            android:textSize="25dp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="top"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="15dp">
+
+
+                    <CheckBox
+                        android:id="@+id/checkBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:buttonTint="@color/colorAccent"
+                        android:text="" />
+
+
+                    <TextView
+                        android:id="@+id/privacyText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-4dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="0"
+                        android:paddingLeft="5dp"
+                        android:text="@string/i_agree_to_the_terms_amp_conditions_and_purchasing_policy_of_evaly"
+                        android:textColor="@color/c333"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+
+                <Button
+                    android:id="@+id/place_order"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/black_ripple_bg"
+                    android:stateListAnimator="@null"
+                    android:text="@string/buy"
+                    android:textColor="@color/fffh"
+                    app:backgroundTint="@null" />
+
             </LinearLayout>
-
-
-            <Button
-                android:id="@+id/place_order"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                app:backgroundTint="@null"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/black_ripple_bg"
-                android:stateListAnimator="@null"
-                android:text="@string/buy"
-                android:textColor="@color/fffh" />
-
-        </LinearLayout>
-    </bd.com.evaly.evalyshop.views.StickyScrollView>
-</androidx.cardview.widget.CardView>
+        </bd.com.evaly.evalyshop.views.StickyScrollView>
+    </androidx.cardview.widget.CardView>
+</layout>
