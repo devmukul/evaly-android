@@ -1,391 +1,393 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
 
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="-10dp"
-    android:clipToPadding="false"
-    app:cardCornerRadius="10dp">
-
-    <LinearLayout
-        android:id="@+id/container2"
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:layout_marginBottom="-10dp"
+        android:clipToPadding="false"
+        app:cardCornerRadius="10dp">
 
-        <bd.com.evaly.evalyshop.views.StickyScrollView
-            android:id="@+id/stickyScrollView"
+        <LinearLayout
+            android:id="@+id/container2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/transparent"
-            android:fillViewport="true">
+            android:background="@color/white"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <bd.com.evaly.evalyshop.views.StickyScrollView
+                android:id="@+id/stickyScrollView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/f8f8f8"
-                android:focusableInTouchMode="false"
-                android:orientation="vertical">
-
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:fillViewport="true">
 
                 <LinearLayout
-                    android:id="@+id/header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/f8f8f8"
+                    android:focusableInTouchMode="false"
                     android:orientation="vertical">
 
-                    <RelativeLayout
+
+                    <LinearLayout
+                        android:id="@+id/header"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:paddingLeft="18dp"
-                        android:paddingTop="18dp"
-                        android:paddingRight="18dp"
-                        android:paddingBottom="20dp"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:paddingLeft="18dp"
+                            android:paddingTop="18dp"
+                            android:paddingRight="18dp"
+                            android:paddingBottom="20dp"
+                            android:tag="sticky">
+
+                            <TextView
+                                android:id="@+id/orderId"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="EVL321093712"
+                                android:textColor="@color/c333"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/issueType"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:background="@drawable/bg_issue_type"
+                                android:paddingLeft="10dp"
+                                android:paddingTop="3dp"
+                                android:paddingRight="10dp"
+                                android:paddingBottom="3dp"
+                                android:text="Delivery Issue"
+                                android:textColor="#0c5a71"
+                                android:textSize="14sp" />
+
+
+                            <TextView
+                                android:id="@+id/date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/issueType"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginTop="12dp"
+                                android:text="2 hours ago"
+                                android:textColor="@color/c777"
+                                android:textSize="14sp" />
+
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/statusHolder"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/orderId"
+                                android:layout_marginTop="10dp"
+                                android:elevation="0dp"
+                                app:cardCornerRadius="5dp"
+                                app:cardElevation="0dp"
+                                app:cardPreventCornerOverlap="true"
+                                app:cardUseCompatPadding="false"
+                                app:contentPadding="0dp">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="right"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tvStatus"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@color/c333"
+                                        android:clickable="false"
+                                        android:paddingLeft="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingRight="8dp"
+                                        android:paddingBottom="4dp"
+                                        android:text="Pending"
+                                        android:textColor="@color/white"
+                                        android:textSize="12sp"
+                                        android:visibility="gone" />
+
+                                    <TextView
+                                        android:id="@+id/tvIssueStatus"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="#f0ac4e"
+                                        android:clickable="false"
+                                        android:paddingLeft="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingRight="8dp"
+                                        android:paddingBottom="4dp"
+                                        android:text="Active"
+                                        android:textColor="@color/fffh"
+                                        android:textSize="12sp" />
+
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:id="@+id/view11"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/f8f8f8"
+                            android:visibility="visible" />
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autoLink="all"
+                            android:background="@color/white"
+                            android:paddingLeft="17dp"
+                            android:paddingTop="13dp"
+                            android:paddingRight="17dp"
+                            android:paddingBottom="0dp"
+                            android:text="Description:"
+                            android:textColor="@color/c444"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+
+                        <TextView
+                            android:id="@+id/text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autoLink="all"
+                            android:background="@color/white"
+                            android:paddingLeft="17dp"
+                            android:paddingTop="10dp"
+                            android:paddingRight="17dp"
+                            android:paddingBottom="20dp"
+                            android:text="Here is the issue description..."
+                            android:textColor="@color/c444"
+                            android:textSize="17sp" />
+
+                        <LinearLayout
+                            android:id="@+id/tvResolveIssueHolder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/fff"
+                            android:gravity="end"
+                            android:paddingBottom="18dp">
+
+                            <TextView
+                                android:id="@+id/tvResolveIssue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end"
+                                android:layout_marginEnd="18dp"
+                                android:background="@drawable/input_btn_small"
+                                android:backgroundTint="#19B846"
+                                android:clickable="false"
+                                android:paddingLeft="10dp"
+                                android:paddingTop="5dp"
+                                android:paddingRight="10dp"
+                                android:paddingBottom="6dp"
+                                android:text="Mark as Resolved"
+                                android:textColor="@color/fffh"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/postImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/text"
+                            android:adjustViewBounds="true"
+                            android:background="@color/eee"
+                            android:minHeight="300dp"
+                            android:visibility="gone" />
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/f8f8f8"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
                         android:tag="sticky">
 
                         <TextView
-                            android:id="@+id/orderId"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="EVL321093712"
+                            android:layout_weight="1"
+                            android:paddingLeft="18dp"
+                            android:paddingTop="15dp"
+                            android:paddingBottom="17dp"
+                            android:text="Replies"
                             android:textColor="@color/c333"
-                            android:textSize="17sp"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/issueType"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:background="@drawable/bg_issue_type"
-                            android:paddingLeft="10dp"
-                            android:paddingTop="3dp"
-                            android:paddingRight="10dp"
-                            android:paddingBottom="3dp"
-                            android:text="Delivery Issue"
-                            android:textColor="#0c5a71"
-                            android:textSize="14sp" />
-
-
-                        <TextView
-                            android:id="@+id/date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/issueType"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginTop="12dp"
-                            android:text="2 hours ago"
-                            android:textColor="@color/c777"
-                            android:textSize="14sp" />
-
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/statusHolder"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/orderId"
-                            android:layout_marginTop="10dp"
-                            android:elevation="0dp"
-                            app:cardCornerRadius="5dp"
-                            app:cardElevation="0dp"
-                            app:cardPreventCornerOverlap="true"
-                            app:cardUseCompatPadding="false"
-                            app:contentPadding="0dp">
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="right"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/tvStatus"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@color/c333"
-                                    android:clickable="false"
-                                    android:paddingLeft="8dp"
-                                    android:paddingTop="4dp"
-                                    android:paddingRight="8dp"
-                                    android:paddingBottom="4dp"
-                                    android:text="Pending"
-                                    android:textColor="@color/white"
-                                    android:textSize="12sp"
-                                    android:visibility="gone" />
-
-                                <TextView
-                                    android:id="@+id/tvIssueStatus"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:background="#f0ac4e"
-                                    android:clickable="false"
-                                    android:paddingLeft="8dp"
-                                    android:paddingTop="4dp"
-                                    android:paddingRight="8dp"
-                                    android:paddingBottom="4dp"
-                                    android:text="Active"
-                                    android:textColor="@color/fffh"
-                                    android:textSize="12sp" />
-
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                    </RelativeLayout>
-
-                    <View
-                        android:id="@+id/view11"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/f8f8f8"
-                        android:visibility="visible" />
-
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:autoLink="all"
-                        android:background="@color/white"
-                        android:paddingLeft="17dp"
-                        android:paddingTop="13dp"
-                        android:paddingRight="17dp"
-                        android:paddingBottom="0dp"
-                        android:text="Description:"
-                        android:textColor="@color/c444"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-
-                    <TextView
-                        android:id="@+id/text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:autoLink="all"
-                        android:background="@color/white"
-                        android:paddingLeft="17dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="17dp"
-                        android:paddingBottom="20dp"
-                        android:text="Here is the issue description..."
-                        android:textColor="@color/c444"
-                        android:textSize="17sp" />
-
-                    <LinearLayout
-                        android:id="@+id/tvResolveIssueHolder"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/fff"
-                        android:gravity="end"
-                        android:paddingBottom="18dp">
-
-                        <TextView
-                            android:id="@+id/tvResolveIssue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_marginEnd="18dp"
-                            android:background="@drawable/input_btn_small"
-                            android:backgroundTint="#19B846"
-                            android:clickable="false"
-                            android:paddingLeft="10dp"
-                            android:paddingTop="5dp"
-                            android:paddingRight="10dp"
-                            android:paddingBottom="6dp"
-                            android:text="Mark as Resolved"
-                            android:textColor="@color/fffh"
-                            android:textSize="14sp" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:id="@+id/postImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/text"
-                        android:adjustViewBounds="true"
-                        android:background="@color/eee"
-                        android:minHeight="300dp"
-                        android:visibility="gone" />
-
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/f8f8f8"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:tag="sticky">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingLeft="18dp"
-                        android:paddingTop="15dp"
-                        android:paddingBottom="17dp"
-                        android:text="Replies"
-                        android:textColor="@color/c333"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:id="@+id/refresh"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_weight="0"
-                        android:paddingLeft="10dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="15dp"
-                        android:paddingBottom="10dp"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_refresh" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/f8f8f8"
-                    android:descendantFocusability="blocksDescendants"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/progressContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:minHeight="300dp"
-                        android:orientation="vertical"
-                        android:visibility="visible">
-
-                        <ProgressBar
-                            style="?android:attr/progressBarStyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/not"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:minHeight="160dp"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
                         <ImageView
-                            android:id="@+id/imageView22"
-                            android:layout_width="match_parent"
+                            android:id="@+id/refresh"
+                            android:layout_width="wrap_content"
                             android:layout_height="40dp"
-                            app:srcCompat="@drawable/ic_chat_small"
-                            app:tint="#aaa" />
+                            android:layout_weight="0"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="10dp"
+                            android:paddingRight="15dp"
+                            android:paddingBottom="10dp"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_refresh" />
 
-                        <TextView
-                            android:id="@+id/textView53"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:text="No replies yet"
-                            android:textAlignment="center"
-                            android:textAllCaps="false"
-                            android:textColor="@color/c333"
-                            android:textSize="16sp" />
                     </LinearLayout>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerView"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:background="@color/f8f8f8"
                         android:descendantFocusability="blocksDescendants"
-                        android:nestedScrollingEnabled="false"
-                        android:paddingBottom="5dp" />
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/progressContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:minHeight="300dp"
+                            android:orientation="vertical"
+                            android:visibility="visible">
+
+                            <ProgressBar
+                                style="?android:attr/progressBarStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/not"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:minHeight="160dp"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:id="@+id/imageView22"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                app:srcCompat="@drawable/ic_chat_small"
+                                app:tint="#aaa" />
+
+                            <TextView
+                                android:id="@+id/textView53"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="No replies yet"
+                                android:textAlignment="center"
+                                android:textAllCaps="false"
+                                android:textColor="@color/c333"
+                                android:textSize="16sp" />
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:descendantFocusability="blocksDescendants"
+                            android:nestedScrollingEnabled="false"
+                            android:paddingBottom="5dp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
+            </bd.com.evaly.evalyshop.views.StickyScrollView>
 
-            </LinearLayout>
-        </bd.com.evaly.evalyshop.views.StickyScrollView>
-
-
-        <LinearLayout
-            android:id="@+id/commentHolder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:background="@color/f8f8f8"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="0dp">
 
             <LinearLayout
+                android:id="@+id/commentHolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/comment_input_bg"
-                android:gravity="top"
-                android:orientation="horizontal">
+                android:layout_weight="0"
+                android:background="@color/f8f8f8"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="0dp">
 
-                <EditText
-                    android:id="@+id/commentInput"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_weight="1"
-                    android:background="@null"
-                    android:ems="10"
-                    android:hint="Write your reply..."
-                    android:inputType="textMultiLine"
-                    android:maxHeight="200dp"
-                    android:paddingLeft="15dp"
-                    android:paddingTop="12dp"
-                    android:paddingRight="15dp"
-                    android:paddingBottom="12dp"
-                    android:textColor="@color/c333"
-                    android:textColorHint="@color/c777"
-                    android:textSize="14sp" />
+                    android:background="@drawable/comment_input_bg"
+                    android:gravity="top"
+                    android:orientation="horizontal">
 
+                    <EditText
+                        android:id="@+id/commentInput"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:ems="10"
+                        android:hint="Write your reply..."
+                        android:inputType="textMultiLine"
+                        android:maxHeight="200dp"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="12dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="12dp"
+                        android:textColor="@color/c333"
+                        android:textColorHint="@color/c777"
+                        android:textSize="14sp" />
+
+
+                    <ImageView
+                        android:id="@+id/uploadImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_weight="0"
+                        android:clickable="true"
+                        android:paddingTop="10dp"
+                        android:paddingRight="12dp"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_gallery"
+                        app:tint="@color/c444" />
+
+
+                </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/uploadImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
+                    android:id="@+id/submitComment"
+                    android:layout_width="50dp"
+                    android:layout_height="46dp"
+                    android:layout_marginBottom="1dp"
                     android:layout_weight="0"
                     android:clickable="true"
-                    android:paddingTop="10dp"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="12dp"
                     android:paddingRight="12dp"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_gallery"
-                    app:tint="@color/c444" />
-
+                    android:paddingBottom="12dp"
+                    android:tint="@color/c444"
+                    app:srcCompat="@drawable/ic_send_button" />
 
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/submitComment"
-                android:layout_width="50dp"
-                android:layout_height="46dp"
-                android:layout_marginBottom="1dp"
-                android:layout_weight="0"
-                android:clickable="true"
-                android:paddingLeft="5dp"
-                android:paddingTop="12dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="12dp"
-                android:tint="@color/c444"
-                app:srcCompat="@drawable/ic_send_button" />
-
         </LinearLayout>
-
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+</layout>

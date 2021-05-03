@@ -2,13 +2,10 @@ package bd.com.evaly.evalyshop.ui.issue.details;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -21,39 +18,37 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetIssueDetailsBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListener;
-import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.issueNew.comment.IssueTicketCommentModel;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
-import bd.com.evaly.evalyshop.rest.ApiRepository;
+import bd.com.evaly.evalyshop.ui.base.BaseBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.issue.adapter.IssueReplyAdapter;
 import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 @AndroidEntryPoint
-public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
+public class IssueDetailsBottomSheet extends BaseBottomSheetFragment<BottomSheetIssueDetailsBinding, IssueDetailsViewModel> {
 
-    @Inject
-    ApiRepository apiRepository;
-    private BottomSheetIssueDetailsBinding binding;
     private IssueListModel issueModel;
     private IssueReplyAdapter adapter;
     private List<IssueTicketCommentModel> itemList = new ArrayList<>();
+    private ViewDialog dialog;
+
+    public IssueDetailsBottomSheet() {
+        super(IssueDetailsViewModel.class, R.layout.bottom_sheet_issue_details);
+    }
 
     public static IssueDetailsBottomSheet newInstance(IssueListModel issueModel) {
         IssueDetailsBottomSheet bottomSheet = new IssueDetailsBottomSheet();
@@ -75,22 +70,9 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        binding = BottomSheetIssueDetailsBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
+    protected void initViews() {
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+        dialog = new ViewDialog(getActivity());
         adapter = new IssueReplyAdapter(getActivity(), itemList);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -102,39 +84,58 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
             submitReply();
         });
 
-        loadReplies();
-
         if (issueModel.getStatus().equalsIgnoreCase("closed") ||
                 issueModel.getStatus().equalsIgnoreCase("resolved") ||
                 issueModel.getStatus().equalsIgnoreCase("rejected"))
             binding.commentHolder.setVisibility(View.GONE);
-
     }
 
-    private void loadReplies() {
+    @Override
+    protected void liveEventsObservers() {
 
+        viewModel.resolveLiveData.observe(getViewLifecycleOwner(), response -> {
+            dialog.hideDialog();
+            if (response != null) {
+                if (response.getSuccess()) {
+                    dismissAllowingStateLoss();
+                    ToastUtils.show("Successfully marked the ticket as resolved");
+                    if (getActivity() != null && !getActivity().isDestroyed() && !getActivity().isFinishing()) {
+                        if (getActivity() instanceof IssuesActivity)
+                            ((IssuesActivity) getActivity()).refreshPage();
+                    }
+                } else
+                    ToastUtils.show(response.getMessage());
+            }
+        });
 
-        apiRepository.getIssueCommentList(issueModel.getId(), new ResponseListener<CommonDataResponse<List<IssueTicketCommentModel>>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<List<IssueTicketCommentModel>> response, int statusCode) {
-                binding.progressContainer.setVisibility(View.GONE);
-                itemList.addAll(response.getData());
+        viewModel.replyLiveList.observe(getViewLifecycleOwner(), issueTicketCommentModels -> {
+            binding.progressContainer.setVisibility(View.GONE);
+            itemList.clear();
+            itemList.addAll(issueTicketCommentModels);
+            adapter.notifyDataSetChanged();
+
+            if (itemList.size() == 0)
+                binding.not.setVisibility(View.VISIBLE);
+            else
+                binding.not.setVisibility(View.GONE);
+        });
+
+        viewModel.replySubmitLiveData.observe(getViewLifecycleOwner(), model -> {
+            dialog.hideDialog();
+            if (model != null) {
+                binding.commentInput.setText("");
+                binding.not.setVisibility(View.GONE);
+                itemList.add(model);
+
                 adapter.notifyDataSetChanged();
-
-                if (itemList.size() == 0)
-                    binding.not.setVisibility(View.VISIBLE);
-                else
-                    binding.not.setVisibility(View.GONE);
             }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
         });
     }
 
+    @Override
+    protected void clickListeners() {
+
+    }
 
     private void submitReply() {
 
@@ -146,61 +147,12 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         InputMethodManager img = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
         assert img != null;
         img.hideSoftInputFromWindow(binding.commentInput.getWindowToken(), 0);
-
-        ProgressDialog dialog = new ProgressDialog(getContext());
-        dialog.show();
-
-        apiRepository.createIssueComment(issueModel.getId(), binding.commentInput.getText().toString(), new ResponseListener<CommonDataResponse<IssueTicketCommentModel>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<IssueTicketCommentModel> response, int statusCode) {
-                binding.commentInput.setText("");
-                dialog.dismiss();
-                if (response.getData() != null) {
-                    binding.not.setVisibility(View.GONE);
-                    itemList.add(response.getData());
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                dialog.dismiss();
-                ToastUtils.show(R.string.something_wrong);
-            }
-
-        });
+        viewModel.submitReply(binding.commentInput.getText().toString());
     }
 
     private void resolveIssue() {
-
-        if (getContext() == null)
-            return;
-
-        ProgressDialog dialog = new ProgressDialog(getContext());
-        dialog.show();
-
-        apiRepository.resolveIssue("resolved", (int) issueModel.getId(), new ResponseListener<CommonDataResponse<IssueListModel>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<IssueListModel> response, int statusCode) {
-                dialog.dismiss();
-                if (response.getSuccess()) {
-                    dismissAllowingStateLoss();
-                    ToastUtils.show("Successfully marked the ticket as resolved");
-                    if (getActivity() != null && !getActivity().isDestroyed() && !getActivity().isFinishing()) {
-                        if (getActivity() instanceof IssuesActivity)
-                            ((IssuesActivity) getActivity()).refreshPage();
-                    }
-                } else
-                    ToastUtils.show(response.getMessage());
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                dialog.dismiss();
-                ToastUtils.show(R.string.something_wrong);
-            }
-
-        });
+        dialog.showDialog();
+        viewModel.resolveIssue();
     }
 
 
@@ -288,10 +240,8 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         bottomSheetDialog.setOnShowListener(dialogz -> {
             BottomSheetDialog dialog = (BottomSheetDialog) dialogz;
             FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-
             if (getContext() != null && bottomSheet != null) {
                 ScreenUtils screenUtils = new ScreenUtils(getContext());
-
                 LinearLayout dialogLayoutReply = dialog.findViewById(R.id.container2);
                 assert dialogLayoutReply != null;
                 dialogLayoutReply.setMinimumHeight(screenUtils.getHeight());
@@ -301,7 +251,6 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
                 BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
                 BottomSheetBehavior.from(bottomSheet).setHideable(true);
             }
-
         });
         return bottomSheetDialog;
     }
