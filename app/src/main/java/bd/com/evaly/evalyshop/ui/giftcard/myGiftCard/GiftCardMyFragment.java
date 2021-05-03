@@ -91,6 +91,12 @@ public class GiftCardMyFragment extends BaseFragment<FragmentGiftcardListBinding
 
     @Override
     protected void liveEventsObservers() {
+        viewModel.redeemLiveData.observe(getViewLifecycleOwner(), aBoolean -> {
+            dialog.hideDialog();
+            if (aBoolean && bottomSheetDialog != null)
+                bottomSheetDialog.dismiss();
+        });
+
         viewModel.liveList.observe(getViewLifecycleOwner(), giftCardListPurchasedItems -> {
             isLoading = false;
             binding.progressBar.setVisibility(View.GONE);

@@ -13,6 +13,7 @@ import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.base.BaseViewPagerAdapter;
 import bd.com.evaly.evalyshop.ui.giftcard.giftCardList.GiftCardListFragment;
 import bd.com.evaly.evalyshop.ui.giftcard.myGiftCard.GiftCardMyFragment;
+import bd.com.evaly.evalyshop.ui.giftcard.purchasedGiftCard.GiftCardPurchasedFragment;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
