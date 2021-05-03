@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
-import bd.com.evaly.evalyshop.ui.giftcard.GiftCardMyFragment;
+import bd.com.evaly.evalyshop.ui.giftcard.myGiftCard.GiftCardMyFragment;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardPurchasedFragment;
 import bd.com.evaly.evalyshop.util.Utils;
 
