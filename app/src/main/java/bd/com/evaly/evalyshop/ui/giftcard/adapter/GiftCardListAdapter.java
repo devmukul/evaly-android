@@ -26,10 +26,6 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
     ArrayList<GiftCardListItem> itemList;
     ClickListener clickListener;
 
-    public interface ClickListener{
-        void onClick(GiftCardListItem item);
-    }
-
     public GiftCardListAdapter(Context context, ArrayList<GiftCardListItem> itemList) {
         this.context = context;
         this.itemList = itemList;
@@ -50,7 +46,6 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.tv.setText(itemList.get(i).getName());
 
-
         if (itemList.get(i).getImageUrl() == null)
             Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").into(myViewHolder.iv);
         else
@@ -66,6 +61,10 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
     @Override
     public int getItemCount() {
         return itemList.size();
+    }
+
+    public interface ClickListener {
+        void onClick(GiftCardListItem item);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

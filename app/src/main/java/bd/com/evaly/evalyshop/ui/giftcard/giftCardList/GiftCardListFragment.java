@@ -44,6 +44,7 @@ public class GiftCardListFragment extends BaseFragment<FragmentGiftcardListBindi
 
     @Override
     public void onRefresh() {
+        viewModel.clear();
         itemList.clear();
         adapter.notifyDataSetChanged();
         binding.swipeContainer.setRefreshing(false);

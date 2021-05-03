@@ -48,6 +48,11 @@ public class GiftCardListViewModel extends BaseViewModel {
         getGiftCardList();
     }
 
+    public void clear(){
+        arrayList.clear();
+        currentPage = 1;
+    }
+
     public void getGiftCardList() {
 
         apiRepository.getGiftCard(currentPage, baseUrl, new ResponseListener<CommonDataResponse<List<GiftCardListItem>>, String>() {

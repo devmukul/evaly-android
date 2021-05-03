@@ -19,20 +19,23 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
-import bd.com.evaly.evalyshop.ui.giftcard.myGiftCard.GiftCardMyFragment;
-import bd.com.evaly.evalyshop.ui.giftcard.GiftCardPurchasedFragment;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardListPurchasedAdapter.MyViewHolder> {
 
     Context context;
     ArrayList<GiftCardListPurchasedItem> itemList;
+    ClickListener clickListener;
     private int type = 0;
 
     public GiftCardListPurchasedAdapter(Context context, ArrayList<GiftCardListPurchasedItem> itemList, int type) {
         this.context = context;
         this.itemList = itemList;
         this.type = type;
+    }
+
+    public void setClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -67,10 +70,7 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         }
 
         myViewHolder.button.setOnClickListener(v -> {
-            if (type == 0)
-                GiftCardPurchasedFragment.getInstance().toggleBottomSheet(itemList.get(i));
-            else
-                GiftCardMyFragment.getInstance().toggleBottomSheet(itemList.get(i));
+            clickListener.onClick(itemList.get(i));
         });
 
 
@@ -154,6 +154,10 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
     @Override
     public int getItemCount() {
         return itemList.size();
+    }
+
+    public interface ClickListener {
+        void onClick(GiftCardListPurchasedItem item);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
