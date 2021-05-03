@@ -3,9 +3,6 @@ package bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -15,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.text.SimpleDateFormat;
@@ -30,30 +26,28 @@ import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditPersonalInformationBinding;
 import bd.com.evaly.evalyshop.models.profile.PersonalInfoRequest;
 import bd.com.evaly.evalyshop.models.user.UserModel;
+import bd.com.evaly.evalyshop.ui.base.BaseBottomSheetFragment;
+import bd.com.evaly.evalyshop.ui.base.BaseViewModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Utils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
+public class PersonalInfoBottomSheet extends BaseBottomSheetFragment<BottomSheetEditPersonalInformationBinding, BaseViewModel> {
 
     @Inject
     PreferenceRepository preferenceRepository;
-    private BottomSheetEditPersonalInformationBinding binding;
     private String dateOfBirth = "";
-    private EditProfileViewModel viewModel;
+    private EditProfileViewModel commonViewModel;
+
+    public PersonalInfoBottomSheet() {
+        super(BaseViewModel.class, R.layout.bottom_sheet_edit_personal_information);
+    }
 
     public static PersonalInfoBottomSheet newInstance() {
         PersonalInfoBottomSheet instance = new PersonalInfoBottomSheet();
         return instance;
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        binding = BottomSheetEditPersonalInformationBinding.inflate(inflater, container, false);
-        return binding.getRoot();
     }
 
     @Override
@@ -62,31 +56,12 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
         setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog);
 
         if (getActivity() != null)
-            viewModel = new ViewModelProvider(getActivity()).get(EditProfileViewModel.class);
+            commonViewModel = new ViewModelProvider(getActivity()).get(EditProfileViewModel.class);
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-        bottomSheetDialog.setOnShowListener(d -> {
-            BottomSheetDialog dialog = (BottomSheetDialog) d;
-            FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-
-            if (bottomSheet != null) {
-                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-                BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
-                BottomSheetBehavior.from(bottomSheet).setHideable(true);
-            }
-        });
-
-        return bottomSheetDialog;
-    }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    protected void initViews() {
         UserModel userModel = preferenceRepository.getUserData();
 
         if (userModel != null) {
@@ -106,6 +81,16 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
                 binding.genderGroup.check(R.id.checkFemale);
         }
 
+
+    }
+
+    @Override
+    protected void liveEventsObservers() {
+
+    }
+
+    @Override
+    protected void clickListeners() {
         binding.dateOfBirth.setOnClickListener(v -> {
             MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
             builder.setTitleText("Select your birth date");
@@ -156,17 +141,36 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
             body.setBirthDate(dateOfBirth);
             body.setContact(contact);
             body.setGender(gender);
-            viewModel.setUserData(Utils.objectToHashMap(body));
+            commonViewModel.setUserData(Utils.objectToHashMap(body));
 
             HashMap<String, String> data = new HashMap<>();
             data.put("user", preferenceRepository.getUserName());
             data.put("host", Constants.XMPP_HOST);
             data.put("name", "FN");
             data.put("content", firstName + " " + lastName);
-            viewModel.updateToXMPP(data);
+            commonViewModel.updateToXMPP(data);
             dismissAllowingStateLoss();
         });
-
     }
+
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+        bottomSheetDialog.setOnShowListener(d -> {
+            BottomSheetDialog dialog = (BottomSheetDialog) d;
+            FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+                BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
+                BottomSheetBehavior.from(bottomSheet).setHideable(true);
+            }
+        });
+
+        return bottomSheetDialog;
+    }
+
 
 }

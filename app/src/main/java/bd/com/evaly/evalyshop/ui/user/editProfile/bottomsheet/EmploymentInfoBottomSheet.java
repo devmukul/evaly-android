@@ -2,9 +2,6 @@ package bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -13,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import javax.inject.Inject;
 
@@ -22,34 +18,27 @@ import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditEmploymentInfoBinding;
 import bd.com.evaly.evalyshop.models.profile.EmploymentRequest;
 import bd.com.evaly.evalyshop.models.user.UserModel;
+import bd.com.evaly.evalyshop.ui.base.BaseBottomSheetFragment;
+import bd.com.evaly.evalyshop.ui.base.BaseViewModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class EmploymentInfoBottomSheet extends BottomSheetDialogFragment {
+public class EmploymentInfoBottomSheet extends BaseBottomSheetFragment<BottomSheetEditEmploymentInfoBinding, BaseViewModel> {
 
     @Inject
     PreferenceRepository preferenceRepository;
-    private BottomSheetEditEmploymentInfoBinding binding;
     private EditProfileViewModel viewModel;
+
+    public EmploymentInfoBottomSheet() {
+        super(BaseViewModel.class, R.layout.bottom_sheet_edit_employment_info);
+    }
 
     public static EmploymentInfoBottomSheet newInstance() {
         EmploymentInfoBottomSheet instance = new EmploymentInfoBottomSheet();
         return instance;
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        binding = BottomSheetEditEmploymentInfoBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -61,28 +50,8 @@ public class EmploymentInfoBottomSheet extends BottomSheetDialogFragment {
             viewModel = new ViewModelProvider(getActivity()).get(EditProfileViewModel.class);
     }
 
-    @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-        bottomSheetDialog.setOnShowListener(d -> {
-            BottomSheetDialog dialog = (BottomSheetDialog) d;
-            FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-
-            if (bottomSheet != null) {
-                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-                BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
-                BottomSheetBehavior.from(bottomSheet).setHideable(true);
-            }
-        });
-
-        return bottomSheetDialog;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    protected void initViews() {
         UserModel userModel = preferenceRepository.getUserData();
 
         if (userModel != null) {
@@ -90,6 +59,15 @@ public class EmploymentInfoBottomSheet extends BottomSheetDialogFragment {
             binding.organization.setText(userModel.getOrganization());
         }
 
+    }
+
+    @Override
+    protected void liveEventsObservers() {
+
+    }
+
+    @Override
+    protected void clickListeners() {
         binding.save.setOnClickListener(v -> {
             String occupation = binding.occupation.getText().toString().trim();
             String organization = binding.organization.getText().toString().trim();
@@ -112,7 +90,25 @@ public class EmploymentInfoBottomSheet extends BottomSheetDialogFragment {
             viewModel.setUserData(Utils.objectToHashMap(body));
             dismissAllowingStateLoss();
         });
+    }
 
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+        bottomSheetDialog.setOnShowListener(d -> {
+            BottomSheetDialog dialog = (BottomSheetDialog) d;
+            FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+                BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
+                BottomSheetBehavior.from(bottomSheet).setHideable(true);
+            }
+        });
+
+        return bottomSheetDialog;
     }
 
 }
