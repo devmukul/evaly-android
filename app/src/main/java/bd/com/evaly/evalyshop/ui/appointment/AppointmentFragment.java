@@ -20,39 +20,30 @@ import bd.com.evaly.evalyshop.databinding.FragmentAppointmentBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
 import bd.com.evaly.evalyshop.ui.appointment.controller.AppointmentController;
+import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class AppointmentFragment extends Fragment implements AppointmentController.ClickListener {
+public class AppointmentFragment extends BaseFragment<FragmentAppointmentBinding, AppointmentViewModel> implements AppointmentController.ClickListener {
 
-    @Inject
-    AppointmentViewModel viewModel;
     private MainViewModel mainViewModel;
-    private FragmentAppointmentBinding binding;
     private AppointmentController controller;
     private boolean isLoading = false;
     private boolean shouldScrollToTop = false;
 
-    @Nullable
+    public AppointmentFragment(){
+        super(AppointmentViewModel.class, R.layout.fragment_appointment);
+    }
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentAppointmentBinding.inflate(inflater);
+    protected void initViews() {
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-        return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        clickListeners();
-        initRecycler();
-        liveEventObservers();
-    }
-
-    private void liveEventObservers() {
+    protected void liveEventsObservers() {
         viewModel.liveList.observe(getViewLifecycleOwner(), appointmentResponses -> {
             isLoading = false;
             controller.setLoading(false);
@@ -83,7 +74,8 @@ public class AppointmentFragment extends Fragment implements AppointmentControll
         });
     }
 
-    private void initRecycler() {
+    @Override
+    protected void setupRecycler() {
         if (controller == null)
             controller = new AppointmentController();
         controller.setClickListener(this);
@@ -105,7 +97,8 @@ public class AppointmentFragment extends Fragment implements AppointmentControll
         controller.requestModelBuild();
     }
 
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
         binding.toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
             NavHostFragment.findNavController(this).navigate(R.id.createAppointmentBottomSheet);
             return false;

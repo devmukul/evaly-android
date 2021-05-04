@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/fff"
-    android:orientation="vertical">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/fff"
-        android:paddingEnd="5dp"
-        app:menu="@menu/plus_btn"
-        app:navigationIcon="@drawable/ic_arrow_back"
-        app:title="@string/appointments" />
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="56dp"
-        android:clipToPadding="false"
-        android:paddingHorizontal="5dp"
-        android:paddingBottom="40dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_appointment">
+        android:background="@color/fff"
+        android:orientation="vertical">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/fff"
+            android:paddingEnd="5dp"
+            app:menu="@menu/plus_btn"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="@string/appointments" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="56dp"
+            android:clipToPadding="false"
+            android:paddingHorizontal="5dp"
+            android:paddingBottom="40dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_appointment">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
