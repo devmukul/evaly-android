@@ -2,14 +2,12 @@ package bd.com.evaly.evalyshop.ui.user.editProfile;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -21,39 +19,31 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
-import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoDao;
-import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoEntity;
 import bd.com.evaly.evalyshop.databinding.ActivityEditProfileBinding;
 import bd.com.evaly.evalyshop.databinding.DialogContinueAsBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListener;
-import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
-import bd.com.evaly.evalyshop.ui.base.BaseOldActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.EmailInfoBottomSheet;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.EmploymentInfoBottomSheet;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.ParentsInfoBottomSheet;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.PersonalInfoBottomSheet;
-import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -62,36 +52,63 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class EditProfileActivity extends BaseOldActivity {
+public class EditProfileActivity extends BaseActivity<ActivityEditProfileBinding, EditProfileViewModel> {
 
     @Inject
     ApiRepository apiRepository;
     @Inject
     PreferenceRepository preferenceRepository;
     private Context context;
-    private ActivityEditProfileBinding binding;
-    private EditProfileViewModel viewModel;
     private boolean fromOtherApp = false;
     private boolean isLoggedAgain = false;
     private ViewDialog dialog;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile);
+    public EditProfileActivity() {
+        super(EditProfileViewModel.class, R.layout.activity_edit_profile);
+    }
 
-        viewModel = new ViewModelProvider(this).get(EditProfileViewModel.class);
+    @Override
+    protected void preBind() {
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setTitle("Edit Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        updateProfileData();
+    }
 
+    @Override
+    protected void initViews() {
         context = this;
         dialog = new ViewDialog(this);
         handleIntent();
-
         binding.editPicture.bringToFront();
+        updateProfileData();
+    }
 
+    @Override
+    protected void liveEventsObservers() {
+        viewModel.getInfoSavedStatus().observe(this, aBoolean -> {
+            if (aBoolean) {
+                viewModel.setInfoSavedStatus(false);
+                updateProfileData();
+                Toast.makeText(EditProfileActivity.this, "Profile updated!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        viewModel.autoLogin.observe(this, aBoolean -> {
+            finish();
+            if (aBoolean)
+            startActivity(getIntent());
+        });
+
+        viewModel.dialogToggle.observe(this, aBoolean -> {
+            if (aBoolean)
+                dialog.showDialog();
+            else
+                dialog.hideDialog();
+        });
+    }
+
+    @Override
+    protected void clickListeners() {
         View.OnClickListener uploadListener = v -> openImageSelector();
 
         binding.editPicture.setOnClickListener(uploadListener);
@@ -116,17 +133,7 @@ public class EditProfileActivity extends BaseOldActivity {
             ParentsInfoBottomSheet bottomSheet = ParentsInfoBottomSheet.newInstance();
             bottomSheet.show(getSupportFragmentManager(), "Edit Parent Info");
         });
-
-        viewModel.getInfoSavedStatus().observe(this, aBoolean -> {
-            if (aBoolean) {
-                viewModel.setInfoSavedStatus(false);
-                updateProfileData();
-                Toast.makeText(EditProfileActivity.this, "Profile updated!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
     }
-
 
     private void handleIntent() {
 
@@ -187,72 +194,8 @@ public class EditProfileActivity extends BaseOldActivity {
         payload.put("username", getIntent().getStringExtra("user"));
         payload.put("password", getIntent().getStringExtra("password"));
 
-        apiRepository.login(payload, new ResponseListener<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int code) {
-                dialog.hideDialog();
-                switch (code) {
-                    case 200:
-                    case 201:
-                    case 202:
-                        response = response.get("data").getAsJsonObject();
-                        String token = response.get("access_token").getAsString();
-                        preferenceRepository.saveToken(token);
-                        preferenceRepository.saveRefreshToken(response.get("refresh_token").getAsString());
-                        preferenceRepository.saveUserName(getIntent().getStringExtra("user"));
-                        preferenceRepository.savePassword(getIntent().getStringExtra("password"));
-                        updateUserInfo();
-                        break;
-                    default:
-                        Toast.makeText(getApplicationContext(), "Incorrect phone number or password. Please try again! ", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailed(String body, int status) {
-                dialog.hideDialog();
-                ToastUtils.show(body);
-            }
-
-        });
+        viewModel.login(payload);
     }
-
-
-    public void updateUserInfo() {
-        dialog.showDialog();
-        apiRepository.getUserProfile(preferenceRepository.getToken(), new ResponseListener<CommonDataResponse<UserModel>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
-                dialog.hideDialog();
-                preferenceRepository.saveUserData(response.getData());
-                ProviderDatabase providerDatabase = ProviderDatabase.getInstance(context);
-                UserInfoDao userInfoDao = providerDatabase.userInfoDao();
-
-                Executors.newSingleThreadExecutor().execute(() -> {
-                    UserInfoEntity entity = new UserInfoEntity();
-                    entity.setToken(preferenceRepository.getToken());
-                    entity.setRefreshToken(preferenceRepository.getRefreshToken());
-                    entity.setName(response.getData().getFullName());
-                    entity.setImage(response.getData().getImageSm());
-                    entity.setUsername(preferenceRepository.getUserName());
-                    entity.setPassword(preferenceRepository.getPassword());
-                    userInfoDao.insert(entity);
-                });
-                finish();
-                startActivity(getIntent());
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                dialog.hideDialog();
-                ToastUtils.show("Couldn't login, please try again");
-                finish();
-            }
-
-        });
-
-    }
-
 
     private void updateProfileData() {
         UserModel userModel = preferenceRepository.getUserData();
@@ -351,23 +294,18 @@ public class EditProfileActivity extends BaseOldActivity {
             String imagePath = RealPathUtil.getRealPath(context, selectedImage);
             try {
                 String destinationDirectoryPath = context.getCacheDir().getPath() + File.separator + "images";
-                try {
 
-                    File cImage = compressImage(data.getData(), Bitmap.CompressFormat.JPEG, 60, destinationDirectoryPath);
-                    Bitmap bitmap = BitmapFactory.decodeFile(destinationDirectoryPath);
-                    Glide.with(this)
-                            .asBitmap()
-                            .load(bitmap)
-                            .skipMemoryCache(true)
-                            .fitCenter()
-                            .optionalCenterCrop()
-                            .apply(new RequestOptions().override(500, 500))
-                            .into(binding.picture);
+                Bitmap bitmap = BitmapFactory.decodeFile(destinationDirectoryPath);
+                Glide.with(this)
+                        .asBitmap()
+                        .load(bitmap)
+                        .skipMemoryCache(true)
+                        .fitCenter()
+                        .optionalCenterCrop()
+                        .apply(new RequestOptions().override(500, 500))
+                        .into(binding.picture);
 
-                    uploadPicture(bitmap);
-
-                } catch (Exception ignored) {
-                }
+                uploadPicture(bitmap);
 
             } catch (Exception e) {
                 Toast.makeText(context, "Error occurred while uploading image", Toast.LENGTH_SHORT).show();
@@ -375,54 +313,9 @@ public class EditProfileActivity extends BaseOldActivity {
         }
     }
 
-
-    private File compressImage(Uri path, Bitmap.CompressFormat compressFormat, int quality, String destinationPath) throws IOException {
-        File file = new File(destinationPath).getParentFile();
-        if (!file.exists()) file.mkdirs();
-        try (FileOutputStream fileOutputStream = new FileOutputStream(destinationPath)) {
-            ImageUtils.getCorrectlyOrientedImage(EditProfileActivity.this, path).compress(compressFormat, quality, fileOutputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new File(destinationPath);
-    }
-
-
     private void uploadPicture(Bitmap bitmap) {
-
-        ProgressDialog dialog = ProgressDialog.show(EditProfileActivity.this, "",
-                "Uploading image...", true);
-        apiRepository.uploadImage(bitmap, new ResponseListener<CommonDataResponse<ImageDataModel>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
-
-                if (dialog != null && dialog.isShowing() && !isFinishing() && !isDestroyed())
-                    dialog.dismiss();
-
-                HashMap<String, String> body = new HashMap<>();
-                body.put("profile_pic_url", response.getData().getUrl());
-                body.put("image_sm", response.getData().getUrlSm());
-                viewModel.setUserData(body);
-
-                HashMap<String, String> data = new HashMap<>();
-                body.put("user", preferenceRepository.getUserName());
-                body.put("host", Constants.XMPP_HOST);
-                body.put("name", "IMAGE_URL");
-                body.put("content", response.getData().getUrl());
-
-                viewModel.updateToXMPP(data);
-
-                setProfilePic();
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                if (dialog != null && dialog.isShowing())
-                    dialog.dismiss();
-                Toast.makeText(EditProfileActivity.this, "Upload error, try again!", Toast.LENGTH_SHORT).show();
-            }
-
-        });
+        dialog.showDialog();
+        viewModel.uploadPicture(bitmap);
     }
 
     @Override
