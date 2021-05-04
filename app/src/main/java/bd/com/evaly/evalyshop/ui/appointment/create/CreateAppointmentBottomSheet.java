@@ -2,16 +2,10 @@ package bd.com.evaly.evalyshop.ui.appointment.create;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,13 +14,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import javax.inject.Inject;
-
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetCreateAppointmentBinding;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentCategoryResponse;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentRequest;
 import bd.com.evaly.evalyshop.models.appointment.AppointmentTimeSlotResponse;
+import bd.com.evaly.evalyshop.ui.base.BaseBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -34,13 +27,10 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 
 @AndroidEntryPoint
-public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
+public class CreateAppointmentBottomSheet extends BaseBottomSheetFragment<BottomSheetCreateAppointmentBinding, CreateAppointmentViewModel> {
 
-    @Inject
-    CreateAppointmentViewModel viewModel;
     private MainViewModel mainViewModel;
     private AppointmentRequest createBody;
-    private BottomSheetCreateAppointmentBinding binding;
     DatePickerDialog.OnDateSetListener datePickerListener = (datePicker, year, month, day) -> {
         String date = String.format("%d-%01d-%01d", year, ++month, day);
         createBody.setDate(date);
@@ -49,16 +39,26 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
     };
     private ViewDialog dialog;
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        dialog = new ViewDialog(getActivity());
-        createBody = new AppointmentRequest();
-        clickListeners();
-        liveEventObservers();
+    public CreateAppointmentBottomSheet() {
+        super(CreateAppointmentViewModel.class, R.layout.bottom_sheet_create_appointment);
     }
 
-    private void liveEventObservers() {
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog);
+        mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
+    }
+
+    @Override
+    protected void initViews() {
+        dialog = new ViewDialog(getActivity());
+        createBody = new AppointmentRequest();
+    }
+
+    @Override
+    protected void liveEventsObservers() {
+
         viewModel.timeSlotLiveList.observe(getViewLifecycleOwner(), list -> {
             List<String> strList = new ArrayList<>();
             for (AppointmentTimeSlotResponse item : list) {
@@ -107,7 +107,8 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
         binding.spCategory.setAdapter(dataAdapter);
     }
 
-    private void clickListeners() {
+    @Override
+    protected void clickListeners() {
         binding.date.setOnClickListener(v -> {
             Calendar cal = Calendar.getInstance();
             int year = cal.get(Calendar.YEAR);
@@ -119,7 +120,6 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
                     datePickerListener,
                     year, month, day
             );
-
             dialog.show();
         });
 
@@ -167,20 +167,6 @@ public class CreateAppointmentBottomSheet extends BottomSheetDialogFragment {
             viewModel.createAppointment(createBody);
             dialog.showDialog();
         });
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = BottomSheetCreateAppointmentBinding.inflate(inflater);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog);
-        mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
     }
 
 }

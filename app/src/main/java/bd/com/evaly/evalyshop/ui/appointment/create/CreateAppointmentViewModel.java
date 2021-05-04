@@ -93,5 +93,4 @@ public class CreateAppointmentViewModel extends ViewModel {
         });
     }
 
-
 }
