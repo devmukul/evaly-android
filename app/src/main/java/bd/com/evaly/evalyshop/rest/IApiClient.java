@@ -71,7 +71,7 @@ import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressReque
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopResponse;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
@@ -456,12 +456,12 @@ public interface IApiClient {
                                                                 @Path("shopItem") String shopItem);
 
     @GET(UrlUtils.BASE_CATALOG + "shop-items/shops/{variantId}")
-    Call<CommonDataResponse<List<AvailableShopModel>>> getAvailableShop(@Path("variantId") int variantId);
+    Call<CommonDataResponse<List<AvailableShopResponse>>> getAvailableShop(@Path("variantId") int variantId);
 
     @GET(UrlUtils.BASE_CATALOG + "shop-items/shops/{variantId}/nearest")
-    Call<CommonDataResponse<List<AvailableShopModel>>> getNearestAvailableShop(@Path("variantId") int variantId,
-                                                                               @Query("long") double longitude,
-                                                                               @Query("lat") double latitude);
+    Call<CommonDataResponse<List<AvailableShopResponse>>> getNearestAvailableShop(@Path("variantId") int variantId,
+                                                                                  @Query("long") double longitude,
+                                                                                  @Query("lat") double latitude);
     // with token
 
     @GET(UrlUtils.BASE_CATALOG + "shop-items/{shopSlug}/items")

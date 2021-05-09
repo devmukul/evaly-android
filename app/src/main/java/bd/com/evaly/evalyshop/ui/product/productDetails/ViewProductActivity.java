@@ -54,7 +54,7 @@ import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.Post;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributesItem;
-import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopResponse;
 import bd.com.evaly.evalyshop.models.product.productDetails.Data;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductSpecificationsItem;
@@ -120,7 +120,7 @@ public class ViewProductActivity extends BaseActivity<ActivityViewProductBinding
     private LocationManager lm;
     private String shopSlug = null;
     private String cashbackText = null;
-    private AvailableShopModel toRemoveModel = null;
+    private AvailableShopResponse toRemoveModel = null;
     private VariantsController variantsController;
 
     public ViewProductActivity() {
@@ -626,7 +626,7 @@ public class ViewProductActivity extends BaseActivity<ActivityViewProductBinding
         }
     }
 
-    private void inflateShopDetails(AvailableShopModel shop) {
+    private void inflateShopDetails(AvailableShopResponse shop) {
 
         if (cashbackText != null && !cashbackText.equals("")) {
             binding.tvCashback.setVisibility(View.VISIBLE);
@@ -745,17 +745,17 @@ public class ViewProductActivity extends BaseActivity<ActivityViewProductBinding
         viewModel.getNearestAvailableShops(variationID, longitude, latitude);
     }
 
-    private void inflateAvailableShops(CommonDataResponse<List<AvailableShopModel>> response, boolean isNearestShops) {
+    private void inflateAvailableShops(CommonDataResponse<List<AvailableShopResponse>> response, boolean isNearestShops) {
 
         toRemoveModel = null;
 
         binding.selectedShopHolder.setVisibility(View.GONE);
         binding.availableShopsHolder.setVisibility(View.VISIBLE);
 
-        List<AvailableShopModel> list = new ArrayList<>(response.getData());
+        List<AvailableShopResponse> list = new ArrayList<>(response.getData());
 
         if (shopSlug != null || list.size() == 1) {
-            for (AvailableShopModel model : list) {
+            for (AvailableShopResponse model : list) {
                 if (model.getShopSlug().equals(shopSlug) || list.size() == 1) {
                     toRemoveModel = model;
                     break;
@@ -917,7 +917,7 @@ public class ViewProductActivity extends BaseActivity<ActivityViewProductBinding
     }
 
     @Override
-    public void onAddToCartClick(AvailableShopModel shop) {
+    public void onAddToCartClick(AvailableShopResponse shop) {
         updateVariantDetails();
         String price = Utils.formatPrice(shop.getPrice());
         CartEntity cartEntity = new CartEntity();

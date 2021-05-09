@@ -79,7 +79,7 @@ import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressReque
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopResponse;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.profile.AddressRequest;
 import bd.com.evaly.evalyshop.models.profile.AddressResponse;
@@ -875,11 +875,11 @@ public class ApiRepository {
         apiHandler.createCall(apiService.getProductDetails(productSlug), listener);
     }
 
-    public void getAvailableShops(int variantID, ResponseListener<CommonDataResponse<List<AvailableShopModel>>, String> listener) {
+    public void getAvailableShops(int variantID, ResponseListener<CommonDataResponse<List<AvailableShopResponse>>, String> listener) {
         apiHandler.createCall(apiService.getAvailableShop(variantID), listener);
     }
 
-    public void getNearestAvailableShops(int variantId, double longitude, double latitude, ResponseListener<CommonDataResponse<List<AvailableShopModel>>, String> listener) {
+    public void getNearestAvailableShops(int variantId, double longitude, double latitude, ResponseListener<CommonDataResponse<List<AvailableShopResponse>>, String> listener) {
         apiHandler.createCall(apiService.getNearestAvailableShop(variantId, longitude, latitude), listener);
     }
 

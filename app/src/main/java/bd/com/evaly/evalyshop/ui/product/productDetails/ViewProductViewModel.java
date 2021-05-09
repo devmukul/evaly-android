@@ -20,7 +20,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopResponse;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
@@ -38,8 +38,8 @@ public class ViewProductViewModel extends ViewModel {
     protected MutableLiveData<CommonDataResponse<List<ShopItem>>> productsVariantsOfShop = new MutableLiveData<>();
     protected MutableLiveData<ShopDetailsModel> shopDetails = new MutableLiveData<>();
     protected MutableLiveData<JsonObject> ratingSummary = new MutableLiveData<>();
-    protected MutableLiveData<CommonDataResponse<List<AvailableShopModel>>> availableShops = new MutableLiveData<>();
-    protected MutableLiveData<CommonDataResponse<List<AvailableShopModel>>> availableNearestShops = new MutableLiveData<>();
+    protected MutableLiveData<CommonDataResponse<List<AvailableShopResponse>>> availableShops = new MutableLiveData<>();
+    protected MutableLiveData<CommonDataResponse<List<AvailableShopResponse>>> availableNearestShops = new MutableLiveData<>();
     protected MutableLiveData<JsonObject> createPostResponse = new MutableLiveData<>();
     private boolean isShop = false;
     private CartDao cartDao;
@@ -142,9 +142,9 @@ public class ViewProductViewModel extends ViewModel {
 
     public void getAvailableShops(int variationID) {
 
-        apiRepository.getAvailableShops(variationID, new ResponseListener<CommonDataResponse<List<AvailableShopModel>>, String>() {
+        apiRepository.getAvailableShops(variationID, new ResponseListener<CommonDataResponse<List<AvailableShopResponse>>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<List<AvailableShopResponse>> response, int statusCode) {
                 availableShops.setValue(response);
             }
 
@@ -158,9 +158,9 @@ public class ViewProductViewModel extends ViewModel {
 
     public void getNearestAvailableShops(int variationID, double longitude, double latitude) {
 
-        apiRepository.getNearestAvailableShops(variationID, longitude, latitude, new ResponseListener<CommonDataResponse<List<AvailableShopModel>>, String>() {
+        apiRepository.getNearestAvailableShops(variationID, longitude, latitude, new ResponseListener<CommonDataResponse<List<AvailableShopResponse>>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<List<AvailableShopResponse>> response, int statusCode) {
                 availableNearestShops.setValue(response);
             }
 

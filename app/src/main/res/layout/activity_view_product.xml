@@ -734,7 +734,7 @@
                                 android:paddingStart="6dp"
                                 android:paddingEnd="10dp"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                                tools:listitem="@layout/available_shop" />
+                                tools:listitem="@layout/item_available_shop" />
 
                         </LinearLayout>
 

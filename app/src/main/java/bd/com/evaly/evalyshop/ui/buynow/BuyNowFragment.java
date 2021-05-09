@@ -32,7 +32,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.databinding.FragmentBuyNowBinding;
-import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopResponse;
 import bd.com.evaly.evalyshop.models.shop.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.ui.auth.login.SignInActivity;
@@ -64,7 +64,7 @@ public class BuyNowFragment extends BaseBottomSheetFragment<FragmentBuyNowBindin
     private VariationAdapter adapterVariation;
     private ViewDialog dialog;
     private CartEntity cartItem;
-    private AvailableShopModel shopItem;
+    private AvailableShopResponse shopItem;
     private NavController navController;
 
     public static BuyNowFragment newInstance(String shopSlug, String productSlug) {
@@ -76,7 +76,7 @@ public class BuyNowFragment extends BaseBottomSheetFragment<FragmentBuyNowBindin
         return f;
     }
 
-    public static BuyNowFragment createInstance(CartEntity cartItem, AvailableShopModel shopItemModel) {
+    public static BuyNowFragment createInstance(CartEntity cartItem, AvailableShopResponse shopItemModel) {
         BuyNowFragment f = new BuyNowFragment();
         Bundle args = new Bundle();
         args.putSerializable("cartItem", cartItem);
@@ -120,7 +120,7 @@ public class BuyNowFragment extends BaseBottomSheetFragment<FragmentBuyNowBindin
             shop_item_slug = args.getString("productSlug");
 
         if (args.containsKey("shopItem"))
-            shopItem = (AvailableShopModel) args.getSerializable("shopItem");
+            shopItem = (AvailableShopResponse) args.getSerializable("shopItem");
         if (args.containsKey("cartItem"))
             cartItem = (CartEntity) args.getSerializable("cartItem");
 

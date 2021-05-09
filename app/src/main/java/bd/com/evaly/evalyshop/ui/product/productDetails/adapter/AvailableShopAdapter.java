@@ -27,13 +27,13 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
-import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopResponse;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdapter.MyViewHolder> {
 
-    private List<AvailableShopModel> availableShops;
+    private List<AvailableShopResponse> availableShops;
     private Context context;
     View.OnClickListener storeClick = new View.OnClickListener() {
         @Override
@@ -51,7 +51,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
     private View view;
     private AvailableShopClickListener clickListener;
 
-    public AvailableShopAdapter(Context context, View view, List<AvailableShopModel> availableShops, CartEntity cartItem) {
+    public AvailableShopAdapter(Context context, View view, List<AvailableShopResponse> availableShops, CartEntity cartItem) {
         this.availableShops = availableShops;
         this.context = context;
         this.cartItem = cartItem;
@@ -65,7 +65,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
     @NonNull
     @Override
     public AvailableShopAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.available_shop, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_available_shop, viewGroup, false);
         return new MyViewHolder(view);
     }
 
@@ -73,7 +73,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder viewHolder, int i) {
 
-        AvailableShopModel shop = availableShops.get(i);
+        AvailableShopResponse shop = availableShops.get(i);
 
         viewHolder.shopName.setText(shop.getShopName());
 
@@ -186,7 +186,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
     }
 
     public interface AvailableShopClickListener {
-        void onAddToCartClick(AvailableShopModel model);
+        void onAddToCartClick(AvailableShopResponse model);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

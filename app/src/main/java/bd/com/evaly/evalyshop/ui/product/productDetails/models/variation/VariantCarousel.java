@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.product.productDetails.models;
+package bd.com.evaly.evalyshop.ui.product.productDetails.models.variation;
 
 import android.content.Context;
 

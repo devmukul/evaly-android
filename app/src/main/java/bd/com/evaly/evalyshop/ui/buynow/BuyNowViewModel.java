@@ -13,7 +13,7 @@ import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopResponse;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
@@ -25,7 +25,7 @@ public class BuyNowViewModel extends ViewModel {
     protected MutableLiveData<List<ShopItem>> liveList = new MutableLiveData<>();
     protected SingleLiveEvent<Boolean> loadFromModel = new SingleLiveEvent<>();
     private String shopSlug, productSlug;
-    private AvailableShopModel shopItem;
+    private AvailableShopResponse shopItem;
     private CartEntity cartItem;
     private CartDao cartDao;
     private ApiRepository apiRepository;
@@ -56,7 +56,7 @@ public class BuyNowViewModel extends ViewModel {
         });
     }
 
-    public AvailableShopModel getShopItem() {
+    public AvailableShopResponse getShopItem() {
         return shopItem;
     }
 
