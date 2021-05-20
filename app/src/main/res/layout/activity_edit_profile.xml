@@ -641,55 +641,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="5dp">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginLeft="13dp"
-                    android:layout_marginTop="2dp"
-                    app:srcCompat="@drawable/ic_permanent_job"
-                    app:tint="@color/c444" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:orientation="vertical"
-                    android:paddingLeft="5dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="13dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginBottom="3dp"
-                        android:text="@string/organization"
-                        android:textColor="@color/c333"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/organization"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="13dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@color/transparent"
-                        android:ems="10"
-                        android:inputType="textPersonName"
-                        android:text="@string/not_provided"
-                        android:textColor="@color/c444"
-                        android:textSize="16sp" />
-                </LinearLayout>
-            </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -743,6 +694,56 @@
             </LinearLayout>
 
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginTop="2dp"
+                    app:srcCompat="@drawable/ic_permanent_job"
+                    app:tint="@color/c444" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:orientation="vertical"
+                    android:paddingLeft="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="3dp"
+                        android:text="@string/organization"
+                        android:textColor="@color/c333"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/organization"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/transparent"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:text="@string/not_provided"
+                        android:textColor="@color/c444"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+
             <Button
                 android:id="@+id/update"
                 style="@android:style/Widget.Holo.Button.Borderless"
@@ -750,7 +751,6 @@
                 android:layout_height="50dp"
                 android:layout_gravity="right"
                 android:layout_marginLeft="52dp"
-                app:backgroundTint="@null"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="15dp"
@@ -762,7 +762,8 @@
                 android:text="@string/update_profile"
                 android:textColor="@color/fff"
                 android:textSize="16sp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:backgroundTint="@null" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

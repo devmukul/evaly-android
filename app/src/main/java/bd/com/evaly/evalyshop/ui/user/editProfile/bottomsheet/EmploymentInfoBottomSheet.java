@@ -86,7 +86,7 @@ public class EmploymentInfoBottomSheet extends BaseBottomSheetFragment<BottomShe
             EmploymentRequest body = new EmploymentRequest();
             body.setOccupation(occupation);
             body.setOrganization(organization);
-
+            ToastUtils.show("Updating employment information...");
             viewModel.setUserData(Utils.objectToHashMap(body));
             dismissAllowingStateLoss();
         });

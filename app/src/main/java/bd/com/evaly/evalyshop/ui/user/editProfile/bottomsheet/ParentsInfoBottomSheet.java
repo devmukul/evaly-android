@@ -124,6 +124,7 @@ public class ParentsInfoBottomSheet extends BaseBottomSheetFragment<BottomSheetE
             JsonObject bodyObj = new JsonObject();
             bodyObj.add("parents_info", new Gson().toJsonTree(body).getAsJsonObject());
 
+            ToastUtils.show("Updating parent's information...");
             viewModel.setUserData(bodyObj);
             dismissAllowingStateLoss();
         });

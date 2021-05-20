@@ -89,7 +89,7 @@ public class EmailInfoBottomSheet extends BaseBottomSheetFragment<BottomSheetEdi
             body.setEmail(primaryEmail);
             if (!otherEmail.equals(""))
                 body.setOtherEmail(otherEmail);
-
+            ToastUtils.show("Updating email addresses");
             viewModel.setUserData(Utils.objectToHashMap(body));
             dismissAllowingStateLoss();
         });

@@ -30,6 +30,7 @@ import bd.com.evaly.evalyshop.ui.base.BaseBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.base.BaseViewModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -141,6 +142,8 @@ public class PersonalInfoBottomSheet extends BaseBottomSheetFragment<BottomSheet
             body.setBirthDate(dateOfBirth);
             body.setContact(contact);
             body.setGender(gender);
+
+            ToastUtils.show("Updating personal information...");
             commonViewModel.setUserData(Utils.objectToHashMap(body));
 
             HashMap<String, String> data = new HashMap<>();
