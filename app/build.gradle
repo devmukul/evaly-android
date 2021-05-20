@@ -33,7 +33,7 @@ android {
     project.android.buildTypes.all { type ->
         type.javaCompileOptions.annotationProcessorOptions.arguments = [
                 logEpoxyTimings              : "true",
-                enableParallelEpoxyProcessing: "true"
+                // enableParallelEpoxyProcessing: "true"
         ]
     }
 

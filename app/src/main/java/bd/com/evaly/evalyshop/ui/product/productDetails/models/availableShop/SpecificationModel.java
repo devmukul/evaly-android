@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.product.productDetails.models.availableShop;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ViewDataBinding;
 
 import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
@@ -24,4 +25,9 @@ public abstract class SpecificationModel extends BaseDataBindingEpoxyModel {
         binding.specValue.setText(model.getSpecificationValue());
     }
 
+
+    @Override
+    protected void setDataBindingVariables(ViewDataBinding binding) {
+
+    }
 }

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ViewDataBinding;
 
 import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
@@ -129,4 +130,8 @@ public abstract class AvailableShopModel extends BaseDataBindingEpoxyModel {
 
     }
 
+    @Override
+    protected void setDataBindingVariables(ViewDataBinding binding) {
+
+    }
 }

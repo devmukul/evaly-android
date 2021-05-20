@@ -13,10 +13,10 @@ import bd.com.evaly.evalyshop.databinding.ItemVariationImageBinding;
 import bd.com.evaly.evalyshop.databinding.ItemVariationSizeBinding;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributeValuesItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributesItem;
-import bd.com.evaly.evalyshop.ui.product.productDetails.models.VariantCarouselModel_;
-import bd.com.evaly.evalyshop.ui.product.productDetails.models.VariantImageItemModel_;
-import bd.com.evaly.evalyshop.ui.product.productDetails.models.VariantItemModel_;
-import bd.com.evaly.evalyshop.ui.product.productDetails.models.VariantTitleModel_;
+import bd.com.evaly.evalyshop.ui.product.productDetails.models.variation.VariantCarouselModel_;
+import bd.com.evaly.evalyshop.ui.product.productDetails.models.variation.VariantImageItemModel_;
+import bd.com.evaly.evalyshop.ui.product.productDetails.models.variation.VariantItemModel_;
+import bd.com.evaly.evalyshop.ui.product.productDetails.models.variation.VariantTitleModel_;
 import bd.com.evaly.evalyshop.util.BindingUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 

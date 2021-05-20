@@ -2,28 +2,32 @@ package bd.com.evaly.evalyshop.ui.order.orderDetails.refund;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.BottomSheetRefundRequestBinding;
+import bd.com.evaly.evalyshop.models.payment.PaymentMethodModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsViewModel;
+import bd.com.evaly.evalyshop.ui.payment.bottomsheet.controller.PaymentMethodController;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -42,6 +46,7 @@ public class RefundBottomSheet extends BaseBottomSheetFragment<BottomSheetRefund
     private ViewDialog dialog;
     private OrderDetailsViewModel orderDetailsViewModel;
     private ArrayAdapter<String> spinnerAdapter;
+    private PaymentMethodController paymentMethodController;
 
     public RefundBottomSheet() {
         super(RefundViewModel.class, R.layout.bottom_sheet_refund_request);
@@ -66,32 +71,25 @@ public class RefundBottomSheet extends BaseBottomSheetFragment<BottomSheetRefund
         if (getArguments() != null) {
             invoice_no = getArguments().getString("invoice_no");
         }
-
         orderDetailsViewModel = new ViewModelProvider(requireActivity()).get(OrderDetailsViewModel.class);
         dialog = new ViewDialog(getActivity());
-        spinnerAdapter = new ArrayAdapter<>(requireContext(), R.layout.item_spinner_default);
-        spinnerAdapter.add("Evaly Account");
-        spinnerAdapter.add("Non Balance");
 
-        binding.spRefundOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                paymentType = spinnerAdapter.getItem(position);
-                if (paymentType == null)
-                    return;
-                if (paymentType.equals("Non Balance"))
-                    paymentType = "Non_balance";
-                else if (paymentType.equals("Evaly Account"))
-                    paymentType = "Balance";
-            }
+        initPaymentMethodRecycler();
+    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+    private void initPaymentMethodRecycler() {
+        paymentMethodController = new PaymentMethodController();
+        paymentMethodController.setActivity((AppCompatActivity) getActivity());
+        paymentMethodController.setFocusListener(object -> {
 
-            }
         });
 
-        binding.spRefundOption.setAdapter(spinnerAdapter);
+        binding.recyclerView.setAdapter(paymentMethodController.getAdapter());
+
+        List<PaymentMethodModel> list = new ArrayList<>();
+        list.add(new PaymentMethodModel("Evaly Account", "Get refund on Evaly Account", null, R.drawable.payment_icon_evaly, false, true));
+        list.add(new PaymentMethodModel("Non Balance", "Get refund through your paid methods", null, R.drawable.all_payment_methods, false, true));
+        paymentMethodController.loadData(list, true);
     }
 
 
@@ -108,9 +106,20 @@ public class RefundBottomSheet extends BaseBottomSheetFragment<BottomSheetRefund
     protected void clickListeners() {
         binding.submitBtn.setOnClickListener(v -> {
 
-            int selectedPosition = binding.spRefundOption.getSelectedItemPosition();
+            PaymentMethodModel model = paymentMethodController.getSelectedMethod();
+            if (model == null) {
+                ToastUtils.show("Please select refund method");
+                return;
+            }
+
+            paymentType = model.getName();
+
             if (paymentType == null)
-                paymentType = spinnerAdapter.getItem(selectedPosition);
+                return;
+            if (paymentType.equals("Non Balance"))
+                paymentType = "Non_balance";
+            else if (paymentType.equals("Evaly Account"))
+                paymentType = "Balance";
 
             HashMap<String, String> body = new HashMap<>();
             body.put("invoice_no", invoice_no.toUpperCase());
