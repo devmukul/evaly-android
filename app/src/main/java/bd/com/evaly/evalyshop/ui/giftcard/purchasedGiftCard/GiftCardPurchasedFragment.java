@@ -69,15 +69,16 @@ public class GiftCardPurchasedFragment extends BaseFragment<FragmentGiftcardList
 
     @Override
     protected void liveEventsObservers() {
-        viewModel.liveList.observe(getViewLifecycleOwner(), giftCardListPurchasedItems -> {
+        viewModel.liveList.observe(getViewLifecycleOwner(), list -> {
             isLoading = false;
             binding.progressBar.setVisibility(View.GONE);
             if (viewModel.getCurrentPage() <= 2)
                 binding.progressContainer.setVisibility(View.GONE);
 
+            int oldSize = itemList.size();
             itemList.clear();
-            itemList.addAll(giftCardListPurchasedItems);
-            adapter.notifyDataSetChanged();
+            itemList.addAll(list);
+            adapter.notifyItemRangeChanged(oldSize, list.size() - oldSize);
 
             if (itemList.size() == 0 && viewModel.getCurrentPage() <= 2) {
                 binding.noItem.setVisibility(View.VISIBLE);

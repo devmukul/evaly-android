@@ -64,9 +64,10 @@ public class GiftCardListFragment extends BaseFragment<FragmentGiftcardListBindi
         viewModel.liveList.observe(getViewLifecycleOwner(), list -> {
             loading = false;
             binding.progressBar.setVisibility(View.GONE);
+            int oldSize = itemList.size();
             itemList.clear();
             itemList.addAll(list);
-            adapter.notifyDataSetChanged();
+            adapter.notifyItemRangeChanged(oldSize, list.size() - oldSize);
 
             if (viewModel.getCurrentPage() <= 2)
                 binding.progressContainer.setVisibility(View.GONE);
