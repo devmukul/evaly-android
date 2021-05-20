@@ -88,7 +88,7 @@ public class RefundBottomSheet extends BaseBottomSheetFragment<BottomSheetRefund
 
         List<PaymentMethodModel> list = new ArrayList<>();
         list.add(new PaymentMethodModel("Evaly Account", "Get refund on Evaly Account", null, R.drawable.payment_icon_evaly, false, true));
-        list.add(new PaymentMethodModel("Non Balance", "Get refund through your paid methods", null, R.drawable.all_payment_methods, false, true));
+        list.add(new PaymentMethodModel("Automated", "Get refund through your paid methods", null, R.drawable.all_payment_methods, false, true));
         paymentMethodController.loadData(list, true);
     }
 
@@ -116,7 +116,7 @@ public class RefundBottomSheet extends BaseBottomSheetFragment<BottomSheetRefund
 
             if (paymentType == null)
                 return;
-            if (paymentType.equals("Non Balance"))
+            if (paymentType.equals("Automated"))
                 paymentType = "Non_balance";
             else if (paymentType.equals("Evaly Account"))
                 paymentType = "Balance";
@@ -125,7 +125,7 @@ public class RefundBottomSheet extends BaseBottomSheetFragment<BottomSheetRefund
             body.put("invoice_no", invoice_no.toUpperCase());
             if (paymentType.equals("Evaly Account") || paymentType.equals("Balance")) {
                 body.put("refund_type", "Balance");
-            } else if (paymentType.equals("Non Balance") || paymentType.equals("Non_balance"))
+            } else if (paymentType.equals("Automated") || paymentType.equals("Non Balance") || paymentType.equals("Non_balance"))
                 body.put("refund_type", "Non_balance");
 
             viewModel.requestRefund(body);
