@@ -2,18 +2,12 @@ package bd.com.evaly.evalyshop.ui.appointment;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import javax.inject.Inject;
+import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentAppointmentBinding;
@@ -44,6 +38,14 @@ public class AppointmentFragment extends BaseFragment<FragmentAppointmentBinding
 
     @Override
     protected void liveEventsObservers() {
+
+        viewModel.hideLoadingBar.observe(getViewLifecycleOwner(), unused -> {
+            isLoading = false;
+            controller.setLoading(false);
+            controller.setList(new ArrayList<>());
+            controller.requestModelBuild();
+        });
+
         viewModel.liveList.observe(getViewLifecycleOwner(), appointmentResponses -> {
             isLoading = false;
             controller.setLoading(false);

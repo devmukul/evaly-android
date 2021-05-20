@@ -26,6 +26,7 @@ public class AppointmentController extends EpoxyController {
 
     @Override
     protected void buildModels() {
+
         for (AppointmentResponse item : list) {
             new AppointmentModel_()
                     .id(item.getAppointmentId())
@@ -41,7 +42,7 @@ public class AppointmentController extends EpoxyController {
                 .image(R.drawable.ic_appointment_scheduling)
                 .text("You have no appointments")
                 .imageTint("#999999")
-                .width(80)
+                .width(70)
                 .addIf(!isLoading && list.size() == 0, this);
 
         new EmptySpaceModel_()
@@ -64,6 +65,7 @@ public class AppointmentController extends EpoxyController {
 
     public interface ClickListener {
         void onCancelClick(AppointmentResponse model);
+
         void onClick(AppointmentResponse model);
     }
 }

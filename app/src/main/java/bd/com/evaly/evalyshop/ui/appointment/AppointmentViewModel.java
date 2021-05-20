@@ -15,7 +15,9 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class AppointmentViewModel extends ViewModel {
 
     MutableLiveData<CommonDataResponse<AppointmentResponse>> cancelResponse = new MutableLiveData<>();

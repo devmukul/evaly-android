@@ -17,7 +17,9 @@ import bd.com.evaly.evalyshop.models.appointment.AppointmentTimeSlotResponse;
 import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class CreateAppointmentViewModel extends ViewModel {
 
     MutableLiveData<List<AppointmentCategoryResponse>> categoryLiveList = new MutableLiveData<>();
