@@ -39,6 +39,7 @@
             android:background="@drawable/input_brd_small"
             android:hint="@string/enter_contact_number"
             android:imeOptions="actionGo"
+            android:inputType="number"
             android:maxLines="1"
             android:paddingLeft="15dp"
             android:singleLine="true"
@@ -50,12 +51,12 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="15dp"
-            app:backgroundTint="@null"
             android:background="@drawable/input_btn_bg_small"
             android:elevation="0dp"
             android:stateListAnimator="@null"
             android:text="@string/save_contact_number"
-            android:textColor="@color/fffh" />
+            android:textColor="@color/fffh"
+            app:backgroundTint="@null" />
 
     </LinearLayout>
 </layout>

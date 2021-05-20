@@ -64,6 +64,8 @@ public class CampaignFilterBottomSheet extends BaseBottomSheetFragment<Bottomshe
             viewModel.setCategory((CampaignCategoryResponse) getArguments().getSerializable("category"));
             viewModel.loadFromApi();
         }
+
+        binding.clearFilter.setVisibility(View.GONE);
         initToolbar();
         clickListeners();
         initRecycler();
@@ -77,6 +79,7 @@ public class CampaignFilterBottomSheet extends BaseBottomSheetFragment<Bottomshe
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab != null && tab.getText() != null) {
+                    toggleClear();
                     if (tab.getText().toString().contains("Category")) {
                         viewModel.setType("categories");
                         binding.search.setHint("Search categories");
@@ -101,8 +104,11 @@ public class CampaignFilterBottomSheet extends BaseBottomSheetFragment<Bottomshe
             }
         });
 
+        toggleClear();
+    }
 
-        if (showClear)
+    public void toggleClear() {
+        if (showClear && binding.filterTab.getSelectedTabPosition() == 1)
             binding.clearFilter.setVisibility(View.VISIBLE);
         else
             binding.clearFilter.setVisibility(View.GONE);

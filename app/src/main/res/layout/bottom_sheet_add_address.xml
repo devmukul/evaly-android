@@ -71,7 +71,7 @@
             android:gravity="top"
             android:hint="@string/enter_contact_number"
             android:imeOptions="actionNext"
-            android:inputType="textPostalAddress"
+            android:inputType="number"
             android:maxLength="11"
             android:maxLines="1"
             android:paddingLeft="15dp"

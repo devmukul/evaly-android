@@ -35,7 +35,7 @@
                 android:layout_marginEnd="5dp"
                 android:background="?selectableItemBackground"
                 android:padding="15dp"
-                android:text="CLEAR"
+                android:text="CLEAR FILTER"
                 android:textColor="@color/red_app"
                 android:textStyle="bold" />
 

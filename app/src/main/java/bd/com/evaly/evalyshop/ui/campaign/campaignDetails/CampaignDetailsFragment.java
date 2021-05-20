@@ -299,8 +299,7 @@ public class CampaignDetailsFragment extends BaseFragment<FragmentCampaignDetail
             bundle.putSerializable("category", Objects.requireNonNull(viewModel.getCampaignCategoryLiveData().getValue()));
             if (viewModel.getSelectedCategoryModel() != null)
                 bundle.putSerializable("product_category", Objects.requireNonNull(viewModel.getSelectedCategoryModel()));
-            bundle.putBoolean("show_clear", viewModel.getCampaign() != null || viewModel.getSelectedCategorySlug() != null);
-            // navController.navigate(R.id.campaignListBottomSheet, bundle);
+            bundle.putBoolean("show_clear", viewModel.getCampaign() != null);
             CampaignFilterBottomSheet bottomSheet = new CampaignFilterBottomSheet();
             bottomSheet.setArguments(bundle);
             bottomSheet.show(getParentFragmentManager(), "FilterBottomSheet");
