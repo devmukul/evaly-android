@@ -429,5 +429,9 @@
         android:id="@+id/followedShopsFragment"
         android:name="bd.com.evaly.evalyshop.ui.followedShops.FollowedShopsFragment"
         android:label="FollowedShopsFragment" />
+    <fragment
+        android:id="@+id/evalyPointsFragment"
+        android:name="bd.com.evaly.evalyshop.ui.evalyPoint.EvalyPointsFragment"
+        android:label="EvalyPointsFragment" />
 
 </navigation>

@@ -74,6 +74,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         binding.swipeRefresh.setOnRefreshListener(this);
         initAppHeader();
         networkCheck();
+        navController.navigate(R.id.evalyPointsFragment);
     }
 
     @Override

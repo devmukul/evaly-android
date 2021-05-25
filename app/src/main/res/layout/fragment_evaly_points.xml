@@ -58,9 +58,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-medium"
+                                android:text="SILVER USER"
                                 android:textColor="@color/black"
-                                android:textSize="17sp"
-                                tools:text="SILVER USER" />
+                                android:textSize="17sp" />
 
                         </LinearLayout>
 
@@ -81,9 +81,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-medium"
+                                android:text="1,450 Pts"
                                 android:textColor="@color/black"
-                                android:textSize="17sp"
-                                tools:text="1,450 Pts" />
+                                android:textSize="17sp" />
 
 
                         </LinearLayout>
@@ -93,11 +93,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
-                        android:value="40"
+                        android:enabled="false"
+                        android:value="4000"
                         android:valueFrom="0.0"
-                        android:valueTo="100"
-                        app:thumbColor="@color/green"
-                        app:trackColorActive="@color/green"
+                        android:valueTo="10000"
+                        app:thumbColor="#49C91C"
+                        app:thumbElevation="4dp"
+                        app:thumbStrokeColor="#FFFFFF"
+                        app:thumbStrokeWidth="2dp"
+                        app:trackColorActive="#49C91C"
                         app:trackColorInactive="@color/eee"
                         app:trackHeight="12dp" />
 
@@ -339,8 +343,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginVertical="10dp"
+                    android:layout_marginHorizontal="25dp"
+                    android:layout_marginVertical="12dp"
                     android:layout_weight="0"
                     android:text="Redeeming points won’t affect your progress to the next level. "
                     android:textColor="@color/c666"
@@ -349,6 +353,162 @@
                     app:layout_constraintEnd_toEndOf="@+id/btn1Image"
                     app:layout_constraintStart_toStartOf="@+id/btn1Image"
                     app:layout_constraintTop_toBottomOf="@+id/btn1Title" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="18dp"
+                    android:background="@drawable/bg_white_round"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="15dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:text="How it works?"
+                        android:textColor="@color/black"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginRight="5dp"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/bg_white_round"
+                            android:backgroundTint="#FDF2D7"
+                            android:clickable="false"
+                            android:padding="14dp"
+                            app:srcCompat="@drawable/ic_layalty_star" />
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Loyalty Score"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Earn score by purchasing in evaly regular shop and cyclone campaign."
+                                android:textColor="@color/c444" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginRight="5dp"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/bg_white_round"
+                            android:backgroundTint="#EBF8FF"
+                            android:clickable="false"
+                            android:paddingHorizontal="14dp"
+                            android:paddingBottom="5dp"
+                            app:srcCompat="@drawable/ic_fast_delivery" />
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Faster Delivery"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Achieve more score to get fastest delivery based on your score."
+                                android:textColor="@color/c444" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginRight="5dp"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/bg_white_round"
+                            android:backgroundTint="#DCFDE2"
+                            android:clickable="false"
+                            android:padding="13dp"
+                            app:srcCompat="@drawable/ic_special_discount" />
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Special Offers"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Redeem or avail special offers via your Evaly points (coming soon)"
+                                android:textColor="@color/c444" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 
