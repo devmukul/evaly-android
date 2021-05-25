@@ -24,6 +24,7 @@ import bd.com.evaly.evalyshop.ui.balance.BalanceFragment;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
+import bd.com.evaly.evalyshop.util.BindingUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -40,6 +41,7 @@ public class AccountFragment extends BaseFragment<FragmentAccountBinding, Accoun
     @Override
     protected void initViews() {
         updateViews();
+        BindingUtils.bindPointsView(binding.pointGraph, 15500);
     }
 
     @Override

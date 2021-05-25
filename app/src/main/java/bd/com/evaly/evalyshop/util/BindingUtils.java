@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.util;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.util.Base64;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -13,6 +15,7 @@ import com.google.gson.Gson;
 import java.nio.charset.StandardCharsets;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ItemPointGraphBinding;
 import bd.com.evaly.evalyshop.models.image.Background;
 import bd.com.evaly.evalyshop.models.image.CloudFrontRequest;
 import bd.com.evaly.evalyshop.models.image.Edits;
@@ -20,6 +23,57 @@ import bd.com.evaly.evalyshop.models.image.Jpeg;
 import bd.com.evaly.evalyshop.models.image.Resize;
 
 public class BindingUtils {
+
+    public static void bindPointsView(ItemPointGraphBinding binding, int score) {
+        binding.slider.setValue((float) getProgressValue(score));
+        binding.points.setText(score + " Pts");
+        if (score <= 1000) {
+            setSliderColor(binding, "BRONZE USER", "#B18608");
+        } else if (score <= 3000)
+            setSliderColor(binding, "SILVER USER", "#69C97A");
+        else if (score <= 5000)
+            setSliderColor(binding, "GOLD USER", "#DDB635");
+        else if (score < 10000)
+            setSliderColor(binding, "DIAMOND USER", "#915DB1");
+        else
+            setSliderColor(binding, "PLATINUM USER", "#D6833B");
+    }
+
+    public static void setSliderColor(ItemPointGraphBinding binding, String name, String color) {
+        binding.levelName.setText(name);
+        binding.slider.setTrackActiveTintList(ColorStateList.valueOf(Color.parseColor(color)));
+        binding.slider.setThumbTintList(ColorStateList.valueOf(Color.parseColor(color)));
+    }
+
+    public static double getProgressValue(int value) {
+
+        if (value >= 10000)
+            return 10000;
+
+        double sum = 0;
+
+        for (int i = 1; i <= 4; i++) {
+
+            double weight = 2.5;
+
+            if (i == 2 || i == 3)
+                weight = 1.25;
+            else if (i == 4)
+                weight = 0.5;
+
+            double toDeduct = 2500 / weight;
+
+            if (value > toDeduct) {
+                value -= toDeduct;
+                sum += toDeduct * weight;
+            } else {
+                sum += value * weight;
+                break;
+            }
+        }
+
+        return sum;
+    }
 
     public static void markImageVariation(RelativeLayout holder, boolean selected) {
         if (selected) {

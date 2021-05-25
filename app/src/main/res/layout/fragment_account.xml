@@ -100,6 +100,20 @@
                 </LinearLayout>
 
 
+                <LinearLayout
+                    android:id="@+id/pointsHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/fafafa"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="5dp">
+
+                    <include
+                        android:id="@+id/pointGraph"
+                        layout="@layout/item_point_graph" />
+                </LinearLayout>
+
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">

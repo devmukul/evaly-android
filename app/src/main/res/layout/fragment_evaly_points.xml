@@ -37,74 +37,9 @@
                     android:orientation="vertical"
                     android:paddingBottom="20dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:paddingHorizontal="20dp">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Evaly"
-                                android:textColor="@color/c333" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif-medium"
-                                android:text="SILVER USER"
-                                android:textColor="@color/black"
-                                android:textSize="17sp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Available"
-                                android:textColor="@color/c777" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif-medium"
-                                android:text="1,450 Pts"
-                                android:textColor="@color/black"
-                                android:textSize="17sp" />
-
-
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <com.google.android.material.slider.Slider
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="9dp"
-                        android:enabled="false"
-                        android:value="4000"
-                        android:valueFrom="0.0"
-                        android:valueTo="10000"
-                        app:thumbColor="#49C91C"
-                        app:thumbElevation="4dp"
-                        app:thumbStrokeColor="#FFFFFF"
-                        app:thumbStrokeWidth="2dp"
-                        app:trackColorActive="#49C91C"
-                        app:trackColorInactive="@color/eee"
-                        app:trackHeight="12dp" />
-
+                    <include
+                        android:id="@+id/pointGraph"
+                        layout="@layout/item_point_graph" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"

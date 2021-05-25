@@ -8,11 +8,11 @@ import bd.com.evaly.evalyshop.databinding.FragmentEvalyPointsBinding;
 import bd.com.evaly.evalyshop.models.points.FaqItem;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.evalyPoint.controller.PointFaqController;
+import bd.com.evaly.evalyshop.util.BindingUtils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class EvalyPointsFragment extends BaseFragment<FragmentEvalyPointsBinding, EvalyPointsViewModel> {
-
 
     public EvalyPointsFragment() {
         super(EvalyPointsViewModel.class, R.layout.fragment_evaly_points);
@@ -21,7 +21,7 @@ public class EvalyPointsFragment extends BaseFragment<FragmentEvalyPointsBinding
     @Override
     protected void initViews() {
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
-
+        BindingUtils.bindPointsView(binding.pointGraph, 15500);
     }
 
     @Override
