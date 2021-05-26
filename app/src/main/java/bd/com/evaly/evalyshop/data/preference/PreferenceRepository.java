@@ -9,6 +9,7 @@ import java.util.Calendar;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.models.points.PointsResponse;
 import bd.com.evaly.evalyshop.models.profile.UserInfoResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.util.ConstantUtils;
@@ -27,7 +28,7 @@ public class PreferenceRepository {
         this.gson = gson;
     }
 
-    public boolean isLogged(){
+    public boolean isLogged() {
         return !getToken().isEmpty();
     }
 
@@ -85,7 +86,7 @@ public class PreferenceRepository {
     }
 
     public UserModel getUserData() {
-        UserModel model =  gson.fromJson(preference.getString(ConstantUtils.USER_MODEL, ""), UserModel.class);
+        UserModel model = gson.fromJson(preference.getString(ConstantUtils.USER_MODEL, ""), UserModel.class);
         if (model == null)
             return new UserModel();
         return model;
@@ -160,12 +161,12 @@ public class PreferenceRepository {
         preferenceEditor.putInt("message_counter", count).commit();
     }
 
-    public int getPoints() {
-        return preference.getInt("reward_points", 0);
+    public PointsResponse getPoints() {
+        return gson.fromJson(preference.getString("reward_points_model", ""), PointsResponse.class);
     }
 
-    public void setPoints(int count) {
-        preferenceEditor.putInt("reward_points", count).commit();
+    public void setPoints(PointsResponse count) {
+        preferenceEditor.putString("reward_points_model", gson.toJson(count)).commit();
     }
 
     public boolean isDarkMode() {

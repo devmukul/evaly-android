@@ -2,48 +2,64 @@ package bd.com.evaly.evalyshop.models.points;
 
 import com.google.gson.annotations.SerializedName;
 
-public class PointsResponse{
+import java.util.ArrayList;
+import java.util.List;
 
-	@SerializedName("level")
-	private String level;
+public class PointsResponse {
 
-	@SerializedName("platform")
-	private String platform;
+    @SerializedName("level")
+    private String level;
 
-	@SerializedName("points")
-	private int points;
+    @SerializedName("platform")
+    private String platform;
 
-	public void setLevel(String level){
-		this.level = level;
-	}
+    @SerializedName("points")
+    private int points;
 
-	public String getLevel(){
-		return level;
-	}
+    @SerializedName("interval")
+    private List<Integer> interval;
 
-	public void setPlatform(String platform){
-		this.platform = platform;
-	}
+    public void setInterval(List<Integer> interval) {
+        this.interval = interval;
+    }
 
-	public String getPlatform(){
-		return platform;
-	}
+    public List<Integer> getInterval() {
+        if (interval == null)
+            return new ArrayList<>();
+        return interval;
+    }
 
-	public void setPoints(int points){
-		this.points = points;
-	}
+    public void setLevel(String level) {
+        this.level = level;
+    }
 
-	public int getPoints(){
-		return points;
-	}
+    public String getLevel() {
+        return level;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"PointsResponse{" + 
-			"level = '" + level + '\'' + 
-			",platform = '" + platform + '\'' + 
-			",points = '" + points + '\'' + 
-			"}";
-		}
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "PointsResponse{" +
+                        "level = '" + level + '\'' +
+                        ",platform = '" + platform + '\'' +
+                        ",points = '" + points + '\'' +
+                        "}";
+    }
 }

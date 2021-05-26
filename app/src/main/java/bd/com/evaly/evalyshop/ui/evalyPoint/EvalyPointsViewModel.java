@@ -16,7 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class EvalyPointsViewModel extends BaseViewModel {
 
-    public MutableLiveData<Integer> pointsLiveData = new MutableLiveData<>();
+    public MutableLiveData<PointsResponse> pointsLiveData = new MutableLiveData<>();
 
     @Inject
     public EvalyPointsViewModel(SavedStateHandle savedStateHandle, ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
@@ -29,8 +29,8 @@ public class EvalyPointsViewModel extends BaseViewModel {
         apiRepository.getPoints(new ResponseListener<CommonDataResponse<PointsResponse>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<PointsResponse> response, int statusCode) {
-                preferenceRepository.setPoints(response.getData().getPoints());
-                pointsLiveData.setValue(response.getData().getPoints());
+                preferenceRepository.setPoints(response.getData());
+                pointsLiveData.setValue(response.getData());
             }
 
             @Override
