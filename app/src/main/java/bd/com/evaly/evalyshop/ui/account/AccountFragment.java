@@ -2,9 +2,12 @@ package bd.com.evaly.evalyshop.ui.account;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
@@ -22,6 +25,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentAccountBinding;
 import bd.com.evaly.evalyshop.ui.auth.changePassword.ChangePasswordActivity;
 import bd.com.evaly.evalyshop.ui.balance.BalanceFragment;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
+import bd.com.evaly.evalyshop.ui.evalyPoint.EvalyPointsViewModel;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
 import bd.com.evaly.evalyshop.util.BindingUtils;
@@ -33,19 +37,28 @@ public class AccountFragment extends BaseFragment<FragmentAccountBinding, Accoun
 
     @Inject
     PreferenceRepository preferenceRepository;
+    private EvalyPointsViewModel pointsViewModel;
 
     public AccountFragment() {
         super(AccountViewModel.class, R.layout.fragment_account);
     }
 
     @Override
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        pointsViewModel = new ViewModelProvider(this).get(EvalyPointsViewModel.class);
+    }
+
+    @Override
     protected void initViews() {
         updateViews();
-        BindingUtils.bindPointsView(binding.pointGraph, 15500);
     }
 
     @Override
     protected void liveEventsObservers() {
+        pointsViewModel.pointsLiveData.observe(getViewLifecycleOwner(), integer -> {
+            BindingUtils.bindPointsView(binding.pointGraph, integer, true);
+        });
         viewModel.messageCount.observe(getViewLifecycleOwner(), integer -> {
             updateHotCount(integer);
         });
@@ -59,6 +72,8 @@ public class AccountFragment extends BaseFragment<FragmentAccountBinding, Accoun
 
     @Override
     protected void clickListeners() {
+
+        binding.pointsHolder.setOnClickListener(view -> navController.navigate(R.id.evalyPointsFragment));
 
         binding.refundSettlement.setOnClickListener(v -> {
             NavHostFragment.findNavController(this).navigate(R.id.preOtpFragment);

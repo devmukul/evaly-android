@@ -160,6 +160,14 @@ public class PreferenceRepository {
         preferenceEditor.putInt("message_counter", count).commit();
     }
 
+    public int getPoints() {
+        return preference.getInt("reward_points", 0);
+    }
+
+    public void setPoints(int count) {
+        preferenceEditor.putInt("reward_points", count).commit();
+    }
+
     public boolean isDarkMode() {
         return preference.getBoolean("dark_mode", false);
     }

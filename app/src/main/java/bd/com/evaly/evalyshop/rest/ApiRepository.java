@@ -78,6 +78,7 @@ import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
+import bd.com.evaly.evalyshop.models.points.PointsResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
@@ -119,6 +120,10 @@ public class ApiRepository {
     }
 
     /* ------------- Auth APIs ------------- */
+
+    public void getPoints(ResponseListener<CommonDataResponse<PointsResponse>, String> listener){
+        apiHandler.createCall(apiService.getPoints("evaly"), listener);
+    }
 
     public void saveSettlementMFSAccount(String type, MFSAccountRequest body, ResponseListener<CommonDataResponse<RefundSettlementResponse>, String> listener) {
         if (type.equalsIgnoreCase("bkash"))

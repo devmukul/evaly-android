@@ -21,12 +21,13 @@ public class EvalyPointsFragment extends BaseFragment<FragmentEvalyPointsBinding
     @Override
     protected void initViews() {
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
-        BindingUtils.bindPointsView(binding.pointGraph, 15500);
     }
 
     @Override
     protected void liveEventsObservers() {
-
+        viewModel.pointsLiveData.observe(getViewLifecycleOwner(), integer -> {
+            BindingUtils.bindPointsView(binding.pointGraph, integer, false);
+        });
     }
 
     @Override
