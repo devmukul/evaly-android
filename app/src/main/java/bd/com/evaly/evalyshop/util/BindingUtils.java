@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.util;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.text.Html;
 import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,26 +35,26 @@ public class BindingUtils {
             if (isProfile)
                 binding.message.setVisibility(View.VISIBLE);
             binding.badge.setImageResource(R.drawable.ic_level_bronze);
-            setSliderColor(binding, "BRONZE USER", "#B18608");
+            setSliderColor(binding, "<b>BRONZE</b> USER", "#B18608");
         } else if (score <= 3000) {
             if (isProfile)
                 binding.message.setVisibility(View.VISIBLE);
             binding.badge.setImageResource(R.drawable.ic_level_silver);
-            setSliderColor(binding, "SILVER USER", "#69C97A");
+            setSliderColor(binding, "<b>SILVER</b> USER", "#69C97A");
         } else if (score <= 5000) {
             binding.badge.setImageResource(R.drawable.ic_level_gold);
-            setSliderColor(binding, "GOLD USER", "#DDB635");
+            setSliderColor(binding, "<b>GOLD</b> USER", "#DDB635");
         } else if (score < 10000) {
             binding.badge.setImageResource(R.drawable.ic_level_diamond);
-            setSliderColor(binding, "DIAMOND USER", "#915DB1");
+            setSliderColor(binding, "<b>DIAMOND</b> USER", "#915DB1");
         } else {
             binding.badge.setImageResource(R.drawable.ic_level_platinum);
-            setSliderColor(binding, "PLATINUM USER", "#D6833B");
+            setSliderColor(binding, "<b>PLATINUM</b> USER", "#D6833B");
         }
     }
 
     public static void setSliderColor(ItemPointGraphBinding binding, String name, String color) {
-        binding.levelName.setText(name);
+        binding.levelName.setText(Html.fromHtml(name));
         binding.badge.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
         binding.slider.setTrackActiveTintList(ColorStateList.valueOf(Color.parseColor(color)));
         binding.slider.setThumbTintList(ColorStateList.valueOf(Color.parseColor(color)));

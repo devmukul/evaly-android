@@ -56,7 +56,7 @@ public class EvalyPointsFragment extends BaseFragment<FragmentEvalyPointsBinding
                 false));
         list.add(new FaqItem(
                 "How can I earn an Evaly Points?",
-                "You can earn points by making payments in your orders. Both Cyclone and regular shops. Please note that , in regular time the score is higher than the cyclone orders.",
+                "You can earn points by making payments in your orders. Both Cyclone and regular shops. Please note that, in regular time the score is higher than the cyclone orders.",
                 false));
         list.add(new FaqItem(
                 "What is Loyalty level?",
