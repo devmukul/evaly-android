@@ -1,13 +1,11 @@
 package bd.com.evaly.evalyshop.ui.user.editProfile;
 
 import android.graphics.Bitmap;
-import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
@@ -25,7 +23,6 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
-import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -117,20 +114,10 @@ public class EditProfileViewModel extends ViewModel {
         apiRepository.uploadImage(bitmap, new ResponseListener<CommonDataResponse<ImageDataModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
-
                 HashMap<String, String> body = new HashMap<>();
                 body.put("profile_pic_url", response.getData().getUrl());
                 body.put("image_sm", response.getData().getUrlSm());
                 setUserData(body);
-
-                HashMap<String, String> data = new HashMap<>();
-                body.put("user", preferenceRepository.getUserName());
-                body.put("host", Constants.XMPP_HOST);
-                body.put("name", "IMAGE_URL");
-                body.put("content", response.getData().getUrl());
-
-                updateToXMPP(data);
-
                 dialogToggle.setValue(false);
             }
 
@@ -144,7 +131,6 @@ public class EditProfileViewModel extends ViewModel {
     }
 
     public void setUserData(HashMap<String, String> userInfo) {
-
         apiRepository.setUserData(preferenceRepository.getToken(), userInfo, new ResponseListener<CommonDataResponse<UserModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<UserModel> response, int statusCode) {
@@ -156,7 +142,6 @@ public class EditProfileViewModel extends ViewModel {
             public void onFailed(String errorBody, int errorCode) {
 
             }
-
         });
     }
 
@@ -175,31 +160,6 @@ public class EditProfileViewModel extends ViewModel {
             }
 
         });
-    }
-
-    public void updateToXMPP(HashMap<String, String> userInfo) {
-
-        apiRepository.setUserDataToXmpp(userInfo, new ResponseListener<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
-                JsonObject ob = response.getAsJsonObject("data");
-                UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
-                if (ob.get("first_name").isJsonNull())
-                    userModel.setFirstName("");
-
-                if (ob.get("last_name").isJsonNull())
-                    userModel.setLastName("");
-                preferenceRepository.saveUserData(userModel);
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-        });
-
     }
 
     public LiveData<Boolean> getInfoSavedStatus() {

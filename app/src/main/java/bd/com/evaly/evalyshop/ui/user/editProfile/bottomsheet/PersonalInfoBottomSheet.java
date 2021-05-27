@@ -16,7 +16,6 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.TimeZone;
 
 import javax.inject.Inject;
@@ -29,7 +28,6 @@ import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.base.BaseBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.base.BaseViewModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
-import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -145,13 +143,6 @@ public class PersonalInfoBottomSheet extends BaseBottomSheetFragment<BottomSheet
 
             ToastUtils.show("Updating personal information...");
             commonViewModel.setUserData(Utils.objectToHashMap(body));
-
-            HashMap<String, String> data = new HashMap<>();
-            data.put("user", preferenceRepository.getUserName());
-            data.put("host", Constants.XMPP_HOST);
-            data.put("name", "FN");
-            data.put("content", firstName + " " + lastName);
-            commonViewModel.updateToXMPP(data);
             dismissAllowingStateLoss();
         });
     }

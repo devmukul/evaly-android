@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.auth.changePassword;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
 import java.util.HashMap;
 import java.util.concurrent.Executors;
@@ -18,7 +17,6 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.ui.base.BaseViewModel;
-import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -68,26 +66,6 @@ public class ChangePasswordViewModel extends BaseViewModel {
         });
     }
 
-
-    public void syncXmpp() {
-        HashMap<String, String> data = new HashMap<>();
-        data.put("user", preferenceRepository.getUserName());
-        data.put("host", Constants.XMPP_HOST);
-        data.put("newpass", preferenceRepository.getPassword());
-        apiRepository.changeXmppPassword(data, new ResponseListener<JsonPrimitive, String>() {
-            @Override
-            public void onDataFetched(JsonPrimitive response, int statusCode) {
-
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-        });
-    }
-
     public void signInUser() {
         loadingDialog.setValue(true);
         HashMap<String, String> payload = new HashMap<>();
@@ -105,7 +83,6 @@ public class ChangePasswordViewModel extends BaseViewModel {
                         String token = response.get("access_token").getAsString();
                         preferenceRepository.saveToken(token);
                         preferenceRepository.saveRefreshToken(response.get("refresh_token").getAsString());
-                        syncXmpp();
                         updateUserInfo();
                         ToastUtils.show("Successfully signed in.");
                         break;

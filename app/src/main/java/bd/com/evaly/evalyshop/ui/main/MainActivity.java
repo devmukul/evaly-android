@@ -114,9 +114,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             return;
         }
 
-        if (!preferenceRepository.getToken().isEmpty() && !preferenceRepository.isUserRegistered())
-            viewModel.registerXMPP();
-
         setupNavigation();
         setupBottomNav();
         checkRemoteConfig();

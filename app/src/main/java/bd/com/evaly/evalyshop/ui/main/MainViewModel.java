@@ -8,7 +8,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -162,23 +161,6 @@ public class MainViewModel extends ViewModel {
 
     public void setBackOnClick(boolean backOnClick) {
         this.backOnClick.setValue(backOnClick);
-    }
-
-    public void registerXMPP() {
-        HashMap<String, String> data = new HashMap<>();
-        data.put("password", preferenceRepository.getPassword());
-        apiRepository.registerXMPP(data, new ResponseListener<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-        });
     }
 
     public LiveData<Boolean> getUpdateNewsfeed() {
