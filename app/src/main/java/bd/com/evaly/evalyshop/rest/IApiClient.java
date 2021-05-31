@@ -70,6 +70,7 @@ import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.models.orderRequest.OrderRequestResponse;
 import bd.com.evaly.evalyshop.models.pay.BalanceResponse;
+import bd.com.evaly.evalyshop.models.points.PointsResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopResponse;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
@@ -111,6 +112,9 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface IApiClient {
+
+    @GET(UrlUtils.DOMAIN + "eauth/api/v2/customer/score")
+    Call<CommonDataResponse<PointsResponse>> getPoints(@Query("platform") String platform);
 
     @POST(UrlUtils.DOMAIN + "eauth/api/v2/epay/set-bkash-settlement-account")
     Call<CommonDataResponse<RefundSettlementResponse>> saveSettlementBkashAccount(@Body MFSAccountRequest body);

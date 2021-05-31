@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/fff"
+            android:paddingRight="5dp"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:theme="@style/ToolBarStyle"
+            app:title="ePoints" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/app_bg">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:id="@+id/headerHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bottom_bg_round"
+                    android:orientation="vertical"
+                    android:paddingBottom="20dp">
+
+                    <include
+                        android:id="@+id/pointGraph"
+                        layout="@layout/item_point_graph" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/fff">
+
+                        <ImageView
+                            android:id="@+id/btn1Image"
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_marginRight="5dp"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/circle_bg"
+                            android:clickable="false"
+                            android:padding="14dp"
+                            app:layout_constraintEnd_toStartOf="@+id/btn2Image"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_level_bronze"
+                            tools:layout_editor_absoluteY="0dp" />
+
+                        <TextView
+                            android:id="@+id/btn1Title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_weight="0"
+                            android:text="eBronze"
+                            android:textColor="@color/black"
+                            android:textIsSelectable="false"
+                            android:textSize="13sp"
+                            app:layout_constraintEnd_toEndOf="@+id/btn1Image"
+                            app:layout_constraintStart_toStartOf="@+id/btn1Image"
+                            app:layout_constraintTop_toBottomOf="@+id/btn1Image" />
+
+                        <TextView
+                            android:id="@+id/btn1Points"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="0"
+                            android:text="0 pts"
+                            android:textColor="@color/c444"
+                            android:textIsSelectable="false"
+                            android:textSize="11sp"
+                            app:layout_constraintEnd_toEndOf="@+id/btn1Image"
+                            app:layout_constraintStart_toStartOf="@+id/btn1Image"
+                            app:layout_constraintTop_toBottomOf="@+id/btn1Title" />
+
+
+                        <ImageView
+                            android:id="@+id/btn2Image"
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="0"
+                            android:background="@drawable/circle_bg"
+                            android:clickable="false"
+                            android:padding="14dp"
+                            app:layout_constraintEnd_toStartOf="@+id/btn3Image"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/btn1Image"
+                            app:layout_constraintTop_toTopOf="@+id/btn1Image"
+                            app:srcCompat="@drawable/ic_level_silver" />
+
+                        <TextView
+                            android:id="@+id/btn2Title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_weight="0"
+                            android:clickable="false"
+                            android:gravity="center"
+                            android:text="eSilver"
+                            android:textColor="@color/black"
+                            android:textIsSelectable="false"
+                            android:textSize="13sp"
+                            app:layout_constraintEnd_toEndOf="@+id/btn2Image"
+                            app:layout_constraintStart_toStartOf="@+id/btn2Image"
+                            app:layout_constraintTop_toBottomOf="@+id/btn2Image" />
+
+                        <TextView
+                            android:id="@+id/btn2Points"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="0"
+                            android:text="1,000 pts"
+                            android:textColor="@color/c444"
+                            android:textIsSelectable="false"
+                            android:textSize="11sp"
+                            app:layout_constraintEnd_toEndOf="@+id/btn2Image"
+                            app:layout_constraintStart_toStartOf="@+id/btn2Image"
+                            app:layout_constraintTop_toBottomOf="@+id/btn2Title" />
+
+                        <ImageView
+                            android:id="@+id/btn3Image"
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="0"
+                            android:background="@drawable/circle_bg"
+                            android:clickable="false"
+                            android:padding="15dp"
+                            app:layout_constraintEnd_toStartOf="@+id/btn4Image"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/btn2Image"
+                            app:layout_constraintTop_toTopOf="@+id/btn2Image"
+                            app:srcCompat="@drawable/ic_level_gold" />
+
+
+                        <TextView
+                            android:id="@+id/btn3Title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_weight="0"
+                            android:clickable="false"
+                            android:text="eGold"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textIsSelectable="false"
+                            android:textSize="13sp"
+                            app:layout_constraintEnd_toEndOf="@+id/btn3Image"
+                            app:layout_constraintStart_toStartOf="@+id/btn3Image"
+                            app:layout_constraintTop_toBottomOf="@+id/btn3Image" />
+
+                        <TextView
+                            android:id="@+id/btn3Points"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="0"
+                            android:text="3,000 pts"
+                            android:textColor="@color/c444"
+                            android:textIsSelectable="false"
+                            android:textSize="11sp"
+                            app:layout_constraintEnd_toEndOf="@+id/btn3Image"
+                            app:layout_constraintStart_toStartOf="@+id/btn3Image"
+                            app:layout_constraintTop_toBottomOf="@+id/btn3Title" />
+
+                        <ImageView
+                            android:id="@+id/btn4Image"
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="0"
+                            android:background="@drawable/circle_bg"
+                            android:clickable="false"
+                            android:padding="16dp"
+                            app:layout_constraintEnd_toEndOf="@id/btn5Image"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/btn3Image"
+                            app:layout_constraintTop_toTopOf="@+id/btn3Image"
+                            app:srcCompat="@drawable/ic_level_diamond" />
+
+                        <TextView
+                            android:id="@+id/btn4Title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_weight="0"
+                            android:text="eDiamond"
+                            android:textColor="@color/black"
+                            android:textIsSelectable="false"
+                            android:textSize="13sp"
+                            app:layout_constraintEnd_toEndOf="@+id/btn4Image"
+                            app:layout_constraintStart_toStartOf="@+id/btn4Image"
+                            app:layout_constraintTop_toBottomOf="@+id/btn4Image" />
+
+                        <TextView
+                            android:id="@+id/btn4Points"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="0"
+                            android:text="5,000 pts"
+                            android:textColor="@color/c444"
+                            android:textIsSelectable="false"
+                            android:textSize="11sp"
+                            app:layout_constraintEnd_toEndOf="@+id/btn4Image"
+                            app:layout_constraintStart_toStartOf="@+id/btn4Image"
+                            app:layout_constraintTop_toBottomOf="@+id/btn4Title" />
+
+                        <ImageView
+                            android:id="@+id/btn5Image"
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="0"
+                            android:background="@drawable/circle_bg"
+                            android:clickable="false"
+                            android:padding="12dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/btn4Image"
+                            app:layout_constraintTop_toTopOf="@+id/btn4Image"
+                            app:srcCompat="@drawable/ic_level_platinum"
+                            app:tint="#CC9933" />
+
+                        <TextView
+                            android:id="@+id/btn5Title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_weight="0"
+                            android:text="ePlatinum"
+                            android:textColor="@color/black"
+                            android:textIsSelectable="false"
+                            android:textSize="13sp"
+                            app:layout_constraintEnd_toEndOf="@+id/btn5Image"
+                            app:layout_constraintStart_toStartOf="@+id/btn5Image"
+                            app:layout_constraintTop_toBottomOf="@+id/btn5Image" />
+
+                        <TextView
+                            android:id="@+id/btn5Points"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="0"
+                            android:text="10,000 pts"
+                            android:textColor="@color/c444"
+                            android:textIsSelectable="false"
+                            android:textSize="11sp"
+                            app:layout_constraintEnd_toEndOf="@+id/btn5Image"
+                            app:layout_constraintStart_toStartOf="@+id/btn5Image"
+                            app:layout_constraintTop_toBottomOf="@+id/btn5Title" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="25dp"
+                    android:layout_marginVertical="12dp"
+                    android:layout_weight="0"
+                    android:text="Redeeming ePoints won’t affect your progress to the next level. "
+                    android:textColor="@color/c666"
+                    android:textIsSelectable="false"
+                    android:textSize="11sp"
+                    app:layout_constraintEnd_toEndOf="@+id/btn1Image"
+                    app:layout_constraintStart_toStartOf="@+id/btn1Image"
+                    app:layout_constraintTop_toBottomOf="@+id/btn1Title" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="18dp"
+                    android:background="@drawable/bg_white_round"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="15dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:text="How it works?"
+                        android:textColor="@color/black"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginRight="5dp"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/bg_white_round"
+                            android:backgroundTint="#2FE5AA17"
+                            android:clickable="false"
+                            android:padding="14dp"
+                            app:srcCompat="@drawable/ic_layalty_star" />
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Loyalty Score"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Earn ePoints by purchasing in Evaly regular shop and cyclone campaign."
+                                android:textColor="@color/c444" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginRight="5dp"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/bg_white_round"
+                            android:backgroundTint="#27457EB4"
+                            android:clickable="false"
+                            android:paddingHorizontal="14dp"
+                            android:paddingBottom="5dp"
+                            app:srcCompat="@drawable/ic_fast_delivery" />
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Faster Delivery"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Achieve more to get faster delivery based your ePoints"
+                                android:textColor="@color/c444" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginRight="5dp"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/bg_white_round"
+                            android:backgroundTint="#3669C97A"
+                            android:clickable="false"
+                            android:padding="13dp"
+                            app:srcCompat="@drawable/ic_special_discount" />
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Special Offers"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Redeem or avail special offers via your ePoints (coming soon)"
+                                android:textColor="@color/c444" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="18dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="40dp"
+                    android:background="@drawable/bg_white_round"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="20dp"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="20dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:text="Frequently Asked Questions"
+                        android:textColor="@color/black"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerFaq"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_point_faq" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+</layout>

@@ -1,6 +1,11 @@
 package bd.com.evaly.evalyshop.util;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.text.Html;
 import android.util.Base64;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -11,15 +16,96 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ItemPointGraphBinding;
 import bd.com.evaly.evalyshop.models.image.Background;
 import bd.com.evaly.evalyshop.models.image.CloudFrontRequest;
 import bd.com.evaly.evalyshop.models.image.Edits;
 import bd.com.evaly.evalyshop.models.image.Jpeg;
 import bd.com.evaly.evalyshop.models.image.Resize;
+import bd.com.evaly.evalyshop.models.points.PointsResponse;
 
 public class BindingUtils {
+
+    public static void bindPointsView(ItemPointGraphBinding binding, PointsResponse model, boolean isProfile) {
+
+        if (model == null) {
+            binding.slider.setValue(0);
+            binding.points.setText("0 Pts");
+            if (isProfile)
+                binding.message.setVisibility(View.VISIBLE);
+            binding.badge.setImageResource(R.drawable.ic_level_bronze);
+            setSliderColor(binding, "<b>BRONZE</b> USER", "#B18608");
+            return;
+        }
+
+        int score = model.getPoints();
+        binding.slider.setValue((float) getProgressValue(score, model.getInterval()));
+        binding.points.setText(formatPoints(score));
+        binding.message.setVisibility(View.GONE);
+
+        if (score <= model.getInterval().get(1)) {
+            if (isProfile)
+                binding.message.setVisibility(View.VISIBLE);
+            binding.badge.setImageResource(R.drawable.ic_level_bronze);
+            setSliderColor(binding, "<b>BRONZE</b> USER", "#B18608");
+        } else if (score <= model.getInterval().get(2)) {
+            if (isProfile)
+                binding.message.setVisibility(View.VISIBLE);
+            binding.badge.setImageResource(R.drawable.ic_level_silver);
+            setSliderColor(binding, "<b>SILVER</b> USER", "#69C97A");
+        } else if (score <= model.getInterval().get(3)) {
+            binding.badge.setImageResource(R.drawable.ic_level_gold);
+            setSliderColor(binding, "<b>GOLD</b> USER", "#DDB635");
+        } else if (score < model.getInterval().get(4)) {
+            binding.badge.setImageResource(R.drawable.ic_level_diamond);
+            setSliderColor(binding, "<b>DIAMOND</b> USER", "#915DB1");
+        } else {
+            binding.badge.setImageResource(R.drawable.ic_level_platinum);
+            setSliderColor(binding, "<b>PLATINUM</b> USER", "#D6833B");
+        }
+    }
+
+    private static String formatPoints(int point){
+        return String.format(Locale.ENGLISH, "%,d Pts", point);
+    }
+
+    public static void setSliderColor(ItemPointGraphBinding binding, String name, String color) {
+        binding.levelName.setText(Html.fromHtml(name));
+        binding.badge.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
+        binding.slider.setTrackActiveTintList(ColorStateList.valueOf(Color.parseColor(color)));
+        binding.slider.setThumbTintList(ColorStateList.valueOf(Color.parseColor(color)));
+    }
+
+    public static double getProgressValue(int value, List<Integer> interval) {
+
+        int maxPoints = interval.get(interval.size() - 1);
+        if (value >= maxPoints)
+            return maxPoints;
+
+        int intervalValue = maxPoints / (interval.size() - 1);
+
+        double sum = 0;
+
+        for (int i = 1; i <= interval.size(); i++) {
+
+            double toDeduct = interval.get(i) - interval.get(i - 1);
+            double weight = intervalValue / toDeduct;
+
+            if (value > toDeduct) {
+                value -= toDeduct;
+                sum += toDeduct * weight;
+            } else {
+                sum += value * weight;
+                break;
+            }
+        }
+
+        return sum;
+    }
 
     public static void markImageVariation(RelativeLayout holder, boolean selected) {
         if (selected) {
