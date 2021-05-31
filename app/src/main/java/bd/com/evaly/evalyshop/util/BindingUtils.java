@@ -4,7 +4,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.Html;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -47,17 +46,17 @@ public class BindingUtils {
         binding.points.setText(formatPoints(score));
         binding.message.setVisibility(View.GONE);
 
-        if (score <= model.getInterval().get(1)) {
+        if (score < model.getInterval().get(1)) {
             if (isProfile)
                 binding.message.setVisibility(View.VISIBLE);
             binding.badge.setImageResource(R.drawable.ic_level_bronze);
             setSliderColor(binding, "<b>BRONZE</b> USER", "#B18608");
-        } else if (score <= model.getInterval().get(2)) {
+        } else if (score < model.getInterval().get(2)) {
             if (isProfile)
                 binding.message.setVisibility(View.VISIBLE);
             binding.badge.setImageResource(R.drawable.ic_level_silver);
             setSliderColor(binding, "<b>SILVER</b> USER", "#69C97A");
-        } else if (score <= model.getInterval().get(3)) {
+        } else if (score < model.getInterval().get(3)) {
             binding.badge.setImageResource(R.drawable.ic_level_gold);
             setSliderColor(binding, "<b>GOLD</b> USER", "#DDB635");
         } else if (score < model.getInterval().get(4)) {
@@ -69,7 +68,7 @@ public class BindingUtils {
         }
     }
 
-    private static String formatPoints(int point){
+    private static String formatPoints(int point) {
         return String.format(Locale.ENGLISH, "%,d Pts", point);
     }
 

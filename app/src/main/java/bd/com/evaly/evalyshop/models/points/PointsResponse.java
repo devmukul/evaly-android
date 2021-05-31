@@ -14,14 +14,10 @@ public class PointsResponse {
     private String platform;
 
     @SerializedName("points")
-    private int points;
+    private double points;
 
     @SerializedName("interval")
     private List<Integer> interval;
-
-    public void setInterval(List<Integer> interval) {
-        this.interval = interval;
-    }
 
     public List<Integer> getInterval() {
         if (interval == null)
@@ -29,28 +25,32 @@ public class PointsResponse {
         return interval;
     }
 
-    public void setLevel(String level) {
-        this.level = level;
+    public void setInterval(List<Integer> interval) {
+        this.interval = interval;
     }
 
     public String getLevel() {
         return level;
     }
 
-    public void setPlatform(String platform) {
-        this.platform = platform;
+    public void setLevel(String level) {
+        this.level = level;
     }
 
     public String getPlatform() {
         return platform;
     }
 
-    public void setPoints(int points) {
-        this.points = points;
+    public void setPlatform(String platform) {
+        this.platform = platform;
     }
 
     public int getPoints() {
-        return points;
+        return (int) points;
+    }
+
+    public void setPoints(double points) {
+        this.points = points;
     }
 
     @Override

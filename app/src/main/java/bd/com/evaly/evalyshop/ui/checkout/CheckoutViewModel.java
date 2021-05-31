@@ -129,10 +129,11 @@ public class CheckoutViewModel extends ViewModel {
     }
 
     public String getMinAmountErrorMessage(HashMap<String, Integer> shopAmount) {
+
         String message = "";
         int count = 0;
 
-        if (attachmentCheckLiveData.getValue() == null || attachmentMapLiveData.getValue().size() == 0)
+        if (attachmentCheckLiveData.getValue() == null || attachmentCheckLiveData.getValue() == null)
             return message;
 
         for (AttachmentCheckResponse item : attachmentCheckLiveData.getValue()) {
@@ -145,7 +146,9 @@ public class CheckoutViewModel extends ViewModel {
                 count++;
             }
         }
+
         return message;
+
     }
 
 

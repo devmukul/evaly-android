@@ -38,7 +38,7 @@ public class EvalyPointsFragment extends BaseFragment<FragmentEvalyPointsBinding
         });
     }
 
-    private String formatPoints(int point){
+    private String formatPoints(int point) {
         return String.format(Locale.ENGLISH, "%,d Pts", (int) point);
     }
 
@@ -61,7 +61,7 @@ public class EvalyPointsFragment extends BaseFragment<FragmentEvalyPointsBinding
 
         list.add(new FaqItem(
                 "What is the ePoint?",
-                "ePoints are earned by making a new purchase in any payment gateway of Evaly (except gift cards).",
+                "ePoints are earned by making a new purchase in any payment gateway of Evaly (except gift cards and Evaly account).",
                 true));
         list.add(new FaqItem(
                 "What are the benefits of ePoints?",
@@ -69,7 +69,7 @@ public class EvalyPointsFragment extends BaseFragment<FragmentEvalyPointsBinding
                 false));
         list.add(new FaqItem(
                 "How can I earn an ePoints?",
-                "You can earn ePoints by making payments in your orders. Please note that, regular shop orders will earn you more points than the Cyclone shop orders.",
+                "You can earn ePoints by making payments in your orders. Please note that, regular shop orders will earn you more points than the campaign shop orders.",
                 false));
         list.add(new FaqItem(
                 "What is Loyalty Level?",
