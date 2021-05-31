@@ -48,19 +48,14 @@ public class CheckoutViewModel extends ViewModel {
     protected MutableLiveData<CommonDataResponse<List<JsonObject>>> orderPlacedLiveData = new MutableLiveData<>();
     protected MutableLiveData<HashMap<String, List<String>>> attachmentMapLiveData = new MutableLiveData<>();
     protected MutableLiveData<AddressResponse> selectedAddress = new MutableLiveData<>();
-    private AddressListDao addressListDao;
-    private CartDao cartDao;
     private CompositeDisposable compositeDisposable;
     private HashMap<String, List<String>> attachmentMap = new HashMap<>();
     private String selectedShopSlug;
     private ApiRepository apiRepository;
 
-
     @SuppressLint("CheckResult")
     @Inject
     public CheckoutViewModel(CartDao cartDao, AddressListDao addressListDao, SavedStateHandle savedStateHandle, ApiRepository apiRepository) {
-        this.cartDao = cartDao;
-        this.addressListDao = addressListDao;
         this.apiRepository = apiRepository;
         compositeDisposable = new CompositeDisposable();
         compositeDisposable.add(
@@ -82,10 +77,6 @@ public class CheckoutViewModel extends ViewModel {
         } else
             liveList = cartDao.getAllSelectedLive();
 
-    }
-
-    public String getSelectedShopSlug() {
-        return selectedShopSlug;
     }
 
     public void setSelectedShopSlug(String selectedShopSlug) {
@@ -133,7 +124,9 @@ public class CheckoutViewModel extends ViewModel {
         String message = "";
         int count = 0;
 
-        if (attachmentCheckLiveData.getValue() == null || attachmentCheckLiveData.getValue() == null)
+        if (attachmentCheckLiveData == null ||
+                attachmentCheckLiveData.getValue() == null ||
+                attachmentCheckLiveData.getValue().size() == 0)
             return message;
 
         for (AttachmentCheckResponse item : attachmentCheckLiveData.getValue()) {
@@ -150,7 +143,6 @@ public class CheckoutViewModel extends ViewModel {
         return message;
 
     }
-
 
     public void placeOrder(PlaceOrderItem payload) {
         Gson gson = new Gson();
@@ -198,9 +190,7 @@ public class CheckoutViewModel extends ViewModel {
             public void onFailed(String errorBody, int errorCode) {
 
             }
-
         });
     }
-
 
 }
