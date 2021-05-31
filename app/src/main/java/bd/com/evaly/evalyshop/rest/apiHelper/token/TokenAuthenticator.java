@@ -2,14 +2,17 @@ package bd.com.evaly.evalyshop.rest.apiHelper.token;
 
 import com.google.gson.JsonObject;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
-import java.net.Proxy;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.rest.ApiServiceHolder;
 import bd.com.evaly.evalyshop.rest.IApiClient;
+import bd.com.evaly.evalyshop.util.UrlUtils;
+import kotlin.jvm.internal.Intrinsics;
 import okhttp3.Authenticator;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -17,7 +20,6 @@ import okhttp3.Route;
 
 public class TokenAuthenticator implements Authenticator {
 
-    private boolean isRefreshApiCalled = false;
     private ApiServiceHolder apiServiceHolder;
     private IApiClient apiService;
     private PreferenceRepository preferencesHelper;
@@ -28,54 +30,75 @@ public class TokenAuthenticator implements Authenticator {
     }
 
     @Override
-    public Request authenticate(Route route, Response response) throws IOException {
+    public Request authenticate(Route route, @NotNull Response response) throws IOException {
 
-        if (!isRefreshApiCalled) {
+        if (preferencesHelper.getRefreshToken().isEmpty() || preferencesHelper.getToken().isEmpty())
+            return null;
 
-            if (apiServiceHolder.getApiService() == null ||
-                    preferencesHelper.getToken().isEmpty())
-                return null;
+        if (apiServiceHolder.getApiService() == null ||
+                preferencesHelper.getToken().isEmpty())
+            return null;
 
-            apiService = apiServiceHolder.getApiService();
-            isRefreshApiCalled = true;
+        apiService = apiServiceHolder.getApiService();
+        Request request = response.request();
 
-            HashMap<String, String> loginRequest = new HashMap<>();
-            loginRequest.put("refresh_token", preferencesHelper.getRefreshToken());
-            loginRequest.put("access_token", preferencesHelper.getTokenNoBearer());
-
-            retrofit2.Response<JsonObject> refreshApiResponse = apiService.refreshToken(loginRequest).execute();
-            if (refreshApiResponse.code() != 401) {
-                if (refreshApiResponse.body() != null &&
-                        !response.request().url().toString().contains("ecaptcha") &&
-                        !response.request().url().toString().contains("logout")) {
-
-                    JsonObject loginResponse = refreshApiResponse.body();
-                    String accessToken = loginResponse.get("data").getAsJsonObject().get("access_token").getAsString();
-                    preferencesHelper.saveToken(accessToken);
-                    preferencesHelper.saveRefreshToken(loginResponse.get("data").getAsJsonObject().get("refresh_token").getAsString());
-
-                    isRefreshApiCalled = false;
-
-                    if (accessToken == null || accessToken.isEmpty())
-                        return null;
-
-                    return response.request().newBuilder()
-                            .addHeader("Authorization", accessToken)
-                            .build();
-                }
-            } else {
-                if (!response.request().url().toString().contains("ecaptcha") &&
-                        !response.request().url().toString().contains("logout"))
-                    AppController.onLogoutEvent();
-            }
+        if (request.url().toString().equals(getRefreshTokenUrl())) {
+            AppController.onLogoutEvent();
+            return null;
         }
 
-        isRefreshApiCalled = false;
+        return fetchNewTokenAndUpdateRequest(apiService, request);
+    }
+
+
+    private synchronized Request fetchNewTokenAndUpdateRequest(IApiClient apiService, Request request) throws IOException {
+
+        String currentToken = preferencesHelper.getToken();
+
+        if (isAlreadyNewTokenFetched(request, currentToken))
+            return getNewRequest(request, currentToken);
+
+        HashMap<String, String> loginRequest = new HashMap<>();
+        loginRequest.put("refresh_token", preferencesHelper.getRefreshToken());
+        loginRequest.put("access_token", currentToken);
+
+        retrofit2.Response<JsonObject> refreshApiResponse = apiService.refreshToken(loginRequest).execute();
+        if (refreshApiResponse.code() != 401) {
+            if (refreshApiResponse.body() != null &&
+                    !request.url().toString().contains("ecaptcha") &&
+                    !request.url().toString().contains("logout")) {
+
+                JsonObject loginResponse = refreshApiResponse.body();
+                String accessToken = loginResponse.get("data").getAsJsonObject().get("access_token").getAsString();
+                preferencesHelper.saveToken(accessToken);
+                preferencesHelper.saveRefreshToken(loginResponse.get("data").getAsJsonObject().get("refresh_token").getAsString());
+
+                if (accessToken == null || accessToken.isEmpty())
+                    return null;
+
+                return this.getNewRequest(request, accessToken);
+            }
+
+        } else {
+            if (!request.url().toString().contains("ecaptcha") &&
+                    !request.url().toString().contains("logout"))
+                AppController.onLogoutEvent();
+        }
+
         return null;
     }
 
-    public Request authenticateProxy(Proxy proxy, Response response) throws IOException {
-        // Null indicates no attempt to authenticate.
-        return null;
+    private String getRefreshTokenUrl() {
+        return UrlUtils.DOMAIN_EAUTH + "token/refresh";
     }
+
+    private boolean isAlreadyNewTokenFetched(Request request, String currSavedToken) {
+        String reqAccessToken = request.header("Authorization");
+        return !Intrinsics.areEqual(currSavedToken, reqAccessToken);
+    }
+
+    private Request getNewRequest(Request request, String token) {
+        return request.newBuilder().header("Authorization", "Bearer " + token).build();
+    }
+
 }
