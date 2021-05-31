@@ -12,7 +12,6 @@ import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.rest.ApiServiceHolder;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import bd.com.evaly.evalyshop.util.UrlUtils;
-import kotlin.jvm.internal.Intrinsics;
 import okhttp3.Authenticator;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -32,11 +31,7 @@ public class TokenAuthenticator implements Authenticator {
     @Override
     public Request authenticate(Route route, @NotNull Response response) throws IOException {
 
-        if (preferencesHelper.getRefreshToken().isEmpty() || preferencesHelper.getToken().isEmpty())
-            return null;
-
-        if (apiServiceHolder.getApiService() == null ||
-                preferencesHelper.getToken().isEmpty())
+        if (preferencesHelper.getRefreshToken().isEmpty() || preferencesHelper.getToken().isEmpty() || apiServiceHolder.getApiService() == null)
             return null;
 
         apiService = apiServiceHolder.getApiService();
@@ -60,7 +55,7 @@ public class TokenAuthenticator implements Authenticator {
 
         HashMap<String, String> loginRequest = new HashMap<>();
         loginRequest.put("refresh_token", preferencesHelper.getRefreshToken());
-        loginRequest.put("access_token", currentToken);
+        loginRequest.put("access_token", currentToken.replace("Bearer ", ""));
 
         retrofit2.Response<JsonObject> refreshApiResponse = apiService.refreshToken(loginRequest).execute();
         if (refreshApiResponse.code() != 401) {
@@ -94,11 +89,13 @@ public class TokenAuthenticator implements Authenticator {
 
     private boolean isAlreadyNewTokenFetched(Request request, String currSavedToken) {
         String reqAccessToken = request.header("Authorization");
-        return !Intrinsics.areEqual(currSavedToken, reqAccessToken);
+        return !currSavedToken.equals(reqAccessToken);
     }
 
     private Request getNewRequest(Request request, String token) {
-        return request.newBuilder().header("Authorization", "Bearer " + token).build();
+        return request.newBuilder().header(
+                "Authorization",
+                token.contains("Bearer") ? token : ("Bearer " + token)).build();
     }
 
 }

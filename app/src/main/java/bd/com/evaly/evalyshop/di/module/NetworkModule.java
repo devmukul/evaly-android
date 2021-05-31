@@ -1,13 +1,15 @@
 package bd.com.evaly.evalyshop.di.module;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
+
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
-import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.rest.ApiHandler;
+import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.rest.ApiServiceHolder;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import bd.com.evaly.evalyshop.rest.apiHelper.token.TokenAuthenticator;
@@ -59,8 +61,10 @@ public class NetworkModule {
         okHttpClient.writeTimeout(120, TimeUnit.SECONDS);
         okHttpClient.addInterceptor(tokenInterceptor);
         okHttpClient.authenticator(tokenAuthenticator);
-        if (BuildConfig.DEBUG)
+        if (BuildConfig.DEBUG) {
             okHttpClient.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+            okHttpClient.addNetworkInterceptor(new StethoInterceptor());
+        }
         return okHttpClient.build();
     }
 
