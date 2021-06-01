@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.di.module;
 
-import com.facebook.stetho.okhttp3.StethoInterceptor;
-
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
@@ -63,7 +61,6 @@ public class NetworkModule {
         okHttpClient.authenticator(tokenAuthenticator);
         if (BuildConfig.DEBUG) {
             okHttpClient.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
-            okHttpClient.addNetworkInterceptor(new StethoInterceptor());
         }
         return okHttpClient.build();
     }

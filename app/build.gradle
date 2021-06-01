@@ -13,8 +13,8 @@ android {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 2914
-        versionName "2.9.14"
+        versionCode 2915
+        versionName "2.9.15"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
@@ -181,6 +181,4 @@ dependencies {
 
     implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.2.1"
     implementation 'com.github.aabhasr1:OtpView:v1.1.2-ktx'
-
-    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 }
