@@ -43,7 +43,7 @@ public class BindingUtils {
 
         int score = model.getPoints();
         binding.slider.setValue((float) getProgressValue(score, model.getInterval()));
-        binding.points.setText(formatPoints(score));
+        binding.points.setText(Utils.formatEvalyPoints(score));
         binding.message.setVisibility(View.GONE);
 
         if (score < model.getInterval().get(1)) {
@@ -66,10 +66,6 @@ public class BindingUtils {
             binding.badge.setImageResource(R.drawable.ic_level_platinum);
             setSliderColor(binding, "<b>PLATINUM</b> USER", "#D6833B");
         }
-    }
-
-    private static String formatPoints(int point) {
-        return String.format(Locale.ENGLISH, "%,d Pts", point);
     }
 
     public static void setSliderColor(ItemPointGraphBinding binding, String name, String color) {
