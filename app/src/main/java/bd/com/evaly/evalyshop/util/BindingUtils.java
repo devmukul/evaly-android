@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemPointGraphBinding;
@@ -42,6 +41,7 @@ public class BindingUtils {
         }
 
         int score = model.getPoints();
+        binding.slider.setValueTo(model.getInterval().get(model.getInterval().size() - 1));
         binding.slider.setValue((float) getProgressValue(score, model.getInterval()));
         binding.points.setText(Utils.formatEvalyPoints(score));
         binding.message.setVisibility(View.GONE);
