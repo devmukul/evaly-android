@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.util;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -30,6 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.text.BreakIterator;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,6 +57,17 @@ public class Utils {
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
+    public static String formatEvalyPoints(long point) {
+        return String.format(Locale.ENGLISH, "%s Pts", amountFormat(point));
+    }
+
+    public static String amountFormat(long count) {
+        if (count < 1000) return "" + count;
+        int exp = (int) (Math.log(count) / Math.log(1000));
+        DecimalFormat format = new DecimalFormat("0.#");
+        String value = format.format(count / Math.pow(1000, exp));
+        return String.format("%s%c", value, "KMBTPE".charAt(exp - 1));
+    }
 
     public static boolean contains(String str, String words) {
         if (str == null)

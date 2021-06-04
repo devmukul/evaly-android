@@ -10,6 +10,7 @@ import bd.com.evaly.evalyshop.models.points.FaqItem;
 import bd.com.evaly.evalyshop.ui.base.BaseFragment;
 import bd.com.evaly.evalyshop.ui.evalyPoint.controller.PointFaqController;
 import bd.com.evaly.evalyshop.util.BindingUtils;
+import bd.com.evaly.evalyshop.util.Utils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -29,18 +30,15 @@ public class EvalyPointsFragment extends BaseFragment<FragmentEvalyPointsBinding
         viewModel.pointsLiveData.observe(getViewLifecycleOwner(), model -> {
             BindingUtils.bindPointsView(binding.pointGraph, model, false);
             if (model != null && model.getInterval().size() > 4) {
-                binding.btn1Points.setText(formatPoints(model.getInterval().get(0)));
-                binding.btn2Points.setText(formatPoints(model.getInterval().get(1)));
-                binding.btn3Points.setText(formatPoints(model.getInterval().get(2)));
-                binding.btn4Points.setText(formatPoints(model.getInterval().get(3)));
-                binding.btn5Points.setText(formatPoints(model.getInterval().get(4)));
+                binding.btn1Points.setText(Utils.formatEvalyPoints(model.getInterval().get(0)));
+                binding.btn2Points.setText(Utils.formatEvalyPoints(model.getInterval().get(1)));
+                binding.btn3Points.setText(Utils.formatEvalyPoints(model.getInterval().get(2)));
+                binding.btn4Points.setText(Utils.formatEvalyPoints(model.getInterval().get(3)));
+                binding.btn5Points.setText(Utils.formatEvalyPoints(model.getInterval().get(4)));
             }
         });
     }
 
-    private String formatPoints(int point) {
-        return String.format(Locale.ENGLISH, "%,d Pts", (int) point);
-    }
 
     @Override
     protected void clickListeners() {

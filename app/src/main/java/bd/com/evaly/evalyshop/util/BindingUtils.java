@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemPointGraphBinding;
@@ -42,8 +41,9 @@ public class BindingUtils {
         }
 
         int score = model.getPoints();
+        binding.slider.setValueTo(model.getInterval().get(model.getInterval().size() - 1));
         binding.slider.setValue((float) getProgressValue(score, model.getInterval()));
-        binding.points.setText(formatPoints(score));
+        binding.points.setText(Utils.formatEvalyPoints(score));
         binding.message.setVisibility(View.GONE);
 
         if (score < model.getInterval().get(1)) {
@@ -66,10 +66,6 @@ public class BindingUtils {
             binding.badge.setImageResource(R.drawable.ic_level_platinum);
             setSliderColor(binding, "<b>PLATINUM</b> USER", "#D6833B");
         }
-    }
-
-    private static String formatPoints(int point) {
-        return String.format(Locale.ENGLISH, "%,d Pts", point);
     }
 
     public static void setSliderColor(ItemPointGraphBinding binding, String name, String color) {
