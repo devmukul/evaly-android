@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -480,6 +479,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             }
         }
 
+        assert navController != null;
         if (navController.getCurrentDestination() != null) {
             if (navController.getCurrentDestination().getId() == R.id.homeFragment) {
                 if (isLaunchActivity)
@@ -494,6 +494,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     protected void onResume() {
         super.onResume();
+        if (navController != null && navController.getCurrentDestination() == null)
+            finish();
         Menu menu = binding.bottomNavigationView.getMenu();
         MenuItem item = menu.getItem(0);
         item.setChecked(true);

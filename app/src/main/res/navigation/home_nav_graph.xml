@@ -159,7 +159,6 @@
             app:uri="beta.evaly.com.bd/products/{product_slug}" />
     </activity>
 
-
     <fragment
         android:id="@+id/evalyExpressFragment"
         android:name="bd.com.evaly.evalyshop.ui.express.ExpressShopsFragment"
