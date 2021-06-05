@@ -1,8 +1,6 @@
 package bd.com.evaly.evalyshop.ui.product.productDetails.adapter;
 
 import android.annotation.SuppressLint;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -21,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -29,6 +26,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopResponse;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdapter.MyViewHolder> {
@@ -135,38 +133,29 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         viewHolder.shopName.setOnClickListener(storeClick);
 
         viewHolder.call.setOnClickListener(v -> {
-            final String phone = shop.getContactNumber();
-            final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
-            snackBar.setAction("Call", v12 -> {
+            String phone = shop.getContactNumber();
+            if (Utils.isValidNumber(phone)) {
                 try {
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(Uri.parse("tel:" + phone));
                     context.startActivity(intent);
                 } catch (Exception ignored) {
                 }
-                snackBar.dismiss();
-            });
-            snackBar.show();
+            } else {
+                if (phone == null || phone.isEmpty())
+                    phone = "Contact number is not provided";
+                ToastUtils.show(phone);
+            }
         });
 
         viewHolder.location.setOnClickListener(v -> {
-            final String location;
-            if (shop.getShopAddress().equals("xxx"))
+            String location;
+            if (shop.getShopAddress().equals("xxx") || shop.getShopAddress().equals(""))
                 location = "Dhaka, Bangladesh";
             else
                 location = shop.getShopAddress();
 
-            final Snackbar snackBar = Snackbar.make(view, location + "", Snackbar.LENGTH_LONG);
-            snackBar.setAction("Copy", v13 -> {
-                try {
-                    ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("address", location);
-                    clipboard.setPrimaryClip(clip);
-                } catch (Exception e) {
-                }
-                snackBar.dismiss();
-            });
-            snackBar.show();
+            ToastUtils.show(location);
         });
     }
 

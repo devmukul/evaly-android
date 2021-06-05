@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.util;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -303,6 +302,8 @@ public class Utils {
     }
 
     public static boolean isValidNumber(String text) {
+        if (text == null)
+            return false;
         return text.matches("^(01)[3-9][0-9]{8}$");
     }
 
