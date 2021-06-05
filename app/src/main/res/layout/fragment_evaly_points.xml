@@ -345,7 +345,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Earn ePoints by purchasing in Evaly regular shops and campaigns."
+                                android:text="Earn ePoints by purchasing at Evaly Priority Stores"
                                 android:textColor="@color/c444" />
 
                         </LinearLayout>

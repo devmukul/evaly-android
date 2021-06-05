@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.ui.evalyPoint;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentEvalyPointsBinding;
@@ -59,7 +58,7 @@ public class EvalyPointsFragment extends BaseFragment<FragmentEvalyPointsBinding
 
         list.add(new FaqItem(
                 "What is the ePoint?",
-                "ePoints are earned by making a new purchase in any payment gateway of Evaly (except gift cards and Evaly account).",
+                "ePoints are earned by making a new purchase at Evaly Priority Stores in any payment gateway of Evaly (except gift cards and Evaly account).",
                 true));
         list.add(new FaqItem(
                 "What are the benefits of ePoints?",
@@ -67,7 +66,7 @@ public class EvalyPointsFragment extends BaseFragment<FragmentEvalyPointsBinding
                 false));
         list.add(new FaqItem(
                 "How can I earn an ePoints?",
-                "You can earn ePoints by making payments in your orders. Please note that, regular shop orders will earn you more points than the campaign shop orders.",
+                "You can earn ePoints by making payments in your orders of Evaly Priority Stores.",
                 false));
         list.add(new FaqItem(
                 "What is Loyalty Level?",
