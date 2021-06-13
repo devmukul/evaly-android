@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +38,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
@@ -60,6 +62,7 @@ import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
 import bd.com.evaly.evalyshop.ui.payment.builder.PaymentWebBuilder;
 import bd.com.evaly.evalyshop.ui.payment.listener.PaymentListener;
+import bd.com.evaly.evalyshop.util.AppSignatureHelper;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -120,6 +123,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         setupDialogs();
         handleNotificationNavigation(getIntent());
         handleOtherIntent();
+        initAppSignature();
+    }
+
+    private void initAppSignature() {
+        /*AppSignatureHelper obj = new AppSignatureHelper(this);
+        ArrayList<String> list = obj.getAppSignatures();
+        Log.e("AppSignatureSize:", ""+list.size());
+        Log.e("AppSignatureHash:", ""+list.get(0));*/
     }
 
     @Override

@@ -4,12 +4,20 @@ import android.content.Intent;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -17,15 +25,19 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityPasswordBinding;
+import bd.com.evaly.evalyshop.listener.SmsReceiverListener;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
+import bd.com.evaly.evalyshop.service.SmsBroadcastReceiver;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.util.AppSignatureHelper;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, PasswordViewModel> {
+public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, PasswordViewModel> implements SmsReceiverListener {
 
     @Inject
     ApiRepository apiRepository;
@@ -48,6 +60,7 @@ public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, Pass
         dialog = new ViewDialog(this);
         phoneNumber = getIntent().getStringExtra("phone");
         requestId = getIntent().getStringExtra("request_id");
+        SmsBroadcastReceiver.listener = this ;
 
         binding.pin1Et.addTextChangedListener(new TextWatcher() {
 
@@ -267,5 +280,29 @@ public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, Pass
         dialog.hideDialog();
         Toast.makeText(PasswordActivity.this, msg, Toast.LENGTH_SHORT).show();
 
+    }
+
+    public void setupSmsRetrieverClient() {
+        SmsRetrieverClient client = SmsRetriever.getClient(this);
+
+        Task<Void> task = client.startSmsRetriever();
+
+        task.addOnSuccessListener(aVoid -> {
+        });
+
+        task.addOnFailureListener(e -> {
+        });
+
+    }
+
+    @Override
+    public void onSmsReceive(String otp) {
+        ToastUtils.show(otp);
+    }
+
+    @Override
+    protected void onDestroy() {
+        SmsBroadcastReceiver.listener = null ;
+        super.onDestroy();
     }
 }
