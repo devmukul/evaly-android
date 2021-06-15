@@ -123,14 +123,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         setupDialogs();
         handleNotificationNavigation(getIntent());
         handleOtherIntent();
-        initAppSignature();
-    }
-
-    private void initAppSignature() {
-        /*AppSignatureHelper obj = new AppSignatureHelper(this);
-        ArrayList<String> list = obj.getAppSignatures();
-        Log.e("AppSignatureSize:", ""+list.size());
-        Log.e("AppSignatureHash:", ""+list.get(0));*/
     }
 
     @Override

@@ -13,11 +13,8 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -25,19 +22,18 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityPasswordBinding;
-import bd.com.evaly.evalyshop.listener.SmsReceiverListener;
+import bd.com.evaly.evalyshop.listener.OtpReceiverListener;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.service.SmsBroadcastReceiver;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.util.AppSignatureHelper;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, PasswordViewModel> implements SmsReceiverListener {
+public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, PasswordViewModel> implements OtpReceiverListener {
 
     @Inject
     ApiRepository apiRepository;
@@ -54,13 +50,14 @@ public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, Pass
 
     @Override
     protected void initViews() {
+        setupSmsRetrieverClient();
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setTitle("Set Password");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         dialog = new ViewDialog(this);
         phoneNumber = getIntent().getStringExtra("phone");
         requestId = getIntent().getStringExtra("request_id");
-        SmsBroadcastReceiver.listener = this ;
+        SmsBroadcastReceiver.otpReceiverListener = this ;
 
         binding.pin1Et.addTextChangedListener(new TextWatcher() {
 
@@ -145,6 +142,7 @@ public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, Pass
                     binding.pin4Et.requestFocus();
             }
         });
+        Log.e("passwordActvity", "true");
     }
 
     @Override
@@ -296,13 +294,26 @@ public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, Pass
     }
 
     @Override
-    public void onSmsReceive(String otp) {
-        ToastUtils.show(otp);
+    public void onOtpReceive(String otp) {
+        try {
+            if(otp != null & binding != null) {
+                String[] splitedOtp = otp.split("(?!^)");
+                if(splitedOtp.length == 5){
+                    binding.pin1Et.setText(splitedOtp[0]);
+                    binding.pin2Et.setText(splitedOtp[1]);
+                    binding.pin3Et.setText(splitedOtp[2]);
+                    binding.pin4Et.setText(splitedOtp[3]);
+                    binding.pin5Et.setText(splitedOtp[4]);
+                }
+            }
+        }catch (Exception exp) {
+            Log.e("OtpReadExp:", exp.toString());
+        }
     }
 
     @Override
     protected void onDestroy() {
-        SmsBroadcastReceiver.listener = null ;
+        SmsBroadcastReceiver.otpReceiverListener = null ;
         super.onDestroy();
     }
 }
