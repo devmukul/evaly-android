@@ -3,7 +3,9 @@ package bd.com.evaly.evalyshop.di.module;
 import android.app.Application;
 import android.content.Context;
 
+import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 import androidx.room.Room;
 
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
@@ -23,6 +25,7 @@ import bd.com.evaly.evalyshop.data.roomdb.CartDatabase;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.di.qualifiers.FirebaseRemoteConfigLiveData;
 import bd.com.evaly.evalyshop.manager.credential.CredentialManager;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
@@ -94,31 +97,6 @@ public class AppModule {
         return Room.databaseBuilder(context, CartDatabase.class, "cart_database")
                 .fallbackToDestructiveMigration()
                 .build();
-    }
-
-    @Provides
-    CredentialRequest credentialRequest() {
-        return new CredentialRequest.Builder()
-                .setPasswordLoginSupported(true)
-                .setAccountTypes(IdentityProviders.GOOGLE)
-                .build();
-    }
-
-    @Provides
-    CredentialsOptions provideCredentialOption() {
-        return new CredentialsOptions.Builder()
-                .forceEnableSaveDialog()
-                .build();
-    }
-
-    @Provides
-    CredentialsClient provideCredentialClient(Context context, CredentialsOptions options) {
-        return Credentials.getClient(context, options);
-    }
-
-    @Provides
-    CredentialManager provideCredentialManager(CredentialsClient credentialClient, CredentialRequest credentialRequest) {
-        return new CredentialManager(credentialClient, credentialRequest);
     }
 
 }

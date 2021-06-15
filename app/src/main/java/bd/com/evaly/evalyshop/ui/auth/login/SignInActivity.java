@@ -26,9 +26,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignInViewModel> {
 
-    @Inject
-    CredentialManager credentialManager;
-
     private boolean isShowing = false;
     private ViewDialog alert;
 
@@ -37,6 +34,9 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
     public SignInActivity() {
         super(SignInViewModel.class, R.layout.activity_sign_in_new);
     }
+
+    @Inject
+    CredentialManager credentialManager;
 
     @Override
     protected void initViews() {
@@ -83,7 +83,6 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
         credentialManager.saveCredential(
                 binding.phoneNumber.getText().toString(),
                 binding.password.getText().toString(),
-                this,
                 new CredentialSaveListener() {
                     @Override
                     public void onCredentialSave() {
@@ -102,7 +101,7 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
 
     private void retrieveUserCredential() {
         // Todo show dialog to user choose number
-        credentialManager.retrieveUserCredential(this, this::updateCredentialToView);
+        credentialManager.retrieveUserCredential(this::updateCredentialToView);
     }
 
     private void updateCredentialToView(Credential credential) {

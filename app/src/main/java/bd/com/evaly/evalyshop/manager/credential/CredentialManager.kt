@@ -18,12 +18,12 @@ import javax.inject.Inject
 class CredentialManager @Inject constructor(
     val credentialClient: CredentialsClient,
     val credentialRequest: CredentialRequest,
+    val activity: Activity
 ) {
 
     fun saveCredential(
         phone: String,
         password: String,
-        activity: Activity,
         saveListener: CredentialSaveListener
     ) {
         val credential = getCredentialInstance(phone, password)
@@ -48,7 +48,7 @@ class CredentialManager @Inject constructor(
         }
     }
 
-    fun retrieveUserCredential(activity: Activity, fetchListener: CredentialFetchListener) {
+    fun retrieveUserCredential(fetchListener: CredentialFetchListener) {
         credentialClient.request(credentialRequest)
             .addOnCompleteListener { task: Task<CredentialRequestResponse> ->
                 if (task.isSuccessful) {
@@ -61,14 +61,14 @@ class CredentialManager @Inject constructor(
                     val e = task.exception
                     if (e is ResolvableApiException) {
                         // May be Multiple user saved, now show user picker..
-                        resolveResult(e, RC_READ, activity)
+                        resolveResult(e, RC_READ)
                     }
                 }
             }
 
     }
 
-    private fun resolveResult(rae: ResolvableApiException, requestCode: Int, activity: Activity) {
+    private fun resolveResult(rae: ResolvableApiException, requestCode: Int) {
         try {
             rae.startResolutionForResult(activity, requestCode)
         } catch (exp: IntentSender.SendIntentException) {
