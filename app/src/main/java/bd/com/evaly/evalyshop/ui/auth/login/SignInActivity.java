@@ -1,29 +1,19 @@
 package bd.com.evaly.evalyshop.ui.auth.login;
 
 import android.content.Intent;
-import android.content.IntentSender;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
-import com.google.android.gms.auth.api.credentials.Credentials;
-import com.google.android.gms.auth.api.credentials.CredentialsClient;
-import com.google.android.gms.auth.api.credentials.CredentialsOptions;
-import com.google.android.gms.auth.api.credentials.IdentityProviders;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
-import org.jetbrains.annotations.NotNull;
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ActivitySignInNewBinding;
+import bd.com.evaly.evalyshop.manager.credential.CredentialSaveListener;
+import bd.com.evaly.evalyshop.manager.credential.CredentialManager;
 import bd.com.evaly.evalyshop.ui.auth.forgetPassword.ForgotPasswordActivity;
 import bd.com.evaly.evalyshop.ui.auth.signup.SignUpActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
@@ -36,12 +26,12 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignInViewModel> {
 
+    @Inject
+    CredentialManager credentialManager;
+
     private boolean isShowing = false;
     private ViewDialog alert;
 
-    private CredentialsClient credentialClient;
-    private CredentialRequest credentialRequest;
-    private final int RC_SAVE = 1000;
     private final String TAG = "SignInActivity";
 
     public SignInActivity() {
@@ -53,7 +43,6 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
 
         alert = new ViewDialog(this);
         Intent data = getIntent();
-        initCredential();
         retrieveUserCredential();
 
         if (data.hasExtra("phone")) {
@@ -71,18 +60,6 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
             binding.phoneNumber.requestFocus();
     }
 
-    private void initCredential() {
-        CredentialsOptions options = new CredentialsOptions.Builder()
-                .forceEnableSaveDialog()
-                .build();
-        credentialClient = Credentials.getClient(this, options);
-
-        credentialRequest = new CredentialRequest.Builder()
-                .setPasswordLoginSupported(true)
-                .setAccountTypes(IdentityProviders.GOOGLE)
-                .build();
-    }
-
     @Override
     protected void liveEventsObservers() {
         viewModel.showToast.observe(this, s -> ToastUtils.show(s));
@@ -91,7 +68,7 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
                 alert.hideDialog();
         });
         viewModel.loginSuccess.observe(this, aVoid -> {
-            saveAuthCredential(binding.phoneNumber.getText().toString(), binding.password.getText().toString());
+            saveAuthCredential();
         });
     }
 
@@ -102,57 +79,35 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
         finishAffinity();
     }
 
-    private void saveAuthCredential(String phone, String password) {
-        Credential credential = new Credential.Builder(phone)
-                .setPassword(password)
-                .setName(phone)
-                .build();
+    private void saveAuthCredential() {
+        credentialManager.saveCredential(
+                binding.phoneNumber.getText().toString(),
+                binding.password.getText().toString(),
+                this,
+                new CredentialSaveListener() {
+                    @Override
+                    public void onCredentialSave() {
+                        navigateToMainActivity();
+                        Toast.makeText(SignInActivity.this, "Credential Saved", Toast.LENGTH_SHORT).show();
+                    }
 
-        credentialClient.save(credential).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Log.d("SignInActivity:", "SAVE: OK");
-                Toast.makeText(this, "Credentials saved", Toast.LENGTH_SHORT).show();
-                navigateToMainActivity();
-                return;
-            }
-
-            Exception e = task.getException();
-            if (e instanceof ResolvableApiException) {
-
-                ResolvableApiException rae = (ResolvableApiException) e;
-                try {
-                    rae.startResolutionForResult(this, RC_SAVE);
-                } catch (IntentSender.SendIntentException exception) {
-                    Log.e(TAG, "Failed to send resolution.", exception);
-                    Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
-                    navigateToMainActivity();
+                    @Override
+                    public void onCredentialSaveError() {
+                        Toast.makeText(SignInActivity.this, "Credential Failed", Toast.LENGTH_SHORT).show();
+                        navigateToMainActivity();
+                    }
                 }
-            } else {
-                // Request has no resolution
-                Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
-                navigateToMainActivity();
-            }
-
-        });
+        );
     }
 
     private void retrieveUserCredential() {
-        credentialClient.request(credentialRequest).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Credential credential = task.getResult().getCredential();
-                updateCredentialForSingleUser(credential);
-                return;
-            } else {
-                Log.e("credentialName", "Faield To Retrieve");
-            }
-        });
+        // Todo show dialog to user choose number
+        credentialManager.retrieveUserCredential(this, this::updateCredentialToView);
     }
 
-    private void updateCredentialForSingleUser(Credential credential) {
-        if (credential != null) {
-            binding.phoneNumber.setText(credential.getId());
-            binding.password.setText(credential.getPassword());
-        }
+    private void updateCredentialToView(Credential credential) {
+        binding.phoneNumber.setText(credential.getId());
+        binding.password.setText(credential.getPassword());
     }
 
     @Override
@@ -199,7 +154,7 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SAVE) {
+        if (requestCode == Constants.RC_SAVE) {
             if (resultCode == RESULT_OK) {
                 Log.d(TAG, "SAVE: OK");
                 Toast.makeText(this, "Credentials saved", Toast.LENGTH_SHORT).show();
@@ -208,5 +163,17 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
             }
             navigateToMainActivity();
         }
+        if (requestCode == Constants.RC_READ) {
+            if (resultCode == RESULT_OK) {
+                Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
+                if(credential != null) {
+                    updateCredentialToView(credential);
+                }
+            } else {
+                Log.e(TAG, "Credential Read: NOT OK");
+                Toast.makeText(this, "Credential Read Failed", Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 }

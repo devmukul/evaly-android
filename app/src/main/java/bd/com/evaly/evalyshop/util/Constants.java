@@ -26,7 +26,6 @@ public class Constants {
     public static final String CITYBANK = "City Bank";
     public static final String OTHERS = "SSLCommerz";
     public static final String BALANCE_WITH_CASH = "Evaly Account + Cash on Delivery";
-    public static final String SIGN_IN_URI = "https://evaly.com.bd/" ;
 
     // Event specific constants
     public static final String EVT_SIGNUP_ERR = "xmpp_signup_error";
@@ -37,6 +36,9 @@ public class Constants {
     public static final String EVT_LOGIN_ERR = "xmpp_login_error";
     public static final String EVT_REQUEST_SUBSCRIBE = "xmpp_request_subscribe";
 
+    // Credential Manager
+    public static final int RC_SAVE = 1000 ;
+    public static final int RC_READ = 1001 ;
 
     public static final String INTENT_KEY_CHATSTATE = "chatstate";
     //Presence States (Strings)

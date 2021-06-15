@@ -6,6 +6,11 @@ import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
+import com.google.android.gms.auth.api.credentials.CredentialRequest;
+import com.google.android.gms.auth.api.credentials.Credentials;
+import com.google.android.gms.auth.api.credentials.CredentialsClient;
+import com.google.android.gms.auth.api.credentials.CredentialsOptions;
+import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.Gson;
@@ -17,6 +22,7 @@ import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.CartDatabase;
 import bd.com.evaly.evalyshop.di.observers.SharedObservers;
 import bd.com.evaly.evalyshop.di.qualifiers.FirebaseRemoteConfigLiveData;
+import bd.com.evaly.evalyshop.manager.credential.CredentialManager;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
@@ -88,6 +94,31 @@ public class AppModule {
         return Room.databaseBuilder(context, CartDatabase.class, "cart_database")
                 .fallbackToDestructiveMigration()
                 .build();
+    }
+
+    @Provides
+    CredentialRequest credentialRequest() {
+        return new CredentialRequest.Builder()
+                .setPasswordLoginSupported(true)
+                .setAccountTypes(IdentityProviders.GOOGLE)
+                .build();
+    }
+
+    @Provides
+    CredentialsOptions provideCredentialOption() {
+        return new CredentialsOptions.Builder()
+                .forceEnableSaveDialog()
+                .build();
+    }
+
+    @Provides
+    CredentialsClient provideCredentialClient(Context context, CredentialsOptions options) {
+        return Credentials.getClient(context, options);
+    }
+
+    @Provides
+    CredentialManager provideCredentialManager(CredentialsClient credentialClient, CredentialRequest credentialRequest) {
+        return new CredentialManager(credentialClient, credentialRequest);
     }
 
 }
