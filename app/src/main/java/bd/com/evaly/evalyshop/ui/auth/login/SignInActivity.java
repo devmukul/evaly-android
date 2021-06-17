@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.CompoundButton;
 import android.widget.Toast;
+
+import androidx.lifecycle.Observer;
 
 import com.google.android.gms.auth.api.credentials.Credential;
 
@@ -58,6 +61,11 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
             }
         } else
             binding.phoneNumber.requestFocus();
+
+        binding.cbRememberMe.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            viewModel.setRememberMe(isChecked);
+        });
+        binding.cbRememberMe.setChecked(viewModel.isRememberMeEnable());
     }
 
     @Override
@@ -70,6 +78,7 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
         viewModel.loginSuccess.observe(this, aVoid -> {
             saveAuthCredential();
         });
+
     }
 
     private void navigateToMainActivity() {
@@ -80,6 +89,10 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
     }
 
     private void saveAuthCredential() {
+        if(!viewModel.isRememberMeEnable()){
+            navigateToMainActivity();
+            return;
+        }
         credentialManager.saveCredential(
                 binding.phoneNumber.getText().toString(),
                 binding.password.getText().toString(),
@@ -92,7 +105,6 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
 
                     @Override
                     public void onCredentialSaveError() {
-                        Toast.makeText(SignInActivity.this, "Credential Failed", Toast.LENGTH_SHORT).show();
                         navigateToMainActivity();
                     }
                 }
@@ -100,13 +112,16 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
     }
 
     private void retrieveUserCredential() {
-        // Todo show dialog to user choose number
-        credentialManager.retrieveUserCredential(this::updateCredentialToView);
+        if(viewModel.isRememberMeEnable()){
+            credentialManager.retrieveUserCredential(this::updateCredentialToView);
+        }
     }
 
     private void updateCredentialToView(Credential credential) {
         binding.phoneNumber.setText(credential.getId());
+        binding.phoneNumber.setSelection(credential.getId().length()) ;
         binding.password.setText(credential.getPassword());
+
     }
 
     @Override
@@ -165,7 +180,7 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
         if (requestCode == Constants.RC_READ) {
             if (resultCode == RESULT_OK) {
                 Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
-                if(credential != null) {
+                if (credential != null) {
                     updateCredentialToView(credential);
                 }
             } else {

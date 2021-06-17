@@ -2,12 +2,25 @@ package bd.com.evaly.evalyshop.ui.auth.changePassword;
 
 import android.content.Intent;
 import android.text.InputType;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.gms.auth.api.credentials.Credential;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ActivityChangePasswordBinding;
+import bd.com.evaly.evalyshop.manager.credential.CredentialManager;
+import bd.com.evaly.evalyshop.manager.credential.CredentialSaveListener;
+import bd.com.evaly.evalyshop.ui.auth.login.SignInActivity;
+import bd.com.evaly.evalyshop.ui.auth.login.SignInViewModel;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -15,6 +28,11 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class ChangePasswordActivity extends BaseActivity<ActivityChangePasswordBinding, ChangePasswordViewModel> {
+
+    @Inject
+    CredentialManager credentialManager ;
+
+    SignInViewModel signInViewModel ;
 
     private ViewDialog dialog;
     private boolean isCurrentShowing, isNewShowing, isNewConfirmShowing;
@@ -29,6 +47,7 @@ public class ChangePasswordActivity extends BaseActivity<ActivityChangePasswordB
         getSupportActionBar().setTitle("Change Password");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         dialog = new ViewDialog(this);
+        signInViewModel = new ViewModelProvider(this).get(SignInViewModel.class);
     }
 
     @Override
@@ -41,11 +60,38 @@ public class ChangePasswordActivity extends BaseActivity<ActivityChangePasswordB
         });
 
         viewModel.loginSuccess.observe(this, aVoid -> {
-            Intent intent = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("from", "signin");
-            startActivity(intent);
-            finishAffinity();
+            saveAuthCredential() ;
         });
+    }
+
+    private void saveAuthCredential() {
+        if(!signInViewModel.isRememberMeEnable()){
+            navigateToMainActivity();
+            return;
+        }
+        credentialManager.saveCredential(
+                signInViewModel.getUserPhone(),
+                binding.currentPassword.getText().toString(),
+                new CredentialSaveListener() {
+                    @Override
+                    public void onCredentialSave() {
+                        navigateToMainActivity();
+                        Toast.makeText(ChangePasswordActivity.this, "Credential Saved", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCredentialSaveError() {
+                        navigateToMainActivity();
+                    }
+                }
+        );
+    }
+
+    private void navigateToMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("from", "signin");
+        startActivity(intent);
+        finishAffinity();
     }
 
     @Override
@@ -120,5 +166,16 @@ public class ChangePasswordActivity extends BaseActivity<ActivityChangePasswordB
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.RC_SAVE) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "Credentials saved", Toast.LENGTH_SHORT).show();
+            }
+            navigateToMainActivity();
+        }
     }
 }

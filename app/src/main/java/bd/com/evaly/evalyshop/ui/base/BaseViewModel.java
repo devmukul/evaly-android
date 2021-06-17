@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.ui.base;
 
+import android.util.Log;
+
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
@@ -14,7 +16,7 @@ public class BaseViewModel extends ViewModel {
     protected PreferenceRepository preferenceRepository;
     protected SavedStateHandle savedStateHandle;
 
-    public BaseViewModel(){
+    public BaseViewModel() {
 
     }
 
@@ -29,4 +31,5 @@ public class BaseViewModel extends ViewModel {
         super.onCleared();
         compositeDisposable.clear();
     }
+
 }

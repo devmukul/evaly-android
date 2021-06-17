@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
@@ -23,10 +24,15 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.preference.PreferenceRepository;
 import bd.com.evaly.evalyshop.databinding.ActivityPasswordBinding;
 import bd.com.evaly.evalyshop.listener.OtpReceiverListener;
+import bd.com.evaly.evalyshop.manager.credential.CredentialManager;
+import bd.com.evaly.evalyshop.manager.credential.CredentialSaveListener;
 import bd.com.evaly.evalyshop.rest.ApiRepository;
 import bd.com.evaly.evalyshop.service.SmsBroadcastReceiver;
+import bd.com.evaly.evalyshop.ui.auth.changePassword.ChangePasswordActivity;
+import bd.com.evaly.evalyshop.ui.auth.login.SignInViewModel;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -39,6 +45,12 @@ public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, Pass
     ApiRepository apiRepository;
     @Inject
     PreferenceRepository preferenceRepository;
+
+    @Inject
+    CredentialManager credentialManager ;
+
+    SignInViewModel signInViewModel ;
+
     ViewDialog dialog;
     private int size = 1;
     private String phoneNumber, password, requestId;
@@ -57,7 +69,9 @@ public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, Pass
         dialog = new ViewDialog(this);
         phoneNumber = getIntent().getStringExtra("phone");
         requestId = getIntent().getStringExtra("request_id");
+
         SmsBroadcastReceiver.otpReceiverListener = this ;
+        signInViewModel = new ViewModelProvider(this).get(SignInViewModel.class);
 
         binding.pin1Et.addTextChangedListener(new TextWatcher() {
 
@@ -150,10 +164,7 @@ public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, Pass
 
         viewModel.loginSuccess.observe(this, aVoid -> {
             dialog.hideDialog();
-            Intent intent = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("from", "signin");
-            startActivity(intent);
-            finishAffinity();
+            saveAuthCredential();
         });
 
         viewModel.loadingDialog.observe(this, aBoolean -> {
@@ -304,6 +315,7 @@ public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, Pass
                     binding.pin3Et.setText(splitedOtp[2]);
                     binding.pin4Et.setText(splitedOtp[3]);
                     binding.pin5Et.setText(splitedOtp[4]);
+                    binding.pin5Et.setSelection(1);
                 }
             }
         }catch (Exception exp) {
@@ -315,5 +327,46 @@ public class PasswordActivity extends BaseActivity<ActivityPasswordBinding, Pass
     protected void onDestroy() {
         SmsBroadcastReceiver.otpReceiverListener = null ;
         super.onDestroy();
+    }
+
+    private void navigateToMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("from", "signin");
+        startActivity(intent);
+        finishAffinity();
+    }
+
+    private void saveAuthCredential() {
+        if(!signInViewModel.isRememberMeEnable()){
+            navigateToMainActivity();
+            return;
+        }
+        credentialManager.saveCredential(
+                signInViewModel.getUserPhone(),
+                binding.etPassword.getText().toString(),
+                new CredentialSaveListener() {
+                    @Override
+                    public void onCredentialSave() {
+                        navigateToMainActivity();
+                        Toast.makeText(PasswordActivity.this, "Credential Saved", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCredentialSaveError() {
+                        navigateToMainActivity();
+                    }
+                }
+        );
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.RC_SAVE) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "Credentials saved", Toast.LENGTH_SHORT).show();
+            }
+            navigateToMainActivity();
+        }
     }
 }

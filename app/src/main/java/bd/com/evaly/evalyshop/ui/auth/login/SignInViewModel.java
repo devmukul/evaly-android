@@ -1,5 +1,10 @@
 package bd.com.evaly.evalyshop.ui.auth.login;
 
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.lifecycle.MutableLiveData;
+
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
@@ -27,10 +32,10 @@ public class SignInViewModel extends BaseViewModel {
 
     private ApiRepository apiRepository;
     private PreferenceRepository preferenceRepository;
+
     protected SingleLiveEvent<Void> hideLoading = new SingleLiveEvent<>();
     protected SingleLiveEvent<String> showToast = new SingleLiveEvent<>();
     protected SingleLiveEvent<Void> loginSuccess = new SingleLiveEvent<>();
-
 
     @Inject
     public SignInViewModel(ApiRepository apiRepository, PreferenceRepository preferenceRepository) {
@@ -109,4 +114,17 @@ public class SignInViewModel extends BaseViewModel {
 
         });
     }
+
+    public void setRememberMe(Boolean isRememberMe) {
+        preferenceRepository.setRememberMe(isRememberMe);
+    }
+
+    public Boolean isRememberMeEnable() {
+        return preferenceRepository.isRememberMeEnable();
+    }
+
+    public String getUserPhone() {
+        return preferenceRepository.getUserName() ;
+    }
+
 }

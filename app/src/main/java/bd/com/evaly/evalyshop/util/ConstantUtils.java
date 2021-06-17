@@ -19,4 +19,6 @@ public class ConstantUtils {
     public static final String PASSWORD = "password";
     public static final String REFRESH_TOKEN = "refresh_token";
     public static final String REGISTERED = "registered";
+    public static final String REMEMBER_ME = "remember_me";
+
 }

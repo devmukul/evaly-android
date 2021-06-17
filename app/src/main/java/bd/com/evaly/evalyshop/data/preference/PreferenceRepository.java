@@ -48,6 +48,13 @@ public class PreferenceRepository {
         return preference.getString(ConstantUtils.TOKEN, "");
     }
 
+    public void setRememberMe(Boolean isRememberMe) {
+        preference.edit().putBoolean(ConstantUtils.REMEMBER_ME, isRememberMe).apply();
+    }
+
+    public Boolean isRememberMeEnable() {
+        return preference.getBoolean(ConstantUtils.REMEMBER_ME, false);
+    }
 
     public void saveRefreshToken(String token) {
         preference.edit().putString(ConstantUtils.REFRESH_TOKEN, token).apply();
@@ -178,7 +185,9 @@ public class PreferenceRepository {
     }
 
     public void clearAll() {
+        boolean isRememberMe = isRememberMeEnable();
         preferenceEditor.clear().commit();
+        setRememberMe(isRememberMe);
     }
 
 }

@@ -38,6 +38,7 @@ class CredentialManager @Inject constructor(
             if (e is ResolvableApiException) {
                 val rae = e as ResolvableApiException
                 try {
+                    // This will prompt the user if the credential is new.
                     rae.startResolutionForResult(activity, Constants.RC_SAVE)
                 } catch (exception: SendIntentException) {
                     saveListener.onCredentialSaveError()
