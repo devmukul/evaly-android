@@ -115,13 +115,21 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
         if(viewModel.isRememberMeEnable()){
             credentialManager.retrieveUserCredential(this::updateCredentialToView);
         }
+        else credentialManager.requestHint() ;
     }
 
     private void updateCredentialToView(Credential credential) {
-        binding.phoneNumber.setText(credential.getId());
-        binding.phoneNumber.setSelection(credential.getId().length()) ;
-        binding.password.setText(credential.getPassword());
-
+        if(credential.getId() != null){
+            String number = credential.getId() ;
+            if(number.contains("+88")){
+                number = number.replace("+88", "");
+            }
+            binding.phoneNumber.setText(number);
+            binding.phoneNumber.setSelection(number.length()) ;
+        }
+        if(credential.getPassword() != null){
+            binding.password.setText(credential.getPassword());
+        }
     }
 
     @Override
@@ -172,22 +180,16 @@ public class SignInActivity extends BaseActivity<ActivitySignInNewBinding, SignI
             if (resultCode == RESULT_OK) {
                 Log.d(TAG, "SAVE: OK");
                 Toast.makeText(this, "Credentials saved", Toast.LENGTH_SHORT).show();
-            } else {
-                Log.e(TAG, "SAVE: Canceled by user");
             }
             navigateToMainActivity();
         }
-        if (requestCode == Constants.RC_READ) {
+        if (requestCode == Constants.RC_READ || requestCode == Constants.PHONE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
                 if (credential != null) {
                     updateCredentialToView(credential);
                 }
-            } else {
-                Log.e(TAG, "Credential Read: NOT OK");
-                Toast.makeText(this, "Credential Read Failed", Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 }

@@ -39,6 +39,7 @@ public class Constants {
     // Credential Manager
     public static final int RC_SAVE = 1000 ;
     public static final int RC_READ = 1001 ;
+    public static final int PHONE_PICKER_REQUEST = 1002 ;
 
     public static final String INTENT_KEY_CHATSTATE = "chatstate";
     //Presence States (Strings)

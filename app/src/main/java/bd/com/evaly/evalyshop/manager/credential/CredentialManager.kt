@@ -4,12 +4,12 @@ import android.app.Activity
 import android.content.IntentSender
 import android.content.IntentSender.SendIntentException
 import android.util.Log
+import androidx.core.app.ActivityCompat.startIntentSenderForResult
 import bd.com.evaly.evalyshop.util.Constants
 import bd.com.evaly.evalyshop.util.Constants.RC_READ
-import com.google.android.gms.auth.api.credentials.Credential
-import com.google.android.gms.auth.api.credentials.CredentialRequest
-import com.google.android.gms.auth.api.credentials.CredentialRequestResponse
-import com.google.android.gms.auth.api.credentials.CredentialsClient
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.credentials.*
+import com.google.android.gms.auth.api.credentials.HintRequest
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.tasks.Task
 import javax.inject.Inject
@@ -20,6 +20,19 @@ class CredentialManager @Inject constructor(
     val credentialRequest: CredentialRequest,
     val activity: Activity
 ) {
+
+    fun requestHint() {
+        val hintRequest = HintRequest.Builder()
+            .setPhoneNumberIdentifierSupported(true)
+            .build()
+        val intent = Credentials.getClient(activity).getHintPickerIntent(hintRequest)
+        startIntentSenderForResult(
+            activity,
+            intent.intentSender,
+            Constants.PHONE_PICKER_REQUEST,
+            null, 0, 0, 0, null
+        )
+    }
 
     fun saveCredential(
         phone: String,

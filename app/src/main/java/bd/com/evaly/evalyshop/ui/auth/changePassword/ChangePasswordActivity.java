@@ -8,15 +8,12 @@ import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.auth.api.credentials.Credential;
-
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ActivityChangePasswordBinding;
 import bd.com.evaly.evalyshop.manager.credential.CredentialManager;
 import bd.com.evaly.evalyshop.manager.credential.CredentialSaveListener;
-import bd.com.evaly.evalyshop.ui.auth.login.SignInActivity;
 import bd.com.evaly.evalyshop.ui.auth.login.SignInViewModel;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
@@ -71,7 +68,7 @@ public class ChangePasswordActivity extends BaseActivity<ActivityChangePasswordB
         }
         credentialManager.saveCredential(
                 signInViewModel.getUserPhone(),
-                binding.currentPassword.getText().toString(),
+                binding.newPassword.getText().toString(),
                 new CredentialSaveListener() {
                     @Override
                     public void onCredentialSave() {

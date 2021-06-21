@@ -5,12 +5,17 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.credentials.Credential;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ActivityForgotPasswordBinding;
+import bd.com.evaly.evalyshop.manager.credential.CredentialManager;
 import bd.com.evaly.evalyshop.ui.auth.login.SignInActivity;
 import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -18,6 +23,9 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class ForgotPasswordActivity extends BaseActivity<ActivityForgotPasswordBinding, ForgetPasswordViewModel> {
 
     private ViewDialog dialog;
+
+    @Inject
+    CredentialManager credentialManager ;
 
     public ForgotPasswordActivity() {
         super(ForgetPasswordViewModel.class, R.layout.activity_forgot_password);
@@ -27,6 +35,7 @@ public class ForgotPasswordActivity extends BaseActivity<ActivityForgotPasswordB
     protected void initViews() {
         dialog = new ViewDialog(ForgotPasswordActivity.this);
         viewModel.getCaptcha();
+        credentialManager.requestHint();
     }
 
     @Override
@@ -74,5 +83,29 @@ public class ForgotPasswordActivity extends BaseActivity<ActivityForgotPasswordB
     public void onBackPressed() {
         startActivity(new Intent(ForgotPasswordActivity.this, SignInActivity.class));
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.PHONE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
+                if (credential != null) {
+                    updateCredentialToView(credential);
+                }
+            }
+        }
+    }
+
+    private void updateCredentialToView(Credential credential) {
+        if(credential.getId() != null){
+            String number = credential.getId() ;
+            if(number.contains("+88")){
+                number = number.replace("+88", "");
+            }
+            binding.phone.setText(number);
+            binding.phone.setSelection(number.length()) ;
+        }
     }
 }

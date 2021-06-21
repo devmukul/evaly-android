@@ -6,11 +6,13 @@ import android.content.Context;
 import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.credentials.CredentialsOptions;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import bd.com.evaly.evalyshop.manager.credential.CredentialManager;
 import dagger.Module;
@@ -47,7 +49,7 @@ public class CredentialManagerModule {
     CredentialManager provideCredentialManager(
             CredentialsClient credentialClient,
             CredentialRequest credentialRequest,
-            Activity activity ) {
+            Activity activity) {
         return new CredentialManager(credentialClient, credentialRequest, activity);
     }
 }
